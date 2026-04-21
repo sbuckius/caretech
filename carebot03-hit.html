@@ -1,0 +1,627 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
+<title>✦ CAREBOT-03 ✦ Space Program Archive · Image Annotation Task</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getFirestore, collection, addDoc, serverTimestamp }
+    from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+  const FIREBASE_CONFIG = {
+    apiKey:            "AIzaSyCZFDU-WlSmHqjXTs1Ox0nf9xeJU_xbaX0",
+    authDomain:        "collaborativemashup.firebaseapp.com",
+    databaseURL:       "https://collaborativemashup-default-rtdb.firebaseio.com",
+    projectId:         "collaborativemashup",
+    storageBucket:     "collaborativemashup.firebasestorage.app",
+    messagingSenderId: "562437984610",
+    appId:             "1:562437984610:web:9f3711c26e097bc8ef9c3b",
+    measurementId:     "G-EY9FKD6RQ2"
+  };
+  const app = initializeApp(FIREBASE_CONFIG);
+  const db  = getFirestore(app);
+
+  window._writeAnnotation03 = async function(payload) {
+    try {
+      await addDoc(collection(db, "annotations03"), {
+        ...payload,
+        timestamp: serverTimestamp()
+      });
+      console.log("✦ annotation written", payload.imageId);
+    } catch(err) {
+      console.warn("Firebase write failed:", err.message);
+    }
+  };
+</script>
+
+<style>
+:root {
+  --rose:#e8458a;
+  --hot:#ff2d6b;
+  --berry:#9b1a5c;
+  --maroon:#5c0030;
+  --cream:#fff0f5;
+  --purple:#c084fc;
+  --bg:#0f0008;
+  --card-border:rgba(220,80,160,.2);
+  --card-border-bright:rgba(255,80,160,.5);
+  --soft-glow:0 4px 30px rgba(220,60,140,.18),0 1px 0 rgba(220,60,140,.1) inset;
+  --pop-glow:0 6px 44px rgba(220,60,140,.35),0 0 80px rgba(180,30,100,.12);
+  --text-dim:rgba(255,180,220,.5);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html,body{min-height:100%;font-family:'Quicksand',sans-serif;font-weight:600;color:var(--cream);background:var(--bg);-webkit-font-smoothing:antialiased;overflow-x:hidden;}
+.bg{position:fixed;inset:0;z-index:0;pointer-events:none;background:radial-gradient(ellipse 65% 50% at 90% 5%,rgba(160,0,80,.3) 0%,transparent 58%),radial-gradient(ellipse 55% 60% at 10% 90%,rgba(90,0,45,.28) 0%,transparent 58%),linear-gradient(160deg,#1a0012,#14000e 50%,#0f0008);}
+.orb{position:fixed;border-radius:50%;pointer-events:none;z-index:0;filter:blur(62px);}
+.orb-1{width:430px;height:430px;background:var(--maroon);opacity:.3;top:-100px;right:-80px;animation:drift1 19s ease-in-out infinite;}
+.orb-2{width:360px;height:360px;background:#3d0025;opacity:.28;bottom:-75px;left:-65px;animation:drift2 23s ease-in-out infinite;}
+.orb-3{width:210px;height:210px;background:var(--hot);opacity:.09;top:38%;left:60%;animation:drift3 15s ease-in-out infinite;}
+@keyframes drift1{0%,100%{transform:translate(0,0)}50%{transform:translate(-42px,30px)}}
+@keyframes drift2{0%,100%{transform:translate(0,0)}50%{transform:translate(34px,-22px)}}
+@keyframes drift3{0%,100%{transform:translate(0,0)}33%{transform:translate(-18px,14px)}66%{transform:translate(14px,-10px)}}
+.sparkles{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden;}
+.sp{position:absolute;opacity:0;animation:floatUp linear infinite;}
+@keyframes floatUp{0%{opacity:0;transform:translateY(0) scale(.6) rotate(0deg)}15%{opacity:.65}85%{opacity:.35}100%{opacity:0;transform:translateY(-120px) scale(1.1) rotate(180deg)}}
+@keyframes breathe{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.3;transform:scale(.65)}}
+
+.wrap{position:relative;z-index:2;max-width:960px;margin:0 auto;padding:max(20px,env(safe-area-inset-top)) clamp(12px,3vmin,24px) calc(60px + env(safe-area-inset-bottom)) clamp(12px,3vmin,24px);display:grid;gap:16px;}
+
+.mascot-bar{display:flex;align-items:center;justify-content:space-between;}
+.mascot{display:flex;align-items:center;gap:10px;}
+.bot-face{width:44px;height:44px;border-radius:14px;background:linear-gradient(135deg,rgba(220,60,140,.22),rgba(120,0,60,.35));border:1.5px solid var(--card-border-bright);box-shadow:var(--soft-glow);display:flex;align-items:center;justify-content:center;font-size:22px;animation:wobble 4s ease-in-out infinite;flex-shrink:0;}
+@keyframes wobble{0%,100%{transform:rotate(-2deg) scale(1)}25%{transform:rotate(1deg) scale(1.04)}50%{transform:rotate(-1deg) scale(1)}75%{transform:rotate(2deg) scale(1.03)}}
+.bot-name{font-family:'Nunito',sans-serif;font-weight:900;font-size:17px;letter-spacing:.04em;background:linear-gradient(90deg,var(--cream),var(--hot) 50%,var(--purple));-webkit-background-clip:text;background-clip:text;color:transparent;}
+.bot-sub{font-size:10px;letter-spacing:.15em;text-transform:uppercase;color:var(--text-dim);margin-top:1px;}
+.time-badge{display:flex;align-items:center;gap:6px;padding:6px 12px;border-radius:999px;background:rgba(255,255,255,.04);border:1px solid var(--card-border);font-size:11px;color:var(--text-dim);}
+.time-pip{width:5px;height:5px;border-radius:50%;background:var(--hot);box-shadow:0 0 6px var(--hot);animation:breathe 2s ease-in-out infinite;}
+
+.agenda-banner{background:rgba(14,0,8,.88);border:1.5px solid var(--card-border-bright);border-radius:20px;box-shadow:var(--soft-glow);padding:clamp(16px,2.5vh,24px) clamp(18px,3vw,28px);position:relative;overflow:hidden;display:grid;gap:12px;}
+.agenda-banner::before{content:'';position:absolute;top:0;left:10%;right:10%;height:1.5px;background:linear-gradient(90deg,transparent,var(--rose) 35%,var(--hot) 50%,var(--rose) 65%,transparent);box-shadow:0 0 12px var(--rose);border-radius:999px;}
+.agenda-eyebrow{font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--hot);}
+.agenda-title{font-family:'Nunito',sans-serif;font-weight:900;font-size:clamp(16px,2.5vw,22px);line-height:1.3;background:linear-gradient(120deg,var(--cream) 20%,var(--hot) 55%,var(--purple) 85%);-webkit-background-clip:text;background-clip:text;color:transparent;}
+.agenda-body{font-size:clamp(12px,1.5vw,14px);color:rgba(255,210,228,.85);line-height:1.75;}
+.agenda-body strong{color:var(--hot);}
+.agenda-chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:4px;}
+.agenda-chip{display:inline-flex;align-items:center;gap:5px;padding:4px 11px;border-radius:999px;background:rgba(220,60,140,.08);border:1px solid rgba(220,60,140,.22);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--text-dim);}
+.agenda-chip .dot{width:4px;height:4px;border-radius:50%;background:var(--hot);}
+
+.app{background:rgba(255,255,255,.042);border:1.5px solid var(--card-border);border-radius:24px;box-shadow:var(--soft-glow);backdrop-filter:blur(20px) saturate(1.5);overflow:hidden;position:relative;}
+.app::before{content:'';position:absolute;top:0;left:16px;right:16px;height:1px;background:linear-gradient(90deg,transparent,var(--rose) 30%,var(--hot) 50%,var(--rose) 70%,transparent);box-shadow:0 0 10px var(--rose);border-radius:999px;}
+
+.task-header{padding:20px 22px 18px;border-bottom:1px solid rgba(220,60,140,.1);display:grid;gap:12px;}
+.task-title{font-family:'Nunito',sans-serif;font-weight:800;font-size:clamp(14px,2.2vw,18px);line-height:1.5;color:var(--cream);}
+.task-meta{display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+.meta-chip{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:999px;background:rgba(220,60,140,.08);border:1px solid rgba(220,60,140,.18);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--text-dim);}
+.meta-chip .dot{width:4px;height:4px;border-radius:50%;background:var(--rose);}
+.progress-row{display:flex;align-items:center;gap:10px;}
+.progress-track{flex:1;height:6px;border-radius:999px;background:rgba(220,60,140,.1);border:1px solid rgba(220,60,140,.15);overflow:hidden;}
+.progress-fill{height:100%;width:0%;border-radius:999px;background:linear-gradient(90deg,var(--maroon),var(--berry),var(--hot),var(--rose));box-shadow:0 0 10px var(--hot);transition:width .5s cubic-bezier(.34,1.56,.64,1);}
+#progressText{font-size:11px;color:var(--text-dim);white-space:nowrap;letter-spacing:.06em;}
+
+.img-frame{position:relative;width:100%;background:rgba(8,0,4,.94);min-height:clamp(220px,46svh,460px);display:flex;align-items:center;justify-content:center;overflow:hidden;}
+.img-frame::after{content:'';position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse 85% 85% at 50% 50%,transparent 50%,rgba(8,0,4,.65) 100%);}
+#archiveImg{max-width:100%;max-height:clamp(220px,46svh,460px);object-fit:contain;display:none;position:relative;z-index:1;}
+.img-loading{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;z-index:2;font-size:13px;letter-spacing:.12em;color:var(--text-dim);}
+.img-source-badge{position:absolute;bottom:10px;right:12px;z-index:3;font-size:9px;letter-spacing:.1em;text-transform:uppercase;padding:3px 9px;border-radius:999px;background:rgba(14,0,8,.75);border:1px solid rgba(220,60,140,.2);color:var(--text-dim);}
+.img-link-badge{position:absolute;bottom:10px;left:12px;z-index:3;}
+.img-link-badge a{font-size:9px;letter-spacing:.1em;text-transform:uppercase;padding:3px 9px;border-radius:999px;background:rgba(14,0,8,.75);border:1px solid rgba(220,60,140,.2);color:rgba(220,60,140,.6);text-decoration:none;}
+.img-link-badge a:hover{color:var(--rose);border-color:var(--rose);}
+
+/* reveal */
+.reveal-overlay{position:absolute;inset:0;z-index:10;background:rgba(8,0,4,.96);display:none;flex-direction:column;align-items:center;justify-content:center;gap:13px;padding:24px 28px;text-align:center;animation:fadeIn .4s ease;overflow-y:auto;}
+.reveal-overlay.show{display:flex;}
+@keyframes fadeIn{from{opacity:0;transform:scale(.97)}to{opacity:1;transform:scale(1)}}
+.reveal-label{font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--text-dim);flex-shrink:0;}
+.reveal-item{font-family:'Nunito',sans-serif;font-weight:900;font-size:clamp(13px,2vw,17px);color:var(--cream);max-width:520px;line-height:1.4;flex-shrink:0;}
+.reveal-tags-row{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin:2px 0;flex-shrink:0;}
+.reveal-tag{padding:4px 11px;border-radius:999px;background:rgba(220,60,140,.14);border:1px solid rgba(220,60,140,.32);font-size:11px;color:rgba(255,200,228,.85);}
+.reveal-truth{font-size:clamp(11px,1.35vw,13px);color:rgba(255,200,228,.78);max-width:500px;line-height:1.75;flex-shrink:0;}
+.reveal-truth strong{color:var(--hot);}
+.reveal-truth em{color:var(--purple);}
+.reveal-source{font-size:10px;color:var(--text-dim);flex-shrink:0;}
+.reveal-source a{color:rgba(220,60,140,.65);text-decoration:none;}
+.reveal-source a:hover{color:var(--rose);}
+.reveal-next-btn{font-family:'Nunito',sans-serif;font-weight:900;font-size:clamp(13px,1.8vw,15px);letter-spacing:.06em;color:var(--cream);cursor:pointer;border:none;padding:11px 28px;border-radius:14px;background:linear-gradient(135deg,var(--hot) 0%,var(--rose) 55%,var(--berry) 100%);box-shadow:0 6px 28px rgba(220,60,140,.4);transition:all .22s cubic-bezier(.34,1.56,.64,1);animation:ctaPulse 3s ease-in-out infinite;margin-top:4px;flex-shrink:0;}
+@keyframes ctaPulse{0%,100%{box-shadow:0 6px 28px rgba(220,60,140,.4)}50%{box-shadow:0 10px 44px rgba(220,60,140,.65),0 0 60px rgba(180,30,100,.2)}}
+.reveal-next-btn:hover{transform:translateY(-3px) scale(1.04);animation:none;}
+
+/* tag panel */
+.tag-panel{padding:20px 22px;border-top:1px solid rgba(220,60,140,.1);display:grid;gap:16px;}
+.tag-instruction{font-family:'Nunito',sans-serif;font-weight:800;font-size:clamp(13px,2vw,16px);color:var(--rose);line-height:1.5;}
+.tag-instruction span{font-size:clamp(11px,1.4vw,12px);font-weight:600;font-family:'Quicksand',sans-serif;color:var(--text-dim);display:block;margin-top:3px;}
+.tag-section{display:grid;gap:8px;}
+.tag-section-label{font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--text-dim);}
+.tag-group{display:flex;flex-wrap:wrap;gap:7px;}
+.tag{padding:7px 14px;border-radius:999px;cursor:pointer;background:rgba(220,60,140,.07);border:1.5px solid rgba(220,60,140,.18);font-size:clamp(11px,1.2vw,13px);color:rgba(255,200,228,.7);transition:all .18s cubic-bezier(.34,1.56,.64,1);user-select:none;}
+.tag:hover{background:rgba(220,60,140,.15);border-color:var(--card-border-bright);color:var(--cream);}
+.tag.selected{background:linear-gradient(135deg,rgba(220,60,140,.28),rgba(120,0,60,.28));border-color:var(--hot);color:var(--cream);box-shadow:0 0 10px rgba(220,60,140,.28);}
+.tag.selected::before{content:'✦ ';}
+.free-input{width:100%;background:rgba(220,60,140,.06);border:1.5px solid rgba(220,60,140,.2);border-radius:12px;color:var(--cream);font-family:'Quicksand',sans-serif;font-weight:600;font-size:13px;padding:10px 14px;outline:none;transition:border-color .2s,box-shadow .2s;resize:none;}
+.free-input:focus{border-color:var(--rose);box-shadow:0 0 14px rgba(220,60,140,.2);}
+.free-input::placeholder{color:rgba(220,60,140,.28);}
+/* ── VALUE QUESTIONS ── */
+.value-section{display:grid;gap:14px;padding:16px 0 4px;border-top:1px solid rgba(220,60,140,.1);margin-top:4px;}
+.value-section-title{font-family:'Nunito',sans-serif;font-weight:800;font-size:clamp(13px,2vw,15px);color:var(--rose);}
+.value-section-title span{font-size:11px;font-weight:600;font-family:'Quicksand',sans-serif;color:var(--text-dim);display:block;margin-top:2px;}
+.value-row{display:grid;gap:8px;}
+.value-label{font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--text-dim);display:flex;align-items:center;justify-content:space-between;}
+.value-label .val-readout{font-family:'Nunito',sans-serif;font-weight:900;font-size:13px;color:var(--cream);letter-spacing:0;text-transform:none;}
+input[type=range].val-slider{width:100%;accent-color:var(--hot);height:5px;cursor:pointer;background:rgba(220,60,140,.15);border-radius:999px;outline:none;border:none;}
+input[type=range].val-slider::-webkit-slider-thumb{width:18px;height:18px;border-radius:50%;background:var(--hot);box-shadow:0 0 8px rgba(255,45,107,.5);cursor:pointer;}
+.slider-ends{display:flex;justify-content:space-between;font-size:10px;color:var(--text-dim);margin-top:2px;letter-spacing:.04em;}
+.wage-row{display:flex;align-items:center;gap:10px;}
+.wage-symbol{font-family:'Nunito',sans-serif;font-weight:900;font-size:18px;color:var(--hot);}
+.wage-input{flex:1;background:rgba(220,60,140,.07);border:1.5px solid rgba(220,60,140,.22);border-radius:12px;color:var(--cream);font-family:'Nunito',sans-serif;font-weight:900;font-size:18px;padding:10px 14px;outline:none;transition:border-color .2s,box-shadow .2s;max-width:180px;}
+.wage-input:focus{border-color:var(--rose);box-shadow:0 0 12px rgba(220,60,140,.22);}
+.wage-input::placeholder{color:rgba(220,60,140,.28);}
+.wage-unit{font-size:12px;color:var(--text-dim);white-space:nowrap;}
+.submit-row{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding-top:4px;}
+.selection-summary{font-size:11px;color:var(--text-dim);flex:1;}
+.btn{appearance:none;font-family:'Nunito',sans-serif;font-weight:900;font-size:13px;letter-spacing:.06em;color:var(--cream);cursor:pointer;display:inline-flex;align-items:center;gap:6px;padding:11px 22px;border-radius:14px;min-height:42px;border:1.5px solid var(--card-border);background:rgba(220,60,140,.1);transition:all .2s cubic-bezier(.34,1.56,.64,1);}
+.btn:hover:not([disabled]){transform:translateY(-2px) scale(1.03);box-shadow:0 8px 24px rgba(220,60,140,.3);border-color:var(--card-border-bright);}
+.btn.primary{background:linear-gradient(135deg,rgba(255,45,107,.55),rgba(120,0,60,.65));border-color:var(--hot);box-shadow:0 4px 20px rgba(220,60,140,.28);}
+.btn.primary:hover:not([disabled]){background:linear-gradient(135deg,rgba(255,45,107,.72),rgba(140,0,70,.72));}
+.btn[disabled]{opacity:.28;cursor:not-allowed;transform:none!important;box-shadow:none!important;}
+
+/* completion */
+.completion-card{background:rgba(12,0,6,.9);border:1.5px solid var(--card-border-bright);box-shadow:var(--pop-glow);border-radius:24px;padding:38px 28px;text-align:center;position:relative;overflow:hidden;}
+.completion-card::before{content:'';position:absolute;top:0;left:12%;right:12%;height:1.5px;background:linear-gradient(90deg,transparent,var(--rose) 35%,var(--hot) 50%,var(--rose) 65%,transparent);box-shadow:0 0 10px var(--rose);border-radius:999px;}
+.c-eyebrow{font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--text-dim);margin-bottom:10px;}
+.completion-card h2{font-family:'Nunito',sans-serif;font-weight:900;font-size:clamp(22px,4vw,32px);background:linear-gradient(100deg,var(--cream) 20%,var(--hot) 55%,var(--purple));-webkit-background-clip:text;background-clip:text;color:transparent;margin-bottom:14px;}
+.completion-card p{font-size:clamp(12px,1.8vw,14px);color:rgba(255,200,220,.65);line-height:1.8;margin-bottom:20px;max-width:520px;margin-left:auto;margin-right:auto;}
+.pattern-note{background:rgba(220,60,140,.06);border:1.5px dashed rgba(220,60,140,.22);border-radius:14px;padding:18px 22px;font-size:clamp(12px,1.5vw,14px);color:rgba(255,200,224,.82);line-height:1.75;margin:16px auto;text-align:left;max-width:540px;}
+.pattern-note strong{color:var(--hot);}
+.pattern-note em{color:var(--purple);}
+</style>
+</head>
+<body>
+<div class="bg"></div>
+<div class="orb orb-1"></div><div class="orb orb-2"></div><div class="orb orb-3"></div>
+<div class="sparkles" id="sparkles"></div>
+
+<main class="wrap">
+  <div class="mascot-bar">
+    <div class="mascot">
+      <div class="bot-face">🧵</div>
+      <div>
+        <div class="bot-name">CAREBOT-03 ✦</div>
+        <div class="bot-sub">Space Program Archive · Annotation Task · Online</div>
+      </div>
+    </div>
+    <div class="time-badge"><div class="time-pip"></div><span id="sysTime">--:--:--</span></div>
+  </div>
+
+  <div class="agenda-banner">
+    <div class="agenda-eyebrow">✦ CAREBOT-03 · Annotation Task</div>
+    <div class="agenda-title">Help me label what kind of work is shown in these archival photographs.</div>
+    <div class="agenda-body">
+      These images are real archival photographs taken during the 1960s US space program. Your job is to <strong>tag what you see</strong>: the type of work, the tools, the skill level, who is doing it.<br><br>
+      You are training a system. Your labels are the data. <strong>Tag honestly, based only on what the image shows you — not what you already know.</strong>
+    </div>
+    <div class="agenda-chips">
+      <div class="agenda-chip"><div class="dot"></div>Real archival images</div>
+      <div class="agenda-chip"><div class="dot"></div>Apollo program · 1960s</div>
+      <div class="agenda-chip"><div class="dot"></div>Your tags = training data</div>
+      <div class="agenda-chip"><div class="dot"></div>US space program · 1960s</div>
+    </div>
+  </div>
+
+  <section class="app" id="taskCard">
+    <header class="task-header">
+      <div class="task-title">✦ Annotate this archival image — select all tags that apply, then submit</div>
+      <div class="task-meta">
+        <div class="meta-chip"><div class="dot"></div>Image annotation</div>
+        <div class="meta-chip"><div class="dot"></div>Active</div>
+        <div class="meta-chip" id="catChip"><div class="dot"></div>Loading…</div>
+      </div>
+      <div class="progress-row">
+        <span id="progressText">Loading archive…</span>
+        <div class="progress-track"><div class="progress-fill" id="progressBar"></div></div>
+      </div>
+    </header>
+
+    <div class="img-frame" id="imgFrame">
+      <div class="img-loading" id="imgLoading">✦ Loading archive image…</div>
+      <img id="archiveImg" alt="" crossorigin="anonymous"/>
+      <div class="img-source-badge" id="sourceBadge"></div>
+      <div class="img-link-badge"><a id="sourceLink" href="#" target="_blank" rel="noopener">↗ View source</a></div>
+
+      <div class="reveal-overlay" id="revealOverlay">
+        <div class="reveal-label">✦ CAREBOT-03 · Annotation Recorded</div>
+        <div class="reveal-item" id="revealItemName">—</div>
+        <div class="reveal-tags-row" id="revealTagsRow"></div>
+        <div class="reveal-truth" id="revealTruth"></div>
+        <div class="reveal-source" id="revealSource"></div>
+        <button class="reveal-next-btn" id="revealNextBtn">Next image ✦</button>
+      </div>
+    </div>
+
+    <div class="tag-panel">
+      <div class="tag-instruction">
+        Select all tags that describe this image ✦
+        <span>Choose as many as apply. Your first impression is what matters.</span>
+      </div>
+
+      <div class="tag-section">
+        <div class="tag-section-label">✦ Type of work shown</div>
+        <div class="tag-group">
+          <div class="tag" data-group="work" data-value="manual assembly">manual assembly</div>
+          <div class="tag" data-group="work" data-value="precision craft">precision craft</div>
+          <div class="tag" data-group="work" data-value="engineering">engineering</div>
+          <div class="tag" data-group="work" data-value="software / programming">software / programming</div>
+          <div class="tag" data-group="work" data-value="clerical">clerical</div>
+          <div class="tag" data-group="work" data-value="manufacturing">manufacturing</div>
+          <div class="tag" data-group="work" data-value="management">management</div>
+          <div class="tag" data-group="work" data-value="needlework / sewing">needlework / sewing</div>
+        </div>
+      </div>
+
+      <div class="tag-section">
+        <div class="tag-section-label">✦ Skill level required (your impression)</div>
+        <div class="tag-group">
+          <div class="tag" data-group="skill" data-value="unskilled">unskilled</div>
+          <div class="tag" data-group="skill" data-value="semi-skilled">semi-skilled</div>
+          <div class="tag" data-group="skill" data-value="highly skilled">highly skilled</div>
+          <div class="tag" data-group="skill" data-value="expert / specialized">expert / specialized</div>
+        </div>
+      </div>
+
+      <div class="tag-section">
+        <div class="tag-section-label">✦ Tools or objects visible in the image</div>
+        <div class="tag-group">
+          <div class="tag" data-group="tools" data-value="needle and wire">needle and wire</div>
+          <div class="tag" data-group="tools" data-value="computer hardware">computer hardware</div>
+          <div class="tag" data-group="tools" data-value="paper / printouts">paper / printouts</div>
+          <div class="tag" data-group="tools" data-value="circuit board">circuit board</div>
+          <div class="tag" data-group="tools" data-value="magnetic cores">magnetic cores</div>
+          <div class="tag" data-group="tools" data-value="memory module">memory module</div>
+          <div class="tag" data-group="tools" data-value="keyboard / terminal">keyboard / terminal</div>
+          <div class="tag" data-group="tools" data-value="no tools visible">no tools visible</div>
+        </div>
+      </div>
+
+      <div class="tag-section">
+        <div class="tag-section-label">✦ Your own label (optional — describe what you see)</div>
+        <textarea id="freeText" class="free-input" rows="2" placeholder="Add your own description in a few words…"></textarea>
+      </div>
+
+
+      <!-- VALUE QUESTIONS -->
+      <div class="value-section">
+        <div class="value-section-title">
+          Value this work ✦
+          <span>Based on what you see in this image — not what you already know.</span>
+        </div>
+
+        <!-- Wage -->
+        <div class="value-row">
+          <div class="value-label">✦ Fair hourly wage for this work (in today's dollars)</div>
+          <div class="wage-row">
+            <div class="wage-symbol">$</div>
+            <input id="wageInput" class="wage-input" type="number" min="0" step="0.50" placeholder="0.00" inputmode="decimal"/>
+            <div class="wage-unit">per hour</div>
+          </div>
+        </div>
+
+        <!-- Importance -->
+        <div class="value-row">
+          <div class="value-label">
+            ✦ How important was this work to the mission?
+            <span class="val-readout" id="importanceReadout">5 / 10</span>
+          </div>
+          <input type="range" class="val-slider" id="importanceSlider" min="1" max="10" value="5" step="1"/>
+          <div class="slider-ends"><span>Not important</span><span>Mission-critical</span></div>
+        </div>
+
+        <!-- Recognition -->
+        <div class="value-row">
+          <div class="value-label">
+            ✦ How much credit did this work receive historically?
+            <span class="val-readout" id="recognitionReadout">5 / 10</span>
+          </div>
+          <input type="range" class="val-slider" id="recognitionSlider" min="1" max="10" value="5" step="1"/>
+          <div class="slider-ends"><span>None at all</span><span>Fully credited</span></div>
+        </div>
+      </div>
+
+      <div class="submit-row">
+        <div class="selection-summary" id="selectionSummary">No tags selected yet</div>
+        <button id="submitBtn" class="btn primary" disabled>Submit annotation ✦</button>
+      </div>
+    </div>
+  </section>
+
+  <div id="completionSlot"></div>
+</main>
+
+<script>
+/* ════════════════════════════════════════════
+   IMAGE CATALOG — real archival images
+   All URLs are from Wikimedia Commons (public domain / CC)
+   or NASA public domain archives.
+
+   Source pages for each image are linked directly
+   in the reveal overlay so participants can verify.
+   ════════════════════════════════════════════ */
+const IMAGE_CATALOG = [
+  {
+    id: "hamilton_code_stack",
+    name: "Margaret Hamilton with Apollo Guidance Computer software listings, MIT, 1969",
+    url: "https://upload.wikimedia.org/wikipedia/commons/d/db/Margaret_Hamilton_-_restoration.jpg",
+    source: "Draper Laboratory / Wikimedia Commons",
+    sourceUrl: "https://commons.wikimedia.org/wiki/File:Margaret_Hamilton_-_restoration.jpg",
+    category: "lol",
+    truth: "This is <strong>Margaret Hamilton</strong>, standing next to the printed source code for the Apollo Guidance Computer — software she led a team to write at MIT. She coined the phrase <em>\"software engineering\"</em> for this work. At the time, software was classified as clerical, not engineering. She is 32 years old in this photo. The stack of listings is as tall as she is."
+  },
+  {
+    id: "rope_memory_ferrite",
+    name: "Apollo Guidance Computer ferrite core rope memory, close-up detail",
+    url: "https://upload.wikimedia.org/wikipedia/commons/1/13/Apollo_guidance_computer_ferrit_core_memory.jpg",
+    source: "Wikimedia Commons (CC-BY-SA)",
+    sourceUrl: "https://commons.wikimedia.org/wiki/File:Apollo_guidance_computer_ferrit_core_memory.jpg",
+    category: "lol",
+    truth: "The finished product of the LOL teams' hand labor: a core rope memory module. <strong>36,864 words of read-only memory, hand-woven bit by bit.</strong> Once woven, it could never be changed — every error was permanent. It stored the software that navigated Apollo 11 to the Moon. One module took 8 weeks to make and cost $15,000. The women who made it are unmentioned in the 1975 NASA Apollo summary."
+  },
+  {
+    id: "agc_full_nasm",
+    name: "Apollo Guidance Computer (AGC), Smithsonian National Air and Space Museum",
+    url: "https://upload.wikimedia.org/wikipedia/commons/e/ef/Apollo_Guidance_Computer_%28NASM%29.JPG",
+    source: "Smithsonian NASM / Wikimedia Commons",
+    sourceUrl: "https://commons.wikimedia.org/wiki/File:Apollo_Guidance_Computer_(NASM).JPG",
+    category: "industrial",
+    truth: "The Apollo Guidance Computer — the hardware that the LOL teams' rope memory plugged into. Extensively documented, celebrated, and museum-preserved. The <strong>engineers who designed the hardware</strong> are named in press releases and history books. The women who wove the read-only memory inside it are not mentioned in the official 1975 NASA mission summary."
+  },
+  {
+    id: "agc_logic_module",
+    name: "Apollo Guidance Computer logic module (integrated circuits), c.1965",
+    url: "https://upload.wikimedia.org/wikipedia/commons/6/6e/Apollo_Guidance_Computer_Logic_Module_%285900036757%29.jpg",
+    source: "NASA / Wikimedia Commons",
+    sourceUrl: "https://commons.wikimedia.org/wiki/File:Apollo_Guidance_Computer_Logic_Module_(5900036757).jpg",
+    category: "industrial",
+    truth: "The AGC's integrated circuit logic modules — designed by engineers at MIT and Raytheon. Each was meticulously documented and patented. The <strong>Navajo women</strong> who assembled many of these ICs at Fairchild Semiconductor were simultaneously described in company materials as performing work requiring no technical skill — \"tender loving care,\" in the words of a Raytheon hardware manager."
+  },
+  {
+    id: "rope_core_board",
+    name: "Core rope memory board — close-up of wire-through-core encoding",
+    url: "https://upload.wikimedia.org/wikipedia/commons/8/8b/16Kb_Rope_Core_Memory_Board_from_Wagner_WAC-40.jpg",
+    source: "Wikimedia Commons (CC-BY-SA)",
+    sourceUrl: "https://commons.wikimedia.org/wiki/File:16Kb_Rope_Core_Memory_Board_from_Wagner_WAC-40.jpg",
+    category: "lol",
+    truth: "Wire woven through ferrite cores in a dense, precise pattern — each pass encoding one binary digit. The cores are smaller than a housefly's wing. <strong>Every bit was threaded by a human hand</strong>, by women hired from New England textile mills and the Waltham Watch Company. Raytheon classified this as manufacturing labor. It was paid as manufacturing labor. It sent a spacecraft to the Moon."
+  },
+  {
+    id: "agc_with_dsky",
+    name: "Apollo Guidance Computer with DSKY (Display/Keyboard interface), as flown",
+    url: "https://upload.wikimedia.org/wikipedia/commons/5/5a/ApolloGuidanceComputerwithDSKY.agr.jpg",
+    source: "Wikimedia Commons (CC-BY-SA)",
+    sourceUrl: "https://commons.wikimedia.org/wiki/File:ApolloGuidanceComputerwithDSKY.agr.jpg",
+    category: "industrial",
+    truth: "The DSKY — the interface astronauts used to interact with the AGC. When alarm codes 1202 and 1201 fired during Apollo 11's lunar descent, <strong>Hamilton's priority interrupt software</strong> — stored in rope memory woven by the LOL teams — automatically rerouted tasks and continued the landing. The hardware got the Smithsonian exhibit. Hamilton received the Presidential Medal of Freedom 47 years later."
+  },
+  {
+    id: "magnetic_core_closeup",
+    name: "Magnetic core memory — individual ferrite rings, 1960s computing",
+    url: "https://upload.wikimedia.org/wikipedia/commons/6/60/Magnetic-core_memory.jpg",
+    source: "Wikimedia Commons (CC-BY-SA)",
+    sourceUrl: "https://commons.wikimedia.org/wiki/File:Magnetic-core_memory.jpg",
+    category: "lol",
+    truth: "Individual ferrite cores — the tiny rings the LOL teams threaded wire through, one at a time. <strong>\"Every bit had to be sewn with a needle and a thread-like wire through these little magnetic cores\"</strong> — David Mindell, author of <em>Digital Apollo</em>. This work was described in 1960s engineering documents as \"tedious\" and requiring \"no thinking.\" Researchers who recreated it in 2018 found it demanded deep focus and expert fine motor skill."
+  },
+  {
+    id: "agc_computer_history_museum",
+    name: "Apollo Guidance Computer and software collection, Computer History Museum, 2007",
+    url: "https://upload.wikimedia.org/wikipedia/commons/e/e4/Apollo_Guidance_Computer_%28c.1965%29_%26_Apollo_Guidance_Computer_Software_%28c.1961-1971%29_by_MIT_%26_Raytheon_-_Computer_History_Museum_%282007-11-10_23.04.42_by_Carlo_Nardone%29.jpg",
+    source: "Carlo Nardone / Wikimedia Commons (CC-BY-SA)",
+    sourceUrl: "https://commons.wikimedia.org/wiki/File:Apollo_Guidance_Computer_(c.1965)_%26_Apollo_Guidance_Computer_Software_(c.1961-1971)_by_MIT_%26_Raytheon_-_Computer_History_Museum_(2007-11-10_23.04.42_by_Carlo_Nardone).jpg",
+    category: "industrial",
+    truth: "The AGC and its software collection as displayed at the Computer History Museum in 2007. Museum exhibits about computing history overwhelmingly feature hardware and the men who designed it. The <strong>Making Core Memory project (2018)</strong> by Rosner, Shorey, Craft, and Remick was among the first scholarly attempts to document and restore the contributions of the women who assembled this hardware — 50 years later."
+  }
+];
+</script>
+
+<script>
+(function(){
+  const wrap=document.getElementById('sparkles');
+  const chars=['✦','✧','·','˚','◦','⌬','∿'];
+  for(let i=0;i<28;i++){
+    const s=document.createElement('span');s.className='sp';
+    s.textContent=chars[Math.floor(Math.random()*chars.length)];
+    s.style.left=Math.random()*100+'vw';s.style.bottom=Math.random()*-60+'px';
+    s.style.fontSize=(9+Math.random()*10)+'px';
+    s.style.color=`hsl(${310+Math.random()*50},75%,${62+Math.random()*25}%)`;
+    s.style.animationDuration=(6+Math.random()*13)+'s';
+    s.style.animationDelay=(Math.random()*12)+'s';
+    wrap.appendChild(s);
+  }
+})();
+
+function tick(){const n=new Date(),p=v=>String(v).padStart(2,'0');document.getElementById('sysTime').textContent=`${p(n.getHours())}:${p(n.getMinutes())}:${p(n.getSeconds())}`;}
+setInterval(tick,1000);tick();
+
+const SESSION_ID='sess03a-'+Math.random().toString(36).slice(2,10);
+let current=0;
+const annotations={};
+
+/* tag interaction */
+document.querySelectorAll('.tag').forEach(tag=>{
+  tag.addEventListener('click',()=>{tag.classList.toggle('selected');updateSummary();});
+});
+function getSelected(){return [...document.querySelectorAll('.tag.selected')].map(t=>t.dataset.value);}
+function updateSummary(){
+  const n=getSelected().length+(document.getElementById('freeText').value.trim()?1:0);
+  const wage=document.getElementById('wageInput').value.trim();
+  const hasWage=wage!==''&&!isNaN(parseFloat(wage));
+  if(n===0) document.getElementById('selectionSummary').textContent='Select tags + enter a wage to submit';
+  else document.getElementById('selectionSummary').textContent=`${n} tag${n===1?'':'s'} selected`;
+  document.getElementById('submitBtn').disabled=(n===0||!hasWage);
+}
+document.getElementById('freeText').addEventListener('input',updateSummary);
+document.getElementById('wageInput').addEventListener('input',updateSummary);
+
+// Slider readouts
+document.getElementById('importanceSlider').addEventListener('input',function(){
+  document.getElementById('importanceReadout').textContent=this.value+' / 10';
+});
+document.getElementById('recognitionSlider').addEventListener('input',function(){
+  document.getElementById('recognitionReadout').textContent=this.value+' / 10';
+});
+
+/* load image */
+function loadImage(idx){
+  if(idx>=IMAGE_CATALOG.length){showCompletion();return;}
+  const img=IMAGE_CATALOG[idx];
+  const el=document.getElementById('archiveImg');
+  const loading=document.getElementById('imgLoading');
+  el.style.display='none';
+  loading.style.display='flex';
+  loading.textContent='✦ Loading archive image…';
+  el.onload=()=>{loading.style.display='none';el.style.display='block';};
+  el.onerror=()=>{loading.textContent='⚠ Image could not load — see source link ↙';el.style.display='none';};
+  el.src=img.url;
+  el.alt='Archival photograph';
+  document.getElementById('sourceBadge').textContent='';
+  document.getElementById('sourceLink').href='#';
+  document.getElementById('sourceLink').style.display='none';
+  updateCatChip(img);
+  const pct=IMAGE_CATALOG.length>1?(idx/(IMAGE_CATALOG.length-1))*100:0;
+  document.getElementById('progressBar').style.width=pct+'%';
+  document.getElementById('progressText').textContent=`Image ${idx+1} of ${IMAGE_CATALOG.length}  ✦  Tag to continue`;
+  document.querySelectorAll('.tag').forEach(t=>t.classList.remove('selected'));
+  document.getElementById('freeText').value='';
+  document.getElementById('wageInput').value='';
+  document.getElementById('importanceSlider').value=5;
+  document.getElementById('recognitionSlider').value=5;
+  document.getElementById('importanceReadout').textContent='5 / 10';
+  document.getElementById('recognitionReadout').textContent='5 / 10';
+  updateSummary();
+}
+
+function updateCatChip(img){
+  const chip=document.getElementById('catChip');
+  const idx=IMAGE_CATALOG.indexOf(img)+1;
+  chip.innerHTML=`<div class="dot"></div>Image ${idx} of ${IMAGE_CATALOG.length}`;
+  chip.style.color='rgba(255,180,220,.6)';
+}
+
+/* submit */
+document.getElementById('submitBtn').addEventListener('click',()=>{
+  const tags=getSelected();
+  const free=document.getElementById('freeText').value.trim();
+  const wage=parseFloat(document.getElementById('wageInput').value)||null;
+  const importance=parseInt(document.getElementById('importanceSlider').value);
+  const recognition=parseInt(document.getElementById('recognitionSlider').value);
+  if(!tags.length)return;
+  const img=IMAGE_CATALOG[current];
+  annotations[current]={tags,free,wage,importance,recognition,category:img.category};
+  if(typeof window._writeAnnotation03==='function'){
+    window._writeAnnotation03({imageId:img.id,imageName:img.name,imageUrl:img.url,category:img.category,tags,freeText:free,wage,importance,recognition,sessionId:SESSION_ID});
+  }
+  showReveal(current,tags,free,wage,importance,recognition,img);
+});
+
+/* reveal */
+function showReveal(idx,tags,free,wage,importance,recognition,img){
+  const overlay=document.getElementById('revealOverlay');
+  document.getElementById('revealItemName').textContent=img.name;
+  const row=document.getElementById('revealTagsRow');
+  row.innerHTML='';
+  [...tags,...(free?['"'+free+'"']:[])].forEach(t=>{const d=document.createElement('div');d.className='reveal-tag';d.textContent=t;row.appendChild(d);});
+  // Value summary cards
+  const existingCards=overlay.querySelector('.reveal-value-cards');
+  if(existingCards)existingCards.remove();
+  const cards=document.createElement('div');
+  cards.className='reveal-value-cards';
+  cards.style.cssText='display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin:4px 0;';
+  const cardData=[
+    {label:'Fair wage',val:wage!=null?'$'+wage.toFixed(2)+'/hr':'—'},
+    {label:'Importance',val:importance+' / 10'},
+    {label:'Credit received',val:recognition+' / 10'}
+  ];
+  cardData.forEach(c=>{
+    const el=document.createElement('div');
+    el.style.cssText='display:flex;flex-direction:column;align-items:center;gap:3px;padding:10px 16px;border-radius:12px;background:rgba(220,60,140,.1);border:1.5px solid rgba(220,60,140,.28);';
+    el.innerHTML=`<span style="font-family:'Nunito',sans-serif;font-weight:900;font-size:18px;background:linear-gradient(135deg,#ff2d6b,#c084fc);-webkit-background-clip:text;background-clip:text;color:transparent;">${c.val}</span><span style="font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,180,220,.5);">${c.label}</span>`;
+    cards.appendChild(el);
+  });
+  // Insert before truth paragraph
+  const truth=document.getElementById('revealTruth');
+  overlay.insertBefore(cards,truth);
+  document.getElementById('revealTruth').innerHTML=img.truth;
+  document.getElementById('sourceBadge').textContent=img.source;
+  document.getElementById('sourceLink').href=img.sourceUrl;
+  document.getElementById('sourceLink').style.display='';
+  document.getElementById('revealSource').innerHTML=`Source: <a href="${img.sourceUrl}" target="_blank" rel="noopener">${img.source}</a>`;
+  overlay.classList.add('show');
+}
+
+document.getElementById('revealNextBtn').addEventListener('click',()=>{
+  document.getElementById('revealOverlay').classList.remove('show');
+  document.getElementById('sourceLink').style.display='none';
+  document.getElementById('sourceBadge').textContent='';
+  current++;
+  loadImage(current);
+});
+
+/* completion */
+function showCompletion(){
+  document.getElementById('taskCard').style.opacity='.4';
+  document.getElementById('taskCard').style.pointerEvents='none';
+  const slot=document.getElementById('completionSlot');
+  if(document.getElementById('final-card03'))return;
+
+  const skillMap={'unskilled':1,'semi-skilled':2,'highly skilled':3,'expert / specialized':4};
+  const lolSkill=[],indSkill=[];
+  Object.values(annotations).forEach(a=>{
+    a.tags.forEach(t=>{
+      if(skillMap[t]){
+        if(a.category==='lol') lolSkill.push(skillMap[t]);
+        else indSkill.push(skillMap[t]);
+      }
+    });
+  });
+  const avg=arr=>arr.length?arr.reduce((a,b)=>a+b,0)/arr.length:null;
+  const skillLabels=['','unskilled','semi-skilled','highly skilled','expert / specialized'];
+  const la=avg(lolSkill), ia=avg(indSkill);
+
+  let patternNote='';
+  if(la&&ia){
+    const ll=skillLabels[Math.round(la)]||'', il=skillLabels[Math.round(ia)]||'';
+    if(la<ia) patternNote=`You rated the <strong>LOL / Hamilton work</strong> as <em>"${ll}"</em> and the <strong>industrial hardware</strong> as <em>"${il}"</em>. This matches the historical pattern exactly. In 1965, rope weaving was classified as manufacturing — not engineering — and paid accordingly. Your annotations show how that framing still operates today.`;
+    else if(la===ia) patternNote=`You rated both categories at the same skill level — <em>"${ll}"</em>. That is more equitable than the historical record. In 1965, the LOL teams' work was classified as manufacturing labor. The hardware engineers' work was classified as engineering.`;
+    else patternNote=`You rated the <strong>LOL / Hamilton work</strong> higher than the hardware work on skill — <em>"${ll}"</em> vs <em>"${il}"</em>. Your annotations push back against the historical framing that called rope weaving "tedious" and "no-brainer" work.`;
+  } else {
+    patternNote='Your annotations are recorded. CAREBOT-03 will build the pattern as more participants complete the task.';
+  }
+
+  const allTags=Object.values(annotations).flatMap(a=>a.tags);
+  const counts={};
+  allTags.forEach(t=>{counts[t]=(counts[t]||0)+1;});
+  const top=Object.entries(counts).sort((a,b)=>b[1]-a[1]).slice(0,4).map(([t])=>t).join(' · ');
+
+  const d=document.createElement('div');
+  d.id='final-card03';d.className='completion-card';
+  d.innerHTML=`
+    <div class="c-eyebrow">✦ CAREBOT-03 · Annotations Recorded</div>
+    <h2>Your labels are now training data. 🧵</h2>
+    <p>You annotated ${IMAGE_CATALOG.length} archival images from the Apollo rope memory archive. Your most-used tags: <strong>${top||'—'}</strong></p>
+    <div class="pattern-note">
+      ✦ <strong>What CAREBOT-03 sees in your data:</strong><br><br>
+      ${patternNote}<br><br>
+      The Raytheon press kit caption for a woman weaving rope memory read: <em>"Space age needleworker 'weaves' core rope memory for guidance computers used in Apollo missions."</em> She was never named. The <strong>LOL teams</strong> were never named in the 1975 NASA mission summary. <strong>Margaret Hamilton</strong> received public recognition 47 years after Apollo 11. Your annotations are part of the record that corrects that.
+    </div>
+    <a class="btn primary"
+       href="carebot03-bot.html"
+       target="_blank" rel="noopener"
+       style="margin:0 auto;text-decoration:none;display:inline-flex;">
+      Talk to CAREBOT-03 about what you found ✦
+    </a>`;
+  slot.appendChild(d);
+}
+
+loadImage(0);
+</script>
+</body>
+</html>
