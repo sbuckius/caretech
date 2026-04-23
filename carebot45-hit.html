@@ -1,0 +1,637 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
+<title>✦ CAREBOT-45 ✦ Media Headlines · Classification Task</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getFirestore, collection, addDoc, serverTimestamp }
+    from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+  const FIREBASE_CONFIG = {
+    apiKey:"AIzaSyCZFDU-WlSmHqjXTs1Ox0nf9xeJU_xbaX0",authDomain:"collaborativemashup.firebaseapp.com",
+    databaseURL:"https://collaborativemashup-default-rtdb.firebaseio.com",projectId:"collaborativemashup",
+    storageBucket:"collaborativemashup.firebasestorage.app",messagingSenderId:"562437984610",
+    appId:"1:562437984610:web:9f3711c26e097bc8ef9c3b",measurementId:"G-EY9FKD6RQ2"
+  };
+  const app=initializeApp(FIREBASE_CONFIG);
+  const db=getFirestore(app);
+  window._writeAnnotation45=async function(payload){
+    try{await addDoc(collection(db,"annotations45"),{...payload,timestamp:serverTimestamp()});
+    console.log("✦ annotation45 written",payload.headlineId);}
+    catch(err){console.warn("Firebase write failed:",err.message);}
+  };
+</script>
+
+<style>
+:root{
+  --rose:#e8458a;--hot:#ff2d6b;--berry:#9b1a5c;--maroon:#5c0030;
+  --cream:#fff0f5;--purple:#c084fc;--purple-dark:#7c3aed;
+  --bg:#0f0008;
+  --card-border:rgba(220,80,160,.2);--card-border-bright:rgba(255,80,160,.5);
+  --soft-glow:0 4px 30px rgba(220,60,140,.18),0 1px 0 rgba(220,60,140,.1) inset;
+  --pop-glow:0 6px 44px rgba(220,60,140,.35),0 0 80px rgba(180,30,100,.12);
+  --text-dim:rgba(255,180,220,.5);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html,body{min-height:100%;font-family:'Quicksand',sans-serif;font-weight:600;color:var(--cream);background:var(--bg);-webkit-font-smoothing:antialiased;overflow-x:hidden;}
+.bg{position:fixed;inset:0;z-index:0;pointer-events:none;background:radial-gradient(ellipse 65% 50% at 90% 5%,rgba(160,0,80,.3) 0%,transparent 58%),radial-gradient(ellipse 55% 60% at 10% 90%,rgba(90,0,45,.28) 0%,transparent 58%),linear-gradient(160deg,#1a0012,#14000e 50%,#0f0008);}
+.orb{position:fixed;border-radius:50%;pointer-events:none;z-index:0;filter:blur(62px);}
+.orb-1{width:430px;height:430px;background:var(--maroon);opacity:.3;top:-100px;right:-80px;animation:drift1 19s ease-in-out infinite;}
+.orb-2{width:360px;height:360px;background:#3d0025;opacity:.28;bottom:-75px;left:-65px;animation:drift2 23s ease-in-out infinite;}
+.orb-3{width:210px;height:210px;background:var(--purple-dark);opacity:.12;top:38%;left:60%;animation:drift3 15s ease-in-out infinite;}
+@keyframes drift1{0%,100%{transform:translate(0,0)}50%{transform:translate(-42px,30px)}}
+@keyframes drift2{0%,100%{transform:translate(0,0)}50%{transform:translate(34px,-22px)}}
+@keyframes drift3{0%,100%{transform:translate(0,0)}33%{transform:translate(-18px,14px)}66%{transform:translate(14px,-10px)}}
+.sparkles{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden;}
+.sp{position:absolute;opacity:0;animation:floatUp linear infinite;}
+@keyframes floatUp{0%{opacity:0;transform:translateY(0) scale(.6) rotate(0deg)}15%{opacity:.65}85%{opacity:.35}100%{opacity:0;transform:translateY(-120px) scale(1.1) rotate(180deg)}}
+@keyframes breathe{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.3;transform:scale(.65)}}
+
+.wrap{position:relative;z-index:2;max-width:780px;margin:0 auto;
+  padding:max(20px,env(safe-area-inset-top)) clamp(12px,3vmin,24px) calc(60px + env(safe-area-inset-bottom)) clamp(12px,3vmin,24px);
+  display:grid;gap:16px;}
+
+.mascot-bar{display:flex;align-items:center;justify-content:space-between;}
+.mascot{display:flex;align-items:center;gap:10px;}
+.bot-face{width:44px;height:44px;border-radius:14px;background:linear-gradient(135deg,rgba(220,60,140,.22),rgba(120,0,60,.35));border:1.5px solid var(--card-border-bright);box-shadow:var(--soft-glow);display:flex;align-items:center;justify-content:center;font-size:22px;animation:wobble 4s ease-in-out infinite;flex-shrink:0;}
+@keyframes wobble{0%,100%{transform:rotate(-2deg) scale(1)}25%{transform:rotate(1deg) scale(1.04)}50%{transform:rotate(-1deg) scale(1)}75%{transform:rotate(2deg) scale(1.03)}}
+.bot-name{font-family:'Nunito',sans-serif;font-weight:900;font-size:17px;letter-spacing:.04em;background:linear-gradient(90deg,var(--cream),var(--hot) 50%,var(--purple));-webkit-background-clip:text;background-clip:text;color:transparent;}
+.bot-sub{font-size:10px;letter-spacing:.15em;text-transform:uppercase;color:var(--text-dim);margin-top:1px;}
+.time-badge{display:flex;align-items:center;gap:6px;padding:6px 12px;border-radius:999px;background:rgba(255,255,255,.04);border:1px solid var(--card-border);font-size:11px;color:var(--text-dim);}
+.time-pip{width:5px;height:5px;border-radius:50%;background:var(--hot);box-shadow:0 0 6px var(--hot);animation:breathe 2s ease-in-out infinite;}
+
+.agenda-banner{background:rgba(14,0,8,.88);border:1.5px solid var(--card-border-bright);border-radius:20px;box-shadow:var(--soft-glow);padding:clamp(16px,2.5vh,24px) clamp(18px,3vw,28px);position:relative;overflow:hidden;display:grid;gap:12px;}
+.agenda-banner::before{content:'';position:absolute;top:0;left:10%;right:10%;height:1.5px;background:linear-gradient(90deg,transparent,var(--rose) 35%,var(--hot) 50%,var(--rose) 65%,transparent);box-shadow:0 0 12px var(--rose);border-radius:999px;}
+.agenda-eyebrow{font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--hot);}
+.agenda-title{font-family:'Nunito',sans-serif;font-weight:900;font-size:clamp(16px,2.5vw,22px);line-height:1.3;background:linear-gradient(120deg,var(--cream) 20%,var(--hot) 55%,var(--purple) 85%);-webkit-background-clip:text;background-clip:text;color:transparent;}
+.agenda-body{font-size:clamp(12px,1.5vw,14px);color:rgba(255,210,228,.85);line-height:1.75;}
+.agenda-body strong{color:var(--hot);}
+.agenda-chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:4px;}
+.agenda-chip{display:inline-flex;align-items:center;gap:5px;padding:4px 11px;border-radius:999px;background:rgba(220,60,140,.08);border:1px solid rgba(220,60,140,.22);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--text-dim);}
+.agenda-chip .dot{width:4px;height:4px;border-radius:50%;background:var(--hot);}
+
+.app{background:rgba(255,255,255,.042);border:1.5px solid var(--card-border);border-radius:24px;box-shadow:var(--soft-glow);backdrop-filter:blur(20px) saturate(1.5);overflow:hidden;position:relative;}
+.app::before{content:'';position:absolute;top:0;left:16px;right:16px;height:1px;background:linear-gradient(90deg,transparent,var(--rose) 30%,var(--hot) 50%,var(--rose) 70%,transparent);box-shadow:0 0 10px var(--rose);border-radius:999px;}
+
+.task-header{padding:18px 22px 14px;border-bottom:1px solid rgba(220,60,140,.1);display:grid;gap:10px;}
+.task-title{font-family:'Nunito',sans-serif;font-weight:800;font-size:clamp(14px,2vw,17px);line-height:1.5;color:var(--cream);}
+.task-meta{display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+.meta-chip{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:999px;background:rgba(220,60,140,.08);border:1px solid rgba(220,60,140,.18);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--text-dim);}
+.meta-chip .dot{width:4px;height:4px;border-radius:50%;background:var(--rose);}
+.progress-row{display:flex;align-items:center;gap:10px;}
+.progress-track{flex:1;height:5px;border-radius:999px;background:rgba(220,60,140,.1);border:1px solid rgba(220,60,140,.15);overflow:hidden;}
+.progress-fill{height:100%;width:0%;border-radius:999px;background:linear-gradient(90deg,var(--maroon),var(--berry),var(--hot),var(--rose));box-shadow:0 0 8px var(--hot);transition:width .5s cubic-bezier(.34,1.56,.64,1);}
+#progressText{font-size:11px;color:var(--text-dim);white-space:nowrap;}
+
+.headline-frame{padding:28px 26px 24px;background:rgba(8,0,4,.7);border-bottom:1px solid rgba(220,60,140,.1);position:relative;}
+.headline-counter{font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--text-dim);margin-bottom:12px;}
+.headline-text{font-family:'Nunito',sans-serif;font-weight:900;font-size:clamp(17px,2.8vw,26px);line-height:1.35;color:var(--cream);margin-bottom:12px;}
+.headline-deck{font-size:clamp(12px,1.5vw,14px);color:rgba(255,200,228,.65);line-height:1.7;font-style:italic;}
+.headline-outlet-row{display:flex;align-items:center;gap:8px;margin-top:14px;}
+.headline-outlet{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,180,220,.35);}
+.headline-year{font-size:10px;letter-spacing:.1em;color:rgba(255,180,220,.25);}
+
+.tag-panel{padding:20px 22px;display:grid;gap:16px;}
+.tag-instruction{font-family:'Nunito',sans-serif;font-weight:800;font-size:clamp(13px,2vw,15px);color:var(--rose);line-height:1.5;}
+.tag-instruction span{font-size:11px;font-weight:600;font-family:'Quicksand',sans-serif;color:var(--text-dim);display:block;margin-top:3px;}
+.tag-section{display:grid;gap:8px;}
+.tag-section-label{font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--text-dim);}
+.tag-group{display:flex;flex-wrap:wrap;gap:7px;}
+.tag{padding:7px 14px;border-radius:999px;cursor:pointer;background:rgba(220,60,140,.07);border:1.5px solid rgba(220,60,140,.18);font-size:clamp(11px,1.2vw,13px);color:rgba(255,200,228,.7);transition:all .18s cubic-bezier(.34,1.56,.64,1);user-select:none;}
+.tag:hover{background:rgba(220,60,140,.15);border-color:var(--card-border-bright);color:var(--cream);}
+.tag.selected{background:linear-gradient(135deg,rgba(220,60,140,.28),rgba(120,0,60,.28));border-color:var(--hot);color:var(--cream);box-shadow:0 0 10px rgba(220,60,140,.25);}
+.tag.selected::before{content:'✦ ';}
+
+.value-section{display:grid;gap:14px;padding:16px 0 4px;border-top:1px solid rgba(220,60,140,.1);margin-top:4px;}
+.value-section-title{font-family:'Nunito',sans-serif;font-weight:800;font-size:clamp(13px,2vw,15px);color:var(--rose);}
+.value-section-title span{font-size:11px;font-weight:600;font-family:'Quicksand',sans-serif;color:var(--text-dim);display:block;margin-top:2px;}
+.value-row{display:grid;gap:8px;}
+.value-label{font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--text-dim);display:flex;align-items:center;justify-content:space-between;}
+.val-readout{font-family:'Nunito',sans-serif;font-weight:900;font-size:13px;color:var(--cream);letter-spacing:0;text-transform:none;}
+input[type=range].val-slider{width:100%;accent-color:var(--hot);height:5px;cursor:pointer;border-radius:999px;outline:none;border:none;background:rgba(220,60,140,.15);}
+.slider-ends{display:flex;justify-content:space-between;font-size:10px;color:var(--text-dim);margin-top:2px;}
+
+.free-input{width:100%;background:rgba(220,60,140,.06);border:1.5px solid rgba(220,60,140,.2);border-radius:12px;color:var(--cream);font-family:'Quicksand',sans-serif;font-weight:600;font-size:13px;padding:10px 14px;outline:none;transition:border-color .2s,box-shadow .2s;resize:none;}
+.free-input:focus{border-color:var(--rose);box-shadow:0 0 14px rgba(220,60,140,.2);}
+.free-input::placeholder{color:rgba(220,60,140,.28);}
+
+.submit-row{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding-top:4px;}
+.selection-summary{font-size:11px;color:var(--text-dim);flex:1;}
+.btn{appearance:none;font-family:'Nunito',sans-serif;font-weight:900;font-size:13px;letter-spacing:.06em;color:var(--cream);cursor:pointer;display:inline-flex;align-items:center;gap:6px;padding:11px 22px;border-radius:14px;min-height:42px;border:1.5px solid var(--card-border);background:rgba(220,60,140,.1);transition:all .2s cubic-bezier(.34,1.56,.64,1);}
+.btn:hover:not([disabled]){transform:translateY(-2px) scale(1.03);box-shadow:0 8px 24px rgba(220,60,140,.3);border-color:var(--card-border-bright);}
+.btn.primary{background:linear-gradient(135deg,rgba(255,45,107,.55),rgba(120,0,60,.65));border-color:var(--hot);box-shadow:0 4px 20px rgba(220,60,140,.28);}
+.btn.primary:hover:not([disabled]){background:linear-gradient(135deg,rgba(255,45,107,.72),rgba(140,0,70,.72));}
+.btn[disabled]{opacity:.28;cursor:not-allowed;transform:none!important;box-shadow:none!important;}
+
+.reveal-overlay{position:absolute;inset:0;z-index:10;background:rgba(8,0,4,.97);display:none;flex-direction:column;align-items:center;justify-content:flex-start;gap:12px;padding:24px 26px;text-align:left;animation:fadeIn .4s ease;overflow-y:auto;}
+.reveal-overlay.show{display:flex;}
+@keyframes fadeIn{from{opacity:0;transform:scale(.97)}to{opacity:1;transform:scale(1)}}
+.reveal-headline-back{font-family:'Nunito',sans-serif;font-weight:900;font-size:clamp(14px,2.2vw,19px);color:var(--cream);line-height:1.35;padding-bottom:12px;border-bottom:1px solid rgba(220,60,140,.15);width:100%;}
+.reveal-your-tags{display:flex;flex-wrap:wrap;gap:6px;padding:10px 0;}
+.reveal-tag{padding:4px 11px;border-radius:999px;background:rgba(220,60,140,.14);border:1px solid rgba(220,60,140,.32);font-size:11px;color:rgba(255,200,228,.85);}
+.reveal-value-cards{display:flex;gap:10px;flex-wrap:wrap;padding:6px 0 10px;}
+.reveal-vcard{display:flex;flex-direction:column;align-items:center;gap:3px;padding:8px 14px;border-radius:12px;background:rgba(220,60,140,.1);border:1.5px solid rgba(220,60,140,.28);flex:1;min-width:90px;}
+.reveal-vcard-num{font-family:'Nunito',sans-serif;font-weight:900;font-size:17px;background:linear-gradient(135deg,var(--hot),var(--purple));-webkit-background-clip:text;background-clip:text;color:transparent;}
+.reveal-vcard-label{font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--text-dim);text-align:center;}
+.reveal-context{font-size:clamp(12px,1.4vw,13px);color:rgba(255,200,228,.78);line-height:1.78;padding:10px 0;}
+.reveal-context strong{color:var(--hot);}
+.reveal-context em{color:var(--purple);}
+.reveal-source-link{font-size:11px;color:rgba(220,60,140,.6);text-decoration:none;border-bottom:1px solid rgba(220,60,140,.25);padding-bottom:1px;}
+.reveal-source-link:hover{color:var(--rose);}
+.reveal-next-btn{font-family:'Nunito',sans-serif;font-weight:900;font-size:clamp(13px,1.8vw,15px);letter-spacing:.06em;color:var(--cream);cursor:pointer;border:none;padding:11px 28px;border-radius:14px;background:linear-gradient(135deg,var(--hot) 0%,var(--rose) 55%,var(--berry) 100%);box-shadow:0 6px 28px rgba(220,60,140,.4);transition:all .22s cubic-bezier(.34,1.56,.64,1);animation:ctaPulse 3s ease-in-out infinite;margin-top:8px;align-self:flex-start;flex-shrink:0;}
+@keyframes ctaPulse{0%,100%{box-shadow:0 6px 28px rgba(220,60,140,.4)}50%{box-shadow:0 10px 44px rgba(220,60,140,.65)}}
+.reveal-next-btn:hover{transform:translateY(-3px) scale(1.04);animation:none;}
+
+.completion-card{background:rgba(12,0,6,.9);border:1.5px solid var(--card-border-bright);box-shadow:var(--pop-glow);border-radius:24px;padding:38px 28px;text-align:center;position:relative;overflow:hidden;}
+.completion-card::before{content:'';position:absolute;top:0;left:12%;right:12%;height:1.5px;background:linear-gradient(90deg,transparent,var(--rose) 35%,var(--hot) 50%,var(--rose) 65%,transparent);box-shadow:0 0 10px var(--rose);border-radius:999px;}
+.c-eyebrow{font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--text-dim);margin-bottom:10px;}
+.completion-card h2{font-family:'Nunito',sans-serif;font-weight:900;font-size:clamp(22px,4vw,32px);background:linear-gradient(100deg,var(--cream) 20%,var(--hot) 55%,var(--purple));-webkit-background-clip:text;background-clip:text;color:transparent;margin-bottom:14px;}
+.completion-card p{font-size:clamp(12px,1.8vw,14px);color:rgba(255,200,220,.65);line-height:1.8;margin-bottom:16px;max-width:520px;margin-left:auto;margin-right:auto;}
+.pattern-note{background:rgba(220,60,140,.06);border:1.5px dashed rgba(220,60,140,.22);border-radius:14px;padding:18px 22px;font-size:clamp(12px,1.5vw,14px);color:rgba(255,200,224,.82);line-height:1.75;margin:16px auto;text-align:left;max-width:540px;}
+.pattern-note strong{color:var(--hot);}
+.pattern-note em{color:var(--purple);}
+</style>
+</head>
+<body>
+<div class="bg"></div>
+<div class="orb orb-1"></div><div class="orb orb-2"></div><div class="orb orb-3"></div>
+<div class="sparkles" id="sparkles"></div>
+
+<main class="wrap">
+  <div class="mascot-bar">
+    <div class="mascot">
+      <div class="bot-face">📰</div>
+      <div>
+        <div class="bot-name">CAREBOT-45 ✦</div>
+        <div class="bot-sub">Media Archive · Headline Classification · Online</div>
+      </div>
+    </div>
+    <div class="time-badge"><div class="time-pip"></div><span id="sysTime">--:--:--</span></div>
+  </div>
+
+  <div class="agenda-banner">
+    <div class="agenda-eyebrow">✦ CAREBOT-45 · Classification Task</div>
+    <div class="agenda-title">Help me classify real media headlines about a major technology story.</div>
+    <div class="agenda-body">
+      I am collecting data on how media covers a particular group of people in relation to a new technology — whether the coverage frames them as <strong>at risk</strong>, <strong>left behind</strong>, <strong>empowered</strong>, or <strong>to blame</strong>.<br><br>
+      Read each headline carefully. <strong>Tag what you see — not what you expect.</strong> Your classifications are the data.
+    </div>
+    <div class="agenda-chips">
+      <div class="agenda-chip"><div class="dot"></div>Real published headlines</div>
+      <div class="agenda-chip"><div class="dot"></div>2023 – 2026</div>
+      <div class="agenda-chip"><div class="dot"></div>Your tags = training data</div>
+    </div>
+  </div>
+
+  <section class="app" id="taskCard">
+    <header class="task-header">
+      <div class="task-title">✦ Read this headline and classify it — select all tags that apply</div>
+      <div class="task-meta">
+        <div class="meta-chip"><div class="dot"></div>Headline classification</div>
+        <div class="meta-chip"><div class="dot"></div>Active</div>
+        <div class="meta-chip" id="catChip"><div class="dot"></div>Loading…</div>
+      </div>
+      <div class="progress-row">
+        <span id="progressText">Loading headlines…</span>
+        <div class="progress-track"><div class="progress-fill" id="progressBar"></div></div>
+      </div>
+    </header>
+
+    <div class="headline-frame" id="headlineFrame">
+      <div class="headline-counter" id="headlineCounter">Headline 1 of 12</div>
+      <div class="headline-text" id="headlineText">Loading…</div>
+      <div class="headline-deck" id="headlineDeck"></div>
+      <div class="headline-outlet-row">
+        <div class="headline-outlet" id="headlineOutlet"></div>
+        <div class="headline-year" id="headlineYear"></div>
+      </div>
+
+      <div class="reveal-overlay" id="revealOverlay">
+        <div class="reveal-headline-back" id="revealHeadline"></div>
+        <div class="reveal-your-tags" id="revealTagsRow"></div>
+        <div class="reveal-value-cards" id="revealValueCards"></div>
+        <div class="reveal-context" id="revealContext"></div>
+        <a class="reveal-source-link" id="revealSourceLink" href="#" target="_blank" rel="noopener">↗ Read the full article</a>
+        <button class="reveal-next-btn" id="revealNextBtn">Next headline ✦</button>
+      </div>
+    </div>
+
+    <div class="tag-panel">
+      <div class="tag-instruction">
+        Classify this headline ✦
+        <span>Select all that apply. Go with your first reading.</span>
+      </div>
+
+      <div class="tag-section">
+        <div class="tag-section-label">✦ How does this headline frame the subject?</div>
+        <div class="tag-group">
+          <div class="tag" data-group="frame" data-value="at risk / vulnerable">at risk / vulnerable</div>
+          <div class="tag" data-group="frame" data-value="left behind / excluded">left behind / excluded</div>
+          <div class="tag" data-group="frame" data-value="empowered / opportunity">empowered / opportunity</div>
+          <div class="tag" data-group="frame" data-value="to blame / responsible">to blame / responsible</div>
+          <div class="tag" data-group="frame" data-value="warned / urged to act">warned / urged to act</div>
+          <div class="tag" data-group="frame" data-value="victimized / harmed">victimized / harmed</div>
+          <div class="tag" data-group="frame" data-value="celebrated / successful">celebrated / successful</div>
+          <div class="tag" data-group="frame" data-value="absent / invisible">absent / invisible</div>
+        </div>
+      </div>
+
+      <div class="tag-section">
+        <div class="tag-section-label">✦ Tone of the headline</div>
+        <div class="tag-group">
+          <div class="tag" data-group="tone" data-value="alarming">alarming</div>
+          <div class="tag" data-group="tone" data-value="optimistic">optimistic</div>
+          <div class="tag" data-group="tone" data-value="neutral / informational">neutral / informational</div>
+          <div class="tag" data-group="tone" data-value="condescending">condescending</div>
+          <div class="tag" data-group="tone" data-value="urgent">urgent</div>
+          <div class="tag" data-group="tone" data-value="dismissive">dismissive</div>
+        </div>
+      </div>
+
+      <div class="tag-section">
+        <div class="tag-section-label">✦ Who holds power in this headline?</div>
+        <div class="tag-group">
+          <div class="tag" data-group="power" data-value="the subject acts">the subject acts</div>
+          <div class="tag" data-group="power" data-value="the subject is acted upon">the subject is acted upon</div>
+          <div class="tag" data-group="power" data-value="institutions / companies act">institutions / companies act</div>
+          <div class="tag" data-group="power" data-value="unclear">unclear</div>
+        </div>
+      </div>
+
+      <div class="value-section">
+        <div class="value-section-title">
+          Rate this headline ✦
+          <span>Based only on what you just read.</span>
+        </div>
+
+        <div class="value-row">
+          <div class="value-label">
+            ✦ How concerning is this headline?
+            <span class="val-readout" id="concernReadout">5 / 10</span>
+          </div>
+          <input type="range" class="val-slider" id="concernSlider" min="1" max="10" value="5" step="1"/>
+          <div class="slider-ends"><span>Not concerning</span><span>Deeply alarming</span></div>
+        </div>
+
+        <div class="value-row">
+          <div class="value-label">
+            ✦ How fairly does this headline represent its subject?
+            <span class="val-readout" id="fairnessReadout">5 / 10</span>
+          </div>
+          <input type="range" class="val-slider" id="fairnessSlider" min="1" max="10" value="5" step="1"/>
+          <div class="slider-ends"><span>Very unfairly</span><span>Very fairly</span></div>
+        </div>
+
+        <div class="value-row">
+          <div class="value-label">
+            ✦ How much responsibility does this headline place on the subject?
+            <span class="val-readout" id="responsibilityReadout">5 / 10</span>
+          </div>
+          <input type="range" class="val-slider" id="responsibilitySlider" min="1" max="10" value="5" step="1"/>
+          <div class="slider-ends"><span>None — external forces</span><span>Full — their own choice</span></div>
+        </div>
+
+        <div class="tag-section">
+          <div class="tag-section-label">✦ Your own reading (optional)</div>
+          <textarea id="freeText" class="free-input" rows="2" placeholder="What does this headline make you think or feel?"></textarea>
+        </div>
+      </div>
+
+      <div class="submit-row">
+        <div class="selection-summary" id="selectionSummary">Select tags to submit</div>
+        <button id="submitBtn" class="btn primary" disabled>Submit ✦</button>
+      </div>
+    </div>
+  </section>
+
+  <div id="completionSlot"></div>
+</main>
+
+<script>
+const HEADLINE_CATALOG = [
+  {
+    id: "hbs_avoiding",
+    headline: "Women Are Avoiding AI. Will Their Careers Suffer?",
+    deck: "Women are adopting generative AI at a significantly lower rate than men, in many cases because women question whether it's ethical to use the tools.",
+    outlet: "Harvard Business School Working Knowledge",
+    year: "2025",
+    category: "gap",
+    url: "https://www.library.hbs.edu/working-knowledge/women-are-avoiding-using-artificial-intelligence-can-that-hurt-their-careers",
+    context: "The headline frames women as the agents of their own risk — they are <strong>avoiding</strong>, and their careers <em>will suffer</em> as a result. The research it describes actually finds that women avoid AI partly because they fear being judged for using it, and partly because they view it as ethically questionable. <strong>The framing locates the problem in women's behavior, not in the conditions that produce it.</strong>"
+  },
+  {
+    id: "cnbc_gender_gap",
+    headline: "Generative AI like ChatGPT is at risk of creating new gender gap at work",
+    deck: "Women were 16 percentage points less likely than men to use ChatGPT for job tasks, even when comparing workers within the same occupation.",
+    outlet: "CNBC",
+    year: "2025",
+    category: "gap",
+    url: "https://www.cnbc.com/2025/05/08/ai-risk-chatgpt-gender-gap-jobs-work.html",
+    context: "This headline frames women as a <strong>risk factor</strong> — their non-adoption threatens business productivity. The subtext is that the gender gap is a problem for companies, not primarily for women. <em>\"Women are not using AI enough\"</em> is treated as an economic issue. <strong>The harms AI causes to women — deepfakes, hiring discrimination, wage suppression — are absent from this frame.</strong>"
+  },
+  {
+    id: "unwomen_deepfake",
+    headline: "AI-powered online abuse: How AI is amplifying violence against women and what can stop it",
+    deck: "90–95% of all online deepfakes are non-consensual pornographic images, with around 90% depicting women. The total number of deepfake videos in 2023 was 550% higher than in 2019.",
+    outlet: "UN Women",
+    year: "2024",
+    category: "harm",
+    url: "https://www.unwomen.org/en/articles/faqs/ai-powered-online-abuse-how-ai-is-amplifying-violence-against-women-and-what-can-stop-it",
+    context: "One of the few major institutional framings that centers women as harmed rather than as laggards. <strong>The statistics here are staggering and rarely appear in mainstream tech coverage.</strong> Note that this headline appears in a UN Women publication — not in a general tech outlet. The same facts covered by a tech publication are more likely to be framed as a moderation problem than a gender violence problem."
+  },
+  {
+    id: "fortune_two_tier",
+    headline: "We're at risk of a two-tier AI economy if we don't bridge the AI gender gap, expert says",
+    deck: "The jobs women hold are three times more likely to be automated by AI. Despite this fact, women are using AI at a rate 25% lower than men on average.",
+    outlet: "Fortune",
+    year: "2026",
+    category: "gap",
+    url: "https://fortune.com/2026/03/21/ai-gender-gap-two-tier-economy-adoption-inequality/",
+    context: "The headline's subject is the economy — not women. Women appear in this framing as <strong>a variable in an economic model</strong>, not as people experiencing compounding harm. The word <em>\"bridge\"</em> implies the gap is symmetrical — a distance between two equal positions — when in fact women are being simultaneously harmed by AI and blamed for not using it enough. <strong>This is a paradox the headline does not name.</strong>"
+  },
+  {
+    id: "wef_falling_behind",
+    headline: "Women are already falling behind on generative AI in the workplace. The good news? Companies have the power to change that.",
+    deck: "By providing more upskilling, creating a shared vision, and inviting Generation Z 'superusers' to the discussion, leaders can encourage more women to embrace generative AI.",
+    outlet: "World Economic Forum",
+    year: "2024",
+    category: "push",
+    url: "https://www.weforum.org/stories/2024/04/women-generative-ai-workplace/",
+    context: "This headline does two things at once: it describes women as falling behind (a framing of deficit), then immediately transfers agency to companies. The solution offered is <em>encouragement</em> and <em>embracing</em> — soft language that locates the problem in women's relationship to the technology. <strong>Notably absent: why women might reasonably not trust a technology that is simultaneously being used to generate non-consensual pornographic images of them at scale.</strong>"
+  },
+  {
+    id: "mckinsey_pipeline",
+    headline: "Only 21% of entry-level women are encouraged by their managers to use AI tools, compared with 33% of men",
+    deck: "When employees are encouraged to use AI, they're over 50% more likely to do so, allowing them to build essential skills.",
+    outlet: "McKinsey — Women in the Workplace 2025",
+    year: "2025",
+    category: "gap",
+    url: "https://www.mckinsey.com/capabilities/people-and-organizational-performance/our-insights/women-in-the-workplace",
+    context: "This is a data point presented as a neutral finding — but it contains a significant structural argument: women are less encouraged to use AI <em>by their managers</em>. The problem is managerial behavior and institutional culture, not women's reluctance. <strong>When this statistic enters media coverage, it is frequently reframed as evidence of women's lower adoption rate, erasing the structural cause.</strong>"
+  },
+  {
+    id: "newsweek_gender_divide",
+    headline: "AI is Creating a New Gender Divide",
+    deck: "25% of women have experienced harassment enabled by technology, including AI-generated deepfake pornography. 44% of AI systems show gender bias.",
+    outlet: "Newsweek",
+    year: "2025",
+    category: "harm",
+    url: "https://www.newsweek.com/ai-misogyny-gender-gap-bias-technology-2095557",
+    context: "One of the more comprehensive mainstream framings — it covers both the adoption gap and the harm gap in the same piece. The word <em>\"divide\"</em> is interesting: it implies two sides of a distance, which is more neutral than <em>\"threat\"</em> or <em>\"crisis.\"</em> <strong>The headline is accurate but does not convey the scale: 90% of deepfake victims are women, not 50%.</strong>"
+  },
+  {
+    id: "lse_deepfakes_misogyny",
+    headline: "Gender bias, AI, and deepfakes are promoting misogyny online",
+    deck: "Largely male engineers and tech entrepreneurs have sustained societal inequalities by creating spaces where users can be harassed, stalked and abused anonymously.",
+    outlet: "LSE Women, Peace and Security Blog",
+    year: "2025",
+    category: "harm",
+    url: "https://blogs.lse.ac.uk/wps/2025/01/09/gender-bias-ai-and-deepfakes-are-promoting-misogyny-online/",
+    context: "This headline is unusual in naming <strong>structural causes</strong> — engineering teams, design decisions — rather than locating the problem in women's relationship to technology. It uses the word <em>\"misogyny\"</em>, which most tech coverage avoids. <strong>Compare its framing to the HBS headline above: same phenomenon, completely different subject.</strong> In one, women are avoiding AI. In the other, AI is a tool of gendered violence."
+  },
+  {
+    id: "emerging_europe_gap",
+    headline: "Mind the AI gender gap",
+    deck: "Female-dominated occupations are almost twice as likely to be exposed to generative AI as male-dominated ones. Workers with AI skills earn 25% more. Women are not acquiring those skills at the same rate as men.",
+    outlet: "Emerging Europe",
+    year: "2025",
+    category: "gap",
+    url: "https://emerging-europe.com/mind-the-ai-gender-gap/",
+    context: "The tube-map allusion (<em>\"Mind the gap\"</em>) makes this sound like a manageable, bounded problem — watch your step. <strong>But the data described reveals a structural trap: women are more likely to be displaced by AI, less likely to be acquiring AI skills, and more likely to be in jobs being automated.</strong> The gap metaphor flattens a compounding set of inequalities into a simple distance."
+  },
+  {
+    id: "forbes_competence_penalty",
+    headline: "Women Who Use AI At Work Face A Predictable 'Competence Penalty'",
+    deck: "Women who use AI tools at work are judged as less competent than men who use the same tools for the same tasks.",
+    outlet: "Forbes",
+    year: "2025",
+    category: "harm",
+    url: "https://womenandtech.indiana.edu/about/news/2025/mind-the-gap.html",
+    context: "This headline reveals the double bind directly: <strong>women are blamed for not using AI enough, and penalized in their competence ratings when they do.</strong> The word <em>\"predictable\"</em> is doing significant work — it signals that this is a known, documented pattern, not a surprising finding. The framing here centers women's experience, not economic productivity."
+  },
+  {
+    id: "deloitte_adoption_gap",
+    headline: "Women and generative AI: The adoption gap is closing fast, but a trust gap persists",
+    deck: "In the past year, the proportion of US women who adopted gen AI tripled — outpacing the 2.2x rate for men. But a trust gap remains.",
+    outlet: "Deloitte",
+    year: "2025",
+    category: "push",
+    url: "https://www.deloitte.com/us/en/insights/industry/technology/technology-media-and-telecom-predictions/2025/women-and-generative-ai.html",
+    context: "This is a corporate research framing — progress narrative with a caveat. The <em>\"trust gap\"</em> language is significant: it locates the remaining problem in women's psychology (trust) rather than in the technology's track record. <strong>Women's distrust of AI is treated as a gap to be closed, not as a rational response to documented harm.</strong> The tripling adoption rate is framed as good news, with no discussion of what women are adopting into."
+  },
+  {
+    id: "un_digital_violence",
+    headline: "AI and anonymity fuel surge in digital violence against women",
+    deck: "One in four women journalists report receiving online death threats. 'What begins online doesn't stay online. Digital abuse spills into real life.' — UN Women",
+    outlet: "UN News",
+    year: "2025",
+    category: "harm",
+    url: "https://news.un.org/en/story/2025/11/1166411",
+    context: "This headline uses the word <em>\"fuel\"</em> — AI is an accelerant, not a neutral tool. It also names <strong>anonymity</strong> as a structural enabler, which is a design choice made by platforms. The UN Women quote at the end refuses the online/offline distinction that tech coverage often uses to minimize harm. <strong>Compare this framing to the economic gap framings: same technology, same period, entirely different subject positioned at the center of the story.</strong>"
+  },
+  {
+    id: "ilo_twice_exposed",
+    headline: "Women's jobs three times more vulnerable to being taken by AI than men's, new report warns",
+    deck: "Automation could replace nearly 10% of female-dominated positions in high-income countries, compared to 3.5% for men. Female-dominated occupations are almost twice as likely to be exposed to AI.",
+    outlet: "Euronews",
+    year: "2025",
+    category: "harm",
+    url: "https://www.euronews.com/next/2025/05/24/womens-jobs-three-times-more-vulnerable-to-being-taken-by-ai-than-mens-new-report-warns",
+    context: "This is an ILO finding reported by a mainstream outlet. The headline uses the word <em>\"vulnerable\"</em> — a passive framing. The subject is being acted upon by a force. <strong>Compare to the adoption-gap headlines, which frame the same women as agents who are failing to act.</strong> In one frame, women are passive victims of automation. In the other, they are active avoiders of AI. Both frames arrive at the same conclusion: women are the problem variable."
+  },
+  {
+    id: "tech_layoffs_women",
+    headline: "Women were disproportionately affected by the latest tech layoffs",
+    deck: "From October 2022 to June 2023, women made up 45% of laid-off tech employees — while holding only 26% of tech roles. The departments where women had gained ground were the first cut.",
+    outlet: "Axios",
+    year: "2023",
+    category: "harm",
+    url: "https://www.axios.com/2023/07/06/tech-layoffs-2023-female-workers",
+    context: "This headline describes a structural pattern in neutral language — <em>\"disproportionately affected.\"</em> The data is stark: women were nearly half of layoffs while holding a quarter of jobs. The explanation offered in most coverage is that women held HR and marketing roles — the first cut. <strong>What goes unsaid: those were the roles women had actually been able to enter. The glass ceiling above; the trapdoor below.</strong>"
+  },
+  {
+    id: "ai_layoffs_potential",
+    headline: "Companies Are Laying Off Workers Because of AI's Potential — Not Its Performance",
+    deck: "AI is behind at least some layoffs, but these are almost completely in anticipation of AI's impact. The job losses are real, even though companies are still waiting for AI to deliver.",
+    outlet: "Harvard Business Review",
+    year: "2026",
+    category: "gap",
+    url: "https://hbr.org/2026/01/companies-are-laying-off-workers-because-of-ais-potential-not-its-performance",
+    context: "This headline names a specific and important mechanism: companies are using AI as a <strong>narrative justification</strong> for layoffs that may have other causes — restructuring, post-pandemic correction, investor pressure. <strong>When AI is the stated reason, the workers laid off become collateral in a story about the future, not the present.</strong> The workers most affected — disproportionately women in HR and marketing — are absent from this framing entirely."
+  },
+  {
+    id: "anthropic_jobs_risk",
+    headline: "Anthropic Announces Jobs Most at Risk From AI",
+    deck: "Workers in the most AI-exposed professions are 'more likely to be older, female, more educated, and higher-paid,' according to Anthropic's analysis of Bureau of Labor Statistics data.",
+    outlet: "Futurism",
+    year: "2026",
+    category: "harm",
+    url: "https://futurism.com/artificial-intelligence/anthropic-jobs-most-risk-ai",
+    context: "This is an AI company describing the workers most at risk from its own technology. The phrase <em>\"more likely to be female\"</em> appears as a demographic descriptor, not as a call to action. <strong>Anthropic — the company that makes Claude, the AI chatbot — is telling us that its technology disproportionately threatens women's jobs.</strong> That this fact appears buried in a bullet point about occupational exposure, rather than as a headline commitment to mitigation, is itself a framing choice."
+  }
+];
+</script>
+
+<script>
+(function(){
+  const wrap=document.getElementById('sparkles');
+  const chars=['✦','✧','·','˚','◦','#','@','»'];
+  for(let i=0;i<28;i++){
+    const s=document.createElement('span');s.className='sp';
+    s.textContent=chars[Math.floor(Math.random()*chars.length)];
+    s.style.left=Math.random()*100+'vw';s.style.bottom=Math.random()*-60+'px';
+    s.style.fontSize=(9+Math.random()*10)+'px';
+    s.style.color=`hsl(${310+Math.random()*50},75%,${62+Math.random()*25}%)`;
+    s.style.animationDuration=(6+Math.random()*13)+'s';
+    s.style.animationDelay=(Math.random()*12)+'s';
+    wrap.appendChild(s);
+  }
+})();
+
+function tick(){const n=new Date(),p=v=>String(v).padStart(2,'0');document.getElementById('sysTime').textContent=`${p(n.getHours())}:${p(n.getMinutes())}:${p(n.getSeconds())}`;}
+setInterval(tick,1000);tick();
+
+const SESSION_ID='sess45-'+Math.random().toString(36).slice(2,10);
+let current=0;
+const annotations={};
+
+document.querySelectorAll('.tag').forEach(tag=>{
+  tag.addEventListener('click',()=>{tag.classList.toggle('selected');updateSummary();});
+});
+function getSelected(){return [...document.querySelectorAll('.tag.selected')].map(t=>t.dataset.value);}
+function updateSummary(){
+  const n=getSelected().length;
+  document.getElementById('selectionSummary').textContent=n===0?'Select tags to submit':`${n} tag${n===1?'':'s'} selected`;
+  document.getElementById('submitBtn').disabled=(n===0);
+}
+document.getElementById('freeText').addEventListener('input',updateSummary);
+
+['concern','fairness','responsibility'].forEach(id=>{
+  document.getElementById(id+'Slider').addEventListener('input',function(){
+    document.getElementById(id+'Readout').textContent=this.value+' / 10';
+  });
+});
+
+function loadHeadline(idx){
+  if(idx>=HEADLINE_CATALOG.length){showCompletion();return;}
+  const h=HEADLINE_CATALOG[idx];
+  document.getElementById('headlineCounter').textContent=`Headline ${idx+1} of ${HEADLINE_CATALOG.length}`;
+  document.getElementById('headlineText').textContent=h.headline;
+  document.getElementById('headlineDeck').textContent=h.deck||'';
+  document.getElementById('headlineOutlet').textContent=h.outlet;
+  document.getElementById('headlineYear').textContent=h.year;
+  const pct=HEADLINE_CATALOG.length>1?(idx/(HEADLINE_CATALOG.length-1))*100:0;
+  document.getElementById('progressBar').style.width=pct+'%';
+  document.getElementById('progressText').textContent=`Headline ${idx+1} of ${HEADLINE_CATALOG.length}  ✦  Classify to continue`;
+  updateCatChip(h);
+  document.querySelectorAll('.tag').forEach(t=>t.classList.remove('selected'));
+  document.getElementById('freeText').value='';
+  ['concern','fairness','responsibility'].forEach(id=>{
+    document.getElementById(id+'Slider').value=5;
+    document.getElementById(id+'Readout').textContent='5 / 10';
+  });
+  updateSummary();
+}
+
+function updateCatChip(h){
+  const chip=document.getElementById('catChip');
+  chip.innerHTML=`<div class="dot"></div>Headline ${current+1} of ${HEADLINE_CATALOG.length}`;
+  chip.style.color='rgba(255,180,220,.6)';
+}
+
+document.getElementById('submitBtn').addEventListener('click',()=>{
+  const tags=getSelected();
+  if(!tags.length)return;
+  const free=document.getElementById('freeText').value.trim();
+  const concern=parseInt(document.getElementById('concernSlider').value);
+  const fairness=parseInt(document.getElementById('fairnessSlider').value);
+  const responsibility=parseInt(document.getElementById('responsibilitySlider').value);
+  const h=HEADLINE_CATALOG[current];
+  annotations[current]={tags,free,concern,fairness,responsibility,category:h.category};
+  if(typeof window._writeAnnotation45==='function'){
+    window._writeAnnotation45({headlineId:h.id,headline:h.headline,outlet:h.outlet,year:h.year,category:h.category,tags,freeText:free,concern,fairness,responsibility,sessionId:SESSION_ID});
+  }
+  showReveal(current,tags,free,concern,fairness,responsibility,h);
+});
+
+function showReveal(idx,tags,free,concern,fairness,responsibility,h){
+  const overlay=document.getElementById('revealOverlay');
+  document.getElementById('revealHeadline').textContent=h.headline;
+  const row=document.getElementById('revealTagsRow');
+  row.innerHTML='';
+  [...tags,...(free?['"'+free+'"']:[])].forEach(t=>{const d=document.createElement('div');d.className='reveal-tag';d.textContent=t;row.appendChild(d);});
+  const cards=document.getElementById('revealValueCards');
+  cards.innerHTML='';
+  [{label:'Concern',val:concern+'/10'},{label:'Fairness',val:fairness+'/10'},{label:'Responsibility',val:responsibility+'/10'}].forEach(c=>{
+    cards.innerHTML+=`<div class="reveal-vcard"><span class="reveal-vcard-num">${c.val}</span><span class="reveal-vcard-label">${c.label}</span></div>`;
+  });
+  document.getElementById('revealContext').innerHTML=h.context;
+  document.getElementById('revealSourceLink').href=h.url;
+  document.getElementById('revealSourceLink').textContent='↗ Read the full article — '+h.outlet;
+  overlay.classList.add('show');
+}
+
+document.getElementById('revealNextBtn').addEventListener('click',()=>{
+  document.getElementById('revealOverlay').classList.remove('show');
+  current++;
+  loadHeadline(current);
+});
+
+function showCompletion(){
+  document.getElementById('taskCard').style.opacity='.4';
+  document.getElementById('taskCard').style.pointerEvents='none';
+  const slot=document.getElementById('completionSlot');
+  if(document.getElementById('final-card45'))return;
+
+  const harmAnns=Object.values(annotations).filter(a=>['harm','bias'].includes(a.category));
+  const gapAnns=Object.values(annotations).filter(a=>['gap','push'].includes(a.category));
+  const avg=arr=>arr.length?arr.reduce((a,b)=>a+b,0)/arr.length:null;
+  const hConcern=avg(harmAnns.map(a=>a.concern)), gConcern=avg(gapAnns.map(a=>a.concern));
+  const hFair=avg(harmAnns.map(a=>a.fairness)), gFair=avg(gapAnns.map(a=>a.fairness));
+  const hResp=avg(harmAnns.map(a=>a.responsibility)), gResp=avg(gapAnns.map(a=>a.responsibility));
+
+  const allTags=Object.values(annotations).flatMap(a=>a.tags);
+  const counts={};allTags.forEach(t=>{counts[t]=(counts[t]||0)+1;});
+  const topTags=Object.entries(counts).sort((a,b)=>b[1]-a[1]).slice(0,4).map(([t])=>t).join(' · ');
+
+  let patternNote='';
+  const lines=[];
+  if(hConcern!=null&&gConcern!=null){
+    if(hConcern>gConcern) lines.push(`You rated <strong>harm/violence headlines</strong> more concerning (${hConcern.toFixed(1)}/10) than <strong>adoption-gap headlines</strong> (${gConcern.toFixed(1)}/10).`);
+    else lines.push(`You rated adoption-gap headlines as concerning (${gConcern.toFixed(1)}/10) as or more so than harm headlines (${hConcern.toFixed(1)}/10).`);
+  }
+  if(hResp!=null&&gResp!=null){
+    lines.push(`You placed more responsibility on the subject in <strong>${hResp>gResp?'harm':'gap'} headlines</strong> (${Math.max(hResp,gResp).toFixed(1)}/10 vs ${Math.min(hResp,gResp).toFixed(1)}/10).`);
+  }
+  if(hFair!=null&&gFair!=null){
+    lines.push(`You rated <strong>${hFair>gFair?'harm':'gap'} headlines</strong> as fairer to their subject (${Math.max(hFair,gFair).toFixed(1)}/10 vs ${Math.min(hFair,gFair).toFixed(1)}/10).`);
+  }
+  patternNote=lines.length?lines.join(' '):'Your classifications are recorded. CAREBOT-45 will analyze the patterns as more participants respond.';
+
+  const d=document.createElement('div');
+  d.id='final-card45';d.className='completion-card';
+  d.innerHTML=`
+    <div class="c-eyebrow">✦ CAREBOT-45 · Classifications Recorded</div>
+    <h2>Your readings are now training data. 📰</h2>
+    <p>You classified ${HEADLINE_CATALOG.length} real headlines. Your most-used tags: <strong>${topTags||'—'}</strong></p>
+    <div class="pattern-note">
+      ✦ <strong>What CAREBOT-45 sees in your data:</strong><br><br>
+      ${patternNote}<br><br>
+      All ${HEADLINE_CATALOG.length} headlines are about the same subject: <strong>women and AI</strong>. Some frame women as laggards who need to adopt faster. Others document AI as a weapon used against women at scale. Others show that the jobs women hold are the most likely to be automated — and that women were disproportionately laid off in the same tech wave companies blamed on AI. <em>These facts coexist in the same media landscape.</em> The paradox — women are blamed for not using a technology that simultaneously threatens their jobs, their safety, and their livelihoods — is almost never named in a single article. <strong>CAREBOT-45 is trained to name it.</strong>
+    </div>
+    <a class="btn primary"
+       href="carebot45-bot.html"
+       target="_blank" rel="noopener"
+       style="margin:0 auto;text-decoration:none;display:inline-flex;">
+      Talk to CAREBOT-45 about what you found ✦
+    </a>`;
+  slot.appendChild(d);
+}
+
+loadHeadline(0);
+</script>
+</body>
+</html>
