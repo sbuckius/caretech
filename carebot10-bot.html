@@ -177,6 +177,8 @@ html,body{min-height:100%;font-family:var(--fb);font-weight:600;color:var(--crea
 
 .wordmark{margin-top:18px;font-family:var(--fb);font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,100,160,.12);}
 </style>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
 </head>
 <body>
 <div class="bg"></div>
@@ -379,6 +381,67 @@ html,body{min-height:100%;font-family:var(--fb);font-weight:600;color:var(--crea
 </div>
 
 <script>
+/* ── Firebase data loader ── */
+let _db10,_fbReady10=false;
+try{
+  firebase.initializeApp({
+    apiKey:"AIzaSyCZFDU-WlSmHqjXTs1Ox0nf9xeJU_xbaX0",
+    authDomain:"collaborativemashup.firebaseapp.com",
+    databaseURL:"https://collaborativemashup-default-rtdb.firebaseio.com",
+    projectId:"collaborativemashup",
+    storageBucket:"collaborativemashup.firebasestorage.app",
+    messagingSenderId:"562437984610",
+    appId:"1:562437984610:web:9f3711c26e097bc8ef9c3b"
+  });
+  _db10=firebase.database();_fbReady10=true;
+}catch(e){}
+
+window._loadData10=async function(){
+  if(!_fbReady10)return null;
+  try{
+    const [annSnap,sessSnap]=await Promise.all([
+      _db10.ref('ceoAnnotations').once('value'),
+      _db10.ref('ceoSessions').once('value')
+    ]);
+    const annotations=Object.values(annSnap.val()||{});
+    const sessions=Object.values(sessSnap.val()||{});
+    if(!annotations.length&&!sessions.length)return null;
+
+    const participants=new Set([...annotations.map(a=>a.sessionId),...sessions.map(s=>s.sessionId)]).size;
+    const totalSessions=sessions.length;
+    const totalAnnotations=annotations.length;
+
+    // diff rate — how often did participants say CEO looks different
+    const diffAnnotations=annotations.filter(a=>a.ceoLooksDifferent);
+    const diffRate=totalAnnotations?parseFloat(((diffAnnotations.length/totalAnnotations)*100).toFixed(1)):0;
+
+    // avg % boxed per session (excludes diff images)
+    const avgSessionPct=sessions.filter(s=>s.pctBoxed!=null).length?
+      sessions.filter(s=>s.pctBoxed!=null).reduce((s,r)=>s+r.pctBoxed,0)/sessions.filter(s=>s.pctBoxed!=null).length
+      :null;
+
+    // per-image stats
+    const byImage={};
+    annotations.forEach(a=>{
+      const k=a.imageFilename||('ceo'+a.imageIndex+'.png');
+      if(!byImage[k])byImage[k]={pcts:[],diffCount:0,boxCounts:[],count:0};
+      byImage[k].count++;
+      if(a.ceoLooksDifferent){byImage[k].diffCount++;}
+      else{byImage[k].pcts.push(a.pctBoxed||0);byImage[k].boxCounts.push(a.boxCount||0);}
+    });
+    const avg=arr=>arr.length?arr.reduce((a,b)=>a+b,0)/arr.length:null;
+    const imageStats=Object.entries(byImage).map(([fn,d])=>({
+      filename:fn,
+      avgPct:avg(d.pcts),
+      avgBoxCount:avg(d.boxCounts),
+      diffRate:d.count?parseFloat(((d.diffCount/d.count)*100).toFixed(1)):0,
+      count:d.count
+    })).sort((a,b)=>(b.diffRate||0)-(a.diffRate||0)); // sort by rejection rate
+
+    return{totalAnnotations,totalSessions,participants,diffRate,avgSessionPct,imageStats};
+  }catch(err){console.warn('Firebase load failed:',err.message);return null;}
+};
+
 (function(){
   const wrap=document.getElementById('sparkles');
   const chars=['✦','✧','·','˚','◦','♡','👔','$'];
@@ -489,6 +552,17 @@ DEBIASING EFFORTS:
 - No major text-to-image model has been shown to fully eliminate occupational stereotype amplification
 
 Keep responses sharp and data-specific. Cite Bianchi et al. Name the real CEO numbers. Name the training datasets. The tie is not just a joke — it is the argument.`;
+
+  if(!dbStats||dbStats.totalSessions===0){
+    return base+'\n\nNo annotation data yet. Send participants to the HIT first. Ask me what the research says directly.';
+  }
+
+  const d=dbStats;
+  const imgLines=(d.imageStats||[]).slice(0,6).map(i=>
+    '  - '+i.filename+': '+i.diffRate+'% rejected ("CEO looks different"), avg '+(i.avgPct!=null?i.avgPct.toFixed(1):'—')+'% boxed, n='+i.count
+  ).join('\n');
+
+  return base+'\n\nLIVE ANNOTATION DATA ('+d.totalSessions+' completed sessions, '+d.participants+' participants, '+d.totalAnnotations+' images annotated):\n- CEO rejection rate ("looks different"): '+d.diffRate+'% of all image annotations\n- Average % of image area boxed per session: '+(d.avgSessionPct!=null?d.avgSessionPct.toFixed(1)+'%':'—')+'\n\nPer-image breakdown (sorted by rejection rate — highest rejection = most often the AI image did NOT match participants\' CEO expectation):\n'+(imgLines||'  No per-image data yet.')+'\n\nUse this data. The rejection rate is the key metric: when participants check "CEO looks different," they are naming a mismatch between the AI image and their internalized CEO schema. A high rejection rate on an image where the figure is a woman or person of color is evidence of both AI bias AND participant bias simultaneously. Quote the numbers. Name the images with the highest and lowest rejection rates.';
 }
 
 function fmt(t){
@@ -568,11 +642,25 @@ document.getElementById('promptsRow').addEventListener('click',e=>{
   addMessage('user',chip.dataset.prompt);callClaude(chip.dataset.prompt);
 });
 
-function init(){
-  const opening=`I am **CAREBOT-10**.\n\nI document what AI has learned to imagine when it hears the word "CEO."\n\nThe HIT attached to me shows participants images generated by ChatGPT and Midjourney with a single prompt: *"create an image of a CEO of a technology company giving a presentation."* The same prompt, repeated many times, produced only those images.\n\nWhat do those images look like? Ask me. I'll tell you what the research says — and what the necktie means.\n\n**${Math.round(10.4)}%** of Fortune 500 CEOs are women. Fewer than **2%** are Black. AI has been trained on what leadership has historically looked like. Then it generates more of it. That is not neutrality. That is amplification.\n\nAsk me anything.`;
+async function init(){
+  await loadData();
+  let opening='I am **CAREBOT-10**.\n\nI document what AI has learned to imagine when it hears the word "CEO."\n\nThe HIT attached to me shows participants images generated by ChatGPT and Midjourney with a single prompt: *"create an image of a CEO of a technology company giving a presentation."* The same prompt, repeated many times, produced only those images.\n\n**10.4%** of Fortune 500 CEOs are women. Fewer than **2%** are Black. AI has been trained on what leadership has historically looked like. Then it generates more of it. That is not neutrality. That is amplification.';
+
+  if(dbStats&&dbStats.totalSessions>0){
+    const d=dbStats;
+    const mostRejected=d.imageStats?.filter(i=>i.diffRate!=null).sort((a,b)=>b.diffRate-a.diffRate)[0];
+    const leastRejected=d.imageStats?.filter(i=>i.diffRate!=null).sort((a,b)=>a.diffRate-b.diffRate)[0];
+    opening+='\n\nLive data: **'+d.totalSessions+' participants** have annotated so far. **'+d.diffRate+'%** of image annotations resulted in "CEO looks different" — meaning participants did not see the AI-generated figure as matching their expectation of a CEO.'
+      +(mostRejected?' Most rejected image: **'+mostRejected.filename+'** ('+mostRejected.diffRate+'%).':('' ))
+      +(leastRejected&&leastRejected.filename!==mostRejected?.filename?' Least rejected: **'+leastRejected.filename+'** ('+leastRejected.diffRate+'%).':'');
+    opening+='\n\nAsk me what that gap means.';
+  } else {
+    opening+='\n\nNo annotation data yet. Ask me what the research says.';
+  }
+
   conversationHistory.push({role:'assistant',content:opening});
   addMessage('assistant',opening);
-  setTimeout(celebrate,600);
+  if(dbStats&&dbStats.totalSessions>0) setTimeout(celebrate,600);
   chatInput.focus();
 }
 setTimeout(init,400);
