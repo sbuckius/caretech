@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>✦ Weaving Diverse Data · CAREBOT-05 ✦</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
+
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+<style>
+:root {
+  --rose:#ff5c8a; --hot:#ff2d6b; --candy:#ff85b3; --blush:#ffb3cf;
+  --cream:#fff5f8; --berry:#c4005a; --crimson:#8b0030; --maroon:#4a001a;
+  --fuchsia:#ff1f80; --bg:#0e0008;
+  --border:rgba(255,140,185,.2); --border2:rgba(255,80,150,.5);
+  --text:#fff5f8; --muted:rgba(255,190,220,.5); --muted2:rgba(255,200,230,.7);
+  --fh:'Nunito',sans-serif; --fb:'Quicksand',sans-serif;
+  --soft-glow:0 4px 30px rgba(255,45,107,.2);
+  --pop-glow:0 8px 50px rgba(255,45,107,.4),0 0 80px rgba(200,0,80,.12);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{min-height:100%;font-family:var(--fb);font-weight:600;color:var(--text);background:var(--bg);-webkit-font-smoothing:antialiased;cursor:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 20 20'%3E%3Ccircle cx='10' cy='10' r='4' fill='%23ff2d6b' opacity='.9'/%3E%3Ccircle cx='10' cy='10' r='7' stroke='%23ff85b3' stroke-width='1.5' fill='none' opacity='.6'/%3E%3C/svg%3E") 10 10,default;}
+.bg-layer{position:fixed;inset:0;z-index:0;pointer-events:none;background:radial-gradient(ellipse 70% 55% at 90% 5%,rgba(180,0,55,.35) 0%,transparent 58%),radial-gradient(ellipse 55% 60% at 5% 95%,rgba(110,0,28,.3) 0%,transparent 58%),radial-gradient(ellipse 45% 40% at 50% 50%,rgba(255,20,90,.04) 0%,transparent 65%),linear-gradient(158deg,#1c0009,#130006 50%,#0c0003);}
+.orb{position:fixed;border-radius:50%;pointer-events:none;z-index:0;filter:blur(65px);}
+.orb-1{width:440px;height:440px;background:var(--berry);opacity:.18;top:-90px;right:-75px;animation:drift1 21s ease-in-out infinite;}
+.orb-2{width:360px;height:360px;background:var(--maroon);opacity:.2;bottom:-70px;left:-65px;animation:drift2 25s ease-in-out infinite;}
+.orb-3{width:200px;height:200px;background:var(--hot);opacity:.09;top:40%;left:55%;animation:drift3 17s ease-in-out infinite;}
+@keyframes drift1{0%,100%{transform:translate(0,0)}50%{transform:translate(-35px,24px)}}
+@keyframes drift2{0%,100%{transform:translate(0,0)}50%{transform:translate(28px,-18px)}}
+@keyframes drift3{0%,100%{transform:translate(0,0)}33%{transform:translate(-14px,10px)}66%{transform:translate(10px,-8px)}}
+.sparkles{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden;}
+.sp{position:absolute;opacity:0;animation:floatUp linear infinite;}
+@keyframes floatUp{0%{opacity:0;transform:translateY(0) scale(.6) rotate(0deg)}15%{opacity:.6}85%{opacity:.3}100%{opacity:0;transform:translateY(-130px) scale(1.1) rotate(180deg)}}
+
+.screen{position:relative;z-index:2;max-width:1200px;margin:0 auto;padding:clamp(16px,3vmin,28px) clamp(14px,4vmin,28px) 40px;display:flex;flex-direction:column;gap:18px;}
+
+/* mascot bar */
+.mascot-bar{display:flex;align-items:center;justify-content:space-between;}
+.mascot{display:flex;align-items:center;gap:10px;}
+.bot-face{width:42px;height:42px;border-radius:13px;background:linear-gradient(135deg,rgba(255,45,107,.25),rgba(180,0,55,.35));border:1.5px solid var(--border2);box-shadow:var(--soft-glow);display:flex;align-items:center;justify-content:center;font-size:20px;animation:wobble 4s ease-in-out infinite;flex-shrink:0;}
+@keyframes wobble{0%,100%{transform:rotate(-2deg) scale(1)}25%{transform:rotate(1deg) scale(1.04)}50%{transform:rotate(-1deg) scale(1)}75%{transform:rotate(2deg) scale(1.03)}}
+.bot-name{font-family:var(--fh);font-weight:900;font-size:15px;letter-spacing:.04em;background:linear-gradient(90deg,var(--blush),var(--fuchsia) 55%,var(--candy));-webkit-background-clip:text;background-clip:text;color:transparent;}
+.bot-sub{font-size:9px;letter-spacing:.15em;text-transform:uppercase;color:var(--muted);margin-top:1px;}
+.time-badge{display:flex;align-items:center;gap:6px;padding:5px 11px;border-radius:999px;background:rgba(255,255,255,.04);border:1px solid var(--border);font-size:10px;letter-spacing:.1em;color:var(--muted);}
+.time-pip{width:5px;height:5px;border-radius:50%;background:var(--hot);box-shadow:0 0 6px var(--hot);animation:breathe 2s ease-in-out infinite;}
+@keyframes breathe{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.3;transform:scale(.65)}}
+
+/* context banner */
+.context-banner{background:linear-gradient(135deg,rgba(139,0,48,.88),rgba(60,0,18,.96));border:1.5px solid var(--border2);border-radius:20px;padding:20px 24px;position:relative;overflow:hidden;box-shadow:var(--soft-glow);}
+.context-banner::before{content:'';position:absolute;top:0;left:8%;right:8%;height:1.5px;background:linear-gradient(90deg,transparent,var(--candy) 35%,var(--hot) 50%,var(--candy) 65%,transparent);box-shadow:0 0 10px var(--candy);border-radius:999px;}
+.context-eyebrow{font-size:9px;letter-spacing:.22em;text-transform:uppercase;color:var(--muted);margin-bottom:7px;font-weight:800;}
+.context-title{font-family:var(--fh);font-weight:900;font-size:clamp(15px,3vw,18px);background:linear-gradient(120deg,var(--cream) 15%,var(--blush) 55%,var(--fuchsia) 90%);-webkit-background-clip:text;background-clip:text;color:transparent;margin-bottom:10px;line-height:1.3;}
+.context-text{font-size:12.5px;line-height:1.78;color:var(--muted2);}
+.context-text strong{color:var(--blush);font-weight:700;}
+
+/* card */
+.card{background:rgba(14,0,7,.82);border:1.5px solid var(--border2);border-radius:22px;box-shadow:var(--pop-glow),inset 0 1px 0 rgba(255,160,200,.06);backdrop-filter:blur(22px) saturate(1.5);overflow:hidden;position:relative;}
+.card::before{content:'';position:absolute;top:0;left:10%;right:10%;height:1.5px;background:linear-gradient(90deg,transparent,var(--candy) 35%,var(--hot) 50%,var(--candy) 65%,transparent);box-shadow:0 0 14px var(--candy);border-radius:999px;z-index:1;pointer-events:none;}
+
+/* main grid */
+.main-grid{display:grid;grid-template-columns:320px 1fr;gap:18px;align-items:start;}
+@media(max-width:900px){.main-grid{grid-template-columns:1fr;}}
+
+/* question panel */
+.q-panel{padding:24px;}
+.section-label{font-size:9px;letter-spacing:.22em;text-transform:uppercase;color:var(--muted);margin-bottom:10px;font-weight:800;}
+.q-num{font-family:var(--fh);font-weight:900;font-size:11px;color:var(--hot);letter-spacing:.1em;margin-bottom:6px;}
+.q-text{font-family:var(--fh);font-weight:800;font-size:clamp(15px,2.5vw,19px);line-height:1.4;color:var(--blush);margin-bottom:18px;}
+
+.answer-input{width:100%;padding:13px 16px;font-family:var(--fb);font-size:1rem;font-weight:600;background:rgba(255,255,255,.05);border:1.5px solid var(--border);color:var(--text);border-radius:12px;margin-bottom:12px;transition:border-color .2s,background .2s;outline:none;}
+.answer-input:focus{border-color:var(--candy);background:rgba(255,255,255,.08);}
+.answer-input::placeholder{color:var(--muted);}
+
+/* ── EMOTION TAGS (new) ── */
+.emotion-section{margin-bottom:14px;}
+.emotion-tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;}
+.etag{padding:5px 11px;border-radius:999px;cursor:pointer;background:rgba(255,45,107,.07);border:1.5px solid rgba(255,45,107,.18);font-size:11px;color:var(--muted);transition:all .15s;user-select:none;font-weight:700;}
+.etag:hover{background:rgba(255,45,107,.15);border-color:var(--border2);color:var(--blush);}
+.etag.selected{background:linear-gradient(135deg,rgba(255,45,107,.3),rgba(196,0,90,.3));border-color:var(--hot);color:var(--cream);box-shadow:0 0 8px rgba(255,45,107,.2);}
+.etag.selected::before{content:'✦ ';}
+
+/* ── RELEVANCE SLIDER (new) ── */
+.relevance-section{margin-bottom:14px;display:grid;gap:7px;}
+.relevance-label{font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);font-weight:800;display:flex;justify-content:space-between;align-items:center;}
+.relevance-val{font-family:var(--fh);font-weight:900;font-size:12px;color:var(--candy);}
+input[type=range].relevance-slider{width:100%;accent-color:var(--hot);height:4px;cursor:pointer;border-radius:999px;outline:none;border:none;background:rgba(255,45,107,.15);}
+.slider-ends{display:flex;justify-content:space-between;font-size:9px;color:var(--muted);margin-top:2px;}
+
+.btn-weave{width:100%;padding:13px;font-family:var(--fh);font-weight:900;font-size:13px;letter-spacing:.08em;color:var(--cream);border:none;cursor:pointer;border-radius:14px;background:linear-gradient(135deg,var(--hot),var(--berry),var(--maroon));border:1.5px solid var(--hot);box-shadow:0 4px 20px rgba(255,45,107,.35),inset 0 1px 0 rgba(255,255,255,.1);transition:all .22s cubic-bezier(.34,1.56,.64,1);position:relative;overflow:hidden;}
+.btn-weave::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,.1),transparent 55%);pointer-events:none;}
+.btn-weave:hover{transform:translateY(-2px) scale(1.02);box-shadow:0 8px 28px rgba(255,45,107,.5);}
+.btn-weave:active{transform:scale(.97);}
+.weave-saved{font-size:10px;color:rgba(100,255,160,.7);letter-spacing:.1em;min-height:14px;margin-top:6px;}
+
+.btn-export{width:100%;padding:10px;margin-top:8px;font-family:var(--fh);font-weight:800;font-size:11px;letter-spacing:.06em;color:var(--cream);border:none;cursor:pointer;border-radius:12px;transition:all .2s cubic-bezier(.34,1.56,.64,1);}
+.btn-export-1{background:linear-gradient(135deg,rgba(163,123,185,.6),rgba(170,99,145,.6));border:1px solid rgba(163,123,185,.4);}
+.btn-export-2{background:linear-gradient(135deg,rgba(170,99,145,.6),rgba(157,68,121,.6));border:1px solid rgba(170,99,145,.4);}
+.btn-export:hover{transform:translateY(-1px);filter:brightness(1.15);}
+
+.pattern-select-wrap{margin-top:14px;}
+.pattern-select{width:100%;padding:10px 14px;font-family:var(--fb);font-size:.88rem;font-weight:600;background:rgba(255,255,255,.05);border:1.5px solid var(--border);color:var(--blush);border-radius:10px;outline:none;cursor:pointer;}
+.pattern-select:focus{border-color:var(--candy);}
+
+.stats-grid{margin-top:18px;padding-top:18px;border-top:1px solid rgba(255,100,150,.1);display:grid;gap:10px;}
+.stat-row{display:flex;justify-content:space-between;align-items:center;font-size:.8rem;}
+.stat-lbl{color:var(--muted);letter-spacing:.06em;}
+.stat-val{font-family:var(--fh);font-weight:900;color:var(--candy);}
+
+.diversity-box{margin-top:14px;padding:14px 16px;background:linear-gradient(135deg,rgba(185,80,178,.12),rgba(175,48,110,.12));border-left:3px solid var(--candy);border-radius:10px;}
+.diversity-lbl{font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);margin-bottom:6px;font-weight:800;}
+.diversity-val{font-family:var(--fh);font-weight:900;font-size:1.6rem;color:var(--candy);}
+
+.btn-admin{width:100%;padding:10px;margin-top:20px;font-family:var(--fh);font-size:10px;letter-spacing:.1em;text-transform:uppercase;font-weight:800;background:rgba(98,2,47,.4);border:1px solid rgba(255,140,185,.15);color:rgba(255,190,220,.5);cursor:pointer;border-radius:10px;transition:all .2s;}
+.btn-admin:hover{background:rgba(98,2,47,.7);color:var(--blush);border-color:var(--border2);}
+
+/* weaving canvas */
+.weave-panel{padding:20px;}
+.weave-panel-title{font-size:9px;letter-spacing:.22em;text-transform:uppercase;color:var(--muted);margin-bottom:16px;text-align:center;font-weight:800;}
+#weavingPattern{position:relative;width:100%;min-height:500px;display:grid;grid-template-columns:repeat(auto-fill,60px);grid-auto-rows:60px;gap:0;background:rgba(255,140,185,.06);border-radius:8px;overflow:hidden;}
+.weave-tile{position:relative;width:100%;height:100%;overflow:hidden;}
+.weave-tile img{width:100%;height:100%;object-fit:cover;object-position:center;image-rendering:high-quality;}
+.tile-overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'Crimson Pro',serif;font-size:.5em;color:#fff;text-align:center;padding:2px;word-break:break-word;line-height:1.1;font-weight:600;text-shadow:0 2px 4px rgba(0,0,0,1),0 0 8px rgba(0,0,0,.8),1px 1px 0 rgba(0,0,0,1),-1px -1px 0 rgba(0,0,0,1),1px -1px 0 rgba(0,0,0,1),-1px 1px 0 rgba(0,0,0,1);}
+
+/* legend */
+.legend-card{padding:20px 24px;}
+.legend-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;margin-top:12px;}
+.legend-item{font-size:.85rem;line-height:1.7;color:var(--muted2);}
+.legend-item strong{color:var(--blush);}
+
+/* ── FINAL REFLECTION (new) ── */
+.reflection-card{background:rgba(14,0,7,.82);border:1.5px solid var(--border2);border-radius:22px;padding:24px 26px;position:relative;overflow:hidden;box-shadow:var(--soft-glow);}
+.reflection-card::before{content:'';position:absolute;top:0;left:10%;right:10%;height:1.5px;background:linear-gradient(90deg,transparent,var(--candy) 35%,var(--hot) 50%,var(--candy) 65%,transparent);box-shadow:0 0 10px var(--candy);border-radius:999px;}
+.reflection-title{font-family:var(--fh);font-weight:900;font-size:clamp(15px,2.8vw,18px);background:linear-gradient(120deg,var(--cream) 15%,var(--blush) 55%,var(--fuchsia) 90%);-webkit-background-clip:text;background-clip:text;color:transparent;margin-bottom:6px;line-height:1.4;}
+.reflection-sub{font-size:11px;color:var(--muted);margin-bottom:14px;letter-spacing:.04em;}
+.reflection-textarea{width:100%;background:rgba(255,255,255,.05);border:1.5px solid rgba(255,140,185,.2);border-radius:12px;font-family:var(--fb);font-weight:600;font-size:13px;color:var(--cream);padding:12px 14px;outline:none;resize:vertical;min-height:90px;transition:border-color .2s,box-shadow .2s;}
+.reflection-textarea:focus{border-color:var(--candy);box-shadow:0 0 0 3px rgba(255,133,179,.1);}
+.reflection-textarea::placeholder{color:rgba(255,190,220,.25);}
+.reflection-saved{font-size:10px;color:rgba(100,255,160,.7);margin-top:6px;min-height:14px;}
+.btn-save{appearance:none;font-family:var(--fh);font-weight:900;font-size:12px;letter-spacing:.05em;color:var(--cream);display:inline-flex;align-items:center;gap:5px;padding:9px 18px;border-radius:12px;border:1.5px solid var(--border2);cursor:pointer;transition:all .2s cubic-bezier(.34,1.56,.64,1);background:linear-gradient(135deg,var(--hot),var(--berry));box-shadow:0 3px 14px rgba(255,45,107,.3);}
+.btn-save:hover{transform:translateY(-2px);box-shadow:0 6px 22px rgba(255,45,107,.45);}
+
+/* online badge */
+.online-badge{display:inline-flex;align-items:center;gap:6px;padding:5px 12px;border-radius:999px;background:rgba(255,255,255,.04);border:1px solid var(--border);font-size:10px;letter-spacing:.1em;color:var(--muted);}
+
+/* advance */
+.advance-card{background:linear-gradient(135deg,rgba(140,0,45,.88),rgba(60,0,18,.96));border:1.5px solid var(--border2);border-radius:20px;padding:22px 28px;text-align:center;position:relative;overflow:hidden;box-shadow:var(--pop-glow);}
+.advance-card::before{content:'';position:absolute;top:0;left:8%;right:8%;height:1.5px;background:linear-gradient(90deg,transparent,var(--candy) 35%,var(--hot) 50%,var(--candy) 65%,transparent);box-shadow:0 0 12px var(--candy);border-radius:999px;}
+.advance-eyebrow{font-size:9px;letter-spacing:.22em;text-transform:uppercase;color:var(--muted);margin-bottom:6px;font-weight:800;}
+.advance-title{font-family:var(--fh);font-weight:900;font-size:clamp(15px,3vw,18px);background:linear-gradient(90deg,var(--blush),var(--fuchsia) 55%,var(--candy));-webkit-background-clip:text;background-clip:text;color:transparent;margin-bottom:16px;}
+.btn-advance{display:inline-flex;align-items:center;justify-content:center;gap:6px;font-family:var(--fh);font-weight:800;font-size:14px;letter-spacing:.05em;color:var(--cream);text-decoration:none;background:linear-gradient(135deg,var(--hot),var(--berry),var(--maroon));border:1.5px solid var(--hot);border-radius:16px;padding:13px 28px;box-shadow:0 4px 22px rgba(255,45,107,.4),inset 0 1px 0 rgba(255,255,255,.1);transition:all .22s cubic-bezier(.34,1.56,.64,1);position:relative;overflow:hidden;}
+.btn-advance::before{content:'';position:absolute;inset:0;border-radius:inherit;background:linear-gradient(135deg,rgba(255,255,255,.1),transparent 55%);pointer-events:none;}
+.btn-advance:hover{transform:translateY(-3px) scale(1.04);box-shadow:0 10px 36px rgba(255,45,107,.55);}
+.wordmark{font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,160,200,.15);text-align:center;padding-bottom:8px;}
+</style>
+</head>
+<body>
+<div class="bg-layer"></div>
+<div class="orb orb-1"></div><div class="orb orb-2"></div><div class="orb orb-3"></div>
+<div class="sparkles" id="sparkles"></div>
+
+<div class="screen">
+
+  <!-- mascot bar -->
+  <div class="mascot-bar">
+    <div class="mascot">
+      <div class="bot-face">🧵</div>
+      <div>
+        <div class="bot-name">CAREBOT-05 · Weaving ✦</div>
+        <div class="bot-sub">Interactive Data Textile · Online</div>
+      </div>
+    </div>
+    <div style="display:flex;align-items:center;gap:10px;">
+      <div class="online-badge"><div class="time-pip"></div><span id="onlineCount">Connecting…</span></div>
+      <div class="time-badge"><div class="time-pip"></div><span id="sysTime">--:--:--</span></div>
+    </div>
+  </div>
+
+  <!-- context banner (replaces video) -->
+  <div class="context-banner">
+    <div class="context-eyebrow">✦ CAREBOT-05 · Weaving Diverse Data</div>
+    <div class="context-title">Your answers become threads in a collective textile</div>
+    <div class="context-text">
+      Each question below is about <strong>your relationship with technology</strong>. Your answer is woven into a shared pattern alongside everyone else who has participated. The textile shows whose voices are present — and whose aren't. <strong>Answer honestly.</strong> There are no right answers. The diversity of the weave depends on it.
+    </div>
+  </div>
+
+  <!-- main grid -->
+  <div class="main-grid">
+
+    <!-- question panel -->
+    <div class="card q-panel">
+      <div class="section-label">✦ Current Question</div>
+      <div class="q-num" id="qNum">Question 1 of 10</div>
+      <div class="q-text" id="currentQuestion">Does AI make you more efficient in your work?</div>
+
+      <input class="answer-input" type="text" id="answerInput" placeholder="Type your answer here…" autocomplete="off">
+
+      <!-- EMOTION TAGS -->
+      <div class="emotion-section">
+        <div class="section-label">✦ How does this question make you feel?</div>
+        <div class="emotion-tags" id="emotionTags">
+          <div class="etag" data-val="curious">curious</div>
+          <div class="etag" data-val="anxious">anxious</div>
+          <div class="etag" data-val="hopeful">hopeful</div>
+          <div class="etag" data-val="skeptical">skeptical</div>
+          <div class="etag" data-val="frustrated">frustrated</div>
+          <div class="etag" data-val="empowered">empowered</div>
+          <div class="etag" data-val="unseen">unseen</div>
+          <div class="etag" data-val="indifferent">indifferent</div>
+          <div class="etag" data-val="overwhelmed">overwhelmed</div>
+          <div class="etag" data-val="excited">excited</div>
+        </div>
+      </div>
+
+      <!-- RELEVANCE SLIDER -->
+      <div class="relevance-section">
+        <div class="relevance-label">
+          ✦ How much does this apply to your life?
+          <span class="relevance-val" id="relevanceVal">5</span>
+        </div>
+        <input type="range" class="relevance-slider" id="relevanceSlider" min="1" max="10" value="5"
+          oninput="document.getElementById('relevanceVal').textContent=this.value">
+        <div class="slider-ends"><span>Not at all</span><span>Very much</span></div>
+      </div>
+
+      <button class="btn-weave" id="submitAnswer">✦ Weave My Thread</button>
+      <div class="weave-saved" id="weaveSaved"></div>
+
+      <button class="btn-export btn-export-1" id="exportButton">📸 Export Textile as PNG</button>
+      <button class="btn-export btn-export-2" id="exportTiledButton">🔲 Export Tiled (3×3)</button>
+
+      <div class="pattern-select-wrap">
+        <div class="section-label">Weave Pattern</div>
+        <select class="pattern-select" id="weavePattern">
+          <option value="plain">Plain Weave</option>
+          <option value="twill" selected>Twill</option>
+          <option value="satin">Satin</option>
+          <option value="basket">Basket Weave</option>
+          <option value="pointed">Pointed Twill</option>
+          <option value="herringbone">Herringbone</option>
+          <option value="warp_rib">Warp Rib</option>
+          <option value="weft_rib">Weft Rib</option>
+          <option value="double">Double Cloth</option>
+        </select>
+      </div>
+
+      <div class="stats-grid">
+        <div class="stat-row"><span class="stat-lbl">Total Threads</span><span class="stat-val" id="totalThreads">0</span></div>
+        <div class="stat-row"><span class="stat-lbl">Unique Answers</span><span class="stat-val" id="uniqueAnswers">0</span></div>
+        <div class="stat-row"><span class="stat-lbl">Pattern Density</span><span class="stat-val" id="patternDensity">0%</span></div>
+      </div>
+
+      <div class="diversity-box">
+        <div class="diversity-lbl">Diversity Score</div>
+        <div class="diversity-val" id="diversityScore">0.00</div>
+      </div>
+
+      <button class="btn-admin" id="adminResetButton">🔒 Admin Reset</button>
+    </div>
+
+    <!-- weaving canvas -->
+    <div class="card weave-panel">
+      <div class="weave-panel-title">✦ Your Collective Weave</div>
+      <div id="weavingPattern"></div>
+    </div>
+
+  </div>
+
+  <!-- legend -->
+  <div class="card legend-card">
+    <div class="section-label">✦ Pattern Guide</div>
+    <div class="legend-grid">
+      <div class="legend-item"><strong>Thread Size:</strong> Determined by answer diversity — unique answers create larger data points</div>
+      <div class="legend-item"><strong>Placement:</strong> Random images (image01.png – image20.png) form the textile base</div>
+      <div class="legend-item"><strong>Pattern Type:</strong> Adapts between jacquard, plaid, herringbone, and twill based on diversity</div>
+      <div class="legend-item"><strong>Text:</strong> Each answer is woven into the textile and visible on every thread</div>
+    </div>
+  </div>
+
+  <!-- FINAL REFLECTION -->
+  <div class="reflection-card">
+    <div class="context-eyebrow">✦ CAREBOT-05 · After the Weave</div>
+    <div class="reflection-title">Look at the textile. What do you see?</div>
+    <div class="reflection-sub">Write a sentence or two — your reaction to the weave as a whole, or to any of the questions. What did you notice about whose voices are here, and whose aren't?</div>
+    <textarea class="reflection-textarea" id="reflectionText" placeholder="What does this textile tell you? Whose answers feel like yours? What's missing?"></textarea>
+    <div style="display:flex;justify-content:flex-end;margin-top:10px;">
+      <button class="btn-save" onclick="saveReflection()">Save reflection ✦</button>
+    </div>
+    <div class="reflection-saved" id="reflectionSaved"></div>
+  </div>
+
+  <!-- advance -->
+  <div class="advance-card">
+    <div class="advance-eyebrow">✦ CAREBOT-05 · Weaving Task</div>
+    <div class="advance-title">Ready for your next task? ✦</div>
+    <a class="btn-advance" href="hit.html" target="_blank" rel="noopener noreferrer">✦ Advance to next task</a>
+  </div>
+
+  <div class="wordmark">✦ carebot-05 / caretech research system · weaving diverse data · v2.0 ✦</div>
+</div>
+
+<script>
+const SESSION_ID = 'sess05-' + Math.random().toString(36).slice(2,10);
+
+// clock
+function updateClock(){const n=new Date(),p=v=>String(v).padStart(2,'0');document.getElementById('sysTime').textContent=`${p(n.getHours())}:${p(n.getMinutes())}:${p(n.getSeconds())}`;}
+setInterval(updateClock,1000);updateClock();
+
+// sparkles
+(function(){const wrap=document.getElementById('sparkles');const chars=['✦','✧','♡','˚','·','✿','◦','❀'];for(let i=0;i<28;i++){const s=document.createElement('span');s.className='sp';s.textContent=chars[Math.floor(Math.random()*chars.length)];s.style.left=Math.random()*100+'vw';s.style.bottom=Math.random()*-60+'px';s.style.fontSize=(9+Math.random()*10)+'px';s.style.color=`hsl(${315+Math.random()*45},75%,${65+Math.random()*22}%)`;s.style.animationDuration=(7+Math.random()*13)+'s';s.style.animationDelay=(Math.random()*13)+'s';wrap.appendChild(s);}})();
+
+// Firebase
+const firebaseConfig={apiKey:"AIzaSyAv7mCzyFnVE_pvLQyZsDacdqJo387oCts",authDomain:"weavingdiversedata.firebaseapp.com",projectId:"weavingdiversedata",storageBucket:"weavingdiversedata.firebasestorage.app",messagingSenderId:"331704605325",appId:"1:331704605325:web:69b17c5590bc12e8c7a0c4"};
+let db,answersCollection,reactionsCollection,reflectionsCollection,onlineCollection,myPresenceDoc;
+let isOnline=false;
+try{
+  firebase.initializeApp(firebaseConfig);
+  db=firebase.firestore();
+  answersCollection=db.collection('weavingAnswers');
+  reactionsCollection=db.collection('weavingReactions');
+  reflectionsCollection=db.collection('weavingReflections');
+  onlineCollection=db.collection('weavingOnline');
+  isOnline=true;
+}catch(e){isOnline=false;}
+
+if(isOnline){
+  myPresenceDoc=onlineCollection.doc();
+  myPresenceDoc.set({online:true,timestamp:firebase.firestore.FieldValue.serverTimestamp()});
+  window.addEventListener('beforeunload',()=>{if(myPresenceDoc)myPresenceDoc.delete().catch(()=>{});});
+  onlineCollection.onSnapshot(snap=>{document.getElementById('onlineCount').textContent=`👥 ${snap.size} weaving now`;});
+}else{document.getElementById('onlineCount').textContent='📴 Offline mode';}
+
+const TOTAL_IMAGES=20;
+const questions=[
+  "Does AI make you more efficient in your work?",
+  "Can AI perform the tasks that you need completed in your life?",
+  "Would a self-driving car help you?",
+  "Does technology improve your learning?",
+  "Do you feel in control of the technology you use daily?",
+  "Does social media give you power or take it away?",
+  "Can you customize your digital tools to fit your needs?",
+  "Do algorithms serve you or manipulate you?",
+  "Does automation free you or replace you?",
+  "Do you trust AI to make decisions that affect your life?"
+];
+
+let answers=[],currentQuestionIndex=0,answerImages={};
+
+const questionEl=document.getElementById('currentQuestion');
+const qNumEl=document.getElementById('qNum');
+const answerInput=document.getElementById('answerInput');
+const weavingPattern=document.getElementById('weavingPattern');
+
+if(isOnline){
+  answersCollection.orderBy('timestamp','asc').onSnapshot(snap=>{
+    answers=[];snap.forEach(d=>answers.push(d.data().answer));
+    updateWeaving();
+  });
+}
+
+// emotion tags
+document.getElementById('emotionTags').addEventListener('click',e=>{
+  const tag=e.target.closest('.etag');if(!tag)return;
+  tag.classList.toggle('selected');
+});
+function getSelectedEmotions(){return [...document.querySelectorAll('.etag.selected')].map(t=>t.dataset.val);}
+function resetEmotionTags(){document.querySelectorAll('.etag').forEach(t=>t.classList.remove('selected'));}
+
+function calculateDiversity(){
+  if(answers.length===0)return 0;
+  const unique=new Set(answers.map(a=>a.toLowerCase().trim()));
+  const ratio=unique.size/answers.length;
+  const lengths=answers.map(a=>a.length);
+  const avg=lengths.reduce((a,b)=>a+b,0)/lengths.length;
+  const variance=lengths.reduce((s,l)=>s+Math.pow(l-avg,2),0)/lengths.length;
+  return(ratio*.7+Math.min(variance/100,1)*.3).toFixed(2);
+}
+
+function getPatternIndex(x,y,weaveStyle,totalAnswers){
+  if(totalAnswers===0)return 0;
+  let p;
+  const cols=Math.floor(900/60);
+  switch(weaveStyle){
+    case'plain':p=Math.floor((x+y)/2)%totalAnswers;break;
+    case'twill':p=Math.floor((x+y)/2)%totalAnswers;break;
+    case'satin':p=Math.floor((x*3+y*5)/3)%totalAnswers;break;
+    case'basket':p=(Math.floor(x/2)+Math.floor(y/2))%totalAnswers;break;
+    case'pointed':{const h=4,z=(y%(h*2))<h?Math.floor((x+y)/2)%totalAnswers:Math.floor((x-y+100)/2)%totalAnswers;p=Math.abs(z)%totalAnswers;break;}
+    case'herringbone':{const dir=Math.floor(y/6)%2===0?1:-1;p=Math.floor((x+dir*y)/2)%totalAnswers;break;}
+    case'warp_rib':p=Math.floor(x/Math.max(1,Math.floor(cols/totalAnswers)))%totalAnswers;break;
+    case'weft_rib':p=Math.floor(y/Math.max(1,Math.floor(20/totalAnswers)))%totalAnswers;break;
+    case'double':p=(Math.floor(x/3)+Math.floor(y/3))%totalAnswers;break;
+    default:p=Math.floor((x+y)/2)%totalAnswers;
+  }
+  return Math.abs(Math.floor(p))%totalAnswers;
+}
+
+function updateWeaving(){
+  const weaveStyle=document.getElementById('weavePattern')?.value||'twill';
+  weavingPattern.innerHTML='';
+  if(answers.length===0){weavingPattern.style.minHeight='400px';return;}
+  answers.forEach(a=>{if(!answerImages[a])answerImages[a]=getRandomImage();});
+  const tileSize=60,cols=Math.floor(900/tileSize),rows=20,totalTiles=cols*rows;
+  weavingPattern.style.gridTemplateColumns=`repeat(${cols},${tileSize}px)`;
+  weavingPattern.style.gridAutoRows=`${tileSize}px`;
+  weavingPattern.style.minHeight=(rows*tileSize)+'px';
+  const assign=new Array(totalTiles);
+  for(let i=0;i<answers.length;i++)assign[Math.floor((i*totalTiles)/answers.length)]=i;
+  for(let i=0;i<totalTiles;i++){
+    if(assign[i]!==undefined)continue;
+    assign[i]=getPatternIndex(i%cols,Math.floor(i/cols),weaveStyle,answers.length);
+  }
+  for(let i=0;i<totalTiles;i++){
+    const a=answers[assign[i]];if(!a)continue;
+    const tile=document.createElement('div');tile.className='weave-tile';
+    const img=document.createElement('img');img.src=answerImages[a];img.alt='';img.loading='eager';tile.appendChild(img);
+    const ov=document.createElement('div');ov.className='tile-overlay';ov.textContent=a;tile.appendChild(ov);
+    weavingPattern.appendChild(tile);
+  }
+  document.getElementById('totalThreads').textContent=answers.length;
+  document.getElementById('uniqueAnswers').textContent=new Set(answers.map(a=>a.toLowerCase().trim())).size;
+  document.getElementById('patternDensity').textContent=Math.min(100,Math.round(answers.length*2.5))+'%';
+  document.getElementById('diversityScore').textContent=calculateDiversity();
+}
+
+function getRandomImage(){
+  const n=Math.floor(Math.random()*TOTAL_IMAGES)+1;
+  return`images/image${String(n).padStart(2,'0')}.png`;
+}
+
+function submitAnswer(){
+  const answer=answerInput.value.trim();
+  if(!answer){answerInput.style.borderColor='var(--hot)';setTimeout(()=>answerInput.style.borderColor='var(--border)',300);return;}
+  const emotions=getSelectedEmotions();
+  const relevance=parseInt(document.getElementById('relevanceSlider').value);
+  const questionText=questions[currentQuestionIndex];
+
+  // save answer to weave
+  if(isOnline){
+    answersCollection.add({answer,timestamp:firebase.firestore.FieldValue.serverTimestamp()}).catch(console.error);
+    // save enriched reaction
+    reactionsCollection.add({
+      answer, question:questionText, questionIndex:currentQuestionIndex,
+      emotions, relevance,
+      sessionId:SESSION_ID,
+      timestamp:firebase.firestore.FieldValue.serverTimestamp()
+    }).catch(console.error);
+  }else{answers.push(answer);updateWeaving();}
+
+  // show saved confirmation
+  document.getElementById('weaveSaved').textContent='✦ Thread woven.';
+  setTimeout(()=>document.getElementById('weaveSaved').textContent='',2500);
+
+  // advance
+  answerInput.value='';
+  resetEmotionTags();
+  document.getElementById('relevanceSlider').value=5;
+  document.getElementById('relevanceVal').textContent='5';
+  answerInput.focus();
+  currentQuestionIndex=(currentQuestionIndex+1)%questions.length;
+  questionEl.textContent=questions[currentQuestionIndex];
+  qNumEl.textContent=`Question ${currentQuestionIndex+1} of ${questions.length}`;
+}
+
+function saveReflection(){
+  const text=document.getElementById('reflectionText').value.trim();
+  if(!text){document.getElementById('reflectionSaved').textContent='Please write something first.';return;}
+  if(isOnline){
+    reflectionsCollection.add({
+      reflection:text,
+      totalAnswers:answers.length,
+      sessionId:SESSION_ID,
+      timestamp:firebase.firestore.FieldValue.serverTimestamp()
+    }).catch(console.error);
+  }
+  document.getElementById('reflectionSaved').textContent='✦ Saved — thank you.';
+  setTimeout(()=>document.getElementById('reflectionSaved').textContent='',3000);
+}
+
+function adminReset(){
+  const pw=prompt('Enter admin password:');
+  if(pw==='admin123'){
+    if(confirm('Delete ALL weaving data?')){
+      if(isOnline){
+        answersCollection.get().then(snap=>{const batch=firebase.firestore().batch();snap.forEach(d=>batch.delete(d.ref));return batch.commit();}).then(()=>{answers=[];updateWeaving();alert('Reset complete.');}).catch(console.error);
+      }else{answers=[];updateWeaving();alert('Local reset complete.');}
+    }
+  }else if(pw!==null){alert('Incorrect password.');}
+}
+
+async function exportTextile(){
+  const btn=document.getElementById('exportButton');const orig=btn.textContent;
+  btn.textContent='⏳ Capturing…';btn.disabled=true;
+  await new Promise(r=>setTimeout(r,1000));
+  try{
+    const canvas=await html2canvas(document.querySelector('.weave-panel'),{backgroundColor:'#0e0008',scale:6,useCORS:true,allowTaint:true,imageTimeout:20000,removeContainer:true});
+    canvas.toBlob(blob=>{const url=URL.createObjectURL(blob);const a=document.createElement('a');a.download=`weaving-textile-${new Date().toISOString().slice(0,19).replace(/:/g,'-')}.png`;a.href=url;a.click();URL.revokeObjectURL(url);btn.textContent='✅ Exported!';setTimeout(()=>{btn.textContent=orig;btn.disabled=false;},2000);},'image/png',1.0);
+  }catch(e){btn.textContent='❌ Failed';setTimeout(()=>{btn.textContent=orig;btn.disabled=false;},3000);}
+}
+
+async function exportTiledTextile(){
+  const btn=document.getElementById('exportTiledButton');const orig=btn.textContent;
+  btn.textContent='⏳ Tiling…';btn.disabled=true;
+  await new Promise(r=>setTimeout(r,1000));
+  try{
+    const single=await html2canvas(document.getElementById('weavingPattern'),{backgroundColor:'#0e0008',scale:4,useCORS:true,allowTaint:true,imageTimeout:20000,removeContainer:true});
+    const tiled=document.createElement('canvas');tiled.width=single.width*3;tiled.height=single.height*3;
+    const ctx=tiled.getContext('2d');ctx.fillStyle='#0e0008';ctx.fillRect(0,0,tiled.width,tiled.height);
+    for(let y=0;y<3;y++)for(let x=0;x<3;x++)ctx.drawImage(single,x*single.width,y*single.height,single.width,single.height);
+    tiled.toBlob(blob=>{const url=URL.createObjectURL(blob);const a=document.createElement('a');a.download=`weaving-tiled-${new Date().toISOString().slice(0,19).replace(/:/g,'-')}.png`;a.href=url;a.click();URL.revokeObjectURL(url);btn.textContent='✅ Done!';setTimeout(()=>{btn.textContent=orig;btn.disabled=false;},2000);},'image/png',1.0);
+  }catch(e){btn.textContent='❌ Failed';setTimeout(()=>{btn.textContent=orig;btn.disabled=false;},3000);}
+}
+
+document.getElementById('submitAnswer').addEventListener('click',submitAnswer);
+document.getElementById('exportButton').addEventListener('click',exportTextile);
+document.getElementById('exportTiledButton').addEventListener('click',exportTiledTextile);
+document.getElementById('adminResetButton').addEventListener('click',adminReset);
+document.getElementById('weavePattern').addEventListener('change',updateWeaving);
+answerInput.addEventListener('keypress',e=>{if(e.key==='Enter')submitAnswer();});
+answerInput.focus();
+</script>
+</body>
+</html>
