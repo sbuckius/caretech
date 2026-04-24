@@ -31,7 +31,6 @@
       const rows = snap.docs.map(d=>d.data());
       const lol        = rows.filter(r=>r.category==='lol');
       const industrial = rows.filter(r=>r.category==='industrial');
-      // Skill score: map tags to numeric skill level
       const skillMap={'unskilled':1,'semi-skilled':2,'highly skilled':3,'expert / specialized':4};
       const skillScore = arr => {
         const scores=[];
@@ -39,13 +38,11 @@
         return scores.length?scores.reduce((a,b)=>a+b,0)/scores.length:null;
       };
       const skillLabels=['','unskilled','semi-skilled','highly skilled','expert / specialized'];
-      // Top tags per category
       const topTags = arr => {
         const counts={};
         arr.forEach(r=>(r.tags||[]).forEach(t=>{counts[t]=(counts[t]||0)+1;}));
         return Object.entries(counts).sort((a,b)=>b[1]-a[1]).slice(0,5).map(([t,c])=>t+' ('+c+')').join(', ');
       };
-      // Per-image stats
       const byImage={};
       rows.forEach(r=>{
         if(!byImage[r.imageId]) byImage[r.imageId]={name:r.imageName,category:r.category,allTags:[],count:0};
@@ -72,6 +69,10 @@
       };
     } catch(err){ console.warn("Firebase read failed:",err.message); return null; }
   };
+
+  // Signal that the module has loaded and the function is ready
+  window._firebaseReady03 = true;
+  window.dispatchEvent(new Event('firebase03ready'));
 </script>
 
 <style>
@@ -380,11 +381,30 @@ const chatArea=document.getElementById('chatArea');
 const chatInput=document.getElementById('chatInput');
 const sendBtn=document.getElementById('sendBtn');
 
+// ── FIX: wait for the Firebase module to attach its function before calling it ──
+function waitForFirebase(timeout=5000){
+  return new Promise(resolve=>{
+    if(window._firebaseReady03){resolve();return;}
+    const onReady=()=>{window.removeEventListener('firebase03ready',onReady);resolve();};
+    window.addEventListener('firebase03ready',onReady);
+    // Hard timeout fallback — resolve anyway so the UI never stays stuck
+    setTimeout(()=>{window.removeEventListener('firebase03ready',onReady);resolve();},timeout);
+  });
+}
+
 async function loadData(){
-  if(typeof window._loadEstimateData03==='function') dbStats=await window._loadEstimateData03();
+  await waitForFirebase();
+  if(typeof window._loadEstimateData03==='function'){
+    dbStats=await window._loadEstimateData03();
+  }
+  // Always update the stat elements regardless of whether data loaded
   const r=document.getElementById('statResponses');
   const rt=document.getElementById('statRatio');
-  if(!dbStats){r.textContent='No data yet';rt.textContent='—';return;}
+  if(!dbStats||dbStats.totalResponses===0){
+    r.textContent='No data yet';
+    rt.textContent='—';
+    return;
+  }
   r.textContent=dbStats.totalResponses+' annotations · '+dbStats.totalParticipants+' participants';
   rt.textContent=dbStats.ratio?'Industrial valued '+dbStats.ratio+'× more than rope-memory labor':'Collecting data…';
 }
@@ -542,7 +562,14 @@ async function init(){
   if(dbStats&&dbStats.totalResponses>0) setTimeout(celebrate,400);
   chatInput.focus();
 }
-setTimeout(init,600);
+
+// No more arbitrary setTimeout — init runs as soon as the DOM is ready,
+// and loadData() inside it waits for Firebase via the event/flag approach.
+if(document.readyState==='loading'){
+  document.addEventListener('DOMContentLoaded',init);
+} else {
+  init();
+}
 </script>
 </body>
 </html>
