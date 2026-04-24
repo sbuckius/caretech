@@ -6,6 +6,8 @@
 <title>✦ CAREBOT-11 ✦ Replacement Cost</title>
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/p5@1.9.2/lib/p5.min.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
 <style>
   :root {
     --rose:#ff5c8a;--hot:#ff2d6b;--candy:#ff85b3;--blush:#ffb3cf;
@@ -231,6 +233,62 @@ const FOLDER_PATH="images/",FILE_PREFIX="replacemachine",FILE_EXT=".png",MAX_ATT
 let imgs=[],current=0,scaleInfo=null,finished=false,canvas,discovering=true;
 const amounts=[];
 
+/* ── Firebase ── */
+const SESSION_ID='cb11-'+Math.random().toString(36).slice(2,10);
+let _db,_fbReady=false;
+try{
+  firebase.initializeApp({
+    apiKey:"AIzaSyCZFDU-WlSmHqjXTs1Ox0nf9xeJU_xbaX0",
+    authDomain:"collaborativemashup.firebaseapp.com",
+    databaseURL:"https://collaborativemashup-default-rtdb.firebaseio.com",
+    projectId:"collaborativemashup",
+    storageBucket:"collaborativemashup.firebasestorage.app",
+    messagingSenderId:"562437984610",
+    appId:"1:562437984610:web:9f3711c26e097bc8ef9c3b"
+  });
+  _db=firebase.database();_fbReady=true;
+}catch(e){}
+
+function parseAmountToCents(str){
+  if(!str)return 0;
+  const num=parseFloat(str.replace(/[^0-9.]/g,''));
+  return isNaN(num)?0:Math.round(num*100);
+}
+
+function saveSession(){
+  if(!_fbReady||!_db)return;
+  const itemAmounts=amounts.map((a,i)=>({
+    imageIndex:i,
+    imageFilename:'replacemachine'+i+'.png',
+    rawInput:a||'',
+    cents:parseAmountToCents(a)
+  }));
+  const totalCents=itemAmounts.reduce((s,x)=>s+x.cents,0);
+  const payload={
+    sessionId:SESSION_ID,
+    totalImages:imgs.length,
+    totalCents,
+    totalDollars:parseFloat((totalCents/100).toFixed(2)),
+    items:itemAmounts,
+    completedAt:firebase.database.ServerValue.TIMESTAMP
+  };
+  _db.ref('replacementCostSessions').push(payload).catch(()=>{});
+
+  // also push per-item records for easy per-image aggregation
+  itemAmounts.forEach(item=>{
+    if(item.cents>0){
+      _db.ref('replacementCostItems').push({
+        sessionId:SESSION_ID,
+        imageIndex:item.imageIndex,
+        imageFilename:item.imageFilename,
+        cents:item.cents,
+        dollars:parseFloat((item.cents/100).toFixed(2)),
+        annotatedAt:firebase.database.ServerValue.TIMESTAMP
+      }).catch(()=>{});
+    }
+  });
+}
+
 function loadImageAsync(p){return new Promise((res,rej)=>{const im=loadImage(p,()=>res(im),()=>rej(new Error("x")));});}
 async function discoverImages(){
   let i=0;
@@ -256,7 +314,7 @@ function setup(){
     const v=moneyInput.value.trim();if(!hasNumber(v))return;
     amounts[current]=v;
     if(current<imgs.length-1){current++;updateScaleInfo();moneyInput.value='';nextBtn.disabled=true;setTimeout(()=>moneyInput.focus(),50);}
-    else{finished=true;nextBtn.disabled=true;moneyInput.disabled=true;showCompletion();}
+    else{finished=true;nextBtn.disabled=true;moneyInput.disabled=true;saveSession();showCompletion();}
   });
 
   document.querySelectorAll('.redirBtn').forEach(btn=>btn.addEventListener('click',()=>handleRedirect(btn)));

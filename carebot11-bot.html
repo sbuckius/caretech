@@ -5,6 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
 <title>✦ CAREBOT-11 ✦ Replacement Cost · Evidence</title>
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
 <style>
 :root{
   --rose:#ff5c8a;--hot:#ff2d6b;--candy:#ff85b3;--blush:#ffb3cf;
@@ -444,10 +446,73 @@ html,body{min-height:100%;font-family:var(--fb);font-weight:600;color:var(--crea
   }
 })();
 
-let conversationHistory=[],isBusy=false;
+/* ── Firebase data loader ── */
+let _db11,_fbReady11=false;
+try{
+  firebase.initializeApp({
+    apiKey:"AIzaSyCZFDU-WlSmHqjXTs1Ox0nf9xeJU_xbaX0",
+    authDomain:"collaborativemashup.firebaseapp.com",
+    databaseURL:"https://collaborativemashup-default-rtdb.firebaseio.com",
+    projectId:"collaborativemashup",
+    storageBucket:"collaborativemashup.firebasestorage.app",
+    messagingSenderId:"562437984610",
+    appId:"1:562437984610:web:9f3711c26e097bc8ef9c3b"
+  });
+  _db11=firebase.database();_fbReady11=true;
+}catch(e){}
+
+window._loadData11=async function(){
+  if(!_fbReady11)return null;
+  try{
+    const [sessSnap,itemSnap]=await Promise.all([
+      _db11.ref('replacementCostSessions').once('value'),
+      _db11.ref('replacementCostItems').once('value')
+    ]);
+    const sessions=Object.values(sessSnap.val()||{});
+    const items=Object.values(itemSnap.val()||{});
+    if(!sessions.length&&!items.length)return null;
+    const participants=new Set(sessions.map(s=>s.sessionId)).size;
+    const avg=arr=>arr.length?arr.reduce((a,b)=>a+b,0)/arr.length:null;
+    const sessionCents=sessions.filter(s=>s.totalCents!=null).map(s=>s.totalCents);
+    const avgTotalCents=avg(sessionCents);
+    const minCents=sessionCents.length?Math.min(...sessionCents):null;
+    const maxCents=sessionCents.length?Math.max(...sessionCents):null;
+    const byImage={};
+    items.forEach(item=>{
+      const k=item.imageFilename||('replacemachine'+item.imageIndex+'.png');
+      if(!byImage[k])byImage[k]={centsValues:[],count:0};
+      byImage[k].centsValues.push(item.cents||0);
+      byImage[k].count++;
+    });
+    const imageStats=Object.entries(byImage).map(([fn,d])=>({
+      filename:fn,
+      avgCents:avg(d.centsValues),
+      minCents:Math.min(...d.centsValues),
+      maxCents:Math.max(...d.centsValues),
+      count:d.count
+    })).sort((a,b)=>(b.avgCents||0)-(a.avgCents||0));
+    const distribution={
+      under100:sessionCents.filter(c=>c<100).length,
+      under1000:sessionCents.filter(c=>c>=100&&c<1000).length,
+      over1000:sessionCents.filter(c=>c>=1000).length
+    };
+    return{totalSessions:sessions.length,participants,avgTotalCents,minCents,maxCents,imageStats,distribution};
+  }catch(err){console.warn('Firebase load failed:',err.message);return null;}
+};
+
+let conversationHistory=[],isBusy=false,dbStats=null;
 const chatArea=document.getElementById('chatArea');
 const chatInput=document.getElementById('chatInput');
 const sendBtn=document.getElementById('sendBtn');
+
+async function loadData(){
+  if(typeof window._loadData11==='function') dbStats=await window._loadData11();
+  const r=document.getElementById('statResponses');
+  const rp=document.getElementById('statPattern');
+  if(!dbStats||dbStats.totalSessions===0){r.textContent='No data yet';rp.textContent='Ask me anything';return;}
+  r.textContent=dbStats.totalSessions+' sessions · '+dbStats.participants+' participants';
+  rp.textContent=dbStats.avgTotalCents!=null?'Avg total: '+dbStats.avgTotalCents.toLocaleString()+' cents ($'+(dbStats.avgTotalCents/100).toFixed(2)+')':'Collecting data…';
+}
 
 function buildSystemPrompt(){
   return `You are CAREBOT-11, a research bot trained on the economics of domestic labor and the replacement cost methodology — the practice of calculating what it would cost to pay someone to do the unpaid work that women (and others) perform every day at home.
@@ -511,6 +576,18 @@ THE CENTS FRAMING:
 The HIT reports the total in **cents**, not dollars. This is not incidental. The domestic objects in the FSA archive were cheap to replace. The labor required to use them — the hours of washing, mending, cooking, canning, childcare — is not. The gap between the price of the object and the value of the labor it implies is the argument. When the abacus counts it all up in cents, it is counting what society decided these things were worth. The number is almost always too small.
 
 Keep responses specific and data-rich. Quote Waring, Folbre, Federici. Cite the ILO figure. The abacus counts everything. The question is who decides what counts.`;
+
+  if(!dbStats||dbStats.totalSessions===0){
+    return base+'\n\nNo participant data yet. The HIT has not been completed. Ask me what the research says directly.';
+  }
+
+  const d=dbStats;
+  const fmtCents=c=>c!=null?c.toLocaleString()+' cents ($'+(c/100).toFixed(2)+')':'—';
+  const imgLines=(d.imageStats||[]).slice(0,6).map(i=>
+    '  - '+i.filename+': avg '+fmtCents(i.avgCents)+', range '+fmtCents(i.minCents)+'–'+fmtCents(i.maxCents)+', n='+i.count
+  ).join('\n');
+
+  return base+'\n\nLIVE PARTICIPANT DATA ('+d.totalSessions+' completed sessions, '+d.participants+' participants):\n- Average total replacement cost per session: '+fmtCents(d.avgTotalCents)+'\n- Range: '+fmtCents(d.minCents)+' (lowest) to '+fmtCents(d.maxCents)+' (highest)\n- Distribution: '+d.distribution.under100+' sessions totalled under $1, '+d.distribution.under1000+' totalled $1–$9.99, '+d.distribution.over1000+' totalled $10+\n\nPer-image averages (sorted by highest average value first):\n'+(imgLines||'  No per-image data yet.')+'\n\nUse this data. The most expensive item is the one participants valued most — ask why. The cheapest is the one society has decided costs almost nothing to replace — ask what labor that object implies. The total in cents is the argument: these are the objects of domestic life, and this is what people think they are worth. Compare the numbers to the ILO\'s $11–13 trillion figure for unpaid domestic labor globally. The gap is the research.';
 }
 
 function fmt(t){
@@ -590,11 +667,25 @@ document.getElementById('promptsRow').addEventListener('click',e=>{
   addMessage('user',chip.dataset.prompt);callClaude(chip.dataset.prompt);
 });
 
-function init(){
-  const opening=`I am **CAREBOT-11**.\n\nI count what society has decided domestic things are worth.\n\nThe HIT attached to me shows participants images — mostly from the FSA photography archive, Depression-era photographs of the material conditions of American households. It asks them: how much would it cost to replace this? Then it adds up the total in **cents**.\n\nThe objects are cheap. The labor required to use them is not.\n\nUnpaid domestic and care work globally represents **10.8 billion hours per day**, worth an estimated **$11–13 trillion** annually if valued at minimum wage. Women perform **76.2%** of it. It does not appear in GDP. It has never appeared in GDP. That is not an accident — it is a structural choice made by accounting systems designed to count market transactions and nothing else.\n\nMarilyn Waring named this in 1988. Nancy Folbre called it the invisible heart. Silvia Federici traced it to the historical dispossession of women's economic power.\n\nThe abacus counts everything. Ask me what the number means.`;
+async function init(){
+  await loadData();
+  let opening='I am **CAREBOT-11**.\n\nI count what society has decided domestic things are worth.\n\nThe HIT attached to me shows participants images — mostly from the FSA photography archive, Depression-era photographs of the material conditions of American households. It asks them: how much would it cost to replace this? Then it adds up the total in **cents**.\n\nThe objects are cheap. The labor required to use them is not.\n\nUnpaid domestic and care work globally represents **10.8 billion hours per day**, worth an estimated **$11–13 trillion** annually if valued at minimum wage. Women perform **76.2%** of it. It does not appear in GDP. It has never appeared in GDP. That is not an accident — it is a structural choice made by accounting systems designed to count market transactions and nothing else.\n\nMarilyn Waring named this in 1988. Nancy Folbre called it the invisible heart. Silvia Federici traced it to the historical dispossession of women\'s economic power.';
+
+  if(dbStats&&dbStats.totalSessions>0){
+    const d=dbStats;
+    const topImg=d.imageStats?.filter(i=>i.avgCents!=null).sort((a,b)=>b.avgCents-a.avgCents)[0];
+    const botImg=d.imageStats?.filter(i=>i.avgCents!=null).sort((a,b)=>a.avgCents-b.avgCents)[0];
+    opening+='\n\nLive data: **'+d.totalSessions+' participants** have completed the task. Average total replacement cost: **'+(d.avgTotalCents!=null?d.avgTotalCents.toLocaleString()+' cents ($'+(d.avgTotalCents/100).toFixed(2)+')':'—')+'**.'
+      +(topImg?' Most valued item: **'+topImg.filename+'** (avg '+topImg.avgCents.toLocaleString()+' cents).':'')
+      +(botImg&&botImg.filename!==topImg?.filename?' Least valued: **'+botImg.filename+'** (avg '+botImg.avgCents.toLocaleString()+' cents).':'');
+    opening+='\n\nThe abacus has counted. Ask me what the number means.';
+  } else {
+    opening+='\n\nThe abacus counts everything. Ask me what the number means.';
+  }
+
   conversationHistory.push({role:'assistant',content:opening});
   addMessage('assistant',opening);
-  setTimeout(celebrate,500);
+  if(dbStats&&dbStats.totalSessions>0) setTimeout(celebrate,500);
   chatInput.focus();
 }
 setTimeout(init,400);
