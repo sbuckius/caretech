@@ -1,0 +1,423 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>✦ CAREBOT-12 ✦ Machine Labor</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/p5@1.9.2/lib/p5.min.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+<style>
+  :root {
+    --rose:#ff5c8a;--hot:#ff2d6b;--candy:#ff85b3;--blush:#ffb3cf;
+    --cream:#fff5f8;--berry:#c4005a;--crimson:#c4003e;--scarlet:#ff1133;
+    --maroon:#6f001e;--fuchsia:#ff1f80;--bg:#12000a;
+    --card:rgba(255,255,255,.055);--card-border:rgba(255,140,180,.22);
+    --card-border-bright:rgba(255,80,140,.55);
+    --soft-glow:0 4px 30px rgba(220,0,60,.22),0 1px 0 rgba(255,140,180,.1) inset;
+    --pop-glow:0 6px 44px rgba(220,0,60,.4),0 0 80px rgba(200,0,50,.15);
+    --text-dim:rgba(255,180,210,.55);
+  }
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+  html,body{min-height:100%;font-family:'Quicksand',sans-serif;font-weight:600;color:var(--cream);background:var(--bg);-webkit-overflow-scrolling:touch;cursor:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 20 20'%3E%3Ccircle cx='10' cy='10' r='4' fill='%23ff1133' opacity='.9'/%3E%3Ccircle cx='10' cy='10' r='7' stroke='%23ff5c8a' stroke-width='1.5' fill='none' opacity='.6'/%3E%3C/svg%3E") 10 10,crosshair;}
+
+  .bg{position:fixed;inset:0;z-index:0;pointer-events:none;background:radial-gradient(ellipse 65% 50% at 85% 10%,rgba(200,0,40,.38) 0%,transparent 58%),radial-gradient(ellipse 55% 60% at 15% 85%,rgba(140,0,30,.32) 0%,transparent 58%),radial-gradient(ellipse 80% 35% at 50% 105%,rgba(100,0,20,.22) 0%,transparent 55%),linear-gradient(155deg,#1a0008,#120006 50%,#0c0004);}
+  .orb{position:fixed;border-radius:50%;pointer-events:none;z-index:0;filter:blur(60px);}
+  .orb-1{width:420px;height:420px;background:var(--crimson);opacity:.2;top:-90px;right:-80px;animation:drift1 19s ease-in-out infinite;}
+  .orb-2{width:340px;height:340px;background:var(--maroon);opacity:.22;bottom:-70px;left:-60px;animation:drift2 23s ease-in-out infinite;}
+  .orb-3{width:220px;height:220px;background:var(--scarlet);opacity:.12;top:38%;left:62%;animation:drift3 15s ease-in-out infinite;}
+  @keyframes drift1{0%,100%{transform:translate(0,0)}50%{transform:translate(-40px,28px)}}
+  @keyframes drift2{0%,100%{transform:translate(0,0)}50%{transform:translate(32px,-20px)}}
+  @keyframes drift3{0%,100%{transform:translate(0,0)}33%{transform:translate(-18px,14px)}66%{transform:translate(14px,-10px)}}
+  .sparkles{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden;}
+  .sp{position:absolute;opacity:0;animation:floatUp linear infinite;}
+  @keyframes floatUp{0%{opacity:0;transform:translateY(0) scale(.6) rotate(0deg)}15%{opacity:.65}85%{opacity:.35}100%{opacity:0;transform:translateY(-120px) scale(1.1) rotate(180deg)}}
+
+  .wrap{position:relative;z-index:2;max-width:1000px;margin:0 auto;padding:max(20px,env(safe-area-inset-top)) clamp(12px,3vmin,24px) calc(60px + env(safe-area-inset-bottom)) clamp(12px,3vmin,24px);display:grid;gap:16px;}
+
+  .mascot-bar{display:flex;align-items:center;justify-content:space-between;}
+  .mascot{display:flex;align-items:center;gap:10px;}
+  .bot-face{width:44px;height:44px;border-radius:14px;background:linear-gradient(135deg,rgba(220,0,60,.28),rgba(160,0,30,.38));border:1.5px solid var(--card-border-bright);box-shadow:var(--soft-glow);display:flex;align-items:center;justify-content:center;font-size:22px;animation:wobble 4s ease-in-out infinite;flex-shrink:0;}
+  @keyframes wobble{0%,100%{transform:rotate(-2deg) scale(1)}25%{transform:rotate(1deg) scale(1.04)}50%{transform:rotate(-1deg) scale(1)}75%{transform:rotate(2deg) scale(1.03)}}
+  .bot-name{font-family:'Nunito',sans-serif;font-weight:900;font-size:17px;letter-spacing:.04em;background:linear-gradient(90deg,var(--blush),var(--scarlet) 50%,var(--candy));-webkit-background-clip:text;background-clip:text;color:transparent;}
+  .bot-sub{font-size:10px;letter-spacing:.15em;text-transform:uppercase;color:var(--text-dim);margin-top:1px;}
+  .time-badge{display:flex;align-items:center;gap:6px;padding:6px 12px;border-radius:999px;background:rgba(255,255,255,.04);border:1px solid var(--card-border);font-size:11px;letter-spacing:.1em;color:var(--text-dim);}
+  .time-pip{width:5px;height:5px;border-radius:50%;background:var(--scarlet);box-shadow:0 0 6px var(--scarlet);animation:breathe 2s ease-in-out infinite;}
+  @keyframes breathe{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.3;transform:scale(.65)}}
+
+  /* context banner */
+  .context-banner{background:rgba(10,0,5,.78);border:1.5px solid var(--card-border-bright);border-radius:24px;box-shadow:var(--pop-glow),inset 0 1px 0 rgba(255,140,180,.06);backdrop-filter:blur(20px) saturate(1.4);padding:24px 26px;position:relative;overflow:hidden;}
+  .context-banner::before{content:'';position:absolute;top:0;left:12%;right:12%;height:1.5px;background:linear-gradient(90deg,transparent,var(--rose) 35%,var(--scarlet) 50%,var(--rose) 65%,transparent);box-shadow:0 0 12px var(--rose);border-radius:999px;}
+  .banner-eyebrow{font-size:9px;letter-spacing:.22em;text-transform:uppercase;color:var(--rose);font-weight:800;margin-bottom:8px;}
+  .banner-title{font-family:'Nunito',sans-serif;font-weight:900;font-size:clamp(15px,3vw,20px);background:linear-gradient(120deg,var(--cream) 15%,var(--blush) 50%,var(--scarlet) 90%);-webkit-background-clip:text;background-clip:text;color:transparent;margin-bottom:10px;line-height:1.3;}
+  .banner-text{font-size:13px;color:rgba(255,200,218,.8);line-height:1.75;}
+  .banner-text strong{color:var(--blush);}
+
+  .app{background:var(--card);border:1.5px solid var(--card-border);border-radius:24px;box-shadow:var(--soft-glow);backdrop-filter:blur(20px) saturate(1.5);overflow:hidden;position:relative;}
+  .app::before{content:'';position:absolute;top:0;left:16px;right:16px;height:1px;background:linear-gradient(90deg,transparent,var(--rose) 30%,var(--scarlet) 50%,var(--rose) 70%,transparent);box-shadow:0 0 10px var(--rose);border-radius:999px;}
+
+  .task-header{padding:20px 22px 18px;border-bottom:1px solid rgba(220,100,130,.1);display:grid;gap:12px;}
+  .task-title{font-family:'Nunito',sans-serif;font-weight:800;font-size:clamp(13px,2vw,16px);line-height:1.6;color:var(--cream);}
+  .task-meta{display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+  .meta-chip{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:999px;background:rgba(220,80,120,.08);border:1px solid rgba(220,80,120,.18);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--text-dim);}
+  .meta-chip .dot{width:4px;height:4px;border-radius:50%;background:var(--rose);}
+  .progress-row{display:flex;align-items:center;gap:10px;}
+  .progress-track{flex:1;height:6px;border-radius:999px;background:rgba(220,80,120,.1);border:1px solid rgba(220,80,120,.15);overflow:visible;position:relative;}
+  .progress-fill{height:100%;width:0%;border-radius:999px;background:linear-gradient(90deg,var(--maroon),var(--crimson),var(--scarlet),var(--rose));box-shadow:0 0 10px var(--scarlet);transition:width .5s cubic-bezier(.34,1.56,.64,1);position:relative;}
+  .progress-fill::after{content:'✦';position:absolute;right:-8px;top:50%;transform:translateY(-50%);font-size:10px;color:var(--rose);filter:drop-shadow(0 0 4px var(--rose));animation:spinStar 3s linear infinite;}
+  @keyframes spinStar{to{transform:translateY(-50%) rotate(360deg)}}
+  #progressText{font-size:11px;color:var(--text-dim);white-space:nowrap;letter-spacing:.06em;}
+
+  .canvas-shell{position:relative;width:100%;height:clamp(260px,58svh,530px);background:rgba(8,0,3,.92);touch-action:none;border-top:1px solid rgba(220,80,120,.08);border-bottom:1px solid rgba(220,80,120,.08);cursor:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 20 20'%3E%3Ccircle cx='10' cy='10' r='4' fill='%23ff1133' opacity='.9'/%3E%3Ccircle cx='10' cy='10' r='7' stroke='%23ff5c8a' stroke-width='1.5' fill='none' opacity='.6'/%3E%3C/svg%3E") 10 10,crosshair;}
+  canvas{display:block;width:100%;height:100%;}
+  .canvas-shell::after{content:'';position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse 85% 85% at 50% 50%,transparent 50%,rgba(8,0,3,.78) 100%);}
+
+  .app-footer{padding:14px 20px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;border-top:1px solid rgba(220,80,120,.08);}
+  .hint-row{display:flex;gap:6px;flex-wrap:wrap;}
+  .hint-pill{padding:5px 10px;border-radius:999px;background:rgba(220,80,120,.07);border:1px solid rgba(220,80,120,.16);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--text-dim);}
+  .hint-pill b{color:var(--rose);}
+  .btn-row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;}
+
+  .btn{appearance:none;font-family:'Quicksand',sans-serif;font-weight:700;font-size:12px;letter-spacing:.06em;color:var(--cream);cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:6px;padding:9px 16px;border-radius:14px;min-height:38px;border:1.5px solid var(--card-border);background:rgba(220,0,60,.1);transition:all .2s cubic-bezier(.34,1.56,.64,1);-webkit-tap-highlight-color:transparent;position:relative;overflow:hidden;}
+  .btn::before{content:'';position:absolute;inset:0;border-radius:inherit;background:linear-gradient(135deg,rgba(255,255,255,.08),transparent);pointer-events:none;}
+  .btn:hover:not([disabled]){transform:translateY(-2px) scale(1.03);box-shadow:0 8px 24px rgba(220,0,60,.3);border-color:var(--card-border-bright);background:rgba(220,0,60,.2);}
+  .btn:active:not([disabled]){transform:translateY(0) scale(.97);}
+  .btn.primary{background:linear-gradient(135deg,rgba(220,0,60,.6),rgba(140,0,30,.65));border-color:var(--crimson);box-shadow:0 4px 20px rgba(220,0,60,.3),inset 0 1px 0 rgba(255,255,255,.12);}
+  .btn.primary:hover:not([disabled]){background:linear-gradient(135deg,rgba(255,20,60,.75),rgba(160,0,40,.75));box-shadow:0 8px 32px rgba(220,0,60,.45);}
+  .btn.soft{background:rgba(255,255,255,.05);border-color:rgba(255,140,170,.15);color:var(--text-dim);}
+  .btn.soft:hover:not([disabled]){background:rgba(220,0,60,.12);border-color:var(--card-border);color:var(--blush);}
+  .btn.ref{background:rgba(220,0,60,.08);border-color:rgba(220,80,120,.25);color:rgba(255,180,200,.7);}
+  .btn.ref:hover:not([disabled]){background:rgba(220,0,60,.18);border-color:var(--card-border-bright);color:var(--blush);}
+  .btn[disabled]{opacity:.28;cursor:not-allowed;transform:none!important;box-shadow:none!important;}
+
+  .pop-msg{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);background:rgba(14,0,6,.95);color:var(--blush);border:1.5px solid var(--card-border-bright);box-shadow:var(--pop-glow);padding:10px 20px;border-radius:14px;backdrop-filter:blur(16px);font-size:12px;letter-spacing:.04em;display:none;z-index:9999;}
+  .pop-msg.show{display:block;}
+
+  .overlay-shell{position:fixed;inset:0;z-index:9000;background:rgba(8,0,3,.84);backdrop-filter:blur(14px);display:none;place-items:center;}
+  .overlay-shell.open{display:grid;}
+  .redir-card{width:min(100vw - 28px,1000px);height:min(100vh - 28px,720px);background:rgba(14,0,6,.95);border:1.5px solid var(--card-border);box-shadow:var(--soft-glow);border-radius:20px;overflow:hidden;display:grid;grid-template-rows:auto 1fr auto;}
+  .redir-header{display:flex;align-items:center;justify-content:space-between;padding:12px 18px;border-bottom:1px solid rgba(220,80,120,.1);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--text-dim);}
+  .redir-countdown{background:rgba(220,0,60,.1);border:1px solid var(--card-border);border-radius:8px;padding:4px 10px;color:var(--rose);}
+  .redir-card iframe{width:100%;height:100%;border:0;}
+  .redir-footer{display:flex;justify-content:flex-end;gap:8px;padding:10px 18px;border-top:1px solid rgba(220,80,120,.1);}
+
+  #completionSlot .completion-card{background:rgba(14,0,6,.88);border:1.5px solid var(--card-border-bright);box-shadow:var(--pop-glow),inset 0 1px 0 rgba(255,140,180,.06);border-radius:24px;padding:38px 28px;text-align:center;position:relative;overflow:hidden;backdrop-filter:blur(20px);}
+  #completionSlot .completion-card::before{content:'';position:absolute;top:0;left:12%;right:12%;height:1.5px;background:linear-gradient(90deg,transparent,var(--rose) 35%,var(--scarlet) 50%,var(--rose) 65%,transparent);box-shadow:0 0 10px var(--rose);border-radius:999px;}
+  .c-eyebrow{font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--text-dim);margin-bottom:10px;}
+  #completionSlot .completion-card h2{font-family:'Nunito',sans-serif;font-weight:900;font-size:clamp(22px,4vw,34px);background:linear-gradient(100deg,var(--blush) 20%,var(--scarlet) 55%,var(--rose));-webkit-background-clip:text;background-clip:text;color:transparent;margin-bottom:14px;}
+  #completionSlot .completion-card p{font-size:clamp(12px,1.8vw,14px);color:rgba(255,190,210,.65);line-height:1.8;margin-bottom:24px;max-width:520px;margin-left:auto;margin-right:auto;}
+  .stat-bubble{display:inline-flex;flex-direction:column;align-items:center;gap:4px;background:linear-gradient(135deg,rgba(220,0,60,.15),rgba(160,0,30,.2));border:1.5px solid var(--card-border-bright);border-radius:20px;padding:16px 32px;margin-bottom:8px;box-shadow:0 4px 30px rgba(220,0,60,.25),inset 0 1px 0 rgba(255,255,255,.06);}
+  .stat-number{font-family:'Nunito',sans-serif;font-weight:900;font-size:clamp(38px,7vw,60px);line-height:1;background:linear-gradient(135deg,var(--blush) 20%,var(--scarlet) 55%,var(--crimson));-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 0 14px rgba(220,0,60,.45));}
+  .stat-label{font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--text-dim);}
+  .stat-raw{font-size:11px;color:rgba(255,160,190,.3);letter-spacing:.04em;margin-bottom:26px;}
+</style>
+</head>
+<body>
+<div class="bg"></div>
+<div class="orb orb-1"></div><div class="orb orb-2"></div><div class="orb orb-3"></div>
+<div class="sparkles" id="sparkles"></div>
+
+<main class="wrap">
+
+  <div class="mascot-bar">
+    <div class="mascot">
+      <div class="bot-face">⚙️</div>
+      <div>
+        <div class="bot-name">CAREBOT-12 ✦</div>
+        <div class="bot-sub">Machine Labor Analysis · Online</div>
+      </div>
+    </div>
+    <div class="time-badge"><div class="time-pip"></div><span id="sysTime">--:--:--</span></div>
+  </div>
+
+  <!-- CONTEXT BANNER (replaces video) -->
+  <div class="context-banner">
+    <div class="banner-eyebrow">✦ CAREBOT-12 · Task Briefing</div>
+    <div class="banner-title">⚠️ These are photographs of people doing work with machines.</div>
+    <div class="banner-text">
+      Each image below is drawn from the <strong>FSA/OWI photography archive</strong> at the Library of Congress — documentary photographs of American labor, mostly from the 1930s–1940s. Your task is simple: <strong>draw a box around every person doing work with a machine</strong>. You must box at least one person to advance. Your annotations reveal who gets counted as a machine worker — and who doesn't.
+    </div>
+  </div>
+
+  <!-- TASK CARD -->
+  <section class="app" aria-label="Machine Labor Task">
+
+    <header class="task-header">
+      <div class="task-title">✦ Draw a box around every person doing work with a machine.</div>
+      <div class="task-meta">
+        <div class="meta-chip"><div class="dot"></div>Module: Machine Labor</div>
+        <div class="meta-chip"><div class="dot"></div>Active</div>
+      </div>
+      <div class="progress-row">
+        <span id="progressText">Waiting for input ✦</span>
+        <div class="progress-track"><div class="progress-fill" id="progressBar"></div></div>
+      </div>
+    </header>
+
+    <div class="canvas-shell">
+      <div id="canvasHolder" style="position:absolute;inset:0;"></div>
+    </div>
+
+    <footer class="app-footer">
+      <div class="hint-row">
+        <div class="hint-pill">Drag → draw rect</div>
+        <div class="hint-pill">Undo <b>Z</b></div>
+        <div class="hint-pill">Next <b>N</b></div>
+      </div>
+      <div class="btn-row">
+        <button class="btn ref redirBtn" type="button" data-url="https://www.loc.gov/item/2017861340/" data-seconds="3">Machine 1</button>
+        <button class="btn ref redirBtn" type="button" data-url="https://www.loc.gov/item/2017861431/" data-seconds="3">Machine 2</button>
+        <button class="btn ref redirBtn" type="button" data-url="https://www.loc.gov/item/2017864551/" data-seconds="3">Machine 3</button>
+        <button id="undo" class="btn soft" type="button">Undo</button>
+        <button id="next" class="btn primary" type="button" disabled>Next ✦</button>
+      </div>
+    </footer>
+
+  </section>
+
+  <div id="completionSlot"></div>
+</main>
+
+<div id="popupMsg" class="pop-msg">🌸 Pop-up blocked — please allow pop-ups!</div>
+
+<div id="redirOverlay" class="overlay-shell" role="dialog" aria-modal="true">
+  <div class="redir-card">
+    <div class="redir-header">
+      <span>✦ Loading external reference…</span>
+      <div class="redir-countdown">Auto-close <span id="countdown">3</span>s</div>
+    </div>
+    <iframe id="redirFrame" title="External page preview"></iframe>
+    <div class="redir-footer">
+      <a id="redirDirectLink" class="btn soft" href="#" target="_blank" rel="noopener" style="text-decoration:none;">Open in new tab</a>
+      <a id="closeOverlayBtn" class="btn soft" href="#" role="button" style="text-decoration:none;">Close</a>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  const wrap=document.getElementById('sparkles');
+  const chars=['✦','✧','·','˚','◦','×','+','❋'];
+  for(let i=0;i<28;i++){
+    const s=document.createElement('span');s.className='sp';
+    s.textContent=chars[Math.floor(Math.random()*chars.length)];
+    s.style.left=Math.random()*100+'vw';s.style.bottom=Math.random()*-60+'px';
+    s.style.fontSize=(9+Math.random()*10)+'px';
+    s.style.color=`hsl(${340+Math.random()*30},75%,${60+Math.random()*25}%)`;
+    s.style.animationDuration=(6+Math.random()*13)+'s';
+    s.style.animationDelay=(Math.random()*12)+'s';
+    wrap.appendChild(s);
+  }
+})();
+
+function updateClock(){const n=new Date(),p=v=>String(v).padStart(2,'0');document.getElementById('sysTime').textContent=`${p(n.getHours())}:${p(n.getMinutes())}:${p(n.getSeconds())}`;}
+setInterval(updateClock,1000);updateClock();
+
+const FOLDER_PATH="images/",FILE_PREFIX="machine",FILE_EXT=".png",MAX_ATTEMPTS=500;
+let imgs=[],imgMeta=[],current=0,dragging=false,dragStart=null,tempRect=null,scaleInfo=null,finished=false,canvas;
+let discovering=true;
+
+/* ── Firebase ── */
+const SESSION_ID='cb12-'+Math.random().toString(36).slice(2,10);
+let _db,_fbReady=false;
+try{
+  firebase.initializeApp({
+    apiKey:"AIzaSyCZFDU-WlSmHqjXTs1Ox0nf9xeJU_xbaX0",
+    authDomain:"collaborativemashup.firebaseapp.com",
+    databaseURL:"https://collaborativemashup-default-rtdb.firebaseio.com",
+    projectId:"collaborativemashup",
+    storageBucket:"collaborativemashup.firebasestorage.app",
+    messagingSenderId:"562437984610",
+    appId:"1:562437984610:web:9f3711c26e097bc8ef9c3b"
+  });
+  _db=firebase.database();_fbReady=true;
+}catch(e){}
+
+function saveImageAnnotation(imgIndex){
+  if(!_fbReady||!_db)return;
+  const img=imgs[imgIndex];
+  const meta=imgMeta[imgIndex];
+  if(!meta||!meta.boxes.length)return;
+  const imgArea=img?img.width*img.height:0;
+  const boxArea=meta.boxes.reduce((s,r)=>s+r.w*r.h,0);
+  const payload={
+    sessionId:SESSION_ID,
+    imageIndex:imgIndex,
+    imageFilename:`machine${imgIndex}.png`,
+    boxCount:meta.boxes.length,
+    boxArea:Math.round(boxArea),
+    imageArea:Math.round(imgArea),
+    pctBoxed:imgArea>0?parseFloat(((boxArea/imgArea)*100).toFixed(3)):0,
+    boxes:meta.boxes.map(r=>({x:Math.round(r.x),y:Math.round(r.y),w:Math.round(r.w),h:Math.round(r.h)})),
+    annotatedAt:firebase.database.ServerValue.TIMESTAMP
+  };
+  _db.ref('machineLaborAnnotations').push(payload).catch(()=>{});
+}
+
+function saveSessionSummary(){
+  if(!_fbReady||!_db)return;
+  const totalBox=calcTotalBoxArea(),totalImg=calcTotalImageArea();
+  const payload={
+    sessionId:SESSION_ID,
+    totalImages:imgs.length,
+    annotatedImages:imgMeta.filter(m=>m.boxes.length>0).length,
+    totalBoxArea:Math.round(totalBox),
+    totalImageArea:Math.round(totalImg),
+    pctBoxed:totalImg>0?parseFloat(((totalBox/totalImg)*100).toFixed(3)):0,
+    completedAt:firebase.database.ServerValue.TIMESTAMP
+  };
+  _db.ref('machineLaborSessions').push(payload).catch(()=>{});
+}
+
+function loadImageAsync(p){return new Promise((res,rej)=>{const im=loadImage(p,()=>res(im),()=>rej(new Error("x")));});}
+async function discoverImages(){
+  let i=0;
+  try{for(;i<MAX_ATTEMPTS;i++){const img=await loadImageAsync(`${FOLDER_PATH}${FILE_PREFIX}${i}${FILE_EXT}`);imgs.push(img);imgMeta.push({boxes:[]});}}
+  catch(e){}finally{discovering=false;}
+}
+
+function calcTotalBoxArea(){let t=0;for(const m of imgMeta)for(const r of m.boxes)t+=r.w*r.h;return t;}
+function calcTotalImageArea(){let t=0;for(const img of imgs)if(img)t+=img.width*img.height;return t;}
+function formatPercent(ratio){const p=ratio*100;if(p<0.01)return"<0.01%";return parseFloat(p.toFixed(2))+"%";}
+
+function setup(){
+  const holder=document.getElementById('canvasHolder');
+  pixelDensity(window.devicePixelRatio||1);
+  canvas=createCanvas(holder.clientWidth,holder.clientHeight);
+  canvas.parent('canvasHolder');
+  canvas.elt.oncontextmenu=e=>e.preventDefault();
+  colorMode(HSB,360,100,100,1);
+  new ResizeObserver(()=>{resizeCanvas(holder.clientWidth,holder.clientHeight);updateScaleInfo();}).observe(holder);
+  document.getElementById('undo').onclick=undoLast;
+  document.getElementById('next').onclick=nextImage;
+  document.querySelectorAll('.redirBtn').forEach(btn=>btn.addEventListener('click',()=>handleRedirect(btn)));
+  (async()=>{await discoverImages();updateScaleInfo();})();
+}
+
+function draw(){
+  background(350,25,5);
+  if(discovering){drawMsg("✦ Scanning for images…");return;}
+  if(imgs.length===0){drawMsg("No images found in images/");return;}
+  if(finished){drawMsg("✦ Task complete! See results below ✦");return;}
+  const img=imgs[current];if(!img){drawMsg("Loading…");return;}
+  updateScaleInfo();
+  image(img,scaleInfo.x,scaleInfo.y,scaleInfo.w,scaleInfo.h);
+  push();noFill();strokeWeight(Math.max(1,2*(width/1024)));
+  for(const r of imgMeta[current].boxes){
+    const{x,y,w,h}=imgRectToCanvas(r);
+    stroke(350,60,95,.85);rect(x,y,w,h);
+    stroke(350,15,100,1);rect(x,y,w,h);
+  }pop();
+  if(dragging&&tempRect){
+    push();noFill();strokeWeight(1.5);stroke(350,20,100,.8);
+    drawingContext.setLineDash([6,5]);
+    rect(tempRect.x,tempRect.y,tempRect.w,tempRect.h);
+    drawingContext.setLineDash([]);pop();
+  }
+  const pct=imgs.length>1?(current/(imgs.length-1))*100:0;
+  document.getElementById('progressBar').style.width=pct+'%';
+  document.getElementById('progressText').textContent=`${current+1} / ${imgs.length}  ✦  ${imgMeta[current].boxes.length} box${imgMeta[current].boxes.length===1?'':'es'}`;
+}
+function drawMsg(m){push();fill(350,18,72);noStroke();textAlign(CENTER,CENTER);textFont('Quicksand,sans-serif');textSize(14);text(m,width/2,height/2);pop();}
+
+function mousePressed(){if(finished)return;if(!inside(mouseX,mouseY))return;dragging=true;dragStart={x:mouseX,y:mouseY};tempRect={x:mouseX,y:mouseY,w:0,h:0};return false;}
+function mouseDragged(){if(!dragging)return;tempRect.w=mouseX-dragStart.x;tempRect.h=mouseY-dragStart.y;return false;}
+function mouseReleased(){
+  if(!dragging)return;dragging=false;
+  const n=normalizeRect(tempRect);tempRect=null;
+  const cl=clampRectToImage(n);if(cl.w<10||cl.h<10)return;
+  imgMeta[current].boxes.push(canvasRectToImg(cl));updateUI();return false;
+}
+function touchStarted(){return mousePressed();}
+function touchMoved(){return mouseDragged();}
+function touchEnded(){return mouseReleased();}
+function keyPressed(){if(key==='z'||key==='Z')undoLast();if(key==='n'||key==='N')nextImage();}
+
+function undoLast(){if(finished)return;const b=imgMeta[current].boxes;if(b.length)b.pop();updateUI();}
+function nextImage(){
+  if(finished||!imgMeta[current].boxes.length)return;
+  saveImageAnnotation(current);
+  if(current<imgs.length-1){current++;updateScaleInfo();updateUI();}
+  else{finished=true;document.getElementById('undo').disabled=true;document.getElementById('next').disabled=true;saveSessionSummary();showCompletion();}
+}
+function updateUI(){
+  const n=document.getElementById('next'),u=document.getElementById('undo');
+  if(finished){n.disabled=true;u.disabled=true;}
+  else{const has=!!imgMeta[current]?.boxes.length;n.disabled=!has;u.disabled=!has;}
+}
+
+function showCompletion(){
+  if(document.getElementById('final-link'))return;
+  const box=calcTotalBoxArea(),img=calcTotalImageArea();
+  const pctStr=formatPercent(img>0?box/img:0);
+  const d=document.createElement('div');
+  d.id='final-link';d.className='completion-card';
+  d.innerHTML=`
+    <div class="c-eyebrow">✦ CAREBOT-12 · Readout</div>
+    <h2>Task Complete! ⚙️</h2>
+    <p>All of the boxes frame people doing work with a machine. The total area of machine workers in the images is:</p>
+    <div class="stat-bubble">
+      <div class="stat-number">${pctStr}</div>
+      <div class="stat-label">of all image area</div>
+    </div>
+    <div class="stat-raw">${Math.round(box).toLocaleString()} px² (boxes) ÷ ${Math.round(img).toLocaleString()} px² (images)</div>
+    <a class="btn primary" href="hit.html" target="_blank" rel="noopener" style="margin:0 auto;text-decoration:none;">Task complete — next task ✦</a>`;
+  document.getElementById('completionSlot').appendChild(d);
+}
+
+function updateScaleInfo(){
+  const img=imgs[current];if(!img)return;
+  const s=Math.min(width/img.width,height/img.height);
+  scaleInfo={x:(width-img.width*s)/2,y:(height-img.height*s)/2,w:img.width*s,h:img.height*s,scale:s};
+}
+function inside(x,y){return scaleInfo&&x>=scaleInfo.x&&x<=scaleInfo.x+scaleInfo.w&&y>=scaleInfo.y&&y<=scaleInfo.y+scaleInfo.h;}
+function normalizeRect(r){return{x:r.w<0?r.x+r.w:r.x,y:r.h<0?r.y+r.h:r.y,w:Math.abs(r.w),h:Math.abs(r.h)};}
+function clampRectToImage(r){
+  if(!scaleInfo)return r;
+  const{x:ix,y:iy,w:iw,h:ih}=scaleInfo;
+  const x1=Math.max(ix,Math.min(ix+iw,r.x)),y1=Math.max(iy,Math.min(iy+ih,r.y));
+  const x2=Math.max(ix,Math.min(ix+iw,r.x+r.w)),y2=Math.max(iy,Math.min(iy+ih,r.y+r.h));
+  return{x:Math.min(x1,x2),y:Math.min(y1,y2),w:Math.abs(x2-x1),h:Math.abs(y2-y1)};
+}
+function canvasToImgPoint(px,py){return{x:(px-scaleInfo.x)/scaleInfo.scale,y:(py-scaleInfo.y)/scaleInfo.scale};}
+function canvasRectToImg(r){
+  const p1=canvasToImgPoint(r.x,r.y),p2=canvasToImgPoint(r.x+r.w,r.y+r.h);
+  return{x:Math.min(p1.x,p2.x),y:Math.min(p1.y,p2.y),w:Math.abs(p2.x-p1.x),h:Math.abs(p2.y-p1.y)};
+}
+function imgRectToCanvas(r){return{x:scaleInfo.x+r.x*scaleInfo.scale,y:scaleInfo.y+r.y*scaleInfo.scale,w:r.w*scaleInfo.scale,h:r.h*scaleInfo.scale};}
+
+const redirOverlay=document.getElementById('redirOverlay');
+const iframe=document.getElementById('redirFrame');
+const countdown=document.getElementById('countdown');
+const directLink=document.getElementById('redirDirectLink');
+const closeBtn=document.getElementById('closeOverlayBtn');
+const popup=document.getElementById('popupMsg');
+let timer=null,tick=null,CURRENT_SECONDS=3;
+
+function resetCountdown(){clearTimeout(timer);clearInterval(tick);if(countdown)countdown.textContent=CURRENT_SECONDS;}
+function closeOverlay(){redirOverlay.classList.remove('open');iframe.src="about:blank";resetCountdown();document.title="✦ CAREBOT-12 ✦ Machine Labor";}
+function openOverlayFallback(url,sec){
+  CURRENT_SECONDS=sec;redirOverlay.classList.add('open');iframe.src=url;directLink.href=url;
+  resetCountdown();let rem=sec;
+  tick=setInterval(()=>{rem--;if(countdown)countdown.textContent=Math.max(rem,0);if(rem<=0)clearInterval(tick);},1000);
+  timer=setTimeout(closeOverlay,sec*1000);
+}
+function handleRedirect(btn){
+  const url=btn.getAttribute('data-url'),sec=parseInt(btn.getAttribute('data-seconds')||'3',10);
+  const w=window.open(url,'_blank');
+  if(w&&!w.closed){
+    let rem=sec;resetCountdown();
+    tick=setInterval(()=>{rem--;if(rem<=0)clearInterval(tick);document.title=`(${Math.max(rem,0)}s) CAREBOT-12`;},1000);
+    timer=setTimeout(()=>{try{w.close();}catch(e){}document.title="✦ CAREBOT-12 ✦ Machine Labor";resetCountdown();},sec*1000);
+  }else{
+    popup.classList.add('show');setTimeout(()=>popup.classList.remove('show'),3000);
+    openOverlayFallback(url,sec);
+  }
+}
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&redirOverlay.classList.contains('open'))closeOverlay();});
+redirOverlay.addEventListener('click',e=>{if(e.target===redirOverlay)closeOverlay();});
+closeBtn.addEventListener('click',e=>{e.preventDefault();closeOverlay();});
+</script>
+</body>
+</html>
