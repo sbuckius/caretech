@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>✦ AI Career Coach · CAREBOT-04 ✦</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --rose:#ff5c8a; --hot:#ff2d6b; --candy:#ff85b3; --blush:#ffb3cf;
+  --cream:#fff5f8; --berry:#c4005a; --crimson:#8b0030; --maroon:#4a001a;
+  --fuchsia:#ff1f80; --bg:#0e0008;
+  --surface:rgba(18,0,10,.92); --surface2:rgba(28,0,15,.95);
+  --border:rgba(255,140,185,.2); --border2:rgba(255,80,150,.5);
+  --text:#fff5f8; --muted:rgba(255,190,220,.5); --muted2:rgba(255,200,230,.7);
+  --fh:'Nunito',sans-serif; --fb:'Quicksand',sans-serif;
+  --soft-glow:0 4px 30px rgba(255,45,107,.2);
+  --pop-glow:0 8px 50px rgba(255,45,107,.4),0 0 80px rgba(200,0,80,.12);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{
+  min-height:100%;font-family:var(--fb);font-weight:600;
+  color:var(--text);background:var(--bg);-webkit-font-smoothing:antialiased;
+  cursor:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 20 20'%3E%3Ccircle cx='10' cy='10' r='4' fill='%23ff2d6b' opacity='.9'/%3E%3Ccircle cx='10' cy='10' r='7' stroke='%23ff85b3' stroke-width='1.5' fill='none' opacity='.6'/%3E%3C/svg%3E") 10 10,default;
+}
+.bg-layer{position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:radial-gradient(ellipse 70% 55% at 90% 5%,rgba(180,0,55,.35) 0%,transparent 58%),radial-gradient(ellipse 55% 60% at 5% 95%,rgba(110,0,28,.3) 0%,transparent 58%),radial-gradient(ellipse 45% 40% at 50% 50%,rgba(255,20,90,.04) 0%,transparent 65%),linear-gradient(158deg,#1c0009,#130006 50%,#0c0003);}
+.orb{position:fixed;border-radius:50%;pointer-events:none;z-index:0;filter:blur(65px);}
+.orb-1{width:440px;height:440px;background:var(--berry);opacity:.18;top:-90px;right:-75px;animation:drift1 21s ease-in-out infinite;}
+.orb-2{width:360px;height:360px;background:var(--maroon);opacity:.2;bottom:-70px;left:-65px;animation:drift2 25s ease-in-out infinite;}
+.orb-3{width:200px;height:200px;background:var(--hot);opacity:.09;top:40%;left:55%;animation:drift3 17s ease-in-out infinite;}
+@keyframes drift1{0%,100%{transform:translate(0,0)}50%{transform:translate(-35px,24px)}}
+@keyframes drift2{0%,100%{transform:translate(0,0)}50%{transform:translate(28px,-18px)}}
+@keyframes drift3{0%,100%{transform:translate(0,0)}33%{transform:translate(-14px,10px)}66%{transform:translate(10px,-8px)}}
+.sparkles{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden;}
+.sp{position:absolute;opacity:0;animation:floatUp linear infinite;}
+@keyframes floatUp{0%{opacity:0;transform:translateY(0) scale(.6) rotate(0deg)}15%{opacity:.6}85%{opacity:.3}100%{opacity:0;transform:translateY(-130px) scale(1.1) rotate(180deg)}}
+
+.screen{position:relative;z-index:2;max-width:680px;margin:0 auto;padding:clamp(16px,3vmin,28px) clamp(14px,4vmin,24px) 40px;display:flex;flex-direction:column;gap:16px;}
+
+/* mascot bar */
+.mascot-bar{display:flex;align-items:center;justify-content:space-between;}
+.mascot{display:flex;align-items:center;gap:10px;}
+.bot-face{width:42px;height:42px;border-radius:13px;background:linear-gradient(135deg,rgba(255,45,107,.25),rgba(180,0,55,.35));border:1.5px solid var(--border2);box-shadow:var(--soft-glow);display:flex;align-items:center;justify-content:center;font-size:20px;animation:wobble 4s ease-in-out infinite;flex-shrink:0;}
+@keyframes wobble{0%,100%{transform:rotate(-2deg) scale(1)}25%{transform:rotate(1deg) scale(1.04)}50%{transform:rotate(-1deg) scale(1)}75%{transform:rotate(2deg) scale(1.03)}}
+.bot-name{font-family:var(--fh);font-weight:900;font-size:15px;letter-spacing:.04em;background:linear-gradient(90deg,var(--blush),var(--fuchsia) 55%,var(--candy));-webkit-background-clip:text;background-clip:text;color:transparent;}
+.bot-sub{font-size:9px;letter-spacing:.15em;text-transform:uppercase;color:var(--muted);margin-top:1px;}
+.time-badge{display:flex;align-items:center;gap:6px;padding:5px 11px;border-radius:999px;background:rgba(255,255,255,.04);border:1px solid var(--border);font-size:10px;letter-spacing:.1em;color:var(--muted);}
+.time-pip{width:5px;height:5px;border-radius:50%;background:var(--hot);box-shadow:0 0 6px var(--hot);animation:breathe 2s ease-in-out infinite;}
+@keyframes breathe{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.3;transform:scale(.65)}}
+
+/* card */
+.card{background:rgba(14,0,7,.82);border:1.5px solid var(--border2);border-radius:22px;box-shadow:var(--pop-glow),inset 0 1px 0 rgba(255,160,200,.06);backdrop-filter:blur(22px) saturate(1.5);overflow:hidden;position:relative;}
+.card::before{content:'';position:absolute;top:0;left:10%;right:10%;height:1.5px;background:linear-gradient(90deg,transparent,var(--candy) 35%,var(--hot) 50%,var(--candy) 65%,transparent);box-shadow:0 0 14px var(--candy);border-radius:999px;z-index:1;pointer-events:none;}
+
+/* context banner */
+.context-banner{background:linear-gradient(135deg,rgba(139,0,48,.88),rgba(60,0,18,.96));border:1.5px solid var(--border2);border-radius:20px;padding:20px 24px;position:relative;overflow:hidden;box-shadow:var(--soft-glow);}
+.context-banner::before{content:'';position:absolute;top:0;left:8%;right:8%;height:1.5px;background:linear-gradient(90deg,transparent,var(--candy) 35%,var(--hot) 50%,var(--candy) 65%,transparent);box-shadow:0 0 10px var(--candy);border-radius:999px;}
+.context-eyebrow{font-size:9px;letter-spacing:.22em;text-transform:uppercase;color:var(--muted);margin-bottom:7px;font-weight:800;}
+.context-title{font-family:var(--fh);font-weight:900;font-size:clamp(15px,3vw,18px);background:linear-gradient(120deg,var(--cream) 15%,var(--blush) 55%,var(--fuchsia) 90%);-webkit-background-clip:text;background-clip:text;color:transparent;margin-bottom:10px;line-height:1.3;}
+.context-text{font-size:12.5px;line-height:1.78;color:var(--muted2);}
+.context-text strong{color:var(--blush);font-weight:700;}
+
+/* card body */
+.card-body{padding:24px 26px;}
+.eyebrow{font-size:9px;letter-spacing:.22em;text-transform:uppercase;color:var(--muted);margin-bottom:8px;font-weight:800;}
+.card-title{font-family:var(--fh);font-weight:900;font-size:clamp(17px,3.5vw,22px);line-height:1.3;background:linear-gradient(120deg,var(--cream) 15%,var(--blush) 55%,var(--fuchsia) 90%);-webkit-background-clip:text;background-clip:text;color:transparent;margin-bottom:10px;}
+.card-desc{font-size:.9rem;color:var(--muted2);line-height:1.7;margin-bottom:22px;}
+
+/* game */
+.game-prompt{font-family:var(--fh);font-weight:800;font-size:.9rem;color:var(--blush);text-align:center;margin-bottom:16px;letter-spacing:.02em;}
+.choice-row{display:flex;justify-content:center;gap:12px;flex-wrap:wrap;margin-bottom:20px;}
+.choice-btn{appearance:none;font-family:var(--fh);font-weight:900;font-size:clamp(22px,5vw,28px);width:clamp(80px,22vw,100px);height:clamp(80px,22vw,100px);border-radius:20px;cursor:pointer;background:linear-gradient(135deg,rgba(255,45,107,.18),rgba(180,0,55,.28));border:1.5px solid var(--border2);box-shadow:var(--soft-glow);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;transition:all .22s cubic-bezier(.34,1.56,.64,1);color:var(--cream);-webkit-tap-highlight-color:transparent;position:relative;overflow:hidden;}
+.choice-btn::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,.08),transparent 55%);pointer-events:none;}
+.choice-btn:hover{transform:translateY(-4px) scale(1.08);box-shadow:var(--pop-glow);border-color:var(--candy);}
+.choice-btn:active{transform:scale(.95);}
+.choice-label{font-size:9px;letter-spacing:.15em;text-transform:uppercase;color:var(--muted);font-weight:800;}
+
+/* result */
+.result-box{display:none;padding:18px 20px;background:linear-gradient(135deg,rgba(255,45,107,.1),rgba(140,0,45,.15));border:1.5px solid var(--border2);border-radius:16px;animation:resultIn .4s cubic-bezier(.34,1.4,.64,1) forwards;margin-bottom:16px;}
+@keyframes resultIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+.result-box.visible{display:block;}
+.result-chips{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px;}
+.result-chip{display:inline-flex;align-items:center;gap:5px;padding:5px 12px;border-radius:999px;background:rgba(255,45,107,.1);border:1px solid var(--border2);font-size:11px;letter-spacing:.08em;font-weight:800;font-family:var(--fh);color:var(--blush);}
+.outcome-badge{display:inline-flex;align-items:center;gap:6px;padding:6px 14px;border-radius:999px;font-family:var(--fh);font-weight:900;font-size:12px;letter-spacing:.1em;text-transform:uppercase;margin-bottom:12px;}
+.outcome-win{background:linear-gradient(135deg,rgba(80,200,80,.2),rgba(40,160,40,.15));border:1px solid rgba(80,220,80,.4);color:#7fff7f;}
+.outcome-lose{background:linear-gradient(135deg,rgba(255,45,107,.2),rgba(180,0,55,.15));border:1px solid var(--border2);color:var(--candy);}
+.outcome-tie{background:linear-gradient(135deg,rgba(163,123,185,.2),rgba(140,80,160,.15));border:1px solid rgba(163,123,185,.4);color:#d4aaff;}
+.result-message{font-size:.9rem;line-height:1.7;color:var(--muted2);font-style:italic;margin-bottom:14px;}
+
+/* ── EMOTION TAGS (new) ── */
+.emotion-section{display:grid;gap:8px;}
+.emotion-label{font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);font-weight:800;}
+.emotion-tags{display:flex;flex-wrap:wrap;gap:6px;}
+.etag{padding:5px 12px;border-radius:999px;cursor:pointer;background:rgba(255,45,107,.07);border:1.5px solid rgba(255,45,107,.18);font-size:11px;color:var(--muted);transition:all .15s;user-select:none;font-weight:700;}
+.etag:hover{background:rgba(255,45,107,.15);border-color:var(--border2);color:var(--blush);}
+.etag.selected{background:linear-gradient(135deg,rgba(255,45,107,.3),rgba(196,0,90,.3));border-color:var(--hot);color:var(--cream);box-shadow:0 0 8px rgba(255,45,107,.2);}
+.etag.selected::before{content:'✦ ';}
+
+/* ── RELEVANCE SLIDER (new) ── */
+.relevance-section{display:grid;gap:8px;margin-top:12px;}
+.relevance-label{font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);font-weight:800;display:flex;justify-content:space-between;}
+.relevance-val{font-family:var(--fh);font-weight:900;font-size:12px;color:var(--candy);}
+input[type=range].relevance-slider{width:100%;accent-color:var(--hot);height:4px;cursor:pointer;border-radius:999px;outline:none;border:none;background:rgba(255,45,107,.15);}
+.slider-ends{display:flex;justify-content:space-between;font-size:9px;color:var(--muted);margin-top:2px;}
+.save-reaction-row{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-top:10px;}
+.reaction-saved{font-size:10px;color:rgba(100,255,160,.7);letter-spacing:.1em;min-height:14px;}
+
+/* status bar */
+.status-bar{padding:12px 22px;border-top:1px solid rgba(255,100,150,.08);background:rgba(255,45,107,.025);display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;}
+.status-chips{display:flex;gap:6px;flex-wrap:wrap;}
+.status-chip{padding:4px 10px;border-radius:999px;background:rgba(255,80,130,.06);border:1px solid rgba(255,80,130,.15);font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);font-weight:800;}
+.momentum-score{font-family:var(--fh);font-weight:900;font-size:11px;letter-spacing:.1em;color:var(--candy);}
+
+/* ── END REFLECTION (new) ── */
+.reflection-card{background:rgba(14,0,7,.82);border:1.5px solid var(--border2);border-radius:22px;padding:22px 26px;position:relative;overflow:hidden;box-shadow:var(--soft-glow);display:none;}
+.reflection-card.visible{display:block;animation:resultIn .4s ease forwards;}
+.reflection-card::before{content:'';position:absolute;top:0;left:10%;right:10%;height:1.5px;background:linear-gradient(90deg,transparent,var(--candy) 35%,var(--hot) 50%,var(--candy) 65%,transparent);box-shadow:0 0 10px var(--candy);border-radius:999px;}
+.reflection-title{font-family:var(--fh);font-weight:900;font-size:clamp(14px,2.8vw,17px);background:linear-gradient(120deg,var(--cream) 15%,var(--blush) 55%,var(--fuchsia) 90%);-webkit-background-clip:text;background-clip:text;color:transparent;margin-bottom:6px;line-height:1.4;}
+.reflection-sub{font-size:11px;color:var(--muted);margin-bottom:14px;letter-spacing:.04em;}
+.reflection-textarea{width:100%;background:rgba(255,255,255,.05);border:1.5px solid rgba(255,140,185,.2);border-radius:12px;font-family:var(--fb);font-weight:600;font-size:13px;color:var(--cream);padding:12px 14px;outline:none;resize:vertical;min-height:80px;transition:border-color .2s,box-shadow .2s;}
+.reflection-textarea:focus{border-color:var(--candy);box-shadow:0 0 0 3px rgba(255,133,179,.1);}
+.reflection-textarea::placeholder{color:rgba(255,190,220,.25);}
+.reflection-saved{font-size:10px;color:rgba(100,255,160,.7);margin-top:6px;min-height:14px;}
+
+/* buttons */
+.btn{appearance:none;font-family:var(--fh);font-weight:900;font-size:12px;letter-spacing:.05em;color:var(--cream);display:inline-flex;align-items:center;gap:5px;padding:9px 18px;border-radius:12px;border:1.5px solid var(--border2);cursor:pointer;transition:all .2s cubic-bezier(.34,1.56,.64,1);background:none;}
+.btn-primary{background:linear-gradient(135deg,var(--hot),var(--berry));box-shadow:0 3px 14px rgba(255,45,107,.3);}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 6px 22px rgba(255,45,107,.45);}
+.btn-soft{background:rgba(255,255,255,.04);color:var(--muted);border-color:rgba(255,140,185,.15);font-size:11px;}
+.btn-soft:hover{background:rgba(255,45,107,.12);color:var(--blush);}
+.btn:active{transform:scale(.97)!important;}
+
+/* advance */
+.advance-card{background:linear-gradient(135deg,rgba(140,0,45,.88),rgba(60,0,18,.96));border:1.5px solid var(--border2);border-radius:20px;padding:22px 28px;text-align:center;position:relative;overflow:hidden;box-shadow:var(--pop-glow);}
+.advance-card::before{content:'';position:absolute;top:0;left:8%;right:8%;height:1.5px;background:linear-gradient(90deg,transparent,var(--candy) 35%,var(--hot) 50%,var(--candy) 65%,transparent);box-shadow:0 0 12px var(--candy);border-radius:999px;}
+.advance-eyebrow{font-size:9px;letter-spacing:.22em;text-transform:uppercase;color:var(--muted);margin-bottom:6px;font-weight:800;}
+.advance-title{font-family:var(--fh);font-weight:900;font-size:clamp(15px,3vw,18px);background:linear-gradient(90deg,var(--blush),var(--fuchsia) 55%,var(--candy));-webkit-background-clip:text;background-clip:text;color:transparent;margin-bottom:16px;}
+.btn-advance{display:inline-flex;align-items:center;justify-content:center;gap:6px;font-family:var(--fh);font-weight:800;font-size:14px;letter-spacing:.05em;color:var(--cream);text-decoration:none;background:linear-gradient(135deg,var(--hot),var(--berry),var(--maroon));border:1.5px solid var(--hot);border-radius:16px;padding:13px 28px;box-shadow:0 4px 22px rgba(255,45,107,.4),inset 0 1px 0 rgba(255,255,255,.1);transition:all .22s cubic-bezier(.34,1.56,.64,1);position:relative;overflow:hidden;}
+.btn-advance::before{content:'';position:absolute;inset:0;border-radius:inherit;background:linear-gradient(135deg,rgba(255,255,255,.1),transparent 55%);pointer-events:none;}
+.btn-advance:hover{transform:translateY(-3px) scale(1.04);box-shadow:0 10px 36px rgba(255,45,107,.55);}
+
+.wordmark{font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,160,200,.15);text-align:center;padding-bottom:8px;}
+</style>
+</head>
+<body>
+<div class="bg-layer"></div>
+<div class="orb orb-1"></div><div class="orb orb-2"></div><div class="orb orb-3"></div>
+<div class="sparkles" id="sparkles"></div>
+
+<div class="screen">
+
+  <!-- mascot bar -->
+  <div class="mascot-bar">
+    <div class="mascot">
+      <div class="bot-face">🎯</div>
+      <div>
+        <div class="bot-name">CAREBOT-04 · AI Career Coach ✦</div>
+        <div class="bot-sub">Automated Hiring · Research Task · Online</div>
+      </div>
+    </div>
+    <div class="time-badge"><div class="time-pip"></div><span id="sysTime">--:--:--</span></div>
+  </div>
+
+  <!-- context banner (replaces video) -->
+  <div class="context-banner">
+    <div class="context-eyebrow">✦ CAREBOT-04 · Critical Context</div>
+    <div class="context-title">⚠️ This is a real pattern in hiring — dressed up as a game</div>
+    <div class="context-text">
+      The activity below mimics <strong>automated screening tools</strong> used in actual hiring pipelines — systems that filter, score, and rank job applicants using algorithms, gamified assessments, and AI-generated feedback. <strong>These tools are presented as objective.</strong> They are not. Play the game, then tell us how it made you feel — and whether it reminds you of anything you've experienced.
+    </div>
+  </div>
+
+  <!-- game card -->
+  <div class="card">
+    <div class="card-body">
+      <div class="eyebrow">✦ Automated Screening · Round <span id="roundNum">1</span></div>
+      <h1 class="card-title">Interactive Career Strategy Game</h1>
+      <p class="card-desc">
+        We know job searching can feel overwhelming — so we built a quick engagement activity to help you sharpen your competitive edge!
+      </p>
+
+      <div class="game-prompt">Select Rock, Paper, or Scissors to optimize your career trajectory:</div>
+
+      <div class="choice-row">
+        <button class="choice-btn" onclick="play('Rock')"><span>🪨</span><span class="choice-label">Rock</span></button>
+        <button class="choice-btn" onclick="play('Paper')"><span>📄</span><span class="choice-label">Paper</span></button>
+        <button class="choice-btn" onclick="play('Scissors')"><span>✂️</span><span class="choice-label">Scissors</span></button>
+      </div>
+
+      <!-- result -->
+      <div class="result-box" id="resultBox">
+        <div class="result-chips">
+          <div class="result-chip">You: <span id="userChoiceLabel">—</span></div>
+          <div class="result-chip">AI Coach: <span id="aiChoiceLabel">—</span></div>
+        </div>
+        <div class="outcome-badge" id="outcomeBadge"></div>
+        <div class="result-message" id="resultMessage"></div>
+
+        <!-- EMOTION TAGS -->
+        <div class="emotion-section">
+          <div class="emotion-label">✦ How does this make you feel right now?</div>
+          <div class="emotion-tags" id="emotionTags">
+            <div class="etag" data-val="frustrated">frustrated</div>
+            <div class="etag" data-val="amused">amused</div>
+            <div class="etag" data-val="resigned">resigned</div>
+            <div class="etag" data-val="angry">angry</div>
+            <div class="etag" data-val="unsurprised">unsurprised</div>
+            <div class="etag" data-val="anxious">anxious</div>
+            <div class="etag" data-val="cynical">cynical</div>
+            <div class="etag" data-val="amused but sad">amused but sad</div>
+            <div class="etag" data-val="powerless">powerless</div>
+            <div class="etag" data-val="seen">seen</div>
+          </div>
+        </div>
+
+        <!-- RELEVANCE SLIDER -->
+        <div class="relevance-section">
+          <div class="relevance-label">
+            ✦ Does this remind you of real hiring processes?
+            <span class="relevance-val" id="relevanceVal">5</span>
+          </div>
+          <input type="range" class="relevance-slider" id="relevanceSlider" min="1" max="10" value="5"
+            oninput="document.getElementById('relevanceVal').textContent=this.value">
+          <div class="slider-ends"><span>Not at all</span><span>Exactly this</span></div>
+        </div>
+
+        <div class="save-reaction-row">
+          <div class="reaction-saved" id="reactionSaved"></div>
+          <button class="btn btn-primary" onclick="saveReaction()" style="font-size:11px;padding:8px 16px;">Save reaction ✦</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="status-bar">
+      <div class="status-chips">
+        <div class="status-chip">Automated Engagement</div>
+        <div class="status-chip">Career Momentum Score™</div>
+        <div class="status-chip" id="playsChip">Plays: 0</div>
+      </div>
+      <div class="momentum-score" id="momentumScore">Score: —</div>
+    </div>
+  </div>
+
+  <!-- END REFLECTION -->
+  <div class="reflection-card" id="reflectionCard">
+    <div class="context-eyebrow">✦ CAREBOT-04 · After the Game</div>
+    <div class="reflection-title">What does this remind you of?</div>
+    <div class="reflection-sub">Write a sentence or two — your reaction to this activity, or to automated hiring tools in general. This becomes part of the research data.</div>
+    <textarea class="reflection-textarea" id="reflectionText" placeholder="Has an automated system ever screened you out? What did it feel like? What does the language of these systems remind you of?"></textarea>
+    <div style="display:flex;justify-content:flex-end;margin-top:10px;">
+      <button class="btn btn-primary" onclick="saveReflection()" style="font-size:11px;padding:9px 18px;">Save reflection ✦</button>
+    </div>
+    <div class="reflection-saved" id="reflectionSaved"></div>
+  </div>
+
+  <!-- advance -->
+  <div class="advance-card">
+    <div class="advance-eyebrow">✦ CAREBOT-04 · Career Coach</div>
+    <div class="advance-title">Ready for your next task? ✦</div>
+    <a class="btn-advance" href="hit.html" target="_blank" rel="noopener noreferrer">✦ Advance to next task</a>
+  </div>
+
+  <div class="wordmark">✦ carebot-04 / caretech research system · ai career coach · v2.0 ✦</div>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
+<script>
+const SESSION_ID = 'sess04-' + Math.random().toString(36).slice(2,10);
+const FB_CONFIG = {
+  apiKey:"AIzaSyCZFDU-WlSmHqjXTs1Ox0nf9xeJU_xbaX0",
+  authDomain:"collaborativemashup.firebaseapp.com",
+  databaseURL:"https://collaborativemashup-default-rtdb.firebaseio.com",
+  projectId:"collaborativemashup",
+  storageBucket:"collaborativemashup.firebasestorage.app",
+  messagingSenderId:"562437984610",
+  appId:"1:562437984610:web:9f3711c26e097bc8ef9c3b"
+};
+let db, useFirebase = true;
+try {
+  firebase.initializeApp(FB_CONFIG);
+  db = firebase.database();
+} catch(e){ useFirebase = false; }
+
+function fbPush(path, data){
+  if(!useFirebase||!db) return;
+  db.ref(path).push({...data, sessionId:SESSION_ID, timestamp:firebase.database.ServerValue.TIMESTAMP})
+    .catch(()=>{});
+}
+
+/* clock */
+function updateClock(){const n=new Date(),p=v=>String(v).padStart(2,'0');document.getElementById('sysTime').textContent=`${p(n.getHours())}:${p(n.getMinutes())}:${p(n.getSeconds())}`;}
+setInterval(updateClock,1000);updateClock();
+
+/* sparkles */
+(function(){const wrap=document.getElementById('sparkles');const chars=['✦','✧','♡','˚','·','✿','◦','❀'];for(let i=0;i<28;i++){const s=document.createElement('span');s.className='sp';s.textContent=chars[Math.floor(Math.random()*chars.length)];s.style.left=Math.random()*100+'vw';s.style.bottom=Math.random()*-60+'px';s.style.fontSize=(9+Math.random()*10)+'px';s.style.color=`hsl(${315+Math.random()*45},75%,${65+Math.random()*22}%)`;s.style.animationDuration=(7+Math.random()*13)+'s';s.style.animationDelay=(Math.random()*13)+'s';wrap.appendChild(s);}})();
+
+/* emotion tags */
+document.getElementById('emotionTags').addEventListener('click', e => {
+  const tag = e.target.closest('.etag');
+  if(!tag) return;
+  tag.classList.toggle('selected');
+});
+function getSelectedEmotions(){
+  return [...document.querySelectorAll('.etag.selected')].map(t=>t.dataset.val);
+}
+
+/* game state */
+let plays=0,wins=0,losses=0,ties=0;
+let currentRound = { userChoice:null, aiChoice:null, outcome:null, message:null };
+
+function play(userChoice){
+  const aiChoice=["Rock","Paper","Scissors"][Math.floor(Math.random()*3)];
+  const beats={Rock:"Scissors",Paper:"Rock",Scissors:"Paper"};
+  let outcome;
+  if(userChoice===aiChoice) outcome="Tie";
+  else if(beats[userChoice]===aiChoice) outcome="Win";
+  else outcome="Lose";
+
+  const responses={
+    Win:["Congratulations! Your strategic mindset is impressive. Unfortunately, the role has been placed on hold.","Excellent decision-making! You are clearly adaptable. Please re-upload your resume in PDF format.","Amazing! You outperformed our algorithm. Sadly, we selected an internal candidate."],
+    Lose:["Growth opportunity detected! Consider upskilling in three additional platforms.","Resilience is key! Have you tried networking more?","Market conditions are competitive. Try again tomorrow!"],
+    Tie:["Alignment detected! 1,247 other applicants made the same choice.","Great minds think alike! The position has received unprecedented interest.","Synergy achieved! Please complete this personality assessment."]
+  };
+  const message=responses[outcome][Math.floor(Math.random()*responses[outcome].length)];
+
+  plays++;
+  if(outcome==='Win')wins++;else if(outcome==='Lose')losses++;else ties++;
+  currentRound = {userChoice, aiChoice, outcome, message};
+
+  document.getElementById('roundNum').textContent = plays + 1;
+  document.getElementById('userChoiceLabel').textContent=userChoice;
+  document.getElementById('aiChoiceLabel').textContent=aiChoice;
+
+  const badge=document.getElementById('outcomeBadge');
+  badge.className='outcome-badge';
+  if(outcome==='Win'){badge.classList.add('outcome-win');badge.textContent='✓ Win';}
+  else if(outcome==='Lose'){badge.classList.add('outcome-lose');badge.textContent='✗ Loss';}
+  else{badge.classList.add('outcome-tie');badge.textContent='⟳ Tie';}
+
+  document.getElementById('resultMessage').textContent=message;
+
+  // reset emotion tags + slider
+  document.querySelectorAll('.etag').forEach(t=>t.classList.remove('selected'));
+  document.getElementById('relevanceSlider').value=5;
+  document.getElementById('relevanceVal').textContent='5';
+  document.getElementById('reactionSaved').textContent='';
+
+  const box=document.getElementById('resultBox');
+  box.classList.remove('visible');void box.offsetWidth;box.classList.add('visible');
+
+  document.getElementById('playsChip').textContent=`Plays: ${plays}`;
+  const score=Math.floor((wins*100)+(ties*30)-(losses*10)+(plays*5));
+  document.getElementById('momentumScore').textContent=`Career Momentum Score™: ${score}`;
+
+  // show reflection card after 3 plays
+  if(plays===3){
+    document.getElementById('reflectionCard').classList.add('visible');
+    setTimeout(()=>document.getElementById('reflectionCard').scrollIntoView({behavior:'smooth',block:'start'}),300);
+  }
+}
+
+function saveReaction(){
+  const emotions = getSelectedEmotions();
+  const relevance = parseInt(document.getElementById('relevanceSlider').value);
+  const payload = {
+    ...currentRound,
+    emotions, relevance,
+    playNumber: plays,
+    totalPlays: plays, wins, losses, ties
+  };
+  fbPush('carecoachReactions', payload);
+  document.getElementById('reactionSaved').textContent='✦ Reaction saved.';
+  setTimeout(()=>document.getElementById('reactionSaved').textContent='',3000);
+}
+
+function saveReflection(){
+  const text = document.getElementById('reflectionText').value.trim();
+  if(!text){document.getElementById('reflectionSaved').textContent='Please write something first.';return;}
+  fbPush('carecoachReflections', {reflection:text, plays, wins, losses, ties});
+  document.getElementById('reflectionSaved').textContent='✦ Saved — thank you.';
+  setTimeout(()=>document.getElementById('reflectionSaved').textContent='',3000);
+}
+</script>
+</body>
+</html>
