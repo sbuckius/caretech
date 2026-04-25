@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>✦ CAREBOT-26 ✦ INVENTRIX · Women's Patent AI Lab</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+<style>
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+  :root{
+    --bg:#2a0018;--pink:#ff3d7a;--pink-soft:#ff85b3;--rose:#ff6b9d;
+    --lilac:#c97bff;--white:#fff5f8;--muted:rgba(255,190,220,0.5);
+    --border:rgba(255,80,150,0.24);--card-bg:rgba(255,255,255,0.04);
+    --card-border:rgba(255,80,150,0.2);--surface:rgba(50,4,24,.97);
+    --fh:'Nunito',sans-serif;--fb:'Quicksand',sans-serif;
+  }
+  body{font-family:var(--fb);font-weight:600;background:var(--bg);color:var(--white);min-height:100vh;overflow-x:hidden;}
+  body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 60% 50% at 15% 20%,rgba(255,60,120,0.1) 0%,transparent 70%),radial-gradient(ellipse 50% 40% at 85% 80%,rgba(201,123,255,0.09) 0%,transparent 70%),linear-gradient(155deg,#380018,#2a0012 50%,#1e000d);pointer-events:none;z-index:0;}
+  .sparkles{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden;}
+  .sparkle{position:absolute;font-size:13px;opacity:0;animation:floatUp var(--dur,8s) var(--delay,0s) ease-in infinite;left:var(--x,50%);}
+  @keyframes floatUp{0%{opacity:0;transform:translateY(100vh) scale(.5) rotate(0deg)}10%{opacity:.55}90%{opacity:.25}100%{opacity:0;transform:translateY(-10vh) scale(1.2) rotate(360deg)}}
+  ::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:rgba(255,80,150,.3);border-radius:2px}
+
+  /* TOPBAR */
+  .topbar{position:relative;z-index:10;display:flex;align-items:center;justify-content:space-between;padding:16px 22px 13px;border-bottom:1px solid var(--border);background:rgba(24,0,12,.75);backdrop-filter:blur(12px);}
+  .logo{display:flex;align-items:center;gap:11px;}
+  .logo-icon{width:42px;height:42px;border-radius:13px;background:rgba(255,60,120,.16);border:1.5px solid rgba(255,80,150,.5);display:flex;align-items:center;justify-content:center;font-size:19px;box-shadow:0 0 16px rgba(255,60,120,.2);}
+  .logo-name{font-family:var(--fh);font-weight:900;font-size:17px;background:linear-gradient(90deg,#ffb3cf,#ff3d7a,#c97bff);-webkit-background-clip:text;background-clip:text;color:transparent;letter-spacing:.04em;line-height:1;}
+  .logo-sub{font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);margin-top:2px;}
+  .top-badges{display:flex;gap:7px;align-items:center;flex-wrap:wrap;}
+  .badge{font-size:10px;padding:4px 11px;border-radius:999px;background:rgba(255,255,255,.04);border:1px solid var(--border);color:var(--muted);letter-spacing:.06em;display:flex;align-items:center;gap:5px;}
+  .badge-pip{width:5px;height:5px;border-radius:50%;background:var(--pink);animation:pip 2s ease-in-out infinite;}
+  @keyframes pip{0%,100%{opacity:1}50%{opacity:.2}}
+  .btn-csv-top{display:flex;align-items:center;gap:.28rem;background:rgba(255,60,120,.1);color:var(--pink-soft);border:1.5px solid rgba(255,90,150,.46);border-radius:9px;padding:.26rem .65rem;font-family:var(--fb);font-size:.6rem;font-weight:700;cursor:pointer;letter-spacing:.04em;transition:all .2s;white-space:nowrap;appearance:none;}
+  .btn-csv-top:hover{background:rgba(255,60,120,.22);transform:translateY(-1px);}
+
+  /* HERO */
+  .hero{position:relative;z-index:1;text-align:center;padding:32px 22px 20px;}
+  .hero-eyebrow{font-size:10px;letter-spacing:.32em;text-transform:uppercase;color:var(--pink-soft);margin-bottom:11px;opacity:.75;}
+  .hero h1{font-family:var(--fh);font-weight:900;font-size:clamp(1.9rem,6vw,3.2rem);line-height:1.05;background:linear-gradient(135deg,#fff5f8 0%,#ffb3cf 40%,#ff3d7a 70%,#c97bff 100%);-webkit-background-clip:text;background-clip:text;color:transparent;margin-bottom:9px;}
+  .hero p{font-size:13px;color:var(--muted);max-width:480px;margin:0 auto;line-height:1.7;}
+
+  /* LAYOUT */
+  .lab{position:relative;z-index:1;display:grid;grid-template-columns:400px 1fr;gap:18px;padding:0 18px 40px;max-width:1180px;margin:0 auto;}
+  @media(max-width:840px){.lab{grid-template-columns:1fr;}}
+
+  /* CARD */
+  .card{background:var(--card-bg);border:1px solid var(--card-border);border-radius:19px;overflow:hidden;box-shadow:0 4px 30px rgba(255,60,120,.07),0 1px 0 rgba(255,255,255,.04) inset;position:relative;}
+  .card::before{content:'';position:absolute;top:0;left:10%;right:10%;height:1px;background:linear-gradient(90deg,transparent,rgba(255,150,200,.5),transparent);}
+  .card-header{padding:13px 17px;background:rgba(255,60,120,.06);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:9px;flex-wrap:wrap;}
+  .card-header h2{font-family:var(--fh);font-weight:800;font-size:12px;letter-spacing:.12em;text-transform:uppercase;background:linear-gradient(90deg,#ffb3cf,#ff3d7a);-webkit-background-clip:text;background-clip:text;color:transparent;}
+  .card-dot{width:7px;height:7px;border-radius:50%;background:var(--pink);box-shadow:0 0 7px var(--pink);animation:pip 2s ease-in-out infinite;}
+  .count-badge{margin-left:auto;background:linear-gradient(135deg,rgba(255,60,120,.28),rgba(201,123,255,.28));border:1px solid rgba(255,80,150,.38);color:var(--pink-soft);font-size:9px;padding:2px 8px;border-radius:999px;font-weight:700;letter-spacing:.05em;}
+
+  /* TABS */
+  .cat-tabs{display:flex;gap:4px;padding:10px 13px 0;flex-wrap:wrap;}
+  .cat-tab{padding:5px 11px;background:rgba(255,255,255,.03);border:1px solid rgba(255,80,150,.14);border-radius:7px;font-family:var(--fb);font-weight:700;font-size:10px;letter-spacing:.07em;cursor:pointer;color:var(--muted);transition:all .2s;}
+  .cat-tab.active{background:linear-gradient(135deg,rgba(255,60,120,.18),rgba(201,123,255,.14));color:var(--pink-soft);border-color:rgba(255,80,150,.38);}
+
+  /* PATENT BROWSER */
+  .patent-browser{max-height:320px;overflow-y:auto;padding:7px 11px 11px;display:flex;flex-direction:column;gap:4px;}
+  .patent-item{display:flex;align-items:flex-start;gap:9px;padding:8px 11px;background:rgba(255,255,255,.02);border:1px solid rgba(255,80,150,.09);border-radius:9px;cursor:pointer;transition:all .18s;}
+  .patent-item:hover{background:rgba(255,60,120,.08);border-color:rgba(255,80,150,.28);}
+  .patent-item.added{opacity:.4;cursor:default;}
+  .patent-item.added:hover{background:rgba(255,255,255,.02);border-color:rgba(255,80,150,.09);}
+  .pi-info{flex:1;min-width:0;}
+  .pi-inventor{font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:var(--pink-soft);margin-bottom:2px;opacity:.8;}
+  .pi-title{font-size:11px;font-weight:700;color:var(--white);line-height:1.3;}
+  .pi-year{font-size:9px;color:var(--muted);margin-top:2px;}
+  .pi-btn{flex-shrink:0;padding:4px 9px;border-radius:6px;font-family:var(--fb);font-weight:700;font-size:10px;border:1px solid rgba(255,80,150,.28);background:rgba(255,60,120,.07);color:var(--pink-soft);cursor:pointer;transition:all .18s;white-space:nowrap;}
+  .pi-btn:hover{background:rgba(255,60,120,.18);}
+  .pi-btn.done{background:rgba(201,123,255,.09);border-color:rgba(201,123,255,.28);color:var(--lilac);cursor:default;}
+
+  /* ADDED LIBRARY */
+  .added-section{border-top:1px solid var(--border);}
+  .added-header{padding:9px 15px;display:flex;align-items:center;gap:7px;}
+  .added-header span{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--pink-soft);opacity:.7;}
+  .added-list{max-height:180px;overflow-y:auto;padding:0 9px 9px;display:flex;flex-direction:column;gap:4px;}
+  .a-card{background:rgba(255,255,255,.03);border:1px solid rgba(255,80,150,.14);border-left:3px solid var(--pink);border-radius:9px;padding:7px 28px 7px 9px;position:relative;animation:slideIn .3s ease;}
+  @keyframes slideIn{from{opacity:0;transform:translateX(-7px)}to{opacity:1;transform:translateX(0)}}
+  .a-inventor{font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:var(--pink-soft);margin-bottom:2px;}
+  .a-title{font-size:11px;font-weight:700;color:var(--white);line-height:1.3;}
+  .a-remove{position:absolute;top:6px;right:7px;background:none;border:none;color:rgba(255,150,200,.32);cursor:pointer;font-size:14px;line-height:1;transition:color .2s;}
+  .a-remove:hover{color:var(--pink);}
+  .empty-state{text-align:center;padding:22px 18px;color:var(--muted);font-size:12px;line-height:1.8;}
+  .empty-icon{font-size:24px;margin-bottom:7px;}
+  .stats-bar{display:flex;gap:12px;align-items:center;padding:7px 15px;background:rgba(255,60,120,.05);border-top:1px solid var(--border);font-size:10px;color:var(--muted);letter-spacing:.06em;}
+  .stat-num{color:var(--pink-soft);font-weight:700;margin-right:3px;}
+  .search-wrap{padding:9px 13px 0;}
+  .search-input{width:100%;background:rgba(255,255,255,.04);border:1px solid rgba(255,80,150,.16);border-radius:9px;padding:7px 11px;font-family:var(--fb);font-weight:600;font-size:12px;color:var(--white);}
+  .search-input::placeholder{color:rgba(255,180,210,.3);}
+  .search-input:focus{outline:none;border-color:rgba(255,60,120,.5);}
+
+  /* STUDIO */
+  .studio{display:flex;flex-direction:column;gap:16px;}
+  .mode-tabs{display:flex;gap:4px;margin:14px 15px 0;background:rgba(255,255,255,.03);padding:3px;border-radius:11px;border:1px solid var(--border);}
+  .tab{flex:1;padding:8px 7px;background:none;border:none;font-family:var(--fb);font-weight:700;font-size:11px;letter-spacing:.07em;cursor:pointer;color:var(--muted);border-radius:8px;transition:all .2s;}
+  .tab.active{background:linear-gradient(135deg,rgba(255,60,120,.24),rgba(201,123,255,.18));color:var(--pink-soft);border:1px solid rgba(255,80,150,.28);}
+  .chips{display:flex;flex-wrap:wrap;gap:6px;padding:9px 15px 0;}
+  .chip{padding:5px 11px;background:rgba(201,123,255,.08);border:1px solid rgba(201,123,255,.24);border-radius:999px;font-family:var(--fb);font-weight:600;font-size:11px;color:var(--lilac);cursor:pointer;transition:all .2s;}
+  .chip:hover{background:rgba(201,123,255,.2);border-color:rgba(201,123,255,.48);}
+  .field-block{padding:11px 15px 0;}
+  .field-label{display:block;font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--pink-soft);margin-bottom:6px;opacity:.82;}
+  textarea{width:100%;background:rgba(255,255,255,.04);border:1px solid rgba(255,80,150,.18);border-radius:11px;padding:10px 13px;font-family:var(--fb);font-weight:600;font-size:13px;color:var(--white);resize:vertical;line-height:1.5;transition:border-color .2s,box-shadow .2s;}
+  textarea::placeholder{color:rgba(255,180,210,.28);}
+  textarea:focus{outline:none;border-color:rgba(255,60,120,.55);box-shadow:0 0 0 3px rgba(255,60,120,.09);}
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:11px 18px;border:none;border-radius:11px;font-family:var(--fb);font-weight:700;font-size:13px;cursor:pointer;transition:all .2s;letter-spacing:.04em;}
+  .btn-primary{background:linear-gradient(135deg,#ff3d7a,#c97bff);color:white;width:100%;box-shadow:0 4px 18px rgba(255,60,120,.28);}
+  .btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 26px rgba(255,60,120,.42);}
+  .btn-primary:disabled{opacity:.45;cursor:not-allowed;transform:none;box-shadow:none;}
+  .add-row{padding:13px 15px 15px;}
+
+  /* OUTPUT */
+  .output-body{padding:22px;min-height:360px;}
+  .welcome{text-align:center;padding:46px 18px;}
+  .welcome-icon{font-size:42px;margin-bottom:14px;}
+  .welcome h3{font-family:var(--fh);font-weight:800;font-size:1.25rem;background:linear-gradient(90deg,#ffb3cf,#c97bff);-webkit-background-clip:text;background-clip:text;color:transparent;margin-bottom:9px;}
+  .welcome p{font-size:12px;color:var(--muted);line-height:1.8;max-width:290px;margin:0 auto;}
+  .thinking{display:flex;align-items:center;gap:14px;padding:48px 0;justify-content:center;}
+  .thinking-dots{display:flex;gap:6px;}
+  .thinking-dots span{width:8px;height:8px;border-radius:50%;animation:bounce 1.2s ease-in-out infinite;}
+  .thinking-dots span:nth-child(1){background:var(--pink);}
+  .thinking-dots span:nth-child(2){background:var(--rose);animation-delay:.2s;}
+  .thinking-dots span:nth-child(3){background:var(--lilac);animation-delay:.4s;}
+  @keyframes bounce{0%,60%,100%{transform:translateY(0);opacity:.4}30%{transform:translateY(-8px);opacity:1}}
+  .thinking-text{font-size:12px;color:var(--muted);font-style:italic;}
+  .result{animation:fadeUp .4s ease;}
+  @keyframes fadeUp{from{opacity:0;transform:translateY(9px)}to{opacity:1;transform:translateY(0)}}
+  .result-title{font-family:var(--fh);font-weight:900;font-size:1.5rem;background:linear-gradient(135deg,#fff5f8,#ff85b3,#c97bff);-webkit-background-clip:text;background-clip:text;color:transparent;margin-bottom:5px;line-height:1.15;}
+  .result-inspired{font-size:11px;letter-spacing:.11em;text-transform:uppercase;color:var(--pink-soft);margin-bottom:16px;padding-bottom:13px;border-bottom:1px solid var(--border);opacity:.82;}
+  .result-concept{font-size:13px;font-weight:700;color:var(--white);margin-bottom:18px;line-height:1.6;}
+  .result-body{font-size:13px;color:rgba(255,240,248,.75);line-height:1.85;}
+  .result-body h3{font-family:var(--fh);font-weight:800;font-size:10px;letter-spacing:.24em;text-transform:uppercase;color:var(--pink-soft);margin:18px 0 7px;opacity:.82;}
+  .result-body p{margin-bottom:9px;}
+  .result-body ul{padding-left:17px;margin-bottom:11px;}
+  .result-body li{margin-bottom:4px;}
+  .action-row{display:flex;gap:9px;margin-top:18px;padding-top:14px;border-top:1px solid var(--border);align-items:center;flex-wrap:wrap;}
+  .btn-sm{padding:7px 15px;border-radius:9px;font-family:var(--fb);font-weight:700;font-size:11px;cursor:pointer;border:1px solid rgba(255,80,150,.22);background:rgba(255,60,120,.07);color:var(--pink-soft);transition:all .2s;}
+  .btn-sm:hover{background:rgba(255,60,120,.14);}
+  .ts{margin-left:auto;font-size:10px;color:rgba(255,180,210,.28);}
+  .err{background:rgba(255,60,120,.08);border:1px solid rgba(255,60,120,.28);border-left:3px solid var(--pink);padding:11px 13px;border-radius:9px;font-size:12px;color:#ff85b3;margin-top:9px;line-height:1.6;}
+
+  /* EVALUATION PANEL */
+  .eval-panel{margin-top:18px;padding:16px;background:rgba(255,60,120,.06);border:1px solid var(--border);border-radius:14px;position:relative;overflow:hidden;}
+  .eval-panel::before{content:'';position:absolute;top:0;left:10%;right:10%;height:1px;background:linear-gradient(90deg,transparent,rgba(255,150,200,.45),transparent);}
+  .eval-title{font-family:var(--fh);font-weight:800;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--pink-soft);margin-bottom:14px;opacity:.85;}
+  .eval-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+  @media(max-width:500px){.eval-grid{grid-template-columns:1fr;}}
+  .eval-item{display:flex;flex-direction:column;gap:5px;}
+  .eval-label{font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);display:flex;justify-content:space-between;align-items:center;}
+  .eval-val{color:var(--pink-soft);font-weight:900;font-size:12px;}
+  .eval-slider{-webkit-appearance:none;appearance:none;width:100%;height:4px;border-radius:999px;background:rgba(255,80,150,.18);outline:none;cursor:pointer;}
+  .eval-slider::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:16px;height:16px;border-radius:50%;background:linear-gradient(135deg,var(--pink),#c97bff);border:2px solid rgba(255,255,255,.2);cursor:pointer;box-shadow:0 2px 8px rgba(255,60,120,.3);}
+  .eval-slider::-moz-range-thumb{width:14px;height:14px;border-radius:50%;background:linear-gradient(135deg,var(--pink),#c97bff);border:2px solid rgba(255,255,255,.2);cursor:pointer;}
+  .eval-submit{margin-top:14px;width:100%;padding:9px;border:none;border-radius:10px;background:linear-gradient(135deg,rgba(255,60,120,.28),rgba(201,123,255,.22));color:var(--pink-soft);font-family:var(--fb);font-weight:700;font-size:11px;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;border:1px solid rgba(255,80,150,.3);transition:all .2s;}
+  .eval-submit:hover{background:linear-gradient(135deg,rgba(255,60,120,.42),rgba(201,123,255,.34));color:var(--white);}
+  .eval-submit.submitted{background:rgba(100,200,100,.12);border-color:rgba(100,200,100,.3);color:rgba(180,255,180,.7);cursor:default;}
+  .eval-submit:disabled{opacity:.4;cursor:not-allowed;}
+
+  /* INSPIRE BANNER */
+  .inspire-banner{position:relative;z-index:1;margin:0 18px 28px;padding:14px 18px;background:rgba(255,60,120,.07);border:1px solid var(--border);border-radius:15px;overflow:hidden;}
+  .inspire-banner::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(255,150,200,.45),transparent);}
+  .inspire-text{font-size:12px;color:var(--muted);line-height:1.7;}
+  .inspire-text strong{color:var(--pink-soft);}
+</style>
+</head>
+<body>
+
+<div class="sparkles" id="sparkles"></div>
+
+<div class="topbar">
+  <div class="logo">
+    <div class="logo-icon">⚗️</div>
+    <div>
+      <div class="logo-name">CAREBOT-26 ✦ INVENTRIX</div>
+      <div class="logo-sub">Women's Patent AI Lab · CAREtech Research</div>
+    </div>
+  </div>
+  <div class="top-badges">
+    <div class="badge"><span class="badge-pip"></span>AI Active</div>
+    <div class="badge" id="topBadge">0 Patents Selected</div>
+    <div class="badge" id="evalBadge">0 Evaluations</div>
+    <button class="btn-csv-top" onclick="downloadCSV()">
+      <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+      ⬇ Export CSV
+    </button>
+  </div>
+</div>
+
+<div class="hero">
+  <div class="hero-eyebrow">✦ CAREBOT-26 · AI Invention Laboratory ✦</div>
+  <h1>Invent with Women's Genius</h1>
+  <p>Browse real patents by women inventors, add them to your library, generate bold new inventions — then rate what the AI creates.</p>
+</div>
+
+<div class="lab">
+  <!-- LEFT: Patent Browser -->
+  <aside>
+    <div class="card">
+      <div class="card-header">
+        <div class="card-dot"></div>
+        <h2>Patent Library</h2>
+        <div class="count-badge" id="countBadge">0 selected</div>
+      </div>
+      <div class="search-wrap">
+        <input class="search-input" type="text" id="searchBox" placeholder="🔍 Search patents, inventors…" oninput="filterPatents()">
+      </div>
+      <div class="cat-tabs" id="catTabs"></div>
+      <div class="patent-browser" id="patentBrowser"></div>
+      <div class="added-section" id="addedSection" style="display:none;">
+        <div class="added-header"><div class="card-dot" style="animation:none;opacity:.55;"></div><span>Added to Invention Library</span></div>
+        <div class="added-list" id="addedList"></div>
+        <div class="stats-bar">
+          <span><span class="stat-num" id="statCount">0</span> patents</span>
+          <span><span class="stat-num" id="statWords">0</span> words indexed</span>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- RIGHT: Studio -->
+  <main class="studio">
+    <div class="card">
+      <div class="card-header">
+        <div class="card-dot" style="background:var(--lilac);box-shadow:0 0 7px var(--lilac);"></div>
+        <h2>Invention Studio</h2>
+      </div>
+      <div class="mode-tabs">
+        <button class="tab active" onclick="setMode(this,'invent')">✦ New Invention</button>
+        <button class="tab" onclick="setMode(this,'combine')">⊕ Combine Ideas</button>
+        <button class="tab" onclick="setMode(this,'improve')">↑ Improve On</button>
+      </div>
+      <div class="chips">
+        <button class="chip" onclick="useChip(this)">sustainable textiles</button>
+        <button class="chip" onclick="useChip(this)">medical diagnostics</button>
+        <button class="chip" onclick="useChip(this)">communication tech</button>
+        <button class="chip" onclick="useChip(this)">materials science</button>
+        <button class="chip" onclick="useChip(this)">personal safety</button>
+        <button class="chip" onclick="useChip(this)">computation tools</button>
+      </div>
+      <div class="field-block">
+        <label class="field-label" id="modeLabel">Describe a problem to solve or domain to invent in</label>
+        <textarea id="userPrompt" rows="3" placeholder="e.g. Design a new kind of loom that also computes…"></textarea>
+      </div>
+      <div class="add-row">
+        <button class="btn btn-primary" onclick="generate()" id="genBtn">⚗ Generate Invention</button>
+        <div id="genErr" style="display:none;" class="err"></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <div class="card-dot" style="background:var(--pink-soft);box-shadow:0 0 7px rgba(255,133,179,.6);animation:none;"></div>
+        <h2>Invention Output</h2>
+      </div>
+      <div class="output-body" id="outputArea">
+        <div class="welcome">
+          <div class="welcome-icon">⚙️</div>
+          <h3>Ready to invent</h3>
+          <p>Select patents from women inventors in the library, then describe a problem — the AI will generate a new invention inspired by their genius. Rate each invention after it's generated.</p>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<div class="inspire-banner">
+  <div class="inspire-text">
+    <strong>✦ Featuring real patents by:</strong> Helen A. Blanchard · Edith Clarke · Beulah Louise Henry · Mary Phelps Jacob · Hertha Ayrton · Emily C. Duncan · Evelyn Berezin · Sarah Boone · Margaret E. Knight · Josephine M. Weil · and many more
+  </div>
+</div>
+
+<script>
+/* sparkles */
+const SPARKS=['✦','✧','⚗','⚙','✿','◆','◇','✶'];
+const sc=document.getElementById('sparkles');
+for(let i=0;i<18;i++){const s=document.createElement('div');s.className='sparkle';s.textContent=SPARKS[i%SPARKS.length];s.style.setProperty('--x',Math.random()*100+'%');s.style.setProperty('--dur',(7+Math.random()*8)+'s');s.style.setProperty('--delay',(Math.random()*10)+'s');s.style.color='hsl('+(320+Math.random()*60)+',80%,'+(62+Math.random()*22)+'%)';sc.appendChild(s);}
+
+/* Firebase */
+let db,fbReady=false,evalTotal=0;
+try{
+  firebase.initializeApp({apiKey:"AIzaSyCZFDU-WlSmHqjXTs1Ox0nf9xeJU_xbaX0",databaseURL:"https://collaborativemashup-default-rtdb.firebaseio.com",projectId:"collaborativemashup",storageBucket:"collaborativemashup.firebasestorage.app",messagingSenderId:"562437984610",appId:"1:562437984610:web:9f3711c26e097bc8ef9c3b"});
+  db=firebase.database();fbReady=true;
+}catch(e){console.warn(e);}
+
+/* track evaluations count live */
+if(fbReady&&db){
+  db.ref('inventionEvals').on('value',snap=>{
+    evalTotal=snap.numChildren();
+    document.getElementById('evalBadge').textContent=evalTotal+' Evaluation'+(evalTotal!==1?'s':'');
+  });
+}
+
+function saveEval(data){
+  if(!fbReady||!db)return;
+  const key=db.ref('inventionEvals').push().key;
+  db.ref('inventionEvals/'+key).set({...data,ts:firebase.database.ServerValue.TIMESTAMP}).catch(e=>console.warn(e));
+}
+
+function saveGeneration(data){
+  if(!fbReady||!db)return;
+  db.ref('inventionGenerations').push().set({...data,ts:firebase.database.ServerValue.TIMESTAMP}).catch(e=>console.warn(e));
+}
+
+/* CSV export */
+function downloadCSV(){
+  if(!fbReady||!db){alert('No Firebase connection.');return;}
+  Promise.all([
+    db.ref('inventionEvals').once('value'),
+    db.ref('inventionGenerations').once('value')
+  ]).then(([evalSnap,genSnap])=>{
+    let csv='Type,Timestamp,InventionTitle,PatentsUsed,Mode,Prompt,Feasibility,Originality,SocialImpact,CommercialViability\n';
+    genSnap.forEach(d=>{
+      const g=d.val();
+      csv+='generation,'+q(g.ts?new Date(g.ts).toISOString():'')+','+q(g.title||'')+','+q(g.patents||'')+','+q(g.mode||'')+','+q(g.prompt||'')+',,,,,\n';
+    });
+    evalSnap.forEach(d=>{
+      const e=d.val();
+      csv+='evaluation,'+q(e.ts?new Date(e.ts).toISOString():'')+','+q(e.inventionTitle||'')+','+q(e.patents||'')+',,,,'+(e.feasibility||0)+','+(e.originality||0)+','+(e.socialImpact||0)+','+(e.commercialViability||0)+'\n';
+    });
+    const blob=new Blob([csv],{type:'text/csv'});const url=URL.createObjectURL(blob);
+    const a=document.createElement('a');a.href=url;a.download='carebot26-inventrix-'+Date.now()+'.csv';
+    document.body.appendChild(a);a.click();document.body.removeChild(a);URL.revokeObjectURL(url);
+  }).catch(e=>alert('Export failed: '+e.message));
+}
+function q(v){return'"'+(v==null?'':String(v).replace(/"/g,'""'))+'"';}
+
+/* PATENT DATA */
+const PATENTS=[
+  {cat:'Computer',id:'US258518A',inventor:'Mary E. Winter & Cushman W. Crary',title:'Adding-Machine',year:1882,url:'https://patents.google.com/patent/US258518A',content:'An adding machine device for performing arithmetic calculations, with a mechanism for carrying and accumulating numerical values through interlocking digit wheels and a manual input lever mechanism. The device enables rapid addition of multiple-digit numbers with a compact mechanical register.'},
+  {cat:'Computer',id:'US310450A',inventor:'Hertha Ayrton (Phoebe Sarah Marks)',title:'Draftsman\'s Dividing-Instrument',year:1885,url:'https://patents.google.com/patent/US310450A',content:'A precision instrument for dividing lines into equal parts for technical drawing and drafting. The device uses a sliding scale and vernier mechanism to allow accurate subdivision of any line segment, improving drafting precision for engineering and mathematical applications.'},
+  {cat:'Computer',id:'US640348A',inventor:'Margaret A. Wise',title:'Computing Attachment for Scale-Beams',year:1900,url:'https://patents.google.com/patent/US640348A',content:'A computing attachment for scale-beams designed to automatically calculate weights and values. The device attaches to standard weighing scales and uses a sliding computation table to instantly convert weight readings into monetary or unit values.'},
+  {cat:'Computer',id:'US745167A',inventor:'Emily C. Duncan',title:'Calculator',year:1903,url:'https://patents.google.com/patent/US745167A',content:'A mechanical calculator device for performing arithmetic operations. The calculator uses a series of numbered wheels and levers to perform addition and subtraction with a carry mechanism for multi-digit calculations.'},
+  {cat:'Computer',id:'US1552113A',inventor:'Edith Clarke',title:'Calculator',year:1925,url:'https://patents.google.com/patent/US1552113A',content:'A graphical calculator for solving equations involving electrical circuits. Clarke was the first woman to earn an MS in electrical engineering from MIT and the first female professor of electrical engineering in the US.'},
+  {cat:'Computer',id:'US2973141A',inventor:'Evelyn Berezin',title:'Control means with record sensing for electronic calculator',year:1961,url:'https://patents.google.com/patent/US2973141A',content:'An electronic calculator with control means incorporating record sensing capabilities. This represents early programmable electronic computation. Berezin later designed the first true word processor and founded Redactron Corporation.'},
+  {cat:'Typewriter',id:'US825335A',inventor:'Edna Mcarthur et al.',title:'Type-writing Machine',year:1906,url:'https://patents.google.com/patent/US825335A',content:'An improved typewriting machine with enhanced key action and ribbon mechanism for cleaner, more consistent ink transfer.'},
+  {cat:'Typewriter',id:'US2897944A',inventor:'Beulah Louise Henry',title:'Typewriter',year:1959,url:'https://patents.google.com/patent/US2897944A',content:'A typewriter with an innovative multiple-copy mechanism. Beulah Louise Henry, known as "Lady Edison," filed over 49 patents in her lifetime.'},
+  {cat:'Typewriter',id:'US3159264A',inventor:'Beulah Louise Henry',title:'Keyboard assembly',year:1964,url:'https://patents.google.com/patent/US3159264A',content:'An improved keyboard assembly for typewriters featuring a modular key design for easier maintenance and replacement.'},
+  {cat:'Loom',id:'US829474A',inventor:'Mary P. C. Hooper',title:'Loom',year:1906,url:'https://patents.google.com/patent/US829474A',content:'A loom with an improved heddle mechanism allowing faster and more precise thread separation for complex weave patterns.'},
+  {cat:'Loom',id:'US1532848A',inventor:'Josephine Marie Weil',title:'Loom for Hand Weaving',year:1925,url:'https://patents.google.com/patent/US1532848A',content:'A hand weaving loom with improvements to the warp beam tensioning and heddle operating mechanism, prioritizing ease of use for domestic weavers.'},
+  {cat:'Sewing',id:'US141987A',inventor:'Helen A. Blanchard',title:'Improvement in Sewing-Machines',year:1873,url:'https://patents.google.com/patent/US141987A',content:'An improvement to sewing machine design featuring an enhanced stitch-forming mechanism. Helen Blanchard held 28 patents in her lifetime.'},
+  {cat:'Sewing',id:'US252992A',inventor:'Helen A. Blanchard',title:'Sewing-Machine Needle (Hollow Needle)',year:1882,url:'https://patents.google.com/patent/US252992A',content:'A hollow sewing machine needle design that carries thread through the hollow shaft rather than through an eye, enabling a new class of stitch formation.'},
+  {cat:'Sewing',id:'US612011A',inventor:'Helen A. Blanchard',title:'Improvements in Sewing-Machines',year:1898,url:'https://patents.google.com/patent/US612011A',content:'Comprehensive improvements to sewing machines including a novel feed dog mechanism, improved tension regulator, and modified bobbin winding system.'},
+  {cat:'Textile',id:'US1552113B',inventor:'Edith Clarke',title:'Textile computation tools',year:1925,url:'https://patents.google.com/patent/US1552113A',content:'Clarke\'s graphical calculation methods applied to textile engineering problems, including thread tension calculations and loom timing.'},
+  {cat:'Clothing',id:'US473653A',inventor:'Sarah Boone',title:'Ironing-Board',year:1892,url:'https://patents.google.com/patent/US473653A',content:'An improved ironing board designed specifically for ironing the sleeves and bodies of women\'s garments. Sarah Boone was one of the first African American women to receive a U.S. patent.'},
+  {cat:'Clothing',id:'US1115674A',inventor:'Mary Phelps Jacob',title:'Brassiere',year:1914,url:'https://patents.google.com/patent/US1115674A',content:'The first modern brassiere patent in the United States. Mary Phelps Jacob later sold the patent to Warner Brothers Corset Company for $1,500.'},
+  {cat:'Clothing',id:'US282646A',inventor:'Margaret E. Knight & Harriet M. MacFarland',title:'Skirt-Protector',year:1883,url:'https://patents.google.com/patent/US282646A',content:'A skirt protector device. Margaret Knight, known as "the female Edison," held over 87 patents in her lifetime.'},
+];
+
+const CATS=['All','Computer','Typewriter','Loom','Sewing','Textile','Clothing'];
+const added=[];
+let currentCat='All',searchQuery='',mode='invent';
+let currentInventionTitle='',currentInventionPatents='';
+
+/* build tabs */
+const catTabsEl=document.getElementById('catTabs');
+CATS.forEach(c=>{const btn=document.createElement('button');btn.className='cat-tab'+(c==='All'?' active':'');btn.textContent=c;btn.onclick=()=>{document.querySelectorAll('.cat-tab').forEach(t=>t.classList.remove('active'));btn.classList.add('active');currentCat=c;renderBrowser();};catTabsEl.appendChild(btn);});
+
+function filterPatents(){searchQuery=document.getElementById('searchBox').value.toLowerCase();renderBrowser();}
+
+function renderBrowser(){
+  const browser=document.getElementById('patentBrowser');
+  let filtered=PATENTS.filter(p=>{const mc=currentCat==='All'||p.cat===currentCat;const ms=!searchQuery||p.inventor.toLowerCase().includes(searchQuery)||p.title.toLowerCase().includes(searchQuery)||p.year.toString().includes(searchQuery);return mc&&ms;});
+  if(!filtered.length){browser.innerHTML='<div class="empty-state"><div class="empty-icon">🔍</div>No patents match your search.</div>';return;}
+  browser.innerHTML=filtered.map(p=>{const isA=added.some(a=>a.id===p.id);return`<div class="patent-item${isA?' added':''}"><div class="pi-info"><div class="pi-inventor">${esc(p.inventor)}</div><div class="pi-title">${esc(p.title)}</div><div class="pi-year">${p.id} · ${p.year}</div></div><button class="pi-btn${isA?' done':''}" onclick="${isA?'':'addFromBrowser(\''+p.id+'\')'}">${isA?'✓ Added':'+ Add'}</button></div>`;}).join('');
+}
+
+function addFromBrowser(id){const p=PATENTS.find(x=>x.id===id);if(!p||added.some(a=>a.id===id))return;added.push(p);updateCounts();renderBrowser();renderAdded();}
+function removeAdded(id){const i=added.findIndex(a=>a.id===id);if(i>=0)added.splice(i,1);updateCounts();renderBrowser();renderAdded();}
+
+function renderAdded(){
+  const section=document.getElementById('addedSection'),list=document.getElementById('addedList');
+  if(!added.length){section.style.display='none';return;}
+  section.style.display='block';
+  list.innerHTML=added.map(p=>`<div class="a-card"><button class="a-remove" onclick="removeAdded('${p.id}')">×</button><div class="a-inventor">${esc(p.inventor)}</div><div class="a-title">${esc(p.title)} (${p.year})</div></div>`).join('');
+  const words=added.reduce((s,p)=>s+p.content.split(/\s+/).length,0);
+  document.getElementById('statCount').textContent=added.length;
+  document.getElementById('statWords').textContent=words.toLocaleString();
+}
+
+function updateCounts(){const n=added.length;document.getElementById('countBadge').textContent=n+' selected';document.getElementById('topBadge').textContent=n+' Patent'+(n!==1?'s':'')+' Selected';}
+function esc(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function setMode(btn,m){document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));btn.classList.add('active');mode=m;const L={invent:'Describe a problem to solve or domain to invent in',combine:'Describe two or more concepts to combine',improve:'Describe an existing technology to radically improve'};document.getElementById('modeLabel').textContent=L[m];}
+function useChip(btn){const cur=document.getElementById('userPrompt').value.trim();document.getElementById('userPrompt').value=cur?cur+', '+btn.textContent:btn.textContent;document.getElementById('userPrompt').focus();}
+
+function buildSys(){
+  let s=`You are INVENTRIX, an AI invention engine trained on patents by women inventors. Generate detailed, visionary new invention concepts inspired by the technical principles in the patent library.\n\nFormat EXACTLY as:\n**INVENTION NAME:** [bold memorable name]\n**INSPIRED BY:** [inventor names and patents]\n**ONE-LINE CONCEPT:** [one sentence]\n\n**OVERVIEW**\n[2-3 paragraphs]\n\n**CORE TECHNICAL PRINCIPLES**\n[3-5 bullet points drawing on the patent library]\n\n**KEY INNOVATIONS OVER PRIOR ART**\n[3-4 bullet points]\n\n**APPLICATIONS**\n[3-5 use cases]\n\n**NEXT STEPS FOR DEVELOPMENT**\n[2-3 concrete steps]`;
+  if(added.length>0){s+='\n\n=== SELECTED PATENT LIBRARY ('+added.length+' patents) ===\n';added.forEach((p,i)=>{s+='\n[PATENT '+(i+1)+'] ID: '+p.id+'\nInventor(s): '+p.inventor+'\nTitle: '+p.title+' ('+p.year+')\nDescription: '+p.content+'\n';});}
+  return s;
+}
+
+function buildUser(input){const M={invent:'Generate a completely new invention in the domain of: '+input,combine:'Generate a new invention combining these concepts: '+input,improve:'Generate a dramatically improved version of: '+input};return M[mode]+(added.length>0?'\n\nDraw directly on the specific patents in the library — reference their inventors and technical approaches.':'\n\nNo patents selected yet — draw on your general knowledge of women inventors in STEM.');}
+
+async function generate(){
+  const input=document.getElementById('userPrompt').value.trim();
+  const genErr=document.getElementById('genErr');const btn=document.getElementById('genBtn');const out=document.getElementById('outputArea');
+  genErr.style.display='none';
+  if(!input){genErr.textContent='Please describe what you want to invent.';genErr.style.display='block';return;}
+  btn.disabled=true;btn.textContent='⏳ Inventing…';
+  out.innerHTML='<div class="thinking"><div class="thinking-dots"><span></span><span></span><span></span></div><div class="thinking-text">Drawing on '+added.length+' patent'+(added.length!==1?'s':'')+'… synthesizing new invention…</div></div>';
+  try{
+    const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1000,system:buildSys(),messages:[{role:'user',content:buildUser(input)}]})});
+    if(!res.ok)throw new Error('API error '+res.status);
+    const data=await res.json();const text=data.content?.find(b=>b.type==='text')?.text||'';
+    const tM=text.match(/\*\*INVENTION NAME:\*\*\s*(.+)/);
+    currentInventionTitle=tM?tM[1].trim():'Untitled Invention';
+    currentInventionPatents=added.map(p=>p.inventor+' — '+p.title).join('; ');
+    saveGeneration({title:currentInventionTitle,patents:currentInventionPatents,mode,prompt:input,patentCount:added.length});
+    showResult(text);
+  }catch(e){out.innerHTML='';genErr.textContent='Error: '+e.message;genErr.style.display='block';}
+  btn.disabled=false;btn.textContent='⚗ Generate Invention';
+}
+
+function showResult(text){
+  const out=document.getElementById('outputArea');
+  const tM=text.match(/\*\*INVENTION NAME:\*\*\s*(.+)/);
+  const iM=text.match(/\*\*INSPIRED BY:\*\*\s*(.+)/);
+  const cM=text.match(/\*\*ONE-LINE CONCEPT:\*\*\s*(.+)/);
+  const title=tM?tM[1].trim():'New Invention';
+  const insp=iM?iM[1].trim():'';const conc=cM?cM[1].trim():'';
+  let body=text.replace(/\*\*INVENTION NAME:\*\*.+/,'').replace(/\*\*INSPIRED BY:\*\*.+/,'').replace(/\*\*ONE-LINE CONCEPT:\*\*.+/,'').trim();
+  body=body.replace(/\*\*(.+?)\*\*/g,'<h3>$1</h3>').replace(/\*(.+?)\*/g,'<em>$1</em>').replace(/^- (.+)$/gm,'<li>$1</li>').replace(/(<li>.*<\/li>\n?)+/gs,m=>'<ul>'+m+'</ul>').replace(/\n\n+/g,'</p><p>').replace(/^(?!<)(.+)$/gm,'<p>$1</p>');
+  const ts=new Date().toLocaleTimeString();
+  out.innerHTML=`<div class="result">
+    <div class="result-title">${esc(title)}</div>
+    ${insp?`<div class="result-inspired">✦ Inspired by ${esc(insp)}</div>`:''}
+    ${conc?`<div class="result-concept">${esc(conc)}</div>`:''}
+    <div class="result-body">${body}</div>
+    <div class="action-row">
+      <button class="btn-sm" onclick="copyRes(event)">⎘ Copy</button>
+      <button class="btn-sm" onclick="generate()">↺ Regenerate</button>
+      <span class="ts">Generated ${ts}</span>
+    </div>
+    <div class="eval-panel" id="evalPanel">
+      <div class="eval-title">◈ Rate This Invention</div>
+      <div class="eval-grid">
+        <div class="eval-item">
+          <div class="eval-label">Feasibility <span class="eval-val" id="evFeasVal">5</span>/10</div>
+          <input type="range" class="eval-slider" id="evFeas" min="1" max="10" value="5" oninput="document.getElementById('evFeasVal').textContent=this.value">
+        </div>
+        <div class="eval-item">
+          <div class="eval-label">Originality <span class="eval-val" id="evOrigVal">5</span>/10</div>
+          <input type="range" class="eval-slider" id="evOrig" min="1" max="10" value="5" oninput="document.getElementById('evOrigVal').textContent=this.value">
+        </div>
+        <div class="eval-item">
+          <div class="eval-label">Social Impact <span class="eval-val" id="evSocVal">5</span>/10</div>
+          <input type="range" class="eval-slider" id="evSoc" min="1" max="10" value="5" oninput="document.getElementById('evSocVal').textContent=this.value">
+        </div>
+        <div class="eval-item">
+          <div class="eval-label">Commercial Viability <span class="eval-val" id="evComVal">5</span>/10</div>
+          <input type="range" class="eval-slider" id="evCom" min="1" max="10" value="5" oninput="document.getElementById('evComVal').textContent=this.value">
+        </div>
+      </div>
+      <button class="eval-submit" id="evalSubmitBtn" onclick="submitEval()">✦ Submit Evaluation</button>
+    </div>
+  </div>`;
+}
+
+function submitEval(){
+  const btn=document.getElementById('evalSubmitBtn');
+  if(btn.classList.contains('submitted'))return;
+  const feas=parseInt(document.getElementById('evFeas').value);
+  const orig=parseInt(document.getElementById('evOrig').value);
+  const soc=parseInt(document.getElementById('evSoc').value);
+  const com=parseInt(document.getElementById('evCom').value);
+  saveEval({inventionTitle:currentInventionTitle,patents:currentInventionPatents,feasibility:feas,originality:orig,socialImpact:soc,commercialViability:com});
+  btn.textContent='✓ Evaluation Saved';btn.classList.add('submitted');btn.disabled=true;
+  document.querySelectorAll('.eval-slider').forEach(s=>s.disabled=true);
+}
+
+function copyRes(e){const t=document.querySelector('.result')?.innerText||'';navigator.clipboard.writeText(t).then(()=>{e.target.textContent='✓ Copied!';setTimeout(()=>e.target.textContent='⎘ Copy',2000);});}
+
+renderBrowser();
+</script>
+</body>
+</html>

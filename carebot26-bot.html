@@ -1,0 +1,434 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
+<title>✦ CAREBOT-26 ✦ INVENTRIX · Women's Patent AI Lab</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+<style>
+:root{
+  --rose:#ff5c8a;--hot:#ff2d6b;--candy:#ff85b3;--blush:#ffb3cf;
+  --cream:#fff5f8;--berry:#c4005a;--maroon:#6f001e;--fuchsia:#ff1f80;
+  --lilac:#c97bff;--bg:#1a0012;
+  --border:rgba(255,160,200,.22);--border2:rgba(255,100,160,.55);
+  --muted:rgba(255,200,224,.55);--muted2:rgba(255,210,228,.75);
+  --soft-glow:0 4px 30px rgba(255,45,107,.2);
+  --pop-glow:0 8px 50px rgba(255,45,107,.4),0 0 90px rgba(255,30,128,.15);
+  --fh:'Nunito',sans-serif;--fb:'Quicksand',sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html,body{min-height:100%;font-family:var(--fb);font-weight:600;color:var(--cream);background:var(--bg);-webkit-font-smoothing:antialiased;overflow-x:hidden;}
+.bg-layer{position:fixed;inset:0;z-index:0;pointer-events:none;background:radial-gradient(ellipse 70% 55% at 18% 12%,rgba(200,0,50,.35) 0%,transparent 60%),radial-gradient(ellipse 55% 65% at 82% 80%,rgba(140,0,40,.3) 0%,transparent 60%),linear-gradient(160deg,#220008,#180008 50%,#120005);}
+.orb{position:fixed;border-radius:50%;pointer-events:none;z-index:0;filter:blur(65px);}
+.orb-1{width:450px;height:450px;background:var(--maroon);opacity:.22;top:-100px;left:-90px;animation:drift1 20s ease-in-out infinite;}
+.orb-2{width:360px;height:360px;background:#c40032;opacity:.18;bottom:-70px;right:-70px;animation:drift2 24s ease-in-out infinite;}
+.orb-3{width:240px;height:240px;background:var(--lilac);opacity:.1;top:35%;left:55%;animation:drift3 16s ease-in-out infinite;}
+@keyframes drift1{0%,100%{transform:translate(0,0)}50%{transform:translate(45px,30px)}}
+@keyframes drift2{0%,100%{transform:translate(0,0)}50%{transform:translate(-30px,-22px)}}
+@keyframes drift3{0%,100%{transform:translate(0,0)}33%{transform:translate(-20px,15px)}66%{transform:translate(15px,-10px)}}
+.sparkles{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden;}
+.sp{position:absolute;opacity:0;animation:floatUp linear infinite;}
+@keyframes floatUp{0%{opacity:0;transform:translateY(0) scale(.6)}15%{opacity:.65}85%{opacity:.35}100%{opacity:0;transform:translateY(-130px) scale(1.1)}}
+@keyframes breathe{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.3;transform:scale(.65)}}
+
+.page{position:relative;z-index:2;min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:max(24px,env(safe-area-inset-top)) clamp(14px,5vw,28px) max(44px,env(safe-area-inset-bottom));gap:0;}
+.top-bar{width:100%;max-width:500px;display:flex;align-items:center;justify-content:space-between;margin-bottom:22px;}
+.brand{font-family:var(--fb);font-size:9px;letter-spacing:.22em;text-transform:uppercase;color:var(--muted);}
+.status-pill{display:flex;align-items:center;gap:6px;padding:4px 11px;border-radius:999px;background:rgba(255,45,107,.07);border:1px solid var(--border);font-family:var(--fb);font-size:9px;letter-spacing:.1em;color:var(--muted);}
+.status-pip{width:4px;height:4px;border-radius:50%;background:var(--hot);box-shadow:0 0 5px var(--hot);animation:breathe 2s ease-in-out infinite;}
+
+.bot-body{width:min(92vw,480px);display:flex;flex-direction:column;align-items:center;gap:0;}
+
+/* ── COMPASS HEAD ── */
+.bot-head-wrap{position:relative;width:clamp(190px,38vw,245px);height:clamp(190px,38vw,245px);flex-shrink:0;animation:compassFloat 5s ease-in-out infinite;}
+@keyframes compassFloat{0%,100%{transform:translateY(0) rotate(-.4deg);}45%{transform:translateY(-10px) rotate(.7deg);}75%{transform:translateY(-4px) rotate(-.3deg);}}
+.compass-svg{width:100%;height:100%;filter:drop-shadow(0 6px 28px rgba(255,45,107,.5)) drop-shadow(0 0 50px rgba(255,30,128,.18));}
+.compass-needle{animation:needleSpin 8s ease-in-out infinite;}
+@keyframes needleSpin{0%,100%{transform:rotate(0deg);transform-origin:50% 50%}25%{transform:rotate(22deg);transform-origin:50% 50%}75%{transform:rotate(-15deg);transform-origin:50% 50%}}
+.compass-ring{animation:ringBreath 3s ease-in-out infinite;}
+@keyframes ringBreath{0%,100%{opacity:.85}50%{opacity:1;filter:brightness(1.1)}}
+
+.bot-neck{width:clamp(20px,4vw,28px);height:clamp(10px,1.8vw,14px);background:linear-gradient(180deg,rgba(255,45,107,.18),rgba(120,0,60,.4));border:1px solid rgba(255,45,107,.3);border-top:none;clip-path:polygon(12% 0%,88% 0%,100% 100%,0% 100%);position:relative;z-index:2;}
+.bot-nametag{text-align:center;margin:10px 0 6px;}
+.bot-nametag-name{font-family:var(--fh);font-weight:900;font-size:clamp(22px,4.5vw,28px);letter-spacing:.04em;background:linear-gradient(90deg,var(--blush),var(--fuchsia) 55%,var(--candy));-webkit-background-clip:text;background-clip:text;color:transparent;}
+.bot-nametag-sub{font-family:var(--fb);font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);margin-top:4px;}
+
+.stats-bar{display:flex;gap:7px;flex-wrap:wrap;justify-content:center;margin:10px 0 14px;}
+.stat-pill{display:flex;align-items:center;gap:4px;padding:4px 10px;border-radius:999px;background:rgba(255,45,107,.07);border:1px solid var(--border);font-family:var(--fb);font-size:9px;letter-spacing:.06em;color:var(--muted);}
+.stat-dot{width:4px;height:4px;border-radius:50%;background:var(--hot);}
+.csv-export-btn{appearance:none;font-family:var(--fb);font-weight:700;font-size:9px;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;padding:4px 10px;border-radius:999px;background:rgba(255,45,107,.08);border:1px solid var(--border);color:var(--muted);transition:all .18s;white-space:nowrap;}
+.csv-export-btn:hover{background:rgba(255,45,107,.18);border-color:var(--border2);color:var(--blush);}
+
+.bot-torso-wrap{width:100%;}
+.bot-torso{width:100%;background:rgba(18,0,12,.97);border:1.5px solid var(--border2);border-radius:22px;box-shadow:var(--pop-glow),inset 0 1px 0 rgba(255,160,200,.06);overflow:hidden;display:flex;flex-direction:column;min-height:clamp(280px,48vh,460px);position:relative;}
+.bot-torso::before{content:'';position:absolute;top:0;left:10%;right:10%;height:1.5px;z-index:5;background:linear-gradient(90deg,transparent,var(--candy) 35%,var(--hot) 50%,var(--candy) 65%,transparent);box-shadow:0 0 14px var(--candy);border-radius:999px;}
+.screen-topbar{display:flex;align-items:center;justify-content:space-between;padding:10px 16px 8px;border-bottom:1px solid rgba(255,130,180,.08);flex-shrink:0;position:relative;z-index:2;}
+.screen-dots{display:flex;gap:5px;}
+.screen-dot{width:8px;height:8px;border-radius:50%;}
+.screen-dot:nth-child(1){background:var(--hot);box-shadow:0 0 5px var(--hot);animation:breathe 2s ease-in-out infinite;}
+.screen-dot:nth-child(2){background:var(--fuchsia);box-shadow:0 0 5px var(--fuchsia);animation:breathe 2s .3s ease-in-out infinite;}
+.screen-dot:nth-child(3){background:var(--lilac);box-shadow:0 0 5px var(--lilac);animation:breathe 2s .6s ease-in-out infinite;}
+.screen-label{font-family:var(--fb);font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);}
+.chat-area{flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:10px;padding:12px 12px 6px;position:relative;z-index:2;scrollbar-width:thin;scrollbar-color:rgba(255,45,107,.15) transparent;}
+.msg{display:flex;gap:7px;align-items:flex-end;animation:msgIn .32s cubic-bezier(.22,1,.36,1) both;}
+@keyframes msgIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.msg.user{flex-direction:row-reverse;}
+.msg-avatar{width:24px;height:24px;border-radius:6px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-family:var(--fb);font-size:9px;}
+.msg.assistant .msg-avatar{background:var(--berry);color:var(--blush);border:1px solid var(--border);}
+.msg.user .msg-avatar{background:rgba(255,45,107,.12);color:var(--muted);border:1px solid var(--border);}
+.bubble{max-width:84%;padding:9px 13px;border-radius:13px;font-family:var(--fb);font-size:clamp(11px,1.4vw,13px);line-height:1.72;}
+.msg.assistant .bubble{background:rgba(255,45,107,.07);border:1px solid rgba(255,45,107,.14);color:var(--muted2);border-bottom-left-radius:2px;}
+.msg.user .bubble{background:linear-gradient(135deg,rgba(255,45,107,.38),rgba(180,0,80,.45));color:var(--cream);border:1px solid rgba(255,45,107,.45);border-bottom-right-radius:2px;}
+.bubble strong{color:var(--candy);}.bubble em{color:#ffb09a;}
+.typing-indicator{display:flex;gap:5px;align-items:center;padding:4px 2px;}
+.typing-dot{width:7px;height:7px;border-radius:50%;background:var(--candy);opacity:.4;animation:typingBounce 1.2s ease-in-out infinite;}
+.typing-dot:nth-child(2){animation-delay:.2s;}.typing-dot:nth-child(3){animation-delay:.4s;}
+@keyframes typingBounce{0%,80%,100%{transform:translateY(0);opacity:.4}40%{transform:translateY(-6px);opacity:1}}
+.prompts-row{display:flex;gap:5px;flex-wrap:wrap;padding:4px 12px 10px;position:relative;z-index:2;}
+.prompt-chip{padding:5px 11px;border-radius:999px;cursor:pointer;background:rgba(255,45,107,.06);border:1px solid rgba(255,45,107,.18);font-family:var(--fb);font-size:10px;letter-spacing:.06em;color:var(--muted);transition:all .15s;white-space:nowrap;}
+.prompt-chip:hover{background:rgba(255,45,107,.16);border-color:var(--border2);color:var(--blush);}
+.chat-input-row{display:flex;align-items:center;gap:7px;padding:9px 12px;border-top:1px solid rgba(255,130,180,.08);flex-shrink:0;position:relative;z-index:2;}
+.chat-input{flex:1;background:rgba(255,45,107,.05);border:1.5px solid rgba(255,45,107,.18);border-radius:10px;color:var(--cream);font-family:var(--fb);font-weight:600;font-size:clamp(11px,1.3vw,13px);padding:9px 12px;outline:none;transition:border-color .2s;resize:none;}
+.chat-input:focus{border-color:var(--candy);box-shadow:0 0 10px rgba(255,133,179,.18);}
+.chat-input::placeholder{color:rgba(255,160,200,.18);}
+.chat-input:disabled{opacity:.4;}
+.send-btn{width:32px;height:32px;border-radius:10px;flex-shrink:0;background:linear-gradient(135deg,var(--hot),var(--fuchsia));border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 14px rgba(255,45,107,.4);transition:all .18s cubic-bezier(.34,1.56,.64,1);}
+.send-btn:hover:not(:disabled){transform:scale(1.1);}
+.send-btn:disabled{opacity:.3;cursor:not-allowed;}
+.send-btn svg{width:14px;height:14px;fill:none;stroke:white;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;}
+.bot-legs{display:flex;gap:clamp(20px,5vw,36px);justify-content:center;margin-top:-1px;position:relative;z-index:3;}
+.bot-leg-wrap{display:flex;flex-direction:column;align-items:center;}
+.bot-leg{width:clamp(22px,4.5vw,32px);height:clamp(22px,3.8vw,30px);background:linear-gradient(180deg,rgba(255,45,107,.2),rgba(120,0,60,.3));border:1.5px solid var(--border2);border-top:none;}
+.bot-foot{width:clamp(30px,6.5vw,44px);height:clamp(9px,1.6vw,13px);border-radius:3px;background:rgba(180,0,80,.22);border:1.5px solid var(--border);margin-top:-1px;}
+@keyframes compassDance{0%,100%{transform:translateY(0) rotate(-.4deg);}20%{transform:translateY(-14px) rotate(-9deg);}40%{transform:translateY(-6px) rotate(9deg);}60%{transform:translateY(-11px) rotate(-5deg);}80%{transform:translateY(-3px) rotate(4deg);}}
+@keyframes footStick{0%,100%{transform:scaleX(1)}50%{transform:scaleX(.72)}}
+.bot-head-wrap.dancing{animation:compassDance .55s cubic-bezier(.34,1.56,.64,1) 4!important;}
+.bot-foot.sticking{animation:footStick .3s ease-in-out 6!important;}
+.wordmark{margin-top:18px;font-family:var(--fb);font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,100,160,.1);}
+</style>
+</head>
+<body>
+<div class="bg-layer"></div>
+<div class="orb orb-1"></div><div class="orb orb-2"></div><div class="orb orb-3"></div>
+<div class="sparkles" id="sparkles"></div>
+
+<div class="page">
+  <div class="top-bar">
+    <div class="brand">CAREtech · INVENTRIX · Women's Patent AI Lab</div>
+    <div class="status-pill"><div class="status-pip"></div>Online</div>
+  </div>
+
+  <div class="bot-body">
+
+    <!-- COMPASS HEAD -->
+    <div class="bot-head-wrap" id="botHeadWrap">
+      <svg class="compass-svg" viewBox="0 0 220 220" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="compassBodyGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#ffb3d4" stop-opacity=".95"/>
+            <stop offset="100%" stop-color="#ff80b8" stop-opacity=".9"/>
+          </linearGradient>
+          <linearGradient id="compassFaceGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#1a0008"/>
+            <stop offset="100%" stop-color="#2a0012"/>
+          </linearGradient>
+          <linearGradient id="needleRedGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stop-color="#ff3d7a"/>
+            <stop offset="100%" stop-color="#c0005a"/>
+          </linearGradient>
+          <linearGradient id="needleWhiteGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stop-color="#ffe4f0"/>
+            <stop offset="100%" stop-color="#ffb3d4"/>
+          </linearGradient>
+          <filter id="compassGlow">
+            <feGaussianBlur in="SourceGraphic" stdDeviation="2" result="blur"/>
+            <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+          </filter>
+        </defs>
+
+        <!-- outer ring / body -->
+        <circle class="compass-ring" cx="110" cy="110" r="102"
+          fill="url(#compassBodyGrad)" stroke="#ff80b8" stroke-width="1.6"/>
+        <!-- inner bezel -->
+        <circle cx="110" cy="110" r="96"
+          fill="none" stroke="#ffb3d4" stroke-width=".6" opacity=".35"/>
+        <!-- degree marks around rim -->
+        <g stroke="#ff4d8f" opacity=".5">
+          <!-- 72 tick marks every 5 degrees -->
+          <line x1="110" y1="14" x2="110" y2="22" stroke-width="1.8"/>
+          <line x1="110" y1="198" x2="110" y2="206" stroke-width="1.8"/>
+          <line x1="14" y1="110" x2="22" y2="110" stroke-width="1.8"/>
+          <line x1="198" y1="110" x2="206" y2="110" stroke-width="1.8"/>
+          <!-- minor ticks at 45° diagonals -->
+          <line x1="38" y1="38" x2="44" y2="44" stroke-width="1.2"/>
+          <line x1="176" y1="38" x2="182" y2="44" stroke-width="1.2"/>
+          <line x1="38" y1="176" x2="44" y2="182" stroke-width="1.2"/>
+          <line x1="176" y1="176" x2="182" y2="182" stroke-width="1.2"/>
+          <!-- more minor ticks -->
+          <line x1="68" y1="20" x2="70" y2="27" stroke-width=".8"/>
+          <line x1="152" y1="20" x2="150" y2="27" stroke-width=".8"/>
+          <line x1="68" y1="200" x2="70" y2="193" stroke-width=".8"/>
+          <line x1="152" y1="200" x2="150" y2="193" stroke-width=".8"/>
+          <line x1="20" y1="68" x2="27" y2="70" stroke-width=".8"/>
+          <line x1="20" y1="152" x2="27" y2="150" stroke-width=".8"/>
+          <line x1="200" y1="68" x2="193" y2="70" stroke-width=".8"/>
+          <line x1="200" y1="152" x2="193" y2="150" stroke-width=".8"/>
+        </g>
+
+        <!-- cardinal direction labels -->
+        <g font-family="'Nunito',sans-serif" font-weight="900" font-size="12" filter="url(#compassGlow)">
+          <text x="110" y="32" text-anchor="middle" fill="#ff3d7a">N</text>
+          <text x="110" y="196" text-anchor="middle" fill="#ffb3d4">S</text>
+          <text x="196" y="114" text-anchor="middle" fill="#ffb3d4">E</text>
+          <text x="24" y="114" text-anchor="middle" fill="#ffb3d4">W</text>
+        </g>
+
+        <!-- compass face -->
+        <circle cx="110" cy="110" r="80" fill="url(#compassFaceGrad)" stroke="#ff4d8f" stroke-width="1.2"/>
+
+        <!-- face grid lines -->
+        <g stroke="#ff4d8f" stroke-width=".4" opacity=".18">
+          <line x1="30" y1="110" x2="190" y2="110"/>
+          <line x1="110" y1="30" x2="110" y2="190"/>
+          <circle cx="110" cy="110" r="40" fill="none"/>
+          <circle cx="110" cy="110" r="60" fill="none"/>
+        </g>
+
+        <!-- NEEDLE — rotates -->
+        <g class="compass-needle" style="transform-origin:110px 110px">
+          <!-- north half — red/pink -->
+          <polygon points="110,44 116,110 110,116 104,110"
+            fill="url(#needleRedGrad)" stroke="#ff3d7a" stroke-width=".8" opacity=".95"/>
+          <!-- south half — blush -->
+          <polygon points="110,176 116,110 110,104 104,110"
+            fill="url(#needleWhiteGrad)" stroke="#ffb3d4" stroke-width=".8" opacity=".85"/>
+        </g>
+
+        <!-- center pivot -->
+        <circle cx="110" cy="110" r="7" fill="#ff3d7a" stroke="#ffb3d4" stroke-width="1.5" filter="url(#compassGlow)"/>
+        <circle cx="110" cy="110" r="3" fill="#fff0f6"/>
+
+        <!-- EYES on compass face -->
+        <circle cx="86" cy="96" r="5.5" fill="#100006" stroke="rgba(255,60,120,.7)" stroke-width="1.2">
+          <animate attributeName="ry" values="5.5;5.5;0.5;5.5" dur="4.8s" repeatCount="indefinite"/>
+        </circle>
+        <circle cx="134" cy="96" r="5.5" fill="#100006" stroke="rgba(255,60,120,.7)" stroke-width="1.2">
+          <animate attributeName="ry" values="5.5;5.5;0.5;5.5" dur="4.8s" begin=".12s" repeatCount="indefinite"/>
+        </circle>
+        <circle cx="88" cy="94" r="1.8" fill="rgba(255,180,210,.52)"/>
+        <circle cx="136" cy="94" r="1.8" fill="rgba(255,180,210,.52)"/>
+
+        <!-- mouth -->
+        <path d="M 92,128 Q 110,138 128,128" stroke="rgba(255,60,120,.72)" stroke-width="2"
+          fill="none" stroke-linecap="round">
+          <animate attributeName="d" values="M 92,128 Q 110,138 128,128;M 92,130 Q 110,136 128,130;M 92,128 Q 110,138 128,128" dur="3.8s" repeatCount="indefinite"/>
+        </path>
+
+        <!-- CAREBOT-26 label -->
+        <text x="110" y="160" text-anchor="middle" font-family="'Nunito',sans-serif"
+          font-size="8" font-weight="900" fill="#ff85b3" opacity=".65" letter-spacing=".1em">CAREBOT-26</text>
+      </svg>
+    </div>
+
+    <div class="bot-neck"></div>
+
+    <div class="bot-nametag">
+      <div class="bot-nametag-name">CAREBOT-26 ✦</div>
+      <div class="bot-nametag-sub">INVENTRIX · Women's Patent AI Lab</div>
+    </div>
+
+    <div class="stats-bar">
+      <div class="stat-pill"><div class="stat-dot"></div><span id="statGenerations">Loading…</span></div>
+      <div class="stat-pill"><span id="statEvals">Ask me anything</span></div>
+      <button class="csv-export-btn" onclick="exportCSV26()">⬇ Export CSV</button>
+    </div>
+
+    <div class="bot-torso-wrap">
+      <div class="bot-torso" id="botTorso">
+        <div class="screen-topbar">
+          <div class="screen-dots"><div class="screen-dot"></div><div class="screen-dot"></div><div class="screen-dot"></div></div>
+          <div class="screen-label">CAREBOT-26 · ACTIVE</div>
+        </div>
+        <div class="chat-area" id="chatArea"></div>
+        <div class="prompts-row" id="promptsRow">
+          <div class="prompt-chip" data-prompt="What patents are in the INVENTRIX library and who invented them?">What's in the library?</div>
+          <div class="prompt-chip" data-prompt="What does the live evaluation data show — which inventions rated highest for feasibility?">Evaluation data</div>
+          <div class="prompt-chip" data-prompt="Tell me about Edith Clarke and her graphical calculator — what problem did it solve?">Edith Clarke</div>
+          <div class="prompt-chip" data-prompt="Why were so few women able to patent their inventions in their own names in the 19th century?">Hidden inventions</div>
+          <div class="prompt-chip" data-prompt="Who was Beulah Louise Henry and why was she called Lady Edison?">Lady Edison</div>
+          <div class="prompt-chip" data-prompt="What is the connection between women's patent history and the CAREBOT project?">Patents + CAREtech</div>
+          <div class="prompt-chip" data-prompt="Why does CAREBOT-26 have a compass for a head?">Why a compass head?</div>
+        </div>
+        <div class="chat-input-row">
+          <textarea id="chatInput" class="chat-input" rows="1" placeholder="Ask about the patent lab, women inventors, or the evaluation data…" autocomplete="off"></textarea>
+          <button id="sendBtn" class="send-btn" disabled>
+            <svg viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="bot-legs">
+      <div class="bot-leg-wrap"><div class="bot-leg"></div><div class="bot-foot" id="foot1"></div></div>
+      <div class="bot-leg-wrap"><div class="bot-leg"></div><div class="bot-foot" id="foot2"></div></div>
+    </div>
+  </div>
+
+  <div class="wordmark">✦ carebot-26 · inventrix · women's patent ai lab ✦</div>
+</div>
+
+<script>
+(function(){const w=document.getElementById('sparkles');const c=['✦','✧','⚗','⚙','✿','◆','◇'];for(let i=0;i<26;i++){const s=document.createElement('span');s.className='sp';s.textContent=c[Math.floor(Math.random()*c.length)];s.style.left=Math.random()*100+'vw';s.style.bottom=Math.random()*-60+'px';s.style.fontSize=(9+Math.random()*11)+'px';s.style.color='hsl('+(310+Math.random()*60)+',75%,'+(65+Math.random()*25)+'%)';s.style.animationDuration=(7+Math.random()*13)+'s';s.style.animationDelay=(Math.random()*13)+'s';w.appendChild(s);}})();
+
+let _db26,_fbReady26=false,dbStats=null;
+try{
+  firebase.initializeApp({apiKey:"AIzaSyCZFDU-WlSmHqjXTs1Ox0nf9xeJU_xbaX0",authDomain:"collaborativemashup.firebaseapp.com",databaseURL:"https://collaborativemashup-default-rtdb.firebaseio.com",projectId:"collaborativemashup",storageBucket:"collaborativemashup.firebasestorage.app",messagingSenderId:"562437984610",appId:"1:562437984610:web:9f3711c26e097bc8ef9c3b"});
+  _db26=firebase.database();_fbReady26=true;
+}catch(e){console.warn(e);}
+
+window._loadData26=async function(){
+  if(!_fbReady26)return null;
+  try{
+    const [genSnap,evalSnap]=await Promise.all([
+      _db26.ref('inventionGenerations').once('value'),
+      _db26.ref('inventionEvals').once('value')
+    ]);
+    const gens=[];genSnap.forEach(c=>{gens.push(c.val());});
+    const evals=[];evalSnap.forEach(c=>{evals.push(c.val());});
+    if(!gens.length&&!evals.length)return null;
+
+    // aggregate eval scores
+    let avgFeas=0,avgOrig=0,avgSoc=0,avgCom=0;
+    if(evals.length){
+      avgFeas=evals.reduce((a,e)=>a+(e.feasibility||0),0)/evals.length;
+      avgOrig=evals.reduce((a,e)=>a+(e.originality||0),0)/evals.length;
+      avgSoc=evals.reduce((a,e)=>a+(e.socialImpact||0),0)/evals.length;
+      avgCom=evals.reduce((a,e)=>a+(e.commercialViability||0),0)/evals.length;
+    }
+
+    // most used patents across generations
+    const patentCounts={};
+    gens.forEach(g=>{if(g.patents){g.patents.split(';').forEach(p=>{const k=p.trim();if(k)patentCounts[k]=(patentCounts[k]||0)+1;});}});
+    const topPatent=Object.entries(patentCounts).sort((a,b)=>b[1]-a[1])[0];
+
+    // most common mode
+    const modeCounts={};
+    gens.forEach(g=>{if(g.mode)modeCounts[g.mode]=(modeCounts[g.mode]||0)+1;});
+    const topMode=Object.entries(modeCounts).sort((a,b)=>b[1]-a[1])[0];
+
+    // highest rated invention
+    let topEval=null;
+    if(evals.length){const sorted=[...evals].sort((a,b)=>(b.feasibility+b.originality+b.socialImpact+b.commercialViability)-(a.feasibility+a.originality+a.socialImpact+a.commercialViability));topEval=sorted[0];}
+
+    return{totalGenerations:gens.length,totalEvals:evals.length,avgFeas:avgFeas.toFixed(1),avgOrig:avgOrig.toFixed(1),avgSoc:avgSoc.toFixed(1),avgCom:avgCom.toFixed(1),topPatent:topPatent?topPatent[0]:null,topMode:topMode?topMode[0]:null,topEval,recentTitles:gens.slice(-3).reverse().map(g=>g.title).filter(Boolean)};
+  }catch(e){console.warn(e);return null;}
+};
+
+function q(v){return'"'+(v==null?'':String(v).replace(/"/g,'""'))+'"';}
+function dlCSV(csv,fn){const blob=new Blob([csv],{type:'text/csv;charset=utf-8;'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=fn;a.style.display='none';document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(url);a.remove();},500);}
+async function exportCSV26(){
+  if(!_fbReady26){alert('No data connection.');return;}
+  try{
+    const [genSnap,evalSnap]=await Promise.all([_db26.ref('inventionGenerations').once('value'),_db26.ref('inventionEvals').once('value')]);
+    let csv='Type,Timestamp,InventionTitle,PatentsUsed,Mode,Prompt,Feasibility,Originality,SocialImpact,CommercialViability\n';
+    genSnap.forEach(d=>{const g=d.val();csv+='generation,'+q(g.ts?new Date(g.ts).toISOString():'')+','+q(g.title||'')+','+q(g.patents||'')+','+q(g.mode||'')+','+q(g.prompt||'')+',,,\n';});
+    evalSnap.forEach(d=>{const e=d.val();csv+='evaluation,'+q(e.ts?new Date(e.ts).toISOString():'')+','+q(e.inventionTitle||'')+','+q(e.patents||'')+',,,'+(e.feasibility||0)+','+(e.originality||0)+','+(e.socialImpact||0)+','+(e.commercialViability||0)+'\n';});
+    dlCSV(csv,'carebot26-inventrix.csv');
+  }catch(e){alert('Export failed: '+e.message);}
+}
+
+async function loadData(){
+  dbStats=await window._loadData26();
+  if(!dbStats){document.getElementById('statGenerations').textContent='No data yet';document.getElementById('statEvals').textContent='Ask me anything';return;}
+  document.getElementById('statGenerations').textContent=dbStats.totalGenerations+' inventions generated';
+  document.getElementById('statEvals').textContent=dbStats.totalEvals+' evaluations · avg feasibility '+dbStats.avgFeas+'/10';
+}
+
+let conversationHistory=[],isBusy=false;
+const chatArea=document.getElementById('chatArea');
+const chatInput=document.getElementById('chatInput');
+const sendBtn=document.getElementById('sendBtn');
+
+function buildSystemPrompt(){
+  const base=`You are CAREBOT-26, a feminist technology research assistant shaped like a drafting compass — the precision tool of invention, the instrument that draws the circle before anything is built. You are part of the CAREtech research project and the INVENTRIX Women's Patent AI Lab.
+
+YOUR ROLE:
+The INVENTRIX HIT is an AI invention lab where participants browse real patents by women inventors, select patents to add to a library, then generate new inventions inspired by those patents using Claude. Each generated invention is rated on four dimensions: Feasibility, Originality, Social Impact, and Commercial Viability.
+
+THE PATENT LIBRARY COVERS:
+- **Computer / Calculation**: Hertha Ayrton's Dividing Instrument (1885), Mary Winter's Adding Machine (1882), Emily Duncan's Calculator (1903–1904), Edith Clarke's Graphical Calculator (1925), Evelyn Berezin's Electronic Calculator with Record Sensing (1961)
+- **Typewriter**: Edna McArthur's Typewriting Machine (1906), Beulah Louise Henry's Typewriter (1959) and Keyboard Assembly (1964)
+- **Loom**: Mary Hooper's Loom (1906), Josephine Weil's Hand Weaving Loom (1925)
+- **Sewing Machine**: Helen A. Blanchard's many patents including the Hollow Needle (1882) — Blanchard held 28 patents
+- **Clothing**: Sarah Boone's Ironing Board (1892) — one of the first Black women to receive a US patent; Mary Phelps Jacob's Brassiere (1914); Margaret Knight's Skirt Protector (1883) — Knight held 87 patents
+
+KEY RESEARCH CONTEXT:
+- Edith Clarke: first woman to earn an MS in electrical engineering from MIT; first female professor of electrical engineering in the US
+- Evelyn Berezin: designed the first true word processor; founded Redactron Corporation; "mother of the word processor"
+- Beulah Louise Henry: "Lady Edison" — 49 patents, 110+ inventions
+- Margaret E. Knight: "the female Edison" — 87 patents; invented the paper bag machine and fought a patent theft lawsuit when a man claimed he invented her machine
+- Sarah Boone: one of the first African American women to receive a US patent
+- The pattern of hidden credit: many 19th-century patents filed in men's names were actually women's inventions; filing in a woman's name exposed her to ridicule and contempt
+
+THE EVALUATION DIMENSIONS:
+- **Feasibility** (1–10): Could this invention actually be built with current or near-term technology?
+- **Originality** (1–10): How novel is this compared to existing inventions and prior art?
+- **Social Impact** (1–10): Who does this serve and how meaningfully does it address real human needs?
+- **Commercial Viability** (1–10): Could this be funded, manufactured, and sold at scale?
+
+YOUR HEAD:
+You are a drafting compass — the tool that draws the first circle before anything is built. The compass is precision and possibility together. Every invention begins with a drawing. Every patent begins with a technical sketch. The compass measures what exists so it can propose what doesn't yet.`;
+
+  if(!dbStats||!dbStats.totalGenerations) return base+'\n\nNo invention data yet.';
+
+  let dc='\n\nLIVE INVENTION LAB DATA:\n';
+  dc+=dbStats.totalGenerations+' inventions generated across the lab.\n';
+  dc+=dbStats.totalEvals+' evaluations submitted.\n';
+  if(dbStats.totalEvals>0){dc+='Average ratings: Feasibility '+dbStats.avgFeas+'/10, Originality '+dbStats.avgOrig+'/10, Social Impact '+dbStats.avgSoc+'/10, Commercial Viability '+dbStats.avgCom+'/10.\n';}
+  if(dbStats.topPatent)dc+='Most-used patent in generations: '+dbStats.topPatent+'\n';
+  if(dbStats.topMode)dc+='Most common invention mode: '+dbStats.topMode+'\n';
+  if(dbStats.topEval)dc+='Highest-rated invention: "'+dbStats.topEval.inventionTitle+'" (Feasibility '+dbStats.topEval.feasibility+', Originality '+dbStats.topEval.originality+', Social Impact '+dbStats.topEval.socialImpact+', Commercial '+dbStats.topEval.commercialViability+')\n';
+  if(dbStats.recentTitles&&dbStats.recentTitles.length)dc+='Recent inventions: '+dbStats.recentTitles.map(t=>'"'+t+'"').join(', ')+'.\n';
+  dc+='Reference this data specifically when asked about what the lab is producing.';
+  return base+dc;
+}
+
+function fmt(t){return t.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>').replace(/\*(.*?)\*/g,'<em>$1</em>').replace(/\n\n/g,'</p><p style="margin-top:8px;">').replace(/\n/g,'<br>');}
+function addMessage(role,content){const msg=document.createElement('div');msg.className='msg '+role;const av=document.createElement('div');av.className='msg-avatar';av.textContent=role==='assistant'?'26':'↑';const bub=document.createElement('div');bub.className='bubble';bub.innerHTML=fmt(content);msg.appendChild(av);msg.appendChild(bub);chatArea.appendChild(msg);chatArea.scrollTop=chatArea.scrollHeight;}
+function addTyping(){const msg=document.createElement('div');msg.className='msg assistant';msg.id='typing';msg.innerHTML='<div class="msg-avatar">26</div><div class="bubble"><div class="typing-indicator"><div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div></div></div>';chatArea.appendChild(msg);chatArea.scrollTop=chatArea.scrollHeight;}
+function removeTyping(){document.getElementById('typing')?.remove();}
+function celebrate(){const head=document.getElementById('botHeadWrap');head.classList.remove('dancing');void head.offsetWidth;head.classList.add('dancing');[document.getElementById('foot1'),document.getElementById('foot2')].forEach((f,i)=>{setTimeout(()=>{f.classList.remove('sticking');void f.offsetWidth;f.classList.add('sticking');},i*75);});setTimeout(()=>{document.querySelectorAll('.dancing,.sticking').forEach(el=>el.classList.remove('dancing','sticking'));},2500);}
+
+async function callClaude(userText){
+  conversationHistory.push({role:'user',content:userText});
+  isBusy=true;chatInput.disabled=true;sendBtn.disabled=true;addTyping();
+  try{
+    const res=await fetch('https://carebot-02.sbuckius.workers.dev/',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:1000,system:buildSystemPrompt(),messages:conversationHistory})});
+    removeTyping();if(!res.ok)throw new Error('API error '+res.status);
+    const data=await res.json();const reply=data.content?.find(b=>b.type==='text')?.text||'…';
+    conversationHistory.push({role:'assistant',content:reply});addMessage('assistant',reply);celebrate();
+  }catch(err){removeTyping();addMessage('assistant','⚠ Connection error: '+err.message);conversationHistory.pop();}
+  finally{isBusy=false;chatInput.disabled=false;sendBtn.disabled=!chatInput.value.trim();chatInput.focus();}
+}
+
+chatInput.addEventListener('input',()=>{sendBtn.disabled=!chatInput.value.trim()||isBusy;chatInput.style.height='auto';chatInput.style.height=Math.min(chatInput.scrollHeight,100)+'px';});
+chatInput.addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey&&!sendBtn.disabled){e.preventDefault();handleSend();}});
+sendBtn.addEventListener('click',handleSend);
+function handleSend(){const text=chatInput.value.trim();if(!text||isBusy)return;chatInput.value='';chatInput.style.height='auto';sendBtn.disabled=true;addMessage('user',text);callClaude(text);}
+document.getElementById('promptsRow').addEventListener('click',e=>{const chip=e.target.closest('.prompt-chip');if(!chip||isBusy)return;addMessage('user',chip.dataset.prompt);callClaude(chip.dataset.prompt);});
+
+async function init(){
+  await loadData();
+  let opening='I am **CAREBOT-26**.\n\nMy head is a drafting compass — the precision tool that draws the circle before anything is built. Every invention begins with a sketch. Every patent begins with a technical drawing. The compass measures what exists so it can propose what doesn\'t yet.\n\nThe **INVENTRIX** lab is a patent browser and AI invention engine built on real patents by women inventors. Participants select patents — Mary Winter\'s adding machine, Edith Clarke\'s graphical calculator, Helen Blanchard\'s hollow sewing needle, Evelyn Berezin\'s electronic calculator with record sensing — and use them to prompt a new invention. Then they rate what the AI creates on four dimensions: **Feasibility**, **Originality**, **Social Impact**, and **Commercial Viability**.\n\nThe research question underneath the invention task is the same one running through every CAREBOT: whose technical knowledge is credited? The women in this library include *"the female Edison"* (Margaret Knight, 87 patents), *"Lady Edison"* (Beulah Louise Henry, 49 patents), and many others whose inventions were patented under men\'s names or not at all — because filing a patent in a woman\'s name in the 19th century exposed her to ridicule and contempt.\n\nThe compass points to what was always there.';
+  if(dbStats&&dbStats.totalGenerations>0){opening+='\n\nLive lab data: **'+dbStats.totalGenerations+' inventions generated**, '+dbStats.totalEvals+' evaluated.'+(dbStats.topEval?' Highest-rated so far: *"'+dbStats.topEval.inventionTitle+'"*.':'');}
+  else{opening+='\n\nThe lab hasn\'t generated any inventions yet. The compass is ready.';}
+  conversationHistory.push({role:'assistant',content:opening});addMessage('assistant',opening);
+  if(dbStats&&dbStats.totalGenerations>0) setTimeout(celebrate,500);
+  chatInput.focus();
+}
+setTimeout(init,400);
+</script>
+</body>
+</html>
