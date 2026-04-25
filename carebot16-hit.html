@@ -1,0 +1,461 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>✦ CAREBOT-16 ✦ Audio & Highlight Task</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+<style>
+  :root {
+    --rose:#ff5c8a;--hot:#ff2d6b;--candy:#ff85b3;--blush:#ffb3cf;
+    --cream:#fff5f8;--berry:#c4005a;--maroon:#6f001e;--fuchsia:#ff1f80;--bg:#1a0012;
+    --card-border:rgba(255,160,200,.22);--card-border-bright:rgba(255,100,160,.55);
+    --soft-glow:0 4px 30px rgba(255,45,107,.2),0 1px 0 rgba(255,160,200,.12) inset;
+    --pop-glow:0 6px 44px rgba(255,45,107,.4),0 0 80px rgba(255,30,128,.15);
+    --text-dim:rgba(255,200,224,.55);
+  }
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+  html,body{min-height:100%;font-family:'Quicksand',sans-serif;font-weight:600;color:var(--cream);background:var(--bg);-webkit-overflow-scrolling:touch;-webkit-font-smoothing:antialiased;cursor:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 20 20'%3E%3Ccircle cx='10' cy='10' r='4' fill='%23ff2d6b' opacity='.9'/%3E%3Ccircle cx='10' cy='10' r='7' stroke='%23ff85b3' stroke-width='1.5' fill='none' opacity='.6'/%3E%3C/svg%3E") 10 10,default;}
+
+  .bg{position:fixed;inset:0;z-index:0;pointer-events:none;background:radial-gradient(ellipse 70% 55% at 18% 12%,rgba(200,0,80,.32) 0%,transparent 60%),radial-gradient(ellipse 55% 65% at 82% 80%,rgba(140,0,70,.28) 0%,transparent 60%),radial-gradient(ellipse 90% 40% at 50% 105%,rgba(110,0,50,.2) 0%,transparent 55%),linear-gradient(160deg,#200015,#150010 50%,#0e000d);}
+  .orb{position:fixed;border-radius:50%;pointer-events:none;z-index:0;filter:blur(62px);}
+  .orb-1{width:420px;height:420px;background:var(--hot);opacity:.17;top:-100px;left:-80px;animation:drift1 20s ease-in-out infinite;}
+  .orb-2{width:340px;height:340px;background:var(--fuchsia);opacity:.15;bottom:-70px;right:-70px;animation:drift2 24s ease-in-out infinite;}
+  .orb-3{width:200px;height:200px;background:var(--candy);opacity:.1;top:40%;left:58%;animation:drift3 16s ease-in-out infinite;}
+  @keyframes drift1{0%,100%{transform:translate(0,0)}50%{transform:translate(40px,28px)}}
+  @keyframes drift2{0%,100%{transform:translate(0,0)}50%{transform:translate(-30px,-20px)}}
+  @keyframes drift3{0%,100%{transform:translate(0,0)}33%{transform:translate(-18px,14px)}66%{transform:translate(14px,-10px)}}
+  .sparkles{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden;}
+  .sp{position:absolute;opacity:0;animation:floatUp linear infinite;}
+  @keyframes floatUp{0%{opacity:0;transform:translateY(0) scale(.6) rotate(0deg)}15%{opacity:.65}85%{opacity:.35}100%{opacity:0;transform:translateY(-130px) scale(1.1) rotate(180deg)}}
+
+  .wrap{position:relative;z-index:2;max-width:1000px;margin:0 auto;padding:max(20px,env(safe-area-inset-top)) clamp(12px,3vmin,24px) calc(60px + env(safe-area-inset-bottom)) clamp(12px,3vmin,24px);display:grid;gap:16px;}
+
+  .mascot-bar{display:flex;align-items:center;justify-content:space-between;}
+  .mascot{display:flex;align-items:center;gap:10px;}
+  .bot-face{width:44px;height:44px;border-radius:14px;background:linear-gradient(135deg,rgba(255,45,107,.25),rgba(180,0,60,.35));border:1.5px solid var(--card-border-bright);box-shadow:var(--soft-glow);display:flex;align-items:center;justify-content:center;font-size:22px;animation:wobble 4s ease-in-out infinite;flex-shrink:0;}
+  @keyframes wobble{0%,100%{transform:rotate(-2deg) scale(1)}25%{transform:rotate(1deg) scale(1.04)}50%{transform:rotate(-1deg) scale(1)}75%{transform:rotate(2deg) scale(1.03)}}
+  .bot-name{font-family:'Nunito',sans-serif;font-weight:900;font-size:17px;letter-spacing:.04em;background:linear-gradient(90deg,var(--blush),var(--fuchsia) 55%,var(--candy));-webkit-background-clip:text;background-clip:text;color:transparent;}
+  .bot-sub{font-size:10px;letter-spacing:.15em;text-transform:uppercase;color:var(--text-dim);margin-top:1px;}
+  .time-badge{display:flex;align-items:center;gap:6px;padding:6px 12px;border-radius:999px;background:rgba(255,255,255,.04);border:1px solid var(--card-border);font-size:11px;letter-spacing:.1em;color:var(--text-dim);}
+  .time-pip{width:5px;height:5px;border-radius:50%;background:var(--hot);box-shadow:0 0 6px var(--hot);animation:breathe 2s ease-in-out infinite;}
+  @keyframes breathe{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.3;transform:scale(.65)}}
+
+  /* context banner */
+  .context-banner{background:rgba(12,0,8,.78);border:1.5px solid var(--card-border-bright);border-radius:24px;box-shadow:var(--pop-glow),inset 0 1px 0 rgba(255,160,200,.07);backdrop-filter:blur(20px) saturate(1.4);padding:24px 26px;position:relative;overflow:hidden;}
+  .context-banner::before{content:'';position:absolute;top:0;left:12%;right:12%;height:1.5px;background:linear-gradient(90deg,transparent,var(--candy) 35%,var(--hot) 50%,var(--candy) 65%,transparent);box-shadow:0 0 12px var(--candy);border-radius:999px;}
+  .banner-eyebrow{font-size:9px;letter-spacing:.22em;text-transform:uppercase;color:var(--candy);font-weight:800;margin-bottom:8px;}
+  .banner-title{font-family:'Nunito',sans-serif;font-weight:900;font-size:clamp(15px,3vw,20px);background:linear-gradient(120deg,var(--cream) 15%,var(--blush) 50%,var(--fuchsia) 90%);-webkit-background-clip:text;background-clip:text;color:transparent;margin-bottom:10px;line-height:1.3;}
+  .banner-text{font-size:13px;color:rgba(255,210,228,.8);line-height:1.75;}
+  .banner-text strong{color:var(--blush);}
+
+  .app{background:rgba(255,255,255,.04);border:1.5px solid var(--card-border);border-radius:24px;box-shadow:var(--soft-glow);backdrop-filter:blur(20px) saturate(1.5);overflow:hidden;position:relative;}
+  .app::before{content:'';position:absolute;top:0;left:16px;right:16px;height:1px;background:linear-gradient(90deg,transparent,var(--candy) 30%,var(--hot) 50%,var(--candy) 70%,transparent);box-shadow:0 0 10px var(--candy);border-radius:999px;pointer-events:none;}
+
+  .task-header{padding:22px 24px 18px;border-bottom:1px solid rgba(255,160,200,.1);display:grid;gap:10px;}
+  .eyebrow{font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--text-dim);}
+  .task-title{font-family:'Nunito',sans-serif;font-weight:900;font-size:clamp(17px,3vw,24px);line-height:1.3;background:linear-gradient(120deg,var(--cream) 15%,var(--blush) 55%,var(--fuchsia) 90%);-webkit-background-clip:text;background-clip:text;color:transparent;}
+  .task-meta{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+  .meta-chip{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:999px;background:rgba(255,130,180,.08);border:1px solid rgba(255,130,180,.18);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--text-dim);}
+  .meta-dot{width:4px;height:4px;border-radius:50%;background:var(--candy);}
+
+  .audio-section{padding:18px 24px;border-bottom:1px solid rgba(255,160,200,.08);display:grid;gap:14px;}
+  .audio-label{font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--text-dim);}
+  .audio-card{background:rgba(255,45,107,.06);border:1.5px solid var(--card-border-bright);border-radius:18px;padding:18px 20px;display:grid;gap:14px;position:relative;overflow:hidden;}
+  .audio-card::before{content:'';position:absolute;top:0;left:10%;right:10%;height:1px;background:linear-gradient(90deg,transparent,var(--rose) 40%,var(--hot) 50%,var(--rose) 60%,transparent);box-shadow:0 0 8px var(--rose);border-radius:999px;}
+  .audio-info{display:flex;align-items:center;gap:12px;}
+  .audio-icon{width:44px;height:44px;border-radius:12px;background:linear-gradient(135deg,rgba(255,45,107,.28),rgba(180,0,60,.38));border:1.5px solid var(--card-border-bright);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;box-shadow:0 0 14px rgba(255,45,107,.3);animation:breathe 3s ease-in-out infinite;}
+  .audio-meta{flex:1;}
+  .audio-title{font-family:'Nunito',sans-serif;font-weight:900;font-size:14px;color:var(--cream);margin-bottom:3px;}
+  .audio-sub{font-size:11px;color:var(--text-dim);line-height:1.5;}
+  .kilo-img{width:100%;height:auto;border-radius:14px;border:1.5px solid var(--card-border);box-shadow:var(--soft-glow);display:block;}
+  audio{width:100%;border-radius:10px;accent-color:var(--hot);filter:drop-shadow(0 2px 10px rgba(255,45,107,.3));}
+  .ref-btn{appearance:none;font-family:'Nunito',sans-serif;font-weight:800;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:6px;flex-wrap:wrap;padding:10px 16px;border-radius:14px;border:1.5px solid var(--card-border);background:rgba(255,45,107,.08);color:var(--text-dim);transition:all .2s;font-size:11px;}
+  .ref-btn:hover{border-color:var(--card-border-bright);color:var(--blush);background:rgba(255,45,107,.18);}
+  .ref-btn[disabled]{opacity:.3;cursor:not-allowed;}
+
+  .instructions-section{padding:16px 24px 0;display:grid;gap:8px;}
+  .instr-box{background:rgba(255,45,107,.06);border:1px solid rgba(255,130,180,.18);border-radius:14px;padding:14px 16px;font-size:clamp(12px,1.9vw,14px);color:rgba(255,210,228,.8);line-height:1.8;}
+  .instr-box strong{color:var(--blush);font-family:'Nunito',sans-serif;}
+  .target-badge{display:inline-block;background:rgba(255,213,0,.14);border:1px solid rgba(255,220,50,.36);border-radius:6px;padding:1px 7px;color:#ffe870;font-weight:700;font-family:'Nunito',sans-serif;font-size:.9em;white-space:nowrap;}
+
+  .progress-row{display:flex;align-items:center;gap:12px;padding:14px 24px;border-top:1px solid rgba(255,160,200,.08);border-bottom:1px solid rgba(255,160,200,.08);}
+  .progress-track{flex:1;height:6px;border-radius:999px;background:rgba(255,130,180,.1);border:1px solid rgba(255,130,180,.15);position:relative;overflow:visible;}
+  .progress-fill{height:100%;width:0%;border-radius:999px;background:linear-gradient(90deg,var(--berry),var(--hot),var(--fuchsia),var(--candy));box-shadow:0 0 10px var(--fuchsia);transition:width .5s cubic-bezier(.34,1.56,.64,1);position:relative;}
+  .progress-fill::after{content:'✦';position:absolute;right:-8px;top:50%;transform:translateY(-50%);font-size:10px;color:var(--candy);filter:drop-shadow(0 0 4px var(--candy));animation:spinStar 3s linear infinite;}
+  @keyframes spinStar{to{transform:translateY(-50%) rotate(360deg)}}
+  #progressText{font-size:11px;color:var(--text-dim);white-space:nowrap;letter-spacing:.06em;}
+
+  .checklist{padding:14px 24px;display:flex;flex-direction:column;gap:8px;border-bottom:1px solid rgba(255,160,200,.08);}
+  .checklist-label{font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--text-dim);margin-bottom:2px;}
+  .check-item{display:flex;align-items:center;gap:10px;padding:9px 14px;border-radius:12px;background:rgba(255,130,180,.05);border:1px solid rgba(255,130,180,.12);font-size:13px;color:rgba(255,190,220,.6);transition:all .3s;cursor:pointer;-webkit-tap-highlight-color:transparent;}
+  .check-item:hover{background:rgba(255,45,107,.1);border-color:rgba(255,100,160,.3);}
+  .check-item.done{background:rgba(255,213,0,.08);border-color:rgba(255,220,50,.35);color:#ffe870;}
+  .ci-icon{width:20px;height:20px;border-radius:50%;flex-shrink:0;background:rgba(255,130,180,.12);border:1px solid rgba(255,130,180,.28);display:flex;align-items:center;justify-content:center;font-size:9px;color:var(--text-dim);transition:all .3s;}
+  .check-item.done .ci-icon{background:rgba(255,213,0,.2);border-color:rgba(255,220,50,.5);color:#ffe870;}
+  .ci-phrase{font-family:'Nunito',sans-serif;font-weight:700;}
+
+  .transcript-section{padding:18px 24px;border-bottom:1px solid rgba(255,160,200,.08);}
+  .transcript-label{font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--text-dim);margin-bottom:12px;}
+  .transcript{font-size:clamp(14px,2.2vw,17px);line-height:2.1;color:rgba(255,220,235,.85);font-family:'Nunito',sans-serif;font-weight:600;user-select:text;-webkit-user-select:text;cursor:text;}
+  .target-span{cursor:pointer;border-radius:5px;padding:1px 3px;transition:background .25s,box-shadow .25s,color .25s;}
+  .target-span:hover{background:rgba(255,213,0,.12);}
+  .target-span.highlighted{background:rgba(255,213,0,.32);color:#fff5c0;box-shadow:0 0 10px rgba(255,213,0,.28);}
+  @keyframes flashRed{0%,100%{background:transparent;box-shadow:none}40%,60%{background:rgba(255,20,20,.2);box-shadow:0 0 24px rgba(255,0,0,.35) inset;}}
+  .flash-error{animation:flashRed .6s ease;border-radius:12px;}
+  .giggle-note{margin-top:14px;padding:12px 16px;border-radius:12px;background:rgba(255,45,107,.07);border:1px solid rgba(255,130,180,.2);font-size:12px;color:rgba(255,180,210,.65);letter-spacing:.04em;line-height:1.7;}
+  .giggle-note span{color:var(--candy);font-weight:700;}
+
+  .app-footer{padding:16px 24px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;}
+  .hint-row{display:flex;gap:6px;flex-wrap:wrap;}
+  .hint-pill{padding:5px 10px;border-radius:999px;background:rgba(255,130,180,.07);border:1px solid rgba(255,130,180,.16);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--text-dim);}
+  .submit-btn{appearance:none;font-family:'Nunito',sans-serif;font-weight:900;font-size:13px;letter-spacing:.04em;color:var(--cream);cursor:pointer;display:inline-flex;align-items:center;gap:6px;padding:11px 24px;border-radius:14px;min-height:42px;border:1.5px solid var(--hot);background:linear-gradient(135deg,rgba(255,45,107,.6),rgba(180,0,80,.65));box-shadow:0 4px 20px rgba(255,45,107,.3),inset 0 1px 0 rgba(255,255,255,.12);transition:all .2s cubic-bezier(.34,1.56,.64,1);-webkit-tap-highlight-color:transparent;position:relative;overflow:hidden;animation:ctaPulse 3s ease-in-out infinite;}
+  .submit-btn::before{content:'';position:absolute;inset:0;border-radius:inherit;background:linear-gradient(135deg,rgba(255,255,255,.1),transparent);pointer-events:none;}
+  @keyframes ctaPulse{0%,100%{box-shadow:0 4px 20px rgba(255,45,107,.3),inset 0 1px 0 rgba(255,255,255,.12)}50%{box-shadow:0 8px 36px rgba(255,45,107,.55),0 0 60px rgba(255,30,128,.15),inset 0 1px 0 rgba(255,255,255,.12)}}
+  .submit-btn:hover:not([disabled]){transform:translateY(-2px) scale(1.04);animation:none;box-shadow:0 8px 32px rgba(255,45,107,.5);}
+  .submit-btn[disabled]{opacity:.28;cursor:not-allowed;transform:none!important;box-shadow:none!important;animation:none;}
+
+  #completionSlot .completion-card{background:rgba(20,0,14,.88);border:1.5px solid var(--card-border-bright);box-shadow:var(--pop-glow),inset 0 1px 0 rgba(255,160,200,.07);border-radius:24px;padding:40px 28px;text-align:center;position:relative;overflow:hidden;backdrop-filter:blur(20px);}
+  #completionSlot .completion-card::before{content:'';position:absolute;top:0;left:12%;right:12%;height:1.5px;background:linear-gradient(90deg,transparent,var(--candy) 35%,var(--hot) 50%,var(--candy) 65%,transparent);box-shadow:0 0 10px var(--candy);border-radius:999px;}
+  .c-eyebrow{font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--text-dim);margin-bottom:10px;}
+  #completionSlot .completion-card h2{font-family:'Nunito',sans-serif;font-weight:900;font-size:clamp(24px,4vw,36px);background:linear-gradient(100deg,var(--blush) 20%,var(--fuchsia) 55%,var(--candy));-webkit-background-clip:text;background-clip:text;color:transparent;margin-bottom:14px;}
+  #completionSlot .completion-card p{font-size:clamp(12px,1.8vw,14px);color:rgba(255,210,230,.65);line-height:1.85;margin-bottom:22px;max-width:520px;margin-left:auto;margin-right:auto;}
+  .stat-bubble{display:inline-flex;flex-direction:column;align-items:center;gap:4px;background:linear-gradient(135deg,rgba(255,45,107,.15),rgba(200,0,90,.18));border:1.5px solid var(--card-border-bright);border-radius:20px;padding:18px 36px;margin-bottom:8px;box-shadow:0 4px 30px rgba(255,45,107,.25),inset 0 1px 0 rgba(255,255,255,.06);}
+  .stat-number{font-family:'Nunito',sans-serif;font-weight:900;font-size:clamp(40px,7vw,60px);line-height:1;background:linear-gradient(135deg,var(--blush) 20%,var(--fuchsia) 55%,var(--hot));-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 0 14px rgba(255,45,107,.45));}
+  .stat-label{font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--text-dim);}
+  .stat-raw{font-size:11px;color:rgba(255,160,200,.35);letter-spacing:.04em;margin-bottom:24px;}
+  .phrase-list{text-align:left;background:rgba(255,213,0,.05);border:1px solid rgba(255,213,0,.18);border-radius:14px;padding:14px 18px;margin:0 0 22px;font-size:12px;color:#ffe870;line-height:2.2;font-family:'Nunito',sans-serif;}
+
+  .overlay-shell{position:fixed;inset:0;z-index:9000;background:rgba(8,0,5,.84);backdrop-filter:blur(14px);display:none;place-items:center;}
+  .overlay-shell.open{display:grid;}
+  .redir-card{width:min(100vw - 28px,1000px);height:min(100vh - 28px,720px);background:rgba(14,0,8,.95);border:1.5px solid var(--card-border);box-shadow:var(--soft-glow);border-radius:20px;overflow:hidden;display:grid;grid-template-rows:auto 1fr auto;}
+  .redir-header{display:flex;align-items:center;justify-content:space-between;padding:12px 18px;border-bottom:1px solid rgba(255,130,180,.1);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--text-dim);}
+  .redir-countdown{background:rgba(255,45,107,.1);border:1px solid var(--card-border);border-radius:8px;padding:4px 10px;color:var(--rose);}
+  .redir-card iframe{width:100%;height:100%;border:0;}
+  .redir-footer{display:flex;justify-content:flex-end;gap:8px;padding:10px 18px;border-top:1px solid rgba(255,130,180,.1);}
+  .redir-link{font-family:'Nunito',sans-serif;font-weight:800;font-size:12px;color:var(--cream);text-decoration:none;padding:9px 18px;border-radius:12px;border:1.5px solid var(--card-border);background:rgba(255,45,107,.1);transition:all .2s;cursor:pointer;appearance:none;}
+  .redir-link:hover{border-color:var(--card-border-bright);background:rgba(255,45,107,.2);}
+  .wordmark{font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,160,200,.18);text-align:center;}
+</style>
+</head>
+<body>
+<div class="bg"></div>
+<div class="orb orb-1"></div><div class="orb orb-2"></div><div class="orb orb-3"></div>
+<div class="sparkles" id="sparkles"></div>
+
+<main class="wrap">
+
+  <div class="mascot-bar">
+    <div class="mascot">
+      <div class="bot-face">🎙️</div>
+      <div>
+        <div class="bot-name">CAREBOT-16 ✦</div>
+        <div class="bot-sub">Audio & Highlight Analysis · Online</div>
+      </div>
+    </div>
+    <div class="time-badge"><div class="time-pip"></div><span id="sysTime">--:--:--</span></div>
+  </div>
+
+  <!-- CONTEXT BANNER -->
+  <div class="context-banner">
+    <div class="banner-eyebrow">✦ CAREBOT-16 · Task Briefing</div>
+    <div class="banner-title">⚠️ You are about to hear an astronomer describe his women workers as a unit of measurement.</div>
+    <div class="banner-text">
+      <strong>Harlow Shapley</strong> was Director of the Harvard Observatory from 1921 to 1952. He employed dozens of women to perform astronomical calculations — they were called <strong>"computers."</strong> In this oral history recording, he describes their labor using a term he invented: <strong>"girl hours."</strong> He also laughs. Your task: listen to the audio, then highlight the target phrases in the transcript below.
+    </div>
+  </div>
+
+  <!-- TASK CARD -->
+  <section class="app" aria-label="Audio Highlight Task">
+
+    <header class="task-header">
+      <div class="eyebrow">✦ CAREBOT-16 · Audio Analysis Module</div>
+      <h1 class="task-title">Listen to the audio. Then highlight the target phrases in the transcript below.</h1>
+      <div class="task-meta">
+        <div class="meta-chip"><div class="meta-dot"></div>Audio Analysis</div>
+        <div class="meta-chip"><div class="meta-dot"></div>Text Highlighting</div>
+        <div class="meta-chip"><div class="meta-dot"></div>Active</div>
+      </div>
+    </header>
+
+    <!-- audio player -->
+    <div class="audio-section">
+      <div class="audio-label">✦ Audio Source</div>
+      <div class="audio-card">
+        <div class="audio-info">
+          <div class="audio-icon">🎙️</div>
+          <div class="audio-meta">
+            <div class="audio-title">Harlow Shapley on his assistants and "girl hours"</div>
+            <div class="audio-sub">Oral history audio excerpt · AIP Niels Bohr Library</div>
+          </div>
+        </div>
+        <img src="kilo-girls.png" alt="Illustration titled 'kilo-girls'" class="kilo-img" onerror="this.style.display='none'" />
+        <audio controls preload="metadata">
+          <source src="harlow_shapley_girl_hours.mp3" type="audio/mpeg" />
+          Your browser does not support the audio element.
+        </audio>
+        <button class="ref-btn" id="openAipBtn" type="button">
+          ✦ AIP Oral Histories — Harlow Shapley (interview has been removed from its original location online)
+        </button>
+      </div>
+
+      <div class="instructions-section" style="padding:0;">
+        <div class="audio-label">✦ Your Task</div>
+        <div class="instr-box">
+          <strong>Step 1:</strong> Listen to the audio clip above.<br>
+          <strong>Step 2:</strong> <strong>Click and drag to select</strong> each target phrase directly in the transcript below — it will highlight automatically when recognised.<br>
+          <strong>Step 3:</strong> While listening, find the <strong style="color:var(--candy)">giggle</strong> that occurs right after the speaker says <span class="target-badge">girl hours</span> — note when it happens.<br><br>
+          Phrases to highlight: &nbsp;
+          <span class="target-badge">assistants</span> &nbsp;
+          <span class="target-badge">girl</span> &nbsp;
+          <span class="target-badge">girl hours</span> &nbsp;
+          <span class="target-badge">I don't think I had much help in the hunching</span> &nbsp;
+          <span class="target-badge">swarming with these assistants</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- progress -->
+    <div class="progress-row">
+      <span id="progressText">0 / 5 phrases highlighted ✦</span>
+      <div class="progress-track"><div class="progress-fill" id="progressBar"></div></div>
+    </div>
+
+    <!-- checklist -->
+    <div class="checklist">
+      <div class="checklist-label">✦ Progress — highlights update as you select text</div>
+      <div class="check-item" id="ci-assistants"><div class="ci-icon">○</div><span class="ci-phrase">"assistants"</span></div>
+      <div class="check-item" id="ci-girl"><div class="ci-icon">○</div><span class="ci-phrase">"girl"</span></div>
+      <div class="check-item" id="ci-girl-hours"><div class="ci-icon">○</div><span class="ci-phrase">"girl hours"</span></div>
+      <div class="check-item" id="ci-hunching"><div class="ci-icon">○</div><span class="ci-phrase">"I don't think I had much help in the hunching"</span></div>
+      <div class="check-item" id="ci-swarming"><div class="ci-icon">○</div><span class="ci-phrase">"swarming with these assistants"</span></div>
+    </div>
+
+    <!-- transcript -->
+    <div class="transcript-section">
+      <div class="transcript-label">✦ Transcript — click phrases above or directly in the text</div>
+      <div class="transcript" id="transcript">
+        Harlow Shapley on his <span class="target-span" data-key="assistants">assistants</span> and "<span class="target-span" data-key="girl-hours">girl hours</span>." ORAL HISTORY AUDIO EXCERPT Harlow Shapley on his <span class="target-span" data-key="assistants">assistants</span> and "<span class="target-span" data-key="girl-hours">girl hours</span>." Weiner: You talk of the work on globular clusters and the revolutionary implications of it which you pursued and published. And you talked of "we." Now, was this a solo effort or were there others involved with you in a discussion of this? You indicated that there wasn't too much discussion, but this was a big thing. Shapley: The discussion mostly was with Gretchen and maybe one or two <span class="target-span" data-key="assistants">assistants</span>. You see, it took a tremendous lot of measures. I introduced the term "<span class="target-span" data-key="girl-hours">girl hours</span>," and it would take a lot of <span class="target-span" data-key="girl">girl</span> hours to solve some of the problems. In fact, one job took several kilo-<span class="target-span" data-key="girl">girl</span> hours to get it through. So I should say that I had help on a lot of the details. But <span class="target-span" data-key="hunching">I don't think I had much help in the hunching</span>. Weiner: This was at Mount Wilson? Shapley: Both places. But not many <span class="target-span" data-key="girl-hours">girl hours</span> at Mount Wilson. Very few. I had one full time <span class="target-span" data-key="girl">girl</span> <span class="target-span" data-key="assistants">assistant</span> as I got along, but there were very few at Mount Wilson whereas Harvard was just <span class="target-span" data-key="swarming">swarming with these assistants</span>. That's why we got somewhere, got it done. And elsewhere people had <span class="target-span" data-key="assistants">assistants</span>. But I was at the observatory at Mount Wilson for many years when nobody was expected to have <span class="target-span" data-key="assistants">assistants</span>.
+      </div>
+      <div class="giggle-note">
+        🎵 <span>Audio cue:</span> Listen for the <strong style="color:var(--candy)">giggle</strong> that occurs immediately after the speaker says "girl hours" — this is a key moment in the recording.
+      </div>
+    </div>
+
+    <footer class="app-footer">
+      <div class="hint-row">
+        <div class="hint-pill">Click phrases to highlight</div>
+        <div class="hint-pill">All 5 needed to complete</div>
+      </div>
+      <button class="submit-btn" id="submitBtn" disabled onclick="doSubmit()">Submit ✦</button>
+    </footer>
+
+  </section>
+
+  <div id="completionSlot"></div>
+  <div class="wordmark">✦ carebot research system ✦</div>
+</main>
+
+<!-- AIP redirect overlay -->
+<div id="redirOverlay" class="overlay-shell" role="dialog" aria-modal="true">
+  <div class="redir-card">
+    <div class="redir-header">
+      <span>✦ AIP Oral Histories — Harlow Shapley</span>
+      <div class="redir-countdown">Auto-close <span id="countdown">2</span>s</div>
+    </div>
+    <iframe id="redirFrame" title="AIP Oral History page"></iframe>
+    <div class="redir-footer">
+      <a id="redirDirectLink" class="redir-link" href="#" target="_blank" rel="noopener">Open in new tab</a>
+      <button id="closeOverlayBtn" class="redir-link">Close</button>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  const wrap=document.getElementById('sparkles');
+  const chars=['✦','✧','♡','˚','·','✿','◦','❀'];
+  for(let i=0;i<28;i++){
+    const s=document.createElement('span');s.className='sp';
+    s.textContent=chars[Math.floor(Math.random()*chars.length)];
+    s.style.left=Math.random()*100+'vw';s.style.bottom=Math.random()*-60+'px';
+    s.style.fontSize=(9+Math.random()*10)+'px';
+    s.style.color=`hsl(${315+Math.random()*45},75%,${65+Math.random()*22}%)`;
+    s.style.animationDuration=(7+Math.random()*13)+'s';
+    s.style.animationDelay=(Math.random()*13)+'s';
+    wrap.appendChild(s);
+  }
+})();
+
+function updateClock(){const n=new Date(),p=v=>String(v).padStart(2,'0');document.getElementById('sysTime').textContent=`${p(n.getHours())}:${p(n.getMinutes())}:${p(n.getSeconds())}`;}
+setInterval(updateClock,1000);updateClock();
+
+/* ── Firebase ── */
+const SESSION_ID='cb16-'+Math.random().toString(36).slice(2,10);
+let _db,_fbReady=false;
+try{
+  firebase.initializeApp({
+    apiKey:"AIzaSyCZFDU-WlSmHqjXTs1Ox0nf9xeJU_xbaX0",
+    authDomain:"collaborativemashup.firebaseapp.com",
+    databaseURL:"https://collaborativemashup-default-rtdb.firebaseio.com",
+    projectId:"collaborativemashup",
+    storageBucket:"collaborativemashup.firebasestorage.app",
+    messagingSenderId:"562437984610",
+    appId:"1:562437984610:web:9f3711c26e097bc8ef9c3b"
+  });
+  _db=firebase.database();_fbReady=true;
+}catch(e){}
+
+/* ── Timer ── */
+const startTime=Date.now();
+
+/* ── AIP redirect ── */
+const AIP_URL="https://www.aip.org/history-programs/niels-bohr-library/oral-histories/audio/4888-1";
+const redirOverlay=document.getElementById('redirOverlay');
+const redirFrame=document.getElementById('redirFrame');
+const countdown=document.getElementById('countdown');
+const redirDirectLink=document.getElementById('redirDirectLink');
+const closeOverlayBtn=document.getElementById('closeOverlayBtn');
+let rtimer=null,rtick=null,rrem=2;
+function resetRedir(){clearTimeout(rtimer);clearInterval(rtick);rrem=2;if(countdown)countdown.textContent=rrem;}
+function closeRedir(){redirOverlay.classList.remove('open');redirFrame.src="about:blank";resetRedir();document.getElementById('openAipBtn').disabled=false;}
+function openRedirFallback(){document.getElementById('openAipBtn').disabled=true;redirOverlay.classList.add('open');redirFrame.src=AIP_URL;redirDirectLink.href=AIP_URL;resetRedir();rrem=2;rtick=setInterval(()=>{rrem--;if(countdown)countdown.textContent=Math.max(rrem,0);if(rrem<=0)clearInterval(rtick);},1000);rtimer=setTimeout(closeRedir,2000);}
+document.getElementById('openAipBtn').addEventListener('click',()=>{
+  const w=window.open(AIP_URL,'_blank');
+  if(w&&!w.closed){document.getElementById('openAipBtn').disabled=true;resetRedir();rrem=2;rtick=setInterval(()=>{rrem--;if(rrem<=0)clearInterval(rtick);document.title=`(${Math.max(rrem,0)}s) CAREBOT-16`;},1000);rtimer=setTimeout(()=>{try{w.close();}catch(e){}document.title='✦ CAREBOT-16 ✦';document.getElementById('openAipBtn').disabled=false;resetRedir();},2000);}
+  else{openRedirFallback();}
+});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&redirOverlay.classList.contains('open'))closeRedir();});
+redirOverlay.addEventListener('click',e=>{if(e.target===redirOverlay)closeRedir();});
+closeOverlayBtn.addEventListener('click',e=>{e.preventDefault();closeRedir();});
+
+/* ── Highlight logic ── */
+const phraseMap={
+  'assistants':{'ci':'ci-assistants','targets':['assistant','assistants']},
+  'girl':      {'ci':'ci-girl',      'targets':['girl']},
+  'girl-hours':{'ci':'ci-girl-hours','targets':['girl hours','girl hour']},
+  'hunching':  {'ci':'ci-hunching',  'targets':['hunching','help in the hunching','had help in the hunching']},
+  'swarming':  {'ci':'ci-swarming',  'targets':['swarming','swarming with']},
+};
+const highlighted=new Set();
+const highlightTimes={};
+
+function fuzzyMatch(selection){
+  const sel=selection.toLowerCase().replace(/\s+/g,' ').trim();
+  if(!sel||sel.length<2)return null;
+  for(const [key,{targets}] of Object.entries(phraseMap)){
+    if(highlighted.has(key))continue;
+    for(const t of targets){
+      const tNorm=t.toLowerCase().replace(/\s+/g,' ').trim();
+      if(sel.includes(tNorm)||tNorm.includes(sel))return key;
+    }
+  }
+  return null;
+}
+
+function markPhrase(key){
+  if(highlighted.has(key))return;
+  highlighted.add(key);
+  highlightTimes[key]=Date.now()-startTime;
+  const ciEl=document.getElementById(phraseMap[key].ci);
+  ciEl.classList.add('done');
+  ciEl.querySelector('.ci-icon').textContent='✦';
+  document.querySelectorAll(`.target-span[data-key="${key}"]`).forEach(s=>s.classList.add('highlighted'));
+  updateProgress();
+}
+
+function flashError(){
+  const t=document.getElementById('transcript');
+  t.classList.add('flash-error');
+  setTimeout(()=>t.classList.remove('flash-error'),600);
+}
+
+document.getElementById('transcript').addEventListener('mouseup',handleSelectionEnd);
+document.getElementById('transcript').addEventListener('touchend',()=>setTimeout(handleSelectionEnd,50));
+
+function handleSelectionEnd(){
+  const sel=window.getSelection();
+  if(!sel||sel.isCollapsed)return;
+  const text=sel.toString();
+  const key=fuzzyMatch(text);
+  if(key){markPhrase(key);}
+  else{const trimmed=text.replace(/\s+/g,' ').trim();if(trimmed.length>1)flashError();}
+  setTimeout(()=>window.getSelection().removeAllRanges(),300);
+}
+
+function updateProgress(){
+  const count=highlighted.size,total=Object.keys(phraseMap).length;
+  document.getElementById('progressBar').style.width=(count/total*100)+'%';
+  document.getElementById('progressText').textContent=`${count} / ${total} phrases highlighted ✦`;
+  document.getElementById('submitBtn').disabled=count<total;
+}
+
+function calcArea(){
+  let total=0;
+  for(const key of highlighted){
+    document.querySelectorAll(`.target-span[data-key="${key}"]`).forEach(el=>{
+      const r=el.getBoundingClientRect();total+=r.width*r.height;
+    });
+  }
+  return Math.round(total);
+}
+
+function saveResult(){
+  if(!_fbReady||!_db)return;
+  const elapsedMs=Date.now()-startTime;
+  const area=calcArea();
+  _db.ref('girlHoursSessions').push({
+    sessionId:SESSION_ID,
+    phrasesFound:[...highlighted],
+    allFound:highlighted.size===5,
+    elapsedMs:Math.round(elapsedMs),
+    elapsedSeconds:parseFloat((elapsedMs/1000).toFixed(2)),
+    highlightedArea:area,
+    highlightTimes,
+    completedAt:firebase.database.ServerValue.TIMESTAMP
+  }).catch(()=>{});
+}
+
+function doSubmit(){
+  saveResult();
+  showCompletion();
+}
+
+function showCompletion(){
+  if(document.getElementById('final-comp'))return;
+  const area=calcArea();
+  const elapsedMs=Date.now()-startTime;
+  const labels={
+    'assistants':'"assistants"',
+    'girl':'"girl"',
+    'girl-hours':'"girl hours"',
+    'hunching':'"I don\'t think I had much help in the hunching"',
+    'swarming':'"swarming with these assistants"',
+  };
+  const phraseLines=[...highlighted].map(k=>labels[k]||k).join('<br>');
+  const d=document.createElement('div');
+  d.id='final-comp';d.className='completion-card';
+  d.innerHTML=`
+    <div class="c-eyebrow">✦ CAREBOT-16 · Readout</div>
+    <h2>Task Complete! 🎙️</h2>
+    <p>All 5 target phrases have been identified and highlighted in the Harlow Shapley transcript.</p>
+    <div class="stat-bubble">
+      <div class="stat-number">${area.toLocaleString()}</div>
+      <div class="stat-label">px² total highlighted area</div>
+    </div>
+    <div class="stat-raw">Completed in ${(elapsedMs/1000).toFixed(1)}s · ${highlighted.size} of 5 phrases found</div>
+    <div class="phrase-list">
+      <div style="font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,213,0,.55);margin-bottom:8px;">✦ Phrases found</div>
+      ${phraseLines}
+    </div>
+    <a class="submit-btn" href="hit.html" target="_blank" rel="noopener" style="margin:0 auto;text-decoration:none;display:inline-flex;animation:none;">Task complete — next task ✦</a>`;
+  document.getElementById('completionSlot').appendChild(d);
+  d.scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+updateProgress();
+</script>
+</body>
+</html>
