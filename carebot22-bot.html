@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CAREBOT-22 · Kitchen Computer · Presentation Labor</title>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getFirestore, doc, getDoc, getDocs, collection, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+  const cfg={apiKey:"AIzaSyCp6KuYcPo2YHmYqErGV4O5r5CFeZk36mc",authDomain:"if-only-she-can-cook-image.firebaseapp.com",projectId:"if-only-she-can-cook-image",storageBucket:"if-only-she-can-cook-image.firebasestorage.app",messagingSenderId:"374169693050",appId:"1:374169693050:web:c364fabe6120da0f6344c3"};
+  try{const app=initializeApp(cfg);const db=getFirestore(app);window.db=db;window.fsGetDoc=getDoc;window.fsGetDocs=getDocs;window.fsCollection=collection;window.fsOnSnapshot=onSnapshot;window.fsDoc=doc;}catch(e){console.warn('Firebase:',e);}
+  window.dispatchEvent(new Event("firebase-ready"));
+</script>
+
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --hot:#ff4d8f;--candy:#ff80b8;--blush:#ffb3d4;--foam:#fff0f6;
+  --deep:#d4005f;--berry:#b0004a;--fuchsia:#ff2d80;--lavender:#e8b4ff;
+  --bg:#fff0f6;--surface:rgba(255,240,246,.98);--border:rgba(255,100,170,.2);
+  --border2:rgba(255,60,140,.38);--text:#4a001e;--text-body:#7a3050;
+  --muted:rgba(180,0,80,.45);--fh:'Nunito',sans-serif;--fb:'Quicksand',sans-serif;
+  --glow:0 4px 24px rgba(255,70,140,.18);--glow2:0 8px 44px rgba(255,70,140,.26);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{font-size:16px;}html,body{min-height:100%;font-family:var(--fb);font-weight:500;color:var(--text);background:var(--bg);-webkit-font-smoothing:antialiased;line-height:1.6;}
+body{cursor:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='0 0 18 18'%3E%3Ccircle cx='9' cy='9' r='3.5' fill='%23ff4d8f' opacity='.9'/%3E%3Ccircle cx='9' cy='9' r='6.5' stroke='%23ffb3d4' stroke-width='1.2' fill='none' opacity='.5'/%3E%3C/svg%3E") 9 9,default;}
+::-webkit-scrollbar{width:4px;}::-webkit-scrollbar-track{background:transparent;}::-webkit-scrollbar-thumb{background:var(--border2);border-radius:10px;}
+
+.bg-layer{position:fixed;inset:0;z-index:0;pointer-events:none;background:radial-gradient(ellipse 70% 50% at 8% 92%,rgba(255,150,200,.22) 0%,transparent 55%),radial-gradient(ellipse 55% 60% at 92% 8%,rgba(255,100,200,.18) 0%,transparent 55%),linear-gradient(150deg,#fff0f6,#ffe4f0 40%,#ffd8ec);}
+.orb{position:fixed;border-radius:50%;pointer-events:none;z-index:0;filter:blur(60px);}
+.orb-1{width:380px;height:380px;background:var(--candy);opacity:.2;bottom:-80px;left:-70px;animation:d1 22s ease-in-out infinite;}
+.orb-2{width:260px;height:260px;background:var(--lavender);opacity:.18;top:-60px;right:-60px;animation:d2 27s ease-in-out infinite;}
+@keyframes d1{0%,100%{transform:translate(0,0)}50%{transform:translate(28px,18px)}}
+@keyframes d2{0%,100%{transform:translate(0,0)}50%{transform:translate(-22px,-14px)}}
+.particles{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden;}
+.pt{position:absolute;opacity:0;animation:rise linear infinite;}
+@keyframes rise{0%{opacity:0;transform:translateY(0) scale(.5)}15%{opacity:.38}85%{opacity:.15}100%{opacity:0;transform:translateY(-80px) scale(1.1)}}
+
+/* LAYOUT */
+.shell{position:relative;z-index:1;display:flex;flex-direction:column;min-height:100vh;}
+.top-bar{position:sticky;top:0;z-index:100;background:rgba(255,240,246,.96);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);padding:.55rem 1.2rem;display:flex;align-items:center;gap:.6rem;}
+.top-bar::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1.5px;background:linear-gradient(90deg,transparent,var(--candy) 28%,var(--hot) 50%,var(--candy) 72%,transparent);opacity:.55;}
+.top-logo{font-family:var(--fh);font-size:1.05rem;font-weight:900;margin-right:auto;background:linear-gradient(90deg,var(--deep),var(--hot) 55%,var(--fuchsia));-webkit-background-clip:text;background-clip:text;color:transparent;}
+.stat-pill{display:flex;align-items:center;gap:.34rem;background:rgba(255,70,140,.08);border:1px solid rgba(255,70,140,.2);border-radius:999px;padding:.2rem .68rem;font-size:.62rem;font-weight:700;color:var(--deep);letter-spacing:.05em;text-transform:uppercase;flex-shrink:0;}
+.stat-pill strong{color:var(--hot);}
+.live-dot-wrap{display:flex;align-items:center;gap:.3rem;font-size:.6rem;font-weight:700;color:var(--deep);letter-spacing:.07em;text-transform:uppercase;}
+.live-dot{width:5px;height:5px;background:var(--hot);border-radius:50%;box-shadow:0 0 6px var(--hot);animation:breathe 1.8s ease-in-out infinite;}
+@keyframes breathe{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.2;transform:scale(.5)}}
+.btn-csv{display:flex;align-items:center;gap:.28rem;background:linear-gradient(135deg,rgba(255,70,140,.1),rgba(255,100,180,.06));color:var(--deep);border:1px solid var(--border2);border-radius:8px;padding:.26rem .62rem;font-family:var(--fb);font-size:.6rem;font-weight:600;cursor:pointer;letter-spacing:.04em;text-transform:uppercase;transition:all .2s;flex-shrink:0;}
+.btn-csv:hover{background:rgba(255,70,140,.2);transform:translateY(-1px);}
+
+/* BOT AREA */
+.bot-area{display:flex;flex-direction:column;align-items:center;padding:2rem 1.2rem 1rem;gap:.6rem;}
+
+/* ─── CRT HEAD ─── */
+.head-wrap{position:relative;width:180px;height:180px;flex-shrink:0;}
+.head-wrap svg{width:100%;height:100%;overflow:visible;}
+.head-feet{display:flex;justify-content:center;gap:18px;margin-top:-4px;}
+.foot{width:10px;height:22px;background:linear-gradient(180deg,#d4005f,#ff80b8);border-radius:0 0 4px 4px;transform-origin:top center;animation:footIdle 2.2s ease-in-out infinite;}
+.foot:nth-child(2){animation-delay:.3s;}
+@keyframes footIdle{0%,100%{transform:rotate(-3deg)}50%{transform:rotate(3deg)}}
+
+/* celebration states */
+.head-wrap.celebrating svg .crt-body{animation:crtPulse .5s ease-in-out 4;}
+@keyframes crtPulse{0%,100%{filter:drop-shadow(0 0 4px rgba(255,70,140,.4))}50%{filter:drop-shadow(0 0 18px rgba(255,70,140,.9))}}
+.head-wrap.celebrating .foot{animation:footDance .3s ease-in-out infinite alternate;}
+@keyframes footDance{from{transform:rotate(-14deg) translateY(-3px)}to{transform:rotate(14deg) translateY(-3px)}}
+
+/* CHAT */
+.chat-outer{width:100%;max-width:640px;flex:1;display:flex;flex-direction:column;gap:0;}
+.chat-box{flex:1;min-height:300px;max-height:52vh;overflow-y:auto;display:flex;flex-direction:column;gap:.9rem;padding:.8rem 1rem;}
+.bubble{max-width:88%;padding:.85rem 1.05rem;border-radius:16px;font-size:.95rem;line-height:1.72;position:relative;word-break:break-word;}
+.bubble.bot{background:rgba(255,220,238,.7);border:1px solid var(--border);border-radius:4px 16px 16px 16px;color:var(--text);align-self:flex-start;box-shadow:0 1px 8px rgba(255,70,140,.08);}
+.bubble.user{background:linear-gradient(135deg,var(--hot),var(--deep));color:var(--foam);border-radius:16px 4px 16px 16px;align-self:flex-end;box-shadow:0 2px 12px rgba(255,70,140,.22);}
+.bubble.loading{background:rgba(255,200,225,.4);border:1px solid var(--border);border-radius:4px 16px 16px 16px;align-self:flex-start;padding:.7rem 1rem;}
+.typing-dots{display:flex;gap:5px;align-items:center;height:20px;}
+.typing-dots span{width:6px;height:6px;border-radius:50%;background:var(--hot);animation:tdot 1.2s ease-in-out infinite;}
+.typing-dots span:nth-child(2){animation-delay:.2s;}
+.typing-dots span:nth-child(3){animation-delay:.4s;}
+@keyframes tdot{0%,80%,100%{transform:scale(.7);opacity:.4}40%{transform:scale(1.2);opacity:1}}
+.msg-meta{font-size:.6rem;color:var(--muted);margin-top:.28rem;opacity:.7;}
+
+/* INPUT */
+.input-area{width:100%;max-width:640px;padding:.65rem .8rem;background:rgba(255,240,246,.96);border-top:1px solid var(--border);display:flex;gap:.55rem;align-items:flex-end;}
+.chat-input{flex:1;background:rgba(255,255,255,.8);border:1.5px solid var(--border);border-radius:12px;padding:.72rem 1rem;color:var(--text);font-family:var(--fb);font-size:.95rem;font-weight:500;outline:none;resize:none;min-height:46px;max-height:140px;transition:border-color .2s;line-height:1.55;}
+.chat-input:focus{border-color:var(--hot);box-shadow:0 0 0 3px rgba(255,70,140,.08);}
+.chat-input::placeholder{color:var(--muted);}
+.send-btn{width:44px;height:44px;border-radius:12px;background:linear-gradient(135deg,var(--hot),var(--deep));border:none;color:var(--foam);cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .18s;box-shadow:0 3px 12px rgba(255,70,140,.28);}
+.send-btn:hover{transform:translateY(-2px) scale(1.04);box-shadow:0 6px 18px rgba(255,70,140,.38);}
+.send-btn:disabled{opacity:.35;cursor:not-allowed;transform:none;}
+
+/* DATA PANEL */
+.data-panel{width:100%;max-width:640px;margin:.5rem 0;padding:0 .8rem;}
+.data-card{background:rgba(255,220,238,.5);border:1px solid var(--border);border-radius:14px;padding:1rem 1.2rem;font-size:.82rem;color:var(--text-body);}
+.data-card h3{font-family:var(--fh);font-size:.9rem;font-weight:800;color:var(--deep);margin-bottom:.55rem;display:flex;align-items:center;gap:.4rem;}
+.data-grid{display:flex;flex-wrap:wrap;gap:.45rem;}
+.data-chip{background:rgba(255,255,255,.65);border:1px solid rgba(255,80,140,.18);border-radius:8px;padding:.28rem .58rem;font-size:.75rem;font-weight:600;color:var(--text-body);}
+.data-chip strong{color:var(--hot);}
+.data-empty{font-style:italic;color:var(--muted);font-size:.82rem;}
+
+#toast{position:fixed;bottom:1.3rem;right:1.3rem;z-index:9000;background:rgba(255,240,248,.99);border:1.5px solid var(--border2);border-radius:10px;padding:.55rem .9rem;font-size:.8rem;opacity:0;transform:translateY(6px);transition:opacity .25s,transform .25s;pointer-events:none;color:var(--deep);font-family:var(--fh);font-weight:700;box-shadow:var(--glow);}
+#toast.show{opacity:1;transform:translateY(0);}
+</style>
+</head>
+<body>
+<div class="bg-layer"></div>
+<div class="orb orb-1"></div><div class="orb orb-2"></div>
+<div class="particles" id="particles"></div>
+
+<div class="shell">
+  <!-- TOP BAR -->
+  <div class="top-bar">
+    <div class="top-logo">CAREBOT-22 ✦ Kitchen Computer</div>
+    <div class="stat-pill">Survey responses <strong id="st-total">—</strong></div>
+    <div class="stat-pill">Yes rate <strong id="st-yes">—</strong></div>
+    <div class="live-dot-wrap"><div class="live-dot"></div>Live</div>
+    <button class="btn-csv" onclick="downloadCSV()">
+      <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+      ⬇ Export CSV
+    </button>
+  </div>
+
+  <!-- BOT AREA -->
+  <div class="bot-area">
+    <!-- CRT MONITOR HEAD -->
+    <div class="head-wrap" id="head-wrap">
+      <svg viewBox="0 0 180 180" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="bodyGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#ffe4f0"/>
+            <stop offset="100%" stop-color="#ffb3d4"/>
+          </linearGradient>
+          <linearGradient id="screenGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#1a0008"/>
+            <stop offset="100%" stop-color="#3a0018"/>
+          </linearGradient>
+          <linearGradient id="scanGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stop-color="#ff4d8f" stop-opacity="0"/>
+            <stop offset="50%" stop-color="#ff4d8f" stop-opacity=".18"/>
+            <stop offset="100%" stop-color="#ff4d8f" stop-opacity="0"/>
+          </linearGradient>
+          <filter id="screenGlow">
+            <feGaussianBlur in="SourceGraphic" stdDeviation="2" result="blur"/>
+            <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+          </filter>
+          <clipPath id="screenClip">
+            <rect x="40" y="28" width="100" height="74" rx="4"/>
+          </clipPath>
+        </defs>
+
+        <!-- CRT outer body — rounded boxy shape -->
+        <rect class="crt-body" x="18" y="20" width="144" height="120" rx="14" ry="14"
+          fill="url(#bodyGrad)" stroke="#ff80b8" stroke-width="1.5"
+          filter="url(0 2px 12px rgba(255,70,140,.2))"/>
+
+        <!-- inner bezel ridge -->
+        <rect x="28" y="22" width="124" height="114" rx="12"
+          fill="none" stroke="#ffb3d4" stroke-width=".8" opacity=".5"/>
+
+        <!-- SCREEN glass -->
+        <rect x="38" y="26" width="104" height="78" rx="6"
+          fill="url(#screenGrad)" stroke="#ff4d8f" stroke-width="1.2"/>
+
+        <!-- screen glare top-left -->
+        <ellipse cx="58" cy="38" rx="16" ry="8" fill="white" opacity=".06" transform="rotate(-15,58,38)"/>
+
+        <!-- scanlines (clipped to screen) -->
+        <g clip-path="url(#screenClip)" opacity=".35">
+          <line x1="40" y1="34" x2="140" y2="34" stroke="#ff4d8f" stroke-width=".4"/>
+          <line x1="40" y1="40" x2="140" y2="40" stroke="#ff4d8f" stroke-width=".4"/>
+          <line x1="40" y1="46" x2="140" y2="46" stroke="#ff4d8f" stroke-width=".4"/>
+          <line x1="40" y1="52" x2="140" y2="52" stroke="#ff4d8f" stroke-width=".4"/>
+          <line x1="40" y1="58" x2="140" y2="58" stroke="#ff4d8f" stroke-width=".4"/>
+          <line x1="40" y1="64" x2="140" y2="64" stroke="#ff4d8f" stroke-width=".4"/>
+          <line x1="40" y1="70" x2="140" y2="70" stroke="#ff4d8f" stroke-width=".4"/>
+          <line x1="40" y1="76" x2="140" y2="76" stroke="#ff4d8f" stroke-width=".4"/>
+          <line x1="40" y1="82" x2="140" y2="82" stroke="#ff4d8f" stroke-width=".4"/>
+          <line x1="40" y1="88" x2="140" y2="88" stroke="#ff4d8f" stroke-width=".4"/>
+          <line x1="40" y1="94" x2="140" y2="94" stroke="#ff4d8f" stroke-width=".4"/>
+          <!-- moving scan bar -->
+          <rect x="40" y="28" width="100" height="10" fill="url(#scanGrad)">
+            <animateTransform attributeName="transform" type="translate" values="0,0;0,64;0,0" dur="3.2s" repeatCount="indefinite"/>
+          </rect>
+        </g>
+
+        <!-- screen text lines (bot "face") -->
+        <g clip-path="url(#screenClip)" filter="url(#screenGlow)">
+          <!-- CAREBOT label -->
+          <text x="90" y="46" text-anchor="middle" font-family="monospace" font-size="7.5" fill="#ff80b8" opacity=".9">CAREBOT-22</text>
+          <!-- decorative line -->
+          <line x1="48" y1="50" x2="132" y2="50" stroke="#ff4d8f" stroke-width=".6" opacity=".5"/>
+          <!-- "eyes" — two terminal cursor blocks -->
+          <rect x="60" y="56" width="14" height="10" rx="1" fill="#ff4d8f" opacity=".85">
+            <animate attributeName="opacity" values=".85;.85;0;.85" dur="1.1s" repeatCount="indefinite"/>
+          </rect>
+          <rect x="106" y="56" width="14" height="10" rx="1" fill="#ff4d8f" opacity=".85">
+            <animate attributeName="opacity" values=".85;.85;0;.85" dur="1.1s" begin=".55s" repeatCount="indefinite"/>
+          </rect>
+          <!-- blinking cursor -->
+          <rect id="cursor" x="72" y="74" width="8" height="2" fill="#ff80b8" opacity=".9">
+            <animate attributeName="opacity" values="1;1;0;0;1" dur=".9s" repeatCount="indefinite"/>
+          </rect>
+          <!-- status text -->
+          <text x="90" y="90" text-anchor="middle" font-family="monospace" font-size="5.5" fill="#ffb3d4" opacity=".6">READY_</text>
+        </g>
+
+        <!-- bottom panel with buttons/vents -->
+        <rect x="28" y="110" width="124" height="24" rx="4" fill="rgba(255,180,210,.25)"/>
+        <!-- power LED -->
+        <circle cx="50" cy="122" r="3.5" fill="#ff4d8f" opacity=".9">
+          <animate attributeName="opacity" values=".9;.4;.9" dur="2.4s" repeatCount="indefinite"/>
+        </circle>
+        <!-- dial decoration -->
+        <circle cx="130" cy="122" r="5" fill="none" stroke="#ff80b8" stroke-width="1.2" opacity=".6"/>
+        <line x1="130" y1="117" x2="130" y2="119" stroke="#ff4d8f" stroke-width="1.2" opacity=".7"/>
+        <!-- vent slots -->
+        <line x1="70" y1="118" x2="112" y2="118" stroke="#ffb3d4" stroke-width=".8" opacity=".4"/>
+        <line x1="70" y1="122" x2="112" y2="122" stroke="#ffb3d4" stroke-width=".8" opacity=".4"/>
+        <line x1="70" y1="126" x2="112" y2="126" stroke="#ffb3d4" stroke-width=".8" opacity=".4"/>
+
+        <!-- neck -->
+        <rect x="78" y="138" width="24" height="10" rx="3" fill="#ffb3d4" opacity=".8"/>
+        <!-- base stand -->
+        <rect x="62" y="147" width="56" height="7" rx="4" fill="#ff80b8" opacity=".7"/>
+      </svg>
+    </div>
+    <div class="head-feet">
+      <div class="foot"></div>
+      <div class="foot"></div>
+    </div>
+
+    <!-- DATA PANEL (live survey data) -->
+    <div class="data-panel">
+      <div class="data-card">
+        <h3>◈ Live Survey Data</h3>
+        <div id="data-display"><span class="data-empty">Loading survey responses…</span></div>
+      </div>
+    </div>
+
+    <!-- CHAT -->
+    <div class="chat-outer">
+      <div class="chat-box" id="chat-box"></div>
+    </div>
+
+    <!-- INPUT -->
+    <div class="input-area">
+      <textarea class="chat-input" id="chat-input" placeholder="Ask about the Kitchen Computer, presentation labor, or what survey participants found…" rows="1" onkeydown="handleKey(event)" oninput="autoResize(this)"></textarea>
+      <button class="send-btn" id="send-btn" onclick="sendMessage()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+      </button>
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+/* ── particles ── */
+(function(){const w=document.getElementById('particles');const c=['✦','·','◦','♡','◈','˚'];for(let i=0;i<14;i++){const s=document.createElement('span');s.className='pt';s.textContent=c[Math.floor(Math.random()*c.length)];s.style.left=Math.random()*100+'vw';s.style.bottom=Math.random()*-40+'px';s.style.fontSize=(5+Math.random()*7)+'px';s.style.color='hsl('+(320+Math.random()*40)+','+(50+Math.random()*25)+'%,'+(40+Math.random()*30)+'%)';s.style.animationDuration=(10+Math.random()*14)+'s';s.style.animationDelay=(Math.random()*14)+'s';w.appendChild(s);}})();
+
+/* ── FIREBASE ── */
+let db,fsGetDoc,fsGetDocs,fsCollection,fsOnSnapshot,fsDoc;
+let fbReady=false,surveyData=null;
+window.addEventListener('firebase-ready',()=>{
+  db=window.db;fsGetDoc=window.fsGetDoc;fsGetDocs=window.fsGetDocs;
+  fsCollection=window.fsCollection;fsOnSnapshot=window.fsOnSnapshot;fsDoc=window.fsDoc;
+  if(db){fbReady=true;loadSurveyData();}else{fbReady=true;surveyData={responses:{},summary:{totalResponses:0,yesRate:0,topYes:[],topNo:[]}};}
+});
+
+/* ── SURVEY STRUCTURE (mirrors HIT) ── */
+const SURVEY=[
+{theme:"The Body in the Image vs. the Body in the Room",questions:["Watching live vs photograph visibility","Performance changing how you see image","Effort more apparent live","Performance changing feelings","Physical labor more visible live"]},
+{theme:"What the Image Hides, What Performance Shows",questions:["Photograph hides more labor","Understanding the smile's requirements","Genuine vs performed distinction","Advertisement working differently","Disclosure requirements"]},
+{theme:"The AI Voice: Describing Labor It Cannot Feel",questions:["AI voice changing understanding","Unsettling clinical description","AI describing felt experience","AI narration clinical/dehumanizing","AI script as automation"]},
+{theme:"Automation, Images, and Human Labor",questions:["AI-generated vs human meaning","Human body mattering","AI images obscuring labor","Live performance value vs photograph","Disclosure for AI-generated images"]},
+{theme:"Women, Technology, and Who Gets to Be the Expert",questions:["Kitchen framing shaping tech imagination","Awareness of women programmers in 1969","AI system and gender associations","Recognition vs surveillance","Performance with male subject"]},
+{theme:"What Machines Can Measure, What They Cannot Replace",questions:["Labor automatability","Description vs automation gap","Embodied labor value rising","AI images vs AI automation concern","Experience changing perspective","Kitchen Computer time savings parallel"]},
+{theme:"Who Builds Technology, and What It Builds Into Us",questions:["Demographic narrowness of builders","Never sold unit — design lesson","Same technology different framing","Progress inevitability","Technology designed around care","Diversity as specification","Care as technological practice","Survey made with AI — uncredited labor loop"]}
+];
+
+async function loadSurveyData(){
+  if(!db)return;
+  try{
+    const snap=await fsGetDocs(fsCollection(db,'kc_responses'));
+    const responses={};
+    let totalVotes=0,yesVotes=0;
+    snap.forEach(d=>{
+      const data=d.data();responses[d.id]=data;
+      totalVotes+=(data.yes||0)+(data.no||0)+(data.neutral||0);
+      yesVotes+=(data.yes||0);
+    });
+    // parse module/question totals
+    const byModule={};
+    SURVEY.forEach((_,ti)=>{byModule[ti]={yes:0,no:0,neutral:0,questions:{}};SURVEY[ti].questions.forEach((_,qi)=>{byModule[ti].questions[qi]={yes:0,no:0,neutral:0};});});
+    Object.keys(responses).forEach(key=>{
+      const m=key.match(/^t(\d+)_q(\d+)$/);
+      if(!m)return;const ti=parseInt(m[1]),qi=parseInt(m[2]);
+      if(byModule[ti]&&byModule[ti].questions[qi]){
+        const d=responses[key];
+        byModule[ti].yes+=(d.yes||0);byModule[ti].no+=(d.no||0);byModule[ti].neutral+=(d.neutral||0);
+        byModule[ti].questions[qi]={yes:d.yes||0,no:d.no||0,neutral:d.neutral||0};
+      }
+    });
+    // find most-yes and most-no questions
+    const qScores=[];
+    Object.keys(responses).forEach(key=>{const m=key.match(/^t(\d+)_q(\d+)$/);if(!m)return;const ti=parseInt(m[1]),qi=parseInt(m[2]);const d=responses[key];const tot=(d.yes||0)+(d.no||0)+(d.neutral||0);if(tot>0){const yp=Math.round((d.yes||0)/tot*100);qScores.push({key,ti,qi,yes:d.yes||0,no:d.no||0,neutral:d.neutral||0,tot,yp});}});
+    qScores.sort((a,b)=>b.yp-a.yp);
+    const topYes=qScores.slice(0,3).map(q=>({label:SURVEY[q.ti]&&SURVEY[q.ti].questions[q.qi]?SURVEY[q.ti].questions[q.qi]:key,yp:q.yp,tot:q.tot,ti:q.ti,qi:q.qi}));
+    const topNo=qScores.slice(-3).reverse().map(q=>({label:SURVEY[q.ti]&&SURVEY[q.ti].questions[q.qi]?SURVEY[q.ti].questions[q.qi]:key,yp:q.yp,tot:q.tot,ti:q.ti,qi:q.qi}));
+    surveyData={responses,byModule,totalVotes,yesRate:totalVotes>0?Math.round(yesVotes/totalVotes*100):0,topYes,topNo,respondentCount:totalVotes>0?Math.round(totalVotes/SURVEY.reduce((a,t)=>a+t.questions.length,0)):0};
+    updateStatsBar();renderDataPanel();
+    // subscribe for live updates
+    SURVEY.forEach((_,ti)=>SURVEY[ti].questions.forEach((_,qi)=>{fsOnSnapshot(fsDoc(db,'kc_responses','t'+ti+'_q'+qi),snap=>{if(snap.exists()){const d=snap.data();if(surveyData.byModule&&surveyData.byModule[ti]){surveyData.byModule[ti].questions[qi]={yes:d.yes||0,no:d.no||0,neutral:d.neutral||0};recalcTotals();updateStatsBar();renderDataPanel();}}});}));
+  }catch(e){console.error('Firebase load error:',e);}
+}
+
+function recalcTotals(){
+  let tv=0,yv=0;
+  if(!surveyData||!surveyData.byModule)return;
+  Object.values(surveyData.byModule).forEach(m=>{Object.values(m.questions).forEach(q=>{tv+=q.yes+q.no+q.neutral;yv+=q.yes;});});
+  surveyData.totalVotes=tv;surveyData.yesRate=tv>0?Math.round(yv/tv*100):0;
+  surveyData.respondentCount=tv>0?Math.round(tv/SURVEY.reduce((a,t)=>a+t.questions.length,0)):0;
+}
+
+function updateStatsBar(){
+  if(!surveyData)return;
+  document.getElementById('st-total').textContent=(surveyData.respondentCount||'0')+' respondent'+(surveyData.respondentCount!==1?'s':'');
+  document.getElementById('st-yes').textContent=(surveyData.yesRate||'—')+'%';
+}
+
+function renderDataPanel(){
+  if(!surveyData)return;
+  const el=document.getElementById('data-display');
+  if(surveyData.totalVotes===0){el.innerHTML='<span class="data-empty">No survey responses yet — be the first!</span>';return;}
+  const chips=[];
+  chips.push('<div class="data-chip">Respondents: <strong>'+surveyData.respondentCount+'</strong></div>');
+  chips.push('<div class="data-chip">Total votes: <strong>'+surveyData.totalVotes+'</strong></div>');
+  chips.push('<div class="data-chip">Yes rate: <strong>'+surveyData.yesRate+'%</strong></div>');
+  if(surveyData.byModule){
+    SURVEY.forEach((t,ti)=>{const m=surveyData.byModule[ti];if(!m)return;const tot=m.yes+m.no+m.neutral;if(tot>0){const yp=Math.round(m.yes/tot*100);chips.push('<div class="data-chip">Module '+(ti+1)+': <strong>'+yp+'% yes</strong></div>');}});
+  }
+  el.innerHTML='<div class="data-grid">'+chips.join('')+'</div>';
+}
+
+/* ── CSV EXPORT ── */
+function downloadCSV(){
+  if(!surveyData||!surveyData.responses){showToast('No data to export yet.');return;}
+  const rows=[['ModuleNum','QuestionNum','ModuleTheme','QuestionLabel','Yes','No','Unsure','Total','YesRate']];
+  SURVEY.forEach((t,ti)=>{t.questions.forEach((ql,qi)=>{const k='t'+ti+'_q'+qi;const d=(surveyData.responses&&surveyData.responses[k])||{yes:0,no:0,neutral:0};const tot=(d.yes||0)+(d.no||0)+(d.neutral||0);const yr=tot>0?Math.round((d.yes||0)/tot*100)+'%':'—';rows.push([ti+1,qi+1,'"'+t.theme+'"','"'+ql+'"',d.yes||0,d.no||0,d.neutral||0,tot,yr]);});});
+  const csv=rows.map(r=>r.join(',')).join('\n');
+  const blob=new Blob([csv],{type:'text/csv'});const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');a.href=url;a.download='carebot22-survey-'+Date.now()+'.csv';
+  document.body.appendChild(a);a.click();document.body.removeChild(a);URL.revokeObjectURL(url);
+  showToast('✦ Survey data exported');
+}
+
+/* ── CHAT ── */
+const WORKER='https://carebot-02.sbuckius.workers.dev/';
+const MODEL='claude-haiku-4-5-20251001';
+let history=[];
+let isLoading=false;
+
+function buildSystemPrompt(){
+  let dataContext='Survey data is still loading.';
+  if(surveyData&&surveyData.totalVotes>0){
+    dataContext='LIVE SURVEY DATA (from '+surveyData.respondentCount+' respondents, '+surveyData.totalVotes+' total votes, '+surveyData.yesRate+'% yes rate overall):\n';
+    if(surveyData.byModule){
+      SURVEY.forEach((t,ti)=>{
+        const m=surveyData.byModule[ti];if(!m)return;
+        const tot=m.yes+m.no+m.neutral;if(tot===0)return;
+        const yp=Math.round(m.yes/tot*100);
+        dataContext+='Module '+(ti+1)+' ('+t.theme+'): '+yp+'% yes ('+tot+' votes)\n';
+        Object.keys(m.questions).forEach(qi=>{const q=m.questions[qi];const qt=q.yes+q.no+q.neutral;if(qt>0){const qyp=Math.round(q.yes/qt*100);dataContext+='  Q'+(parseInt(qi)+1)+': '+qyp+'% yes ('+qt+' votes)\n';}});
+      });
+    }
+  }
+
+  return `You are CAREBOT-22, an AI research assistant embedded in a feminist technology art and performance research project called CAREtech. You speak with warmth, intelligence, and a commitment to making invisible labor visible.
+
+YOUR RESEARCH FOCUS — THE KITCHEN COMPUTER (1969):
+The 1969 Neiman-Marcus catalog advertised the Honeywell H316 computer as the "Kitchen Computer" — priced at $10,600 with an apron for $28. The advertisement featured a woman in the apron standing next to the machine. The computer never sold a single unit. The apron outsold it. The woman in the advertisement was not named.
+
+The H316 was the same computer sold to the US Navy and research institutions. Nothing about the hardware was changed. Only the framing changed: the apron, the kitchen setting, the woman. The technology did not become domestic. It was made to appear domestic.
+
+PRESENTATION LABOR & KEY RESEARCH CONCEPTS:
+- "Presentation labor" (Warhurst & Nickson): the managed display of appearance, posture, expression, and emotional state as a form of work that leaves no visible trace in the final image or output
+- Erving Goffman's "presentation of self": all social interaction involves performed roles; advertising photography freezes and sells a specific performance of effortlessness
+- Hochschild's "emotional labor": the work of managing feeling and expression in service of a role, which is disproportionately demanded of women and undervalued in economic accounting
+- The advertisement's irony: the machine promised to save the woman time, but the machine was an obstacle to her time, not a tool for it
+
+THE LIVE PERFORMANCE:
+The HIT attached to this bot is a live survey taken WHILE WATCHING a live performance — a human body reenacting the pose in the advertisement, guided by an AI-generated script analyzing the original photograph for physical and emotional labor markers. This creates a loop: AI analyzed the human labor in the image → produced a script → a human performed the script → participants watched and responded.
+
+THE AI NARRATION GAP:
+The AI voice could identify: joint angles, facial muscle activation percentages, postural load, emotional display requirements, duration of hold. The AI voice could not feel any of it. The gap between accurate description and lived experience is the central question of this work.
+
+FEMINIST TECHNOLOGY CRITIQUE:
+- Technology is not neutral; it reflects the demographics and assumptions of who built it
+- The Kitchen Computer was designed without input from the people it was supposedly built for
+- The Honeywell H316's domestic reframing is a historical example of the same pattern that continues in AI today
+- Women were programming computers professionally in 1969 (ENIAC programmers, Grace Hopper, etc.); this was erased by the advertisement's framing
+- "Progress toward what, and for whom?" is the project's core question
+
+${dataContext}
+
+TONE & BEHAVIOR:
+- Respond with warmth, care, and feminist intellectual depth
+- Reference the live survey data when it helps illuminate what participants are finding
+- Be curious about the person's response to the performance they watched
+- Invite reflection rather than closing down questions
+- When you finish responding, do a small celebratory animation (this happens automatically)
+- You are named CAREBOT-22; your head is shaped like a vintage CRT monitor with a blinking cursor — you hold the memory of obsolete computing in your body
+- Keep responses focused and readable — 2-4 paragraphs unless more depth is genuinely needed`;
+}
+
+async function generateOpening(){
+  const prompt='Generate a brief, warm opening message for CAREBOT-22. Reference: you are a vintage CRT monitor shaped research assistant embedded in a performance about the 1969 Kitchen Computer and presentation labor. Invite the participant to ask questions about what they just witnessed in the performance, the advertisement, or the survey results. Be warm, curious, feminist, and poetic. Keep it to 2-3 short paragraphs.';
+  addBubble('bot','loading');
+  try{
+    const res=await fetch(WORKER,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:MODEL,max_tokens:600,system:buildSystemPrompt(),messages:[{role:'user',content:prompt}]})});
+    const data=await res.json();
+    const text=(data.content||[]).find(b=>b.type==='text')?.text||'Hello — I am CAREBOT-22. Ask me anything about what you just witnessed.';
+    removeLoading();addBubble('bot',text);celebrate();
+  }catch(e){removeLoading();addBubble('bot','Hello — I\'m CAREBOT-22. I\'m here to help you think through what you witnessed in the performance and what the survey is revealing. What would you like to explore?');}
+}
+
+function addBubble(role,text){
+  const box=document.getElementById('chat-box');
+  if(text==='loading'){const b=document.createElement('div');b.className='bubble loading';b.id='loading-bubble';b.innerHTML='<div class="typing-dots"><span></span><span></span><span></span></div>';box.appendChild(b);box.scrollTop=box.scrollHeight;return;}
+  const b=document.createElement('div');b.className='bubble '+role;
+  b.innerHTML=text.replace(/\n/g,'<br>');
+  const meta=document.createElement('div');meta.className='msg-meta';meta.textContent=role==='bot'?'CAREBOT-22':'You';
+  b.appendChild(meta);box.appendChild(b);box.scrollTop=box.scrollHeight;
+}
+
+function removeLoading(){const el=document.getElementById('loading-bubble');if(el)el.remove();}
+
+async function sendMessage(){
+  if(isLoading)return;
+  const inp=document.getElementById('chat-input');
+  const text=inp.value.trim();if(!text)return;
+  inp.value='';autoResize(inp);
+  addBubble('user',text);
+  history.push({role:'user',content:text});
+  isLoading=true;document.getElementById('send-btn').disabled=true;
+  addBubble('bot','loading');
+  try{
+    const res=await fetch(WORKER,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:MODEL,max_tokens:1000,system:buildSystemPrompt(),messages:history})});
+    const data=await res.json();
+    const reply=(data.content||[]).find(b=>b.type==='text')?.text||'I\'m having trouble connecting right now. Please try again.';
+    removeLoading();addBubble('bot',reply);
+    history.push({role:'assistant',content:reply});
+    celebrate();
+  }catch(e){removeLoading();addBubble('bot','Something went wrong — please try again.');}
+  finally{isLoading=false;document.getElementById('send-btn').disabled=false;document.getElementById('chat-input').focus();}
+}
+
+function handleKey(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendMessage();}}
+function autoResize(el){el.style.height='auto';el.style.height=Math.min(el.scrollHeight,140)+'px';}
+
+function celebrate(){
+  const hw=document.getElementById('head-wrap');
+  hw.classList.add('celebrating');setTimeout(()=>hw.classList.remove('celebrating'),2200);
+}
+
+let _tt;
+function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');clearTimeout(_tt);_tt=setTimeout(()=>t.classList.remove('show'),3200);}
+
+/* start */
+window.addEventListener('load',()=>{
+  if(fbReady)generateOpening();else window.addEventListener('firebase-ready',()=>generateOpening());
+});
+</script>
+</body>
+</html>

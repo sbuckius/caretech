@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CAREBOT-22 Kitchen Computer Survey</title>
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getFirestore, doc, setDoc, onSnapshot, writeBatch, getDocs, collection } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+  const cfg={apiKey:"AIzaSyCp6KuYcPo2YHmYqErGV4O5r5CFeZk36mc",authDomain:"if-only-she-can-cook-image.firebaseapp.com",projectId:"if-only-she-can-cook-image",storageBucket:"if-only-she-can-cook-image.firebasestorage.app",messagingSenderId:"374169693050",appId:"1:374169693050:web:c364fabe6120da0f6344c3"};
+  try{const app=initializeApp(cfg);const db=getFirestore(app);window.db=db;window.fsSetDoc=setDoc;window.fsDoc=doc;window.fsOnSnapshot=onSnapshot;window.fsWriteBatch=writeBatch;window.fsGetDocs=getDocs;window.fsCollection=collection;}catch(e){console.warn(e);}
+  window.dispatchEvent(new Event("firebase-ready"));
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --hot:#ff4d8f;--candy:#ff80b8;--blush:#ffb3d4;--bubble:#ffd6e8;
+  --foam:#fff0f6;--cream:#fff8fb;--rose:#ff6aa3;--deep:#d4005f;
+  --berry:#b0004a;--maroon:#7a0032;--fuchsia:#ff2d80;--lavender:#e8b4ff;
+  --bg:#fff0f6;--surface:rgba(255,240,246,.97);--border:rgba(255,100,170,.18);
+  --border2:rgba(255,60,140,.38);--text:#4a001e;--text-body:#7a3050;
+  --muted:rgba(180,0,80,.45);--muted2:rgba(160,0,60,.65);--radius:16px;
+  --fh:'Nunito',sans-serif;--fb:'Quicksand',sans-serif;
+  --glow:0 4px 24px rgba(255,70,140,.18);--glow2:0 8px 44px rgba(255,70,140,.28);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{font-size:16px;}html,body{min-height:100%;font-family:var(--fb);font-weight:500;color:var(--text);background:var(--bg);-webkit-font-smoothing:antialiased;line-height:1.65;}
+body{cursor:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='0 0 18 18'%3E%3Ccircle cx='9' cy='9' r='3.5' fill='%23ff4d8f' opacity='.9'/%3E%3Ccircle cx='9' cy='9' r='6.5' stroke='%23ffb3d4' stroke-width='1.2' fill='none' opacity='.5'/%3E%3C/svg%3E") 9 9,default;}
+::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--border2);border-radius:10px}
+.bg-layer{position:fixed;inset:0;z-index:0;pointer-events:none;background:radial-gradient(ellipse 70% 50% at 8% 92%,rgba(255,150,200,.22) 0%,transparent 55%),radial-gradient(ellipse 55% 60% at 92% 8%,rgba(255,100,200,.18) 0%,transparent 55%),linear-gradient(150deg,#fff0f6,#ffe4f0 40%,#ffd8ec);}
+.orb{position:fixed;border-radius:50%;pointer-events:none;z-index:0;filter:blur(60px);}
+.orb-1{width:380px;height:380px;background:var(--candy);opacity:.22;bottom:-80px;left:-70px;animation:d1 22s ease-in-out infinite;}
+.orb-2{width:260px;height:260px;background:var(--lavender);opacity:.18;top:-60px;right:-60px;animation:d2 27s ease-in-out infinite;}
+.orb-3{width:180px;height:180px;background:var(--hot);opacity:.1;top:42%;left:60%;animation:d3 18s ease-in-out infinite;}
+@keyframes d1{0%,100%{transform:translate(0,0)}50%{transform:translate(28px,18px)}}@keyframes d2{0%,100%{transform:translate(0,0)}50%{transform:translate(-22px,-14px)}}@keyframes d3{0%,100%{transform:translate(0,0)}33%{transform:translate(-12px,8px)}66%{transform:translate(8px,-6px)}}
+.particles{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden;}.pt{position:absolute;opacity:0;animation:rise linear infinite;}
+@keyframes rise{0%{opacity:0;transform:translateY(0) scale(.5)}15%{opacity:.4}85%{opacity:.15}100%{opacity:0;transform:translateY(-90px) scale(1.1)}}
+
+/* HEADER */
+.app-header{position:sticky;top:0;z-index:200;background:rgba(255,240,246,.96);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);padding:.55rem 1.4rem;display:flex;align-items:center;gap:.7rem;box-shadow:0 1px 14px rgba(255,80,150,.1);}
+.app-header::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1.5px;background:linear-gradient(90deg,transparent,var(--candy) 28%,var(--hot) 50%,var(--candy) 72%,transparent);opacity:.5;}
+.header-logo{font-family:var(--fh);font-size:1.05rem;font-weight:900;margin-right:auto;background:linear-gradient(90deg,var(--deep),var(--hot) 55%,var(--fuchsia));-webkit-background-clip:text;background-clip:text;color:transparent;}
+.progress-pill{display:flex;align-items:center;gap:.4rem;font-size:.63rem;font-weight:600;color:var(--deep);letter-spacing:.05em;text-transform:uppercase;background:rgba(255,70,140,.08);border:1px solid rgba(255,70,140,.2);border-radius:999px;padding:.2rem .72rem;}
+.progress-num{color:var(--hot);font-family:var(--fh);font-weight:900;}
+.live-pill{display:flex;align-items:center;gap:.32rem;font-size:.58rem;font-weight:700;color:var(--deep);letter-spacing:.07em;text-transform:uppercase;background:rgba(255,70,140,.1);border:1px solid rgba(255,70,140,.25);border-radius:999px;padding:.2rem .62rem;}
+.live-dot{width:5px;height:5px;background:var(--hot);border-radius:50%;box-shadow:0 0 6px var(--hot);animation:breathe 1.8s ease-in-out infinite;}
+@keyframes breathe{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.2;transform:scale(.5)}}
+.btn-hdr{display:flex;align-items:center;gap:.3rem;background:linear-gradient(135deg,rgba(255,70,140,.12),rgba(255,100,180,.08));color:var(--deep);border:1px solid var(--border2);border-radius:8px;padding:.28rem .68rem;font-family:var(--fb);font-size:.62rem;font-weight:600;cursor:pointer;letter-spacing:.04em;text-transform:uppercase;transition:all .2s;flex-shrink:0;white-space:nowrap;}
+.btn-hdr:hover{background:rgba(255,70,140,.22);transform:translateY(-2px);}
+.btn-hdr:disabled{opacity:.3;cursor:not-allowed;transform:none;}
+.btn-hdr.reset-btn{background:rgba(255,150,180,.08);color:rgba(180,0,80,.5);}
+.btn-hdr.reset-btn:hover{background:rgba(255,100,150,.16);color:var(--deep);}
+.user-badge{display:flex;align-items:center;gap:.34rem;background:rgba(255,70,140,.06);border:1px solid var(--border);border-radius:999px;padding:.2rem .68rem .2rem .24rem;font-size:.72rem;flex-shrink:0;}
+.user-avatar{width:20px;height:20px;border-radius:50%;background:linear-gradient(135deg,var(--hot),var(--deep));display:flex;align-items:center;justify-content:center;font-size:.55rem;font-weight:700;color:var(--foam);flex-shrink:0;}
+
+/* PROGRESS BAR */
+.prog-bar-wrap{position:sticky;top:44px;z-index:190;background:rgba(255,240,246,.96);backdrop-filter:blur(10px);padding:.34rem 1.4rem;border-bottom:1px solid var(--border);}
+.prog-bar-track{height:3px;background:rgba(255,100,170,.12);border-radius:999px;overflow:hidden;}
+.prog-bar-fill{height:100%;background:linear-gradient(90deg,var(--hot),var(--candy),var(--fuchsia));border-radius:999px;transition:width .4s cubic-bezier(.4,0,.2,1);}
+.prog-label{font-size:.57rem;font-weight:600;color:var(--muted);letter-spacing:.07em;text-transform:uppercase;margin-bottom:.2rem;display:flex;justify-content:space-between;}
+.prog-label span{color:var(--hot);}
+
+/* HERO */
+.hero{position:relative;z-index:2;padding:2.6rem 1.4rem 1.4rem;text-align:center;max-width:740px;margin:0 auto;}
+.hero-eyebrow{display:inline-block;font-family:var(--fb);font-size:.58rem;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);font-weight:600;margin-bottom:.75rem;background:rgba(255,70,140,.07);border:1px solid rgba(255,70,140,.2);border-radius:999px;padding:.24rem .88rem;}
+.hero-title{font-family:var(--fh);font-size:clamp(1.9rem,5vw,2.7rem);font-weight:900;line-height:1.12;margin-bottom:.75rem;background:linear-gradient(135deg,var(--deep) 10%,var(--hot) 48%,var(--fuchsia) 85%);-webkit-background-clip:text;background-clip:text;color:transparent;}
+.hero-quote{font-family:var(--fh);font-style:italic;font-size:.97rem;color:rgba(180,0,80,.5);border-left:2.5px solid var(--hot);padding-left:.88rem;text-align:left;margin:1rem auto;line-height:1.72;max-width:480px;}
+.hero-sub{font-size:.95rem;color:var(--text-body);line-height:1.82;max-width:540px;margin:0 auto 1.3rem;font-weight:400;}
+
+/* CONTEXT BANNER */
+.context-banner{position:relative;z-index:2;max-width:740px;margin:0 auto 1.5rem;padding:0 1.4rem;}
+.context-card{background:rgba(255,200,225,.35);border:1px solid rgba(255,80,150,.22);border-radius:16px;padding:1.3rem 1.7rem;display:flex;gap:1rem;align-items:flex-start;backdrop-filter:blur(8px);}
+.context-icon{font-size:1.2rem;flex-shrink:0;margin-top:.1rem;}
+.context-text h3{font-family:var(--fh);font-size:1.05rem;font-weight:800;color:var(--deep);margin-bottom:.45rem;}
+.context-text p{font-size:.93rem;color:var(--text-body);line-height:1.8;}
+.context-text p+p{margin-top:.55rem;}
+.context-text a{color:var(--hot);text-decoration:underline;text-underline-offset:3px;}
+
+/* IMAGE */
+.video-wrap{position:relative;z-index:2;max-width:740px;margin:0 auto .9rem;padding:0 1.4rem;}
+.video-card{background:var(--surface);border:1.5px solid var(--border2);border-radius:18px;overflow:hidden;box-shadow:var(--glow2);}
+.video-card::before{content:'';position:absolute;top:0;left:8%;right:8%;height:1px;background:linear-gradient(90deg,transparent,var(--candy) 35%,var(--hot) 50%,var(--candy) 65%,transparent);box-shadow:0 0 10px rgba(255,70,140,.3);z-index:10;}
+.video-label{padding:.55rem .95rem;background:rgba(255,200,225,.5);font-size:.66rem;font-weight:700;color:var(--deep);letter-spacing:.05em;text-transform:uppercase;display:flex;align-items:center;gap:.38rem;border-top:1px solid var(--border);}
+
+/* INSTRUCTIONS */
+.instructions{position:relative;z-index:2;max-width:740px;margin:0 auto 1.6rem;padding:0 1.4rem;}
+.instr-card{background:rgba(255,220,235,.5);border:1px solid var(--border);border-radius:var(--radius);padding:1.3rem 1.7rem;backdrop-filter:blur(8px);}
+.instr-title{font-family:var(--fh);font-size:1.05rem;font-weight:800;color:var(--deep);margin-bottom:.68rem;}
+.instr-list{list-style:none;display:flex;flex-direction:column;gap:.52rem;}
+.instr-list li{display:flex;align-items:flex-start;gap:.58rem;font-size:.93rem;color:var(--text-body);line-height:1.68;}
+.instr-dot{width:6px;height:6px;border-radius:50%;background:linear-gradient(135deg,var(--hot),var(--candy));flex-shrink:0;margin-top:.5rem;}
+
+/* SECTIONS */
+.sections{position:relative;z-index:2;max-width:740px;margin:0 auto;padding:0 1.4rem 4rem;display:flex;flex-direction:column;gap:2rem;}
+.section-block{background:rgba(255,240,248,.92);border:1px solid var(--border);border-radius:20px;padding:1.9rem 2.1rem;box-shadow:0 2px 20px rgba(255,70,140,.12);position:relative;overflow:hidden;transition:border-color .2s;backdrop-filter:blur(10px);}
+.section-block:hover{border-color:var(--border2);}
+.section-block::before{content:'';position:absolute;top:0;left:10%;right:10%;height:1px;background:linear-gradient(90deg,transparent,var(--candy) 35%,var(--hot) 50%,var(--candy) 65%,transparent);opacity:.45;}
+.section-hd{display:flex;align-items:center;gap:.62rem;margin-bottom:.22rem;}
+.section-icon{font-size:.95rem;flex-shrink:0;}
+.section-title{font-family:var(--fh);font-size:1.28rem;font-weight:900;background:linear-gradient(90deg,var(--deep),var(--hot));-webkit-background-clip:text;background-clip:text;color:transparent;line-height:1.25;}
+.section-num{font-family:var(--fb);font-size:.54rem;font-weight:600;letter-spacing:.11em;text-transform:uppercase;color:rgba(255,70,140,.4);margin-top:.07rem;}
+.section-badge{margin-left:auto;font-size:.56rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase;background:rgba(255,70,140,.08);border:1px solid rgba(255,70,140,.2);color:var(--hot);border-radius:999px;padding:.16rem .58rem;flex-shrink:0;}
+.section-badge.done{background:rgba(255,70,140,.18);border-color:var(--hot);color:var(--deep);}
+.section-intro{font-size:.93rem;color:var(--text-body);border-left:2px solid rgba(255,80,140,.3);padding-left:.88rem;margin-bottom:1.4rem;line-height:1.82;}
+.section-intro a{color:var(--hot);text-decoration:underline;text-underline-offset:3px;}
+.sec-prog{display:flex;align-items:center;gap:.3rem;margin-top:.1rem;margin-bottom:1rem;}
+.sec-prog-dots{display:flex;gap:3px;flex-wrap:wrap;}
+.sdot{width:6px;height:6px;border-radius:50%;background:rgba(255,100,170,.14);border:1px solid var(--border);transition:all .25s;}
+.sdot.done{background:linear-gradient(135deg,var(--hot),var(--candy));border-color:var(--candy);}
+
+/* QUESTION CARDS */
+.q-list{display:flex;flex-direction:column;gap:1rem;}
+.qcard{background:rgba(255,255,255,.75);border:1px solid var(--border);border-radius:var(--radius);padding:1.3rem 1.5rem;transition:border-color .18s;position:relative;overflow:hidden;box-shadow:0 1px 8px rgba(255,70,140,.06);}
+.qcard.answered{border-color:rgba(255,70,140,.28);}
+.qcard-code{font-family:var(--fb);font-size:.52rem;font-weight:600;letter-spacing:.13em;text-transform:uppercase;color:rgba(255,70,140,.32);margin-bottom:.44rem;}
+.qcard-top{display:flex;align-items:flex-start;gap:.78rem;margin-bottom:.75rem;}
+.qnum-badge{width:25px;height:25px;border-radius:50%;flex-shrink:0;margin-top:2px;background:linear-gradient(135deg,var(--hot),var(--deep));display:flex;align-items:center;justify-content:center;font-family:var(--fb);font-size:.54rem;font-weight:700;color:var(--foam);}
+.qtext{font-family:var(--fh);font-size:1.05rem;font-weight:700;line-height:1.44;color:var(--text);}
+.qcontext{font-size:.89rem;color:var(--text-body);line-height:1.76;margin-bottom:.9rem;padding:.58rem .82rem;background:rgba(255,200,225,.28);border-left:2px solid rgba(255,80,140,.28);border-radius:0 6px 6px 0;display:none;opacity:0;transform:translateY(6px);transition:opacity .35s ease,transform .35s ease;}
+.qcontext.revealed{display:block;}.qcontext.visible{opacity:1;transform:translateY(0);}
+
+/* VOTE BUTTONS */
+.vbtns{display:flex;gap:.42rem;margin-bottom:.85rem;flex-wrap:wrap;}
+.vbtn{flex:1;min-width:68px;padding:.46rem .32rem;border-radius:9px;border:1px solid transparent;font-family:var(--fb);font-size:.68rem;font-weight:700;cursor:pointer;letter-spacing:.04em;text-transform:uppercase;transition:all .18s cubic-bezier(.34,1.56,.64,1);text-align:center;}
+.vbtn.yb{background:rgba(255,70,140,.07);border-color:rgba(255,70,140,.22);color:var(--hot)}.vbtn.yb:hover{background:rgba(255,70,140,.16);border-color:var(--hot);transform:translateY(-2px)}.vbtn.yb.voted{background:linear-gradient(135deg,var(--hot),var(--deep));color:var(--foam);border-color:var(--hot);box-shadow:0 4px 14px rgba(255,70,140,.28)}
+.vbtn.nb{background:rgba(180,0,60,.06);border-color:rgba(180,0,60,.2);color:#c04070}.vbtn.nb:hover{background:rgba(180,0,60,.14);border-color:#c04070;transform:translateY(-2px)}.vbtn.nb.voted{background:linear-gradient(135deg,#9a1840,#5a0020);color:var(--foam);border-color:#9a1840;box-shadow:0 4px 12px rgba(180,0,60,.22)}
+.vbtn.neub{background:rgba(180,60,120,.06);border-color:rgba(180,60,120,.2);color:#b05080}.vbtn.neub:hover{background:rgba(180,60,120,.14);border-color:#b05080;transform:translateY(-2px)}.vbtn.neub.voted{background:linear-gradient(135deg,#7a2050,#4a1030);color:var(--foam);border-color:#7a2050}
+.vbtn:active{transform:scale(.95)!important}
+.vote-lbl{font-size:.58rem;color:var(--muted);display:block;margin-bottom:.32rem;letter-spacing:.07em;text-transform:uppercase;font-weight:600;}
+
+/* BAR CHARTS */
+.bar-area{display:flex;flex-direction:column;gap:.38rem;}
+.brow{display:flex;align-items:center;gap:.48rem;}
+.blbl{width:26px;text-align:right;flex-shrink:0;font-size:.56rem;letter-spacing:.05em;text-transform:uppercase;font-weight:700;}
+.blbl.y{color:var(--hot)}.blbl.n{color:#c04070}.blbl.neu{color:#b05080}
+.btrack{flex:1;height:5px;background:rgba(255,100,170,.1);border-radius:999px;overflow:hidden;border:1px solid rgba(255,100,170,.14);}
+.bfill{height:100%;border-radius:999px;transition:width .55s cubic-bezier(.4,0,.2,1);}
+.bfill.y{background:linear-gradient(90deg,var(--deep),var(--candy))}.bfill.n{background:linear-gradient(90deg,#5a0020,#9a1840)}.bfill.neu{background:linear-gradient(90deg,#4a1030,#8a3060)}
+.bcnt{width:17px;font-size:.58rem;color:var(--muted);flex-shrink:0;font-weight:600;}
+.qtot{font-size:.58rem;color:var(--muted);margin-top:.18rem;font-style:italic;}
+
+/* LIVE RESULTS */
+.results-section{position:relative;z-index:2;max-width:740px;margin:0 auto 2rem;padding:0 1.4rem;display:none;}
+.results-section.show{display:block;animation:revealIn .65s cubic-bezier(.34,1.4,.64,1);}
+@keyframes revealIn{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+.results-card{background:rgba(255,230,242,.92);border:1.5px solid var(--border2);border-radius:20px;padding:1.9rem 2.1rem;box-shadow:var(--glow);backdrop-filter:blur(12px);position:relative;}
+.results-card::before{content:'';position:absolute;top:0;left:8%;right:8%;height:1.5px;background:linear-gradient(90deg,transparent,var(--candy) 35%,var(--hot) 50%,var(--candy) 65%,transparent);}
+.results-hd{display:flex;align-items:center;gap:.58rem;margin-bottom:.38rem;}
+.results-title{font-family:var(--fh);font-size:1.2rem;font-weight:900;background:linear-gradient(90deg,var(--deep),var(--hot));-webkit-background-clip:text;background-clip:text;color:transparent;}
+.results-sub{font-size:.93rem;color:var(--text-body);margin-bottom:1.3rem;line-height:1.75;}
+.results-sub strong{color:var(--hot);}
+.res-stat-row{display:flex;gap:.65rem;flex-wrap:wrap;margin-bottom:1.3rem;}
+.res-stat{flex:1;min-width:65px;background:rgba(255,255,255,.7);border:1px solid var(--border);border-radius:12px;padding:.72rem;text-align:center;}
+.res-stat-num{font-family:var(--fh);font-size:1.45rem;font-weight:900;color:var(--hot);line-height:1;}
+.res-stat-num.y{color:var(--fuchsia)}.res-stat-num.n{color:#c04070}.res-stat-num.neu{color:#b05080}
+.res-stat-lbl{font-size:.52rem;color:var(--muted);margin-top:.16rem;letter-spacing:.06em;text-transform:uppercase;font-weight:600;}
+.chart-h260{height:260px;position:relative;margin-bottom:1.3rem;}
+.chart-h150{height:150px;position:relative;margin-bottom:.72rem;}
+.sec-results-grid{display:flex;flex-direction:column;gap:.85rem;margin-top:1rem;}
+.sec-res-card{background:rgba(255,255,255,.55);border:1px solid var(--border);border-radius:12px;padding:.95rem 1.15rem;}
+.sec-res-hd{display:flex;align-items:center;gap:.42rem;margin-bottom:.68rem;}
+.sec-res-icon{font-size:.88rem;}.sec-res-title{font-family:var(--fh);font-size:.92rem;font-weight:800;color:var(--deep);}
+.sec-res-tot{font-size:.54rem;color:var(--muted);margin-left:auto;}
+.btn-export{display:flex;align-items:center;gap:.42rem;background:linear-gradient(135deg,rgba(255,70,140,.12),rgba(255,100,180,.08));color:var(--deep);border:1px solid var(--border2);border-radius:11px;padding:.55rem .95rem;font-family:var(--fb);font-size:.72rem;font-weight:700;cursor:pointer;letter-spacing:.04em;text-transform:uppercase;transition:all .2s;margin-top:1rem;}
+.btn-export:hover{background:rgba(255,70,140,.22);transform:translateY(-2px);}
+
+/* REVEAL */
+#reveal-section{display:none;position:relative;z-index:2;max-width:740px;margin:0 auto 4rem;padding:0 1.4rem;}
+#reveal-section.show{display:block;animation:revealIn .7s cubic-bezier(.34,1.4,.64,1);}
+.reveal-card{background:linear-gradient(135deg,rgba(255,220,240,.97),rgba(255,200,230,.97));border:1.5px solid var(--border2);border-radius:22px;padding:2.4rem 2.6rem;box-shadow:var(--glow2);text-align:center;position:relative;}
+.reveal-card::before{content:'';position:absolute;top:0;left:6%;right:6%;height:1.5px;background:linear-gradient(90deg,transparent,var(--candy) 35%,var(--hot) 50%,var(--candy) 65%,transparent);}
+.reveal-eyebrow{font-family:var(--fb);font-size:.58rem;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);margin-bottom:.62rem;font-weight:600;}
+.reveal-title{font-family:var(--fh);font-size:clamp(1.5rem,4vw,1.9rem);font-weight:900;background:linear-gradient(90deg,var(--deep) 10%,var(--hot) 50%,var(--fuchsia) 90%);-webkit-background-clip:text;background-clip:text;color:transparent;margin-bottom:1.4rem;line-height:1.2;}
+.irony-blocks{display:flex;flex-direction:column;gap:.85rem;margin-bottom:1.6rem;text-align:left;}
+.irony-block{background:rgba(255,255,255,.65);border:1px solid rgba(255,80,140,.2);border-radius:12px;padding:1rem 1.3rem;border-left:3px solid var(--candy);}
+.irony-block.alt{border-left-color:var(--hot);}.irony-block.alt2{border-left-color:var(--lavender);}
+.irony-head{font-family:var(--fh);font-size:.95rem;font-weight:800;color:var(--deep);margin-bottom:.34rem;}
+.irony-block.alt .irony-head{color:var(--hot);}.irony-block.alt2 .irony-head{color:#9060c0;}
+.irony-body{font-size:.9rem;color:var(--text-body);line-height:1.78;}
+.irony-body a{color:var(--hot);text-decoration:underline;text-underline-offset:3px;}
+.reveal-stats{display:flex;gap:.62rem;flex-wrap:wrap;justify-content:center;margin-bottom:1.6rem;}
+.stat-pill{background:rgba(255,255,255,.65);border:1px solid rgba(255,80,140,.22);border-radius:12px;padding:.8rem 1.05rem;min-width:86px;text-align:center;}
+.stat-num{font-family:var(--fh);font-size:1.5rem;font-weight:900;color:var(--hot);line-height:1;}
+.stat-lbl{font-size:.54rem;color:var(--muted);margin-top:.18rem;letter-spacing:.07em;text-transform:uppercase;font-weight:600;}
+.answer-chips{display:flex;gap:.38rem;flex-wrap:wrap;justify-content:center;margin-bottom:.45rem;}
+.ans-chip{font-size:.66rem;font-weight:600;padding:.26rem .7rem;border-radius:999px;border:1px solid rgba(255,80,140,.2);color:rgba(180,0,80,.5);background:rgba(255,100,160,.06);}
+.ans-chip.y{background:rgba(255,70,140,.14);border-color:rgba(255,70,140,.32);color:var(--deep);}
+.ans-chip.n{background:rgba(180,0,60,.1);border-color:rgba(180,0,60,.26);color:#c04070;}
+
+/* LOGIN */
+#login-screen{position:relative;z-index:10;min-height:100vh;display:flex;align-items:center;justify-content:center;flex-direction:column;padding:2rem;}
+.login-card{background:rgba(255,240,248,.98);border:1.5px solid var(--border2);border-radius:22px;padding:2.6rem 2.8rem;width:100%;max-width:460px;text-align:center;box-shadow:var(--glow2);position:relative;overflow:hidden;}
+.login-card::before{content:'';position:absolute;top:0;left:8%;right:8%;height:1.5px;background:linear-gradient(90deg,transparent,var(--candy) 30%,var(--hot) 50%,var(--candy) 70%,transparent);}
+.login-eyebrow{font-family:var(--fb);font-size:.58rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);margin-bottom:.6rem;}
+.login-title{font-family:var(--fh);font-size:2.3rem;font-weight:900;line-height:1.1;margin-bottom:.38rem;background:linear-gradient(135deg,var(--deep) 15%,var(--hot) 52%,var(--fuchsia));-webkit-background-clip:text;background-clip:text;color:transparent;}
+.login-quote{font-family:var(--fh);font-style:italic;font-size:.93rem;color:rgba(180,0,80,.5);border-left:2.5px solid var(--hot);padding-left:.85rem;text-align:left;margin:1rem 0 1.45rem;line-height:1.68;}
+.disclaimer{background:rgba(255,200,230,.3);border:1px solid rgba(255,80,140,.2);border-radius:12px;padding:.95rem 1.15rem;margin-bottom:1.3rem;text-align:left;}
+.disclaimer-title{font-family:var(--fb);font-size:.58rem;font-weight:700;letter-spacing:.11em;text-transform:uppercase;color:var(--hot);margin-bottom:.35rem;}
+.disclaimer-body{font-size:.83rem;color:var(--text-body);line-height:1.72;}
+.field-label{display:block;text-align:left;font-size:.58rem;font-weight:700;letter-spacing:.13em;text-transform:uppercase;color:var(--muted);margin-bottom:.4rem;}
+.login-input{width:100%;background:rgba(255,255,255,.8);border:1.5px solid var(--border);border-radius:10px;padding:.75rem .96rem;color:var(--text);font-family:var(--fb);font-size:.93rem;font-weight:500;outline:none;transition:border-color .2s;margin-bottom:.58rem;}
+.login-input:focus{border-color:var(--hot);box-shadow:0 0 0 3px rgba(255,70,140,.08);}
+.login-input::placeholder{color:var(--muted);}
+.avatar-row{display:flex;gap:.42rem;margin-bottom:1.15rem;align-items:center;}
+.avatar-preview{flex:1;background:rgba(255,200,230,.3);border:1.5px solid var(--border);border-radius:10px;padding:.7rem .96rem;color:var(--deep);font-family:var(--fh);font-size:.95rem;font-weight:800;text-align:left;min-height:44px;display:flex;align-items:center;}
+.btn-gen{background:rgba(255,100,170,.12);border:1.5px solid var(--border2);border-radius:10px;padding:.7rem .88rem;color:var(--hot);font-size:.93rem;cursor:pointer;transition:all .18s;flex-shrink:0;display:flex;align-items:center;justify-content:center;}
+.btn-gen:hover{background:rgba(255,70,140,.2);transform:rotate(20deg) scale(1.08);}
+.avatar-hint{font-size:.76rem;color:var(--muted2);margin-bottom:1.15rem;text-align:left;line-height:1.58;}
+.btn-primary{width:100%;background:linear-gradient(135deg,var(--hot),var(--deep),var(--berry));color:var(--foam);border:none;border-radius:10px;padding:.88rem 1.35rem;font-family:var(--fb);font-size:.9rem;font-weight:700;cursor:pointer;letter-spacing:.06em;text-transform:uppercase;transition:transform .15s,box-shadow .15s;box-shadow:0 4px 20px rgba(255,70,140,.28);}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 10px 28px rgba(255,70,140,.42);}
+
+/* TOAST */
+#toast{position:fixed;bottom:1.4rem;right:1.4rem;z-index:9000;background:rgba(255,240,248,.99);border:1.5px solid var(--border2);border-radius:10px;padding:.58rem .95rem;font-size:.8rem;opacity:0;transform:translateY(6px);transition:opacity .25s,transform .25s;pointer-events:none;color:var(--deep);font-family:var(--fh);font-weight:700;box-shadow:var(--glow);}
+#toast.show{opacity:1;transform:translateY(0)}
+
+/* PDF OVERLAY */
+#pdf-ov{display:none;position:fixed;inset:0;z-index:9999;background:rgba(255,220,240,.92);backdrop-filter:blur(10px);align-items:center;justify-content:center;flex-direction:column;gap:1rem;}
+#pdf-ov.show{display:flex;}
+.pdf-spin{width:38px;height:38px;border:2.5px solid var(--border2);border-top-color:var(--hot);border-radius:50%;animation:spin .85s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg)}}
+.pdf-msg{font-family:var(--fh);font-size:1rem;font-weight:700;color:var(--deep);}
+
+/* RESET MODAL */
+#reset-modal{display:none;position:fixed;inset:0;z-index:9998;background:rgba(255,200,230,.72);backdrop-filter:blur(10px);align-items:center;justify-content:center;}
+#reset-modal.show{display:flex;}
+.reset-card{background:rgba(255,240,248,.99);border:1.5px solid var(--border2);border-radius:20px;padding:1.9rem 2.1rem;max-width:350px;width:90%;box-shadow:var(--glow2);}
+.reset-title{font-family:var(--fh);font-size:1.15rem;font-weight:900;color:var(--deep);margin-bottom:.3rem;}
+.reset-body{font-size:.86rem;color:var(--text-body);line-height:1.72;margin-bottom:1.15rem;}
+.reset-body strong{color:var(--hot);}
+.reset-input{width:100%;background:rgba(255,255,255,.8);border:1.5px solid var(--border);border-radius:10px;padding:.7rem .92rem;color:var(--text);font-family:var(--fb);font-size:.9rem;outline:none;margin-bottom:.36rem;transition:border-color .2s;}
+.reset-input:focus{border-color:var(--hot);}
+.reset-err{font-size:.7rem;color:#c03060;min-height:1rem;margin-bottom:.82rem;display:none;}
+.reset-btns{display:flex;gap:.58rem;}
+.btn-cancel{flex:1;padding:.7rem;background:rgba(255,100,160,.06);border:1.5px solid var(--border);border-radius:10px;color:var(--muted2);font-family:var(--fb);font-size:.76rem;font-weight:600;cursor:pointer;transition:all .15s;letter-spacing:.04em;text-transform:uppercase;}
+.btn-confirm-reset{flex:1;padding:.7rem;background:linear-gradient(135deg,var(--hot),var(--deep));border:none;border-radius:10px;color:var(--foam);font-family:var(--fb);font-size:.76rem;font-weight:700;cursor:pointer;transition:all .15s;letter-spacing:.04em;text-transform:uppercase;}
+.btn-confirm-reset:disabled{opacity:.4;cursor:not-allowed;}
+#app{display:none;}
+@media(max-width:600px){html{font-size:14.5px;}.hero-title{font-size:1.85rem}.section-block{padding:1.35rem 1.1rem}.reveal-card{padding:1.7rem 1.35rem}.login-card{padding:1.9rem 1.5rem}.context-card{flex-direction:column;gap:.72rem}}
+</style>
+</head>
+<body>
+<div class="bg-layer"></div>
+<div class="orb orb-1"></div><div class="orb orb-2"></div><div class="orb orb-3"></div>
+<div class="particles" id="particles"></div>
+
+<div id="login-screen">
+  <div class="login-card">
+    <div class="login-eyebrow">CAREBOT-22 · Visible Labor · Performance &amp; Advertisement Survey</div>
+    <div class="login-title">"If only she<br>can cook…"</div>
+    <div class="login-quote">"The computer cost $10,600. The apron cost $28. Her name was not listed."</div>
+    <div class="disclaimer">
+      <div class="disclaimer-title">⚠ Data &amp; Privacy Notice</div>
+      <div class="disclaimer-body">This survey collects anonymous responses for academic research on invisible labor, gender, and technology. <strong style="color:var(--hot)">Your real identity is never required.</strong> No personal data is collected. By continuing you consent to your anonymous responses being used for research and educational purposes.</div>
+    </div>
+    <label class="field-label">Your anonymous avatar name</label>
+    <div class="avatar-row">
+      <div class="avatar-preview" id="avatar-display">…generating</div>
+      <button class="btn-gen" onclick="generateAvatar()" title="Generate new name">🔀</button>
+    </div>
+    <p class="avatar-hint">✦ This random name groups your responses anonymously. Hit 🔀 for a new one, or type your own below.</p>
+    <label class="field-label" for="uname">Or enter your own name / alias (optional)</label>
+    <input type="text" class="login-input" id="uname" placeholder="e.g. Observer 1, Maya, Anonymous…" maxlength="40" autocomplete="off">
+    <button class="btn-primary" onclick="enterApp()">Enter the Survey →</button>
+  </div>
+</div>
+
+<div id="app">
+<header class="app-header">
+  <div class="header-logo">CAREBOT-22 ✦ Kitchen Computer · 1969</div>
+  <div class="progress-pill">Progress <span class="progress-num" id="hdr-prog">0 / 0</span></div>
+  <div class="live-pill"><div class="live-dot"></div>Live</div>
+  <button class="btn-hdr" id="pdf-btn" onclick="exportPDF()">
+    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+    Save PDF
+  </button>
+  <button class="btn-hdr" id="csv-btn" onclick="downloadCSV()">
+    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+    Save CSV
+  </button>
+  <button class="btn-hdr reset-btn" onclick="showResetModal()">Reset</button>
+  <div class="user-badge" id="user-badge" style="display:none">
+    <div class="user-avatar" id="u-init">?</div><span id="u-name">—</span>
+  </div>
+</header>
+<div class="prog-bar-wrap">
+  <div class="prog-label"><span>Survey Completion</span><span id="prog-pct">0%</span></div>
+  <div class="prog-bar-track"><div class="prog-bar-fill" id="prog-fill"></div></div>
+</div>
+<div class="hero">
+  <div class="hero-eyebrow">✦ CAREBOT-22 · Visible Labor · Performance &amp; Advertisement Analysis</div>
+  <h1 class="hero-title">"If only she can cook<br>as well as Honeywell<br>can compute"</h1>
+  <div class="hero-quote">"The computer cost $10,600. The apron cost $28. Her name was not listed."</div>
+  <p class="hero-sub">A live performance is happening in the room with you right now — a reenactment of this 1969 Neiman-Marcus advertisement, guided by an AI-generated voice. Answer the questions below as you watch. The advertisement image is below for reference.</p>
+</div>
+<div class="context-banner">
+  <div class="context-card">
+    <div class="context-icon">◈</div>
+    <div class="context-text">
+      <h3>About This Performance</h3>
+      <p>The performance is being guided by an AI-generated voice reading descriptions of the physical and emotional labor visible in the original advertisement photograph. Those descriptions were produced by an AI analyzing the <a href="presentation-labor-kitchen-computer.png" target="_blank" rel="noopener">kitchen computer image</a> — identifying posture, facial expression, breath, weight distribution, and emotional display as measurable data. The full AI analysis, scored breakdown, and performance script are in <a href="the-document.html">the document ↗</a>.</p>
+      <p>The performer is following a script generated from that AI analysis. Answer the questions while you watch — and keep the image in view as a reference. Notice what the live performance makes visible that the photograph conceals.</p>
+    </div>
+  </div>
+</div>
+<div class="video-wrap">
+  <div class="video-card" style="position:relative;">
+    <img src="presentation-labor-kitchen-computer.png" alt="1969 Neiman-Marcus Kitchen Computer advertisement" style="width:100%;display:block;object-fit:contain;max-height:520px;background:#fff0f6;">
+    <div class="video-label" style="justify-content:space-between;flex-wrap:wrap;gap:.42rem;">
+      <span>◈ 1969 Neiman-Marcus Kitchen Computer · Honeywell H316</span>
+      <span style="display:flex;gap:.85rem;flex-shrink:0;">
+        <a href="presentation-labor-kitchen-computer.png" target="_blank" rel="noopener" style="font-family:var(--fh);font-style:italic;font-size:.78rem;color:var(--deep);text-decoration:underline;">Open full image ↗</a>
+        <a href="https://www.computerhistory.org/revolution/minicomputers/11/362" target="_blank" rel="noopener" style="font-family:var(--fh);font-style:italic;font-size:.78rem;color:var(--deep);text-decoration:underline;">Computer History Museum ↗</a>
+      </span>
+    </div>
+  </div>
+</div>
+<div class="instructions">
+  <div class="instr-card">
+    <div class="instr-title">✦ How to complete this survey</div>
+    <ul class="instr-list">
+      <li><div class="instr-dot"></div><span>Answer questions <strong>while the performance is happening</strong> — respond to what you are seeing in real time.</span></li>
+      <li><div class="instr-dot"></div><span>Answer <strong>all questions</strong> in each of the seven modules. Your responses save automatically.</span></li>
+      <li><div class="instr-dot"></div><span>There are no wrong answers — this is research about perception, not a test.</span></li>
+      <li><div class="instr-dot"></div><span>Once all modules are complete, a <strong>reveal</strong> will appear with live aggregate results from all respondents.</span></li>
+    </ul>
+  </div>
+</div>
+<div class="sections" id="sections"></div>
+<div class="results-section" id="results-section">
+  <div class="results-card">
+    <div class="results-hd"><span style="font-size:1.05rem">◈</span><span class="results-title">Live Results · All Respondents</span><div class="live-pill" style="margin-left:auto"><div class="live-dot"></div>Live</div></div>
+    <p class="results-sub">Results update in real time. Each chart shows how <strong>all respondents</strong> answered — not just you.</p>
+    <div class="res-stat-row" id="overall-stats"></div>
+    <div class="chart-h260"><canvas id="chart-overall"></canvas></div>
+    <div class="sec-results-grid" id="sec-results-grid"></div>
+    <button class="btn-export" id="export-btn" onclick="exportPDF()">
+      <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+      Export Charts + My Responses as PDF
+    </button>
+  </div>
+</div>
+<div id="pdf-ov"><div class="pdf-spin"></div><div class="pdf-msg" id="pdf-msg">Composing report…</div></div>
+<div id="reveal-section">
+  <div class="reveal-card">
+    <div class="reveal-eyebrow">✦ CAREBOT-22 · The Advertisement Reveals</div>
+    <div class="reveal-title">The Work Was in the Image.<br>The Performance Made It Visible.</div>
+    <div class="reveal-stats" id="reveal-stats"></div>
+    <div class="irony-blocks">
+      <div class="irony-block"><div class="irony-head">◉ What the Image Conceals</div><div class="irony-body">The photograph was designed to make labor disappear. Every adjustment of posture, breath, and expression was performed precisely so that no trace of effort would remain in the final frame. The image is the product of that erasure — a record of what was hidden, not what was done.</div></div>
+      <div class="irony-block alt"><div class="irony-head">◈ What the Performance Revealed</div><div class="irony-body">The live reenactment reintroduced time, breath, and effort into what the photograph had flattened into a single frozen moment. Watching a body hold that pose — hearing the strain named aloud — made visible what advertising is designed to conceal: that the effortlessness is the hardest work of all.</div></div>
+      <div class="irony-block alt2"><div class="irony-head">◆ When AI Narrates Human Labor</div><div class="irony-body">The AI voice could identify physical data — angle of spine, tension in jaw, duration of hold — but not the experience of performing it. The machine described the labor. The human body bore it. <a href="the-document.html">Read the document ↗</a></div></div>
+      <div class="irony-block" style="border-left-color:#ffb347;"><div class="irony-head" style="color:#b06000;">✦ About This Work</div><div class="irony-body">This performance was created by an artist who believes technology is not neutral — that every system reflects the people who build it, the assumptions they carry, and the voices they include or exclude. This work asks: progress toward what, and for whom?</div></div>
+    </div>
+    <div class="answer-chips" id="answer-chips"></div>
+  </div>
+</div>
+<div id="reset-modal">
+  <div class="reset-card">
+    <div class="reset-title">Admin Reset</div>
+    <div class="reset-body">This will permanently delete <strong>all votes</strong> from Firestore. This cannot be undone.</div>
+    <input type="password" class="reset-input" id="reset-pw" placeholder="Admin password…" onkeydown="if(event.key==='Enter')confirmReset()">
+    <div class="reset-err" id="reset-err">✗ Incorrect password.</div>
+    <div class="reset-btns">
+      <button class="btn-cancel" onclick="closeResetModal()">Cancel</button>
+      <button class="btn-confirm-reset" id="btn-confirm-reset" onclick="confirmReset()">Reset All Data</button>
+    </div>
+  </div>
+</div>
+</div>
+<div id="toast"></div>
+
+<script>
+(function(){const w=document.getElementById('particles');const c=['✦','·','◦','✿','♡','◈','˚','◇'];for(let i=0;i<16;i++){const s=document.createElement('span');s.className='pt';s.textContent=c[Math.floor(Math.random()*c.length)];s.style.left=Math.random()*100+'vw';s.style.bottom=Math.random()*-50+'px';s.style.fontSize=(6+Math.random()*8)+'px';s.style.color='hsl('+(320+Math.random()*40)+','+(55+Math.random()*25)+'%,'+(45+Math.random()*30)+'%)';s.style.animationDuration=(11+Math.random()*16)+'s';s.style.animationDelay=(Math.random()*16)+'s';w.appendChild(s);}})();
+
+const AVT_ADJ=['Analog','Binary','Cached','Compiled','Encrypted','Latent','Modular','Neural','Obsolete','Parallel','Queued','Recursive','Rogue','Siloed','Synthetic','Terminal','Tokenized','Volatile','Wired','Legacy','Patched','Proxied','Redacted','Indexed','Forked','Null','Logged','Looped','Archived','Deprecated','Buffered','Clustered','Defragged','Encoded','Fragmented','Hashed','Injected','Kerneled','Layered','Minified','Obfuscated','Pipelined','Quantized','Refactored','Serialized'];
+const AVT_NOUN=['Algorithm','Buffer','Checkpoint','Compiler','Daemon','Dataset','Firewall','Gateway','Instance','Kernel','Mainframe','Microchip','Network','Output','Payload','Pipeline','Process','Protocol','Register','Relay','Runtime','Schema','Socket','Subnet','Subroutine','Syntax','Terminal','Token','Variable','Webhook','Artifact','Bootloader','Codebase','Debugger','Endpoint','Framework','Interface','Latency','Middleware','Namespace','Overflow','Parser','Queue','Renderer'];
+
+let currentAvatar='';
+function generateAvatar(){const adj=AVT_ADJ[Math.floor(Math.random()*AVT_ADJ.length)];const noun=AVT_NOUN[Math.floor(Math.random()*AVT_NOUN.length)];currentAvatar=adj+noun+(100+Math.floor(Math.random()*900));const el=document.getElementById('avatar-display');if(el)el.textContent=currentAvatar;}
+document.addEventListener('DOMContentLoaded',()=>{generateAvatar();const i=document.getElementById('uname');if(i)i.addEventListener('keydown',e=>{if(e.key==='Enter')enterApp();});if(window.location.hash==='#survey'){username=sessionStorage.getItem('kc_username')||currentAvatar||'Anonymous';document.getElementById('u-name').textContent=username;document.getElementById('u-init').textContent=username[0].toUpperCase();document.getElementById('user-badge').style.display='flex';document.getElementById('login-screen').style.display='none';document.getElementById('app').style.display='block';if(fbReady)initSurvey();else window.addEventListener('firebase-ready',()=>initSurvey());}});
+
+let db,fsSetDoc,fsDoc,fsOnSnapshot,fsWriteBatch,fsGetDocs,fsCollection;
+let fbReady=false,isDemo=false,username='';
+window.addEventListener('firebase-ready',()=>{db=window.db;if(db){fsSetDoc=window.fsSetDoc;fsDoc=window.fsDoc;fsOnSnapshot=window.fsOnSnapshot;fsWriteBatch=window.fsWriteBatch;fsGetDocs=window.fsGetDocs;fsCollection=window.fsCollection;fbReady=true;}else{fbReady=true;isDemo=true;}});
+function sk(n){return n.replace(/[^a-zA-Z0-9_-]/g,'_').substring(0,40);}
+function enterApp(){const custom=document.getElementById('uname').value.trim();username=custom||currentAvatar||'Anonymous';sessionStorage.setItem('kc_username',username);document.getElementById('u-name').textContent=username;document.getElementById('u-init').textContent=username[0].toUpperCase();document.getElementById('user-badge').style.display='flex';document.getElementById('login-screen').style.display='none';document.getElementById('app').style.display='block';if(fbReady)initSurvey();else window.addEventListener('firebase-ready',()=>initSurvey());}
+
+const SURVEY=[
+{theme:"The Body in the Image vs. the Body in the Room",icon:"◈",slug:"body-visibility",intro:"The original advertisement was designed to make labor invisible. The live performance reintroduces that labor into real time and space.",questions:[
+{text:"Did watching the live performance make the physical effort of the pose more visible than the advertisement photograph does?",context:"In the photograph, the labor of holding position has been edited out. In a live performance, that work happens in front of you in real time, and cannot be hidden."},
+{text:"Did the performance change how you see the advertisement image — did you notice things you hadn't seen before?",context:"Reenactment is a form of close reading. When a body repeats a gesture live, it reveals the decisions that went into freezing that gesture as a photograph."},
+{text:"Is the effort of holding a pose like this more apparent when you can watch it happening live than when you only see the finished image?",context:"Advertising photography compresses duration into a single instant. What you cannot see in the image is the time it took."},
+{text:"Did the performance make you feel differently about the woman in the original advertisement than the photograph alone does?",context:"The photograph presents a person as image. A live performance presents a person as a person doing something — with breath, effort, and duration."},
+{text:"Is physical labor more visible when performed live than when captured in a still image?",context:"Photography selects a single moment and removes time. Performance unfolds across time and cannot remove it."}
+]},
+{theme:"What the Image Hides, What Performance Shows",icon:"◉",slug:"image-vs-performance",intro:"Every advertisement image is an argument about effortlessness. The performance made visible what the image is built to hide.",questions:[
+{text:"Does the advertisement photograph hide more about the labor involved in creating it than the live performance does?",context:"An image erases its own production. A live performance cannot — the making is part of what you watch."},
+{text:"Did seeing the performance help you understand what the smile in the advertisement actually requires?",context:"The smile in an advertisement is a precisely calibrated position maintained across an entire shoot. It is a form of labor that leaves no trace in the final image."},
+{text:"In the performance, could you see the difference between a genuine physical reaction and a performed one?",context:"Advertising photography collapses the gap between performance and reality. Live performance can make that gap visible again."},
+{text:"Does the advertisement work differently for you now that you have seen the labor it contains performed live?",context:"Images produce meaning by hiding their construction. Once that construction is made visible, the image cannot fully recover its original transparency."},
+{text:"Should advertisements like this one be required to disclose the labor conditions of the people who appear in them?",context:"The 1969 catalog lists the computer at $10,600 and the apron at $28. The person wearing the apron is not listed."}
+]},
+{theme:"The AI Voice: Describing Labor It Cannot Feel",icon:"◎",slug:"ai-voice",intro:'During the performance, an AI-generated voice described the physical and emotional labor visible in the advertisement. The full output is in <a href="the-document.html">the document ↗</a>.',questions:[
+{text:"Did hearing the AI voice describe the performer's physical labor change how you understood what you were watching?",context:"The AI voice could name and measure what the body was doing. But it was not doing any of those things itself, and it never has."},
+{text:"Is there something unsettling about a machine accurately describing human physical and emotional labor in clinical detail?",context:"AI systems can analyze images and produce detailed accounts of the effort they depict. The person whose effort is being analyzed may not have been asked."},
+{text:"Can an AI accurately describe what it feels like to hold a pose, maintain a smile, or perform emotional labor?",context:"There is a difference between describing labor from the outside and experiencing that labor from the inside, as a body."},
+{text:"Did the AI narration make the performance feel more clinical or dehumanizing?",context:"Being told that a facial muscle is 'at 68% activation for the duration of the hold' produces a different kind of attention than simply watching someone sustain a smile."},
+{text:"Is using AI to generate a script for a human performer a form of automation — even when the human body still does all the work?",context:"The script tells the performer what to do, how to hold it, and for how long. The directions came from a machine analyzing an image of a different human doing similar work decades earlier."}
+]},
+{theme:"Automation, Images, and Human Labor",icon:"◆",slug:"automation-images",intro:"AI systems can now generate photorealistic images of people performing labor without any human body being involved.",questions:[
+{text:"If this advertisement photograph had been generated by AI rather than produced with a human model, would it have the same meaning?",context:"An AI-generated image of a woman posing next to a computer could be visually identical. Would it represent the same thing?"},
+{text:"Does it matter to you that a human body actually performed the labor visible in this advertisement photograph?",context:"AI image generation is already being used to replace human models. The labor simply disappears — not hidden, but eliminated entirely."},
+{text:"Could AI-generated images of people performing labor make it harder to recognize and value real human labor?",context:"If realistic images of people working can be produced without anyone working, the visual link between image and labor is severed."},
+{text:"Does the live performance happening right now have a different value than the original photograph — precisely because a real human body is doing it in front of you?",context:"Presence, duration, effort — these are things that live performance has and photographs do not."},
+{text:"If AI can generate images of people performing labor, should those images carry a clear disclosure?",context:"Disclosure requirements for AI-generated content are actively debated in law and policy."}
+]},
+{theme:"Women, Technology, and Who Gets to Be the Expert",icon:"◇",slug:"women-tech",intro:"The 1969 advertisement places a woman next to a computer as a domestic appliance user. Women were already writing code and building computers in 1969.",questions:[
+{text:"Does placing a woman in a kitchen next to a computer — rather than at a workstation — shape how we imagine who belongs in technology?",context:"Representation in advertising does not just reflect culture — it produces it."},
+{text:"Are you aware that women were programming computers professionally at the time this advertisement was made?",context:"The ENIAC programmers, Grace Hopper, and many others were doing advanced computing work in the 1940s–60s."},
+{text:"Does the AI system used in today's performance reflect the kind of expertise typically associated with women's work or men's work?",context:"AI systems are predominantly built by teams that are majority male and trained on datasets that reflect existing cultural biases."},
+{text:"When an AI voice describes a woman's physical and emotional labor in precise detail, is that recognition — or a new form of surveillance?",context:"Being seen and being measured are different things."},
+{text:"Would today's performance and survey feel different if the original advertisement had featured a man posing next to the computer?",context:"The advertisement's argument depends on gender. The domestic setting, the apron, the smile — these are specific demands placed on this particular body."}
+]},
+{theme:"What Machines Can Measure, What They Cannot Replace",icon:"○",slug:"automation-limits",intro:"The Honeywell H316 was meant to automate meal planning. The AI system automated the analysis of human labor. Neither machine could perform the work it was describing.",questions:[
+{text:"Does the kind of labor in this advertisement seem more or less automatable than routine office or data work?",context:"AI and robotics researchers distinguish between tasks easier to automate and harder to automate — embodied, relational, emotionally calibrated work sits in the second category."},
+{text:"Does AI's ability to accurately describe this labor suggest we are getting closer to automating it?",context:"Describing what a body does is not the same as replacing it. But the ability to describe it precisely is often a step toward automation."},
+{text:"Is work that requires human presence and emotional intelligence more valuable now that so many other forms can be automated?",context:"As AI takes over more cognitive and routine tasks, the work that remains distinctly human may become either more valued or more exploited."},
+{text:"Should we be more concerned about AI generating images of human labor than about AI automating it?",context:"If AI replaces a factory worker, we know it. If AI generates images of workers, the labor becomes invisible in a new way."},
+{text:"Has today's experience — the image, the performance, the AI voice — changed how you think about the relationship between human work and the systems that describe, represent, or replace it?",context:"There is no correct answer. What are you noticing?"},
+{text:"The Kitchen Computer promised to save the woman time. Does AI save you time?",context:"The performer used AI to help write this work because she is genuinely strapped for time. But the cost of access to these tools is rising. The 1969 advertisement made the same promise. The computer never sold. The promise was the product."}
+]},
+{theme:"Who Builds Technology, and What It Builds Into Us",icon:"✦",slug:"technology-care",intro:"Technology is not a force of nature. It is made by specific people with specific blind spots, and carries those choices invisibly into the world.",questions:[
+{text:"Does knowing the people who built today's computational systems were overwhelmingly not from the communities most affected change how you think about those systems?",context:"The teams that built the early internet, first personal computers, and large AI models have been — and remain — demographically narrow."},
+{text:"The Honeywell Kitchen Computer never sold a single unit. Does that suggest something about designing for people who were never involved in designing it?",context:"The apron, priced at $28, outsold the $10,600 computer. The apron was useful. The computer was a mirror."},
+{text:"The same machine placed next to a woman in an apron became a kitchen appliance. Did the technology change — or only the assumptions about who was using it?",context:"What changed was the frame — the apron, the kitchen, the woman, the recipe metaphor. The technology did not become domestic. It was made to appear domestic."},
+{text:"Is the idea that technological progress is inevitable — moving in one direction for everyone's benefit equally — something you believed before today? Do you still?",context:"The story of inevitable progress is itself a technology: it makes particular choices look like natural forces."},
+{text:"Can a technology be designed around care — careful of whose labor it depends on, careful of what it makes invisible?",context:"Efficiency and care optimize for different things. A system designed for care asks: who bears the cost of how we do this?"},
+{text:"Should the diversity of the people who build a technology be considered part of that technology's specification?",context:"A kitchen computer designed without asking who does kitchen labor looks like the one in this advertisement."},
+{text:"Does today's performance suggest that care — attention to bodies, to labor, to what is made invisible — is itself a form of technological practice?",context:"The performance paid close attention to a body that an advertisement was designed to make you not look at too carefully."},
+{text:"This survey was made with AI. A survey about uncredited labor was built using uncredited labor. Does knowing that change how you experienced it?",context:"Automation doesn't only replace physical labor. It also writes, argues, frames, and asks. The AI that produced this survey learned from decades of feminist scholarship by researchers who were not asked, compensated, or credited. That loop is not accidental."}
+]}
+];
+
+const totalQ=SURVEY.reduce((a,t)=>a+t.questions.length,0);
+let votes={},myVotes={},liveCharts={},unsubs=[],changeLog=[];
+SURVEY.forEach((_,ti)=>{votes[ti]={};myVotes[ti]={};SURVEY[ti].questions.forEach((_,qi)=>{votes[ti][qi]={yes:0,no:0,neutral:0};});});
+function answeredCount(){return SURVEY.reduce((a,_,ti)=>a+SURVEY[ti].questions.filter((_,qi)=>myVotes[ti][qi]).length,0);}
+
+function initSurvey(){isDemo=!db;buildSections();restoreSavedVotes();subscribeAll();document.getElementById('hdr-prog').textContent='0 / '+totalQ;}
+
+function restoreSavedVotes(){
+  const sc=sessionStorage.getItem('kc_changes');if(sc){try{changeLog=JSON.parse(sc);}catch(e){}}
+  const saved=sessionStorage.getItem('kc_votes');if(!saved)return;
+  let stored;try{stored=JSON.parse(saved);}catch(e){return;}
+  SURVEY.forEach((_,ti)=>{if(!stored[ti])return;SURVEY[ti].questions.forEach((_,qi)=>{const ch=stored[ti][qi];if(!ch)return;myVotes[ti][qi]=ch;['yes','no','neutral'].forEach(c=>{const m={yes:'vby-'+ti+'-'+qi,no:'vbn-'+ti+'-'+qi,neutral:'vbne-'+ti+'-'+qi};const b=document.getElementById(m[c]);if(b){b.classList.remove('voted');if(c===ch)b.classList.add('voted');}});const card=document.getElementById('qc-'+ti+'-'+qi);if(card)card.classList.add('answered');const dot=document.getElementById('dot-'+ti+'-'+qi);if(dot)dot.classList.add('done');const ctx=card?card.querySelector('.qcontext'):null;if(ctx){ctx.classList.add('revealed');ctx.classList.add('visible');}});const sd=SURVEY[ti].questions.filter((_,q)=>myVotes[ti][q]).length;const badge=document.getElementById('badge-'+ti);if(badge){badge.textContent=sd+' / '+SURVEY[ti].questions.length;if(sd===SURVEY[ti].questions.length)badge.classList.add('done');}});
+  updateProgress();
+  if(answeredCount()>=totalQ){buildResultsPanel();buildReveal();document.getElementById('reveal-section').classList.add('show');}
+}
+
+function subscribeAll(){
+  if(isDemo)return;unsubs.forEach(u=>u());unsubs=[];
+  SURVEY.forEach((_,ti)=>SURVEY[ti].questions.forEach((_,qi)=>{const u=fsOnSnapshot(fsDoc(db,'kc_responses','t'+ti+'_q'+qi),snap=>{if(snap.exists()){const d=snap.data();votes[ti][qi]={yes:d.yes||0,no:d.no||0,neutral:d.neutral||0};}else votes[ti][qi]={yes:0,no:0,neutral:0};updateBar(ti,qi);if(document.getElementById('results-section').classList.contains('show'))refreshAllCharts();});unsubs.push(u);}));
+}
+
+function buildSections(){
+  const cont=document.getElementById('sections');cont.innerHTML='';
+  SURVEY.forEach((t,ti)=>{
+    const block=document.createElement('div');block.className='section-block';block.id='sec-'+ti;
+    const dots=t.questions.map((_,qi)=>'<div class="sdot" id="dot-'+ti+'-'+qi+'"></div>').join('');
+    block.innerHTML='<div class="section-num">Module '+(ti+1)+' of '+SURVEY.length+'</div><div class="section-hd"><span class="section-icon">'+t.icon+'</span><span class="section-title">'+t.theme+'</span><span class="section-badge" id="badge-'+ti+'">0 / '+t.questions.length+'</span></div><div class="sec-prog"><div class="sec-prog-dots" id="dots-'+ti+'">'+dots+'</div></div>'+(t.intro?'<div class="section-intro">'+t.intro+'</div>':'')+'<div class="q-list" id="ql-'+ti+'"></div>';
+    cont.appendChild(block);
+    const ql=document.getElementById('ql-'+ti);
+    t.questions.forEach((q,qi)=>{
+      const card=document.createElement('div');card.className='qcard';card.id='qc-'+ti+'-'+qi;
+      card.innerHTML='<div class="qcard-code">Module '+(ti+1)+' · Question '+(qi+1)+'</div><div class="qcard-top"><div class="qnum-badge">'+(qi+1)+'</div><div class="qtext">'+q.text+'</div></div>'+(q.context?'<div class="qcontext">'+q.context+'</div>':'')+'<span class="vote-lbl">Your response</span><div class="vbtns"><button class="vbtn yb" id="vby-'+ti+'-'+qi+'" onclick="castVote('+ti+','+qi+',\'yes\')">✓ Yes</button><button class="vbtn nb" id="vbn-'+ti+'-'+qi+'" onclick="castVote('+ti+','+qi+',\'no\')">✗ No</button><button class="vbtn neub" id="vbne-'+ti+'-'+qi+'" onclick="castVote('+ti+','+qi+',\'neutral\')">— Unsure</button></div><div class="bar-area"><div class="brow"><div class="blbl y">Yes</div><div class="btrack"><div class="bfill y" id="by-'+ti+'-'+qi+'" style="width:0%"></div></div><div class="bcnt" id="cy-'+ti+'-'+qi+'">0</div></div><div class="brow"><div class="blbl n">No</div><div class="btrack"><div class="bfill n" id="bn-'+ti+'-'+qi+'" style="width:0%"></div></div><div class="bcnt" id="cn-'+ti+'-'+qi+'">0</div></div><div class="brow"><div class="blbl neu">?</div><div class="btrack"><div class="bfill neu" id="bne-'+ti+'-'+qi+'" style="width:0%"></div></div><div class="bcnt" id="cne-'+ti+'-'+qi+'">0</div></div><div class="qtot" id="qt-'+ti+'-'+qi+'">0 responses</div></div>';
+      ql.appendChild(card);
+    });
+  });
+  updateProgress();
+}
+
+async function castVote(ti,qi,choice){
+  const prev=myVotes[ti][qi];if(prev===choice)return;
+  const cv=!!prev;const v=votes[ti][qi];
+  if(prev)v[prev]=Math.max(0,v[prev]-1);v[choice]++;myVotes[ti][qi]=choice;
+  ['yes','no','neutral'].forEach(c=>{const m={yes:'vby-'+ti+'-'+qi,no:'vbn-'+ti+'-'+qi,neutral:'vbne-'+ti+'-'+qi};const b=document.getElementById(m[c]);if(b){b.classList.remove('voted');if(c===choice)b.classList.add('voted');}});
+  const card=document.getElementById('qc-'+ti+'-'+qi);if(card)card.classList.add('answered');
+  const dot=document.getElementById('dot-'+ti+'-'+qi);if(dot)dot.classList.add('done');
+  const ctx=card?card.querySelector('.qcontext'):null;if(ctx){ctx.classList.add('revealed');requestAnimationFrame(()=>requestAnimationFrame(()=>ctx.classList.add('visible')));}
+  const sd=SURVEY[ti].questions.filter((_,q)=>myVotes[ti][q]).length;const badge=document.getElementById('badge-'+ti);if(badge){badge.textContent=sd+' / '+SURVEY[ti].questions.length;if(sd===SURVEY[ti].questions.length)badge.classList.add('done');}
+  updateBar(ti,qi);updateProgress();checkComplete();
+  if(document.getElementById('results-section').classList.contains('show'))refreshAllCharts();
+  sessionStorage.setItem('kc_votes',JSON.stringify(myVotes));
+  if(isDemo){showToast('Demo mode — Firebase not connected');return;}
+  try{await fsSetDoc(fsDoc(db,'kc_responses','t'+ti+'_q'+qi),{['users.'+sk(username)]:choice,yes:v.yes,no:v.no,neutral:v.neutral},{merge:true});}catch(e){console.error(e);}
+  if(cv&&prev&&prev!==choice){const entry={user:sk(username),module:ti,question:qi,from:prev,to:choice,ts:new Date().toISOString()};changeLog.push(entry);sessionStorage.setItem('kc_changes',JSON.stringify(changeLog));try{await fsSetDoc(fsDoc(db,'kc_changes',sk(username)+'_t'+ti+'_q'+qi),entry,{merge:true});}catch(e){console.error(e);}}
+}
+
+function updateBar(ti,qi){const v=votes[ti][qi],tot=v.yes+v.no+v.neutral;const pct=n=>tot?Math.round(n/tot*100):0;const sw=(id,val)=>{const e=document.getElementById(id);if(e)e.style.width=val+'%';};const st=(id,val)=>{const e=document.getElementById(id);if(e)e.textContent=val;};sw('by-'+ti+'-'+qi,pct(v.yes));sw('bn-'+ti+'-'+qi,pct(v.no));sw('bne-'+ti+'-'+qi,pct(v.neutral));st('cy-'+ti+'-'+qi,v.yes);st('cn-'+ti+'-'+qi,v.no);st('cne-'+ti+'-'+qi,v.neutral);st('qt-'+ti+'-'+qi,tot===1?'1 response':tot+' responses');}
+function updateProgress(){const done=answeredCount(),pct=Math.round(done/totalQ*100);document.getElementById('prog-fill').style.width=pct+'%';document.getElementById('prog-pct').textContent=pct+'%';document.getElementById('hdr-prog').textContent=done+' / '+totalQ;}
+function checkComplete(){if(answeredCount()<totalQ)return;const rev=document.getElementById('reveal-section');if(rev.classList.contains('show'))return;buildResultsPanel();buildReveal();rev.classList.add('show');setTimeout(()=>document.getElementById('results-section').scrollIntoView({behavior:'smooth',block:'start'}),200);showToast('✦ All questions answered — results & reveal below');}
+function totals(){let ty=0,tn=0,tne=0;SURVEY.forEach((_,ti)=>SURVEY[ti].questions.forEach((_,qi)=>{ty+=votes[ti][qi].yes;tn+=votes[ti][qi].no;tne+=votes[ti][qi].neutral;}));return{ty,tn,tne,tt:ty+tn+tne};}
+
+function buildResultsPanel(){const{ty,tn,tne,tt}=totals();document.getElementById('overall-stats').innerHTML='<div class="res-stat"><div class="res-stat-num y">'+ty+'</div><div class="res-stat-lbl">Total Yes</div></div><div class="res-stat"><div class="res-stat-num n">'+tn+'</div><div class="res-stat-lbl">Total No</div></div><div class="res-stat"><div class="res-stat-num neu">'+tne+'</div><div class="res-stat-lbl">Unsure</div></div><div class="res-stat"><div class="res-stat-num">'+tt+'</div><div class="res-stat-lbl">Responses</div></div><div class="res-stat"><div class="res-stat-num">'+(tt?Math.round(ty/tt*100):0)+'%</div><div class="res-stat-lbl">Yes Rate</div></div>';buildOverallChart();buildSectionCharts();document.getElementById('results-section').classList.add('show');}
+
+function buildOverallChart(){const ctx=document.getElementById('chart-overall').getContext('2d');if(liveCharts['overall']){try{liveCharts['overall'].destroy();}catch(e){}}liveCharts['overall']=new Chart(ctx,{type:'bar',data:{labels:SURVEY.map(t=>t.theme.length>22?t.theme.substring(0,19)+'…':t.theme),datasets:[{label:'Yes',data:SURVEY.map((_,ti)=>SURVEY[ti].questions.reduce((s,_,qi)=>s+votes[ti][qi].yes,0)),backgroundColor:'rgba(255,70,140,.65)',borderColor:'#ff4d8f',borderWidth:1.5,borderRadius:4},{label:'No',data:SURVEY.map((_,ti)=>SURVEY[ti].questions.reduce((s,_,qi)=>s+votes[ti][qi].no,0)),backgroundColor:'rgba(180,0,60,.55)',borderColor:'#c04070',borderWidth:1.5,borderRadius:4},{label:'Unsure',data:SURVEY.map((_,ti)=>SURVEY[ti].questions.reduce((s,_,qi)=>s+votes[ti][qi].neutral,0)),backgroundColor:'rgba(180,60,120,.5)',borderColor:'#b05080',borderWidth:1.5,borderRadius:4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{color:'rgba(120,0,60,.7)',font:{family:"'Quicksand',sans-serif",size:11,weight:'600'}}}},scales:{x:{ticks:{color:'rgba(140,0,60,.5)',font:{size:9},maxRotation:30},grid:{color:'rgba(255,80,140,.06)'}},y:{ticks:{color:'rgba(140,0,60,.5)',font:{size:10}},grid:{color:'rgba(255,80,140,.06)'},beginAtZero:true}}}});}
+
+function buildSectionCharts(){const grid=document.getElementById('sec-results-grid');grid.innerHTML='';SURVEY.forEach((t,ti)=>{const tot=t.questions.reduce((s,_,qi)=>s+votes[ti][qi].yes+votes[ti][qi].no+votes[ti][qi].neutral,0);const card=document.createElement('div');card.className='sec-res-card';card.id='src-'+ti;card.innerHTML='<div class="sec-res-hd"><span class="sec-res-icon">'+t.icon+'</span><span class="sec-res-title">'+t.theme+'</span><span class="sec-res-tot" id="srt-'+ti+'">'+tot+' response'+(tot!==1?'s':'')+'</span></div><div class="chart-h150"><canvas id="chart-sec-'+ti+'"></canvas></div>';grid.appendChild(card);const tips=t.questions.map(q=>q.text.length>62?q.text.substring(0,59)+'…':q.text);const ctx=document.getElementById('chart-sec-'+ti).getContext('2d');liveCharts['sec-'+ti]=new Chart(ctx,{type:'bar',data:{labels:t.questions.map((_,i)=>'Q'+(i+1)),datasets:[{label:'Yes',data:t.questions.map((_,qi)=>votes[ti][qi].yes),backgroundColor:'rgba(255,70,140,.65)',borderColor:'#ff4d8f',borderWidth:1,borderRadius:3,stack:'s'},{label:'No',data:t.questions.map((_,qi)=>votes[ti][qi].no),backgroundColor:'rgba(180,0,60,.55)',borderColor:'#c04070',borderWidth:1,borderRadius:3,stack:'s'},{label:'?',data:t.questions.map((_,qi)=>votes[ti][qi].neutral),backgroundColor:'rgba(180,60,120,.48)',borderColor:'#b05080',borderWidth:1,borderRadius:3,stack:'s'}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{title:i=>'Q'+(i[0].dataIndex+1)+': '+tips[i[0].dataIndex],label:i=>i.dataset.label+': '+i.raw}}},scales:{x:{stacked:true,ticks:{color:'rgba(140,0,60,.5)',font:{size:8}},grid:{color:'rgba(255,80,140,.06)'}},y:{stacked:true,ticks:{color:'rgba(140,0,60,.5)',font:{size:9}},grid:{color:'rgba(255,80,140,.06)'},beginAtZero:true}}}});}); }
+
+function refreshAllCharts(){const{ty,tn,tne,tt}=totals();const os=document.getElementById('overall-stats');if(os)os.innerHTML='<div class="res-stat"><div class="res-stat-num y">'+ty+'</div><div class="res-stat-lbl">Total Yes</div></div><div class="res-stat"><div class="res-stat-num n">'+tn+'</div><div class="res-stat-lbl">Total No</div></div><div class="res-stat"><div class="res-stat-num neu">'+tne+'</div><div class="res-stat-lbl">Unsure</div></div><div class="res-stat"><div class="res-stat-num">'+tt+'</div><div class="res-stat-lbl">Responses</div></div><div class="res-stat"><div class="res-stat-num">'+(tt?Math.round(ty/tt*100):0)+'%</div><div class="res-stat-lbl">Yes Rate</div></div>';const oc=liveCharts['overall'];if(oc){oc.data.datasets[0].data=SURVEY.map((_,ti)=>SURVEY[ti].questions.reduce((s,_,qi)=>s+votes[ti][qi].yes,0));oc.data.datasets[1].data=SURVEY.map((_,ti)=>SURVEY[ti].questions.reduce((s,_,qi)=>s+votes[ti][qi].no,0));oc.data.datasets[2].data=SURVEY.map((_,ti)=>SURVEY[ti].questions.reduce((s,_,qi)=>s+votes[ti][qi].neutral,0));oc.update('none');}SURVEY.forEach((t,ti)=>{const sc=liveCharts['sec-'+ti];if(sc){sc.data.datasets[0].data=t.questions.map((_,qi)=>votes[ti][qi].yes);sc.data.datasets[1].data=t.questions.map((_,qi)=>votes[ti][qi].no);sc.data.datasets[2].data=t.questions.map((_,qi)=>votes[ti][qi].neutral);sc.update('none');}const tot=t.questions.reduce((s,_,qi)=>s+votes[ti][qi].yes+votes[ti][qi].no+votes[ti][qi].neutral,0);const el=document.getElementById('srt-'+ti);if(el)el.textContent=tot+' response'+(tot!==1?'s':'');});}
+
+function buildReveal(){const{ty,tn,tne,tt}=totals();const yr=tt?Math.round(ty/tt*100):0;document.getElementById('reveal-stats').innerHTML='<div class="stat-pill"><div class="stat-num">'+ty+'</div><div class="stat-lbl">Total Yes</div></div><div class="stat-pill"><div class="stat-num">'+yr+'%</div><div class="stat-lbl">Yes Rate</div></div><div class="stat-pill"><div class="stat-num">'+tt+'</div><div class="stat-lbl">Responses</div></div>';const chips=[];SURVEY.forEach((t,ti)=>t.questions.forEach((q,qi)=>{const mv=myVotes[ti][qi];if(mv){const s=q.text.length>38?q.text.substring(0,35)+'…':q.text;chips.push('<span class="ans-chip '+(mv==='yes'?'y':mv==='no'?'n':'')+'">'+s+'</span>');}}));document.getElementById('answer-chips').innerHTML=chips.slice(0,14).join('');}
+
+function downloadCSV(){const rows=[['Participant','Module','ModuleTheme','QuestionNum','QuestionText','YourResponse','YesCount','NoCount','UnsureCount','TotalResponses','Timestamp']];const ts=new Date().toISOString();SURVEY.forEach((t,ti)=>t.questions.forEach((q,qi)=>{const mv=myVotes[ti][qi]||'',v=votes[ti][qi];rows.push(['"'+username+'"',ti+1,'"'+t.theme+'"',qi+1,'"'+q.text.replace(/"/g,'""')+'"',mv,v.yes,v.no,v.neutral,v.yes+v.no+v.neutral,mv?ts:'']);}));const csv=rows.map(r=>r.join(',')).join('\n');const blob=new Blob([csv],{type:'text/csv'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='carebot22-'+sk(username)+'-'+Date.now()+'.csv';document.body.appendChild(a);a.click();document.body.removeChild(a);URL.revokeObjectURL(url);if(changeLog.length>0){const cr=[['Participant','Module','QuestionNum','OriginalAnswer','ChangedTo','ChangedAt']];changeLog.forEach(e=>cr.push(['"'+username+'"',e.module+1,e.question+1,e.from,e.to,e.ts]));const cb=new Blob([cr.map(r=>r.join(',')).join('\n')],{type:'text/csv'});const cu=URL.createObjectURL(cb);const b=document.createElement('a');b.href=cu;b.download='carebot22-'+sk(username)+'-changes-'+Date.now()+'.csv';document.body.appendChild(b);b.click();document.body.removeChild(b);URL.revokeObjectURL(cu);showToast('✦ Responses + '+changeLog.length+' change'+(changeLog.length===1?'':'s')+' saved');}else{showToast('✦ Responses saved as CSV');}}
+
+async function exportPDF(){const btn=document.getElementById('pdf-btn');btn.disabled=true;const eb=document.getElementById('export-btn');if(eb)eb.disabled=true;const ov=document.getElementById('pdf-ov'),msg=document.getElementById('pdf-msg');ov.classList.add('show');const{jsPDF}=window.jspdf;const pdf=new jsPDF({orientation:'portrait',unit:'mm',format:'a4'});const PW=210,PH=297,M=14,CW=PW-M*2;const sf=(sz,st='normal',r=80,g=0,b=40)=>{pdf.setFontSize(sz);pdf.setFont('helvetica',st);pdf.setTextColor(r,g,b);};const fr=(x,y,w,h,rad,R,G,B)=>{pdf.setFillColor(R,G,B);pdf.roundedRect(x,y,w,h,rad,rad,'F');};const frect=(x,y,w,h,R,G,B)=>{pdf.setFillColor(R,G,B);pdf.rect(x,y,w,h,'F');};const newPage=()=>{pdf.addPage();frect(0,0,PW,PH,255,240,248);};const topBar=()=>{frect(0,0,PW,3,255,70,140);};msg.textContent='Building cover…';frect(0,0,PW,PH,255,240,248);topBar();sf(22,'bold',180,0,70);pdf.text('CAREBOT-22 · Presentation Labor',M,44);sf(9,'normal',255,70,140);pdf.text('Performance & Advertisement Survey — Results Report',M,52);sf(7,'italic',160,60,100);pdf.text('"The work was in the image. The performance made it visible."',M,62);sf(7,'normal',120,40,80);pdf.text('Respondent: '+username,M,74);pdf.text('Generated: '+new Date().toLocaleString(),M,80);pdf.text('Total responses: '+answeredCount()+' / '+totalQ,M,86);const{ty,tn,tne,tt}=totals();fr(M,96,CW,36,3,255,220,238);const cols=[{v:tt,l:'Responses'},{v:ty,l:'Yes'},{v:tn,l:'No'},{v:tne,l:'Unsure'},{v:(tt?Math.round(ty/tt*100):0)+'%',l:'Yes Rate'}];cols.forEach((c,i)=>{const bw=CW/5,bx=M+i*bw;sf(13,'bold',200,0,80);pdf.text(String(c.v),bx+bw/2,112,{align:'center'});sf(5.5,'normal',160,40,100);pdf.text(c.l,bx+bw/2,120,{align:'center'});});msg.textContent='Writing responses…';newPage();topBar();sf(11,'bold',180,0,70);pdf.text('✦ My Responses',M,13);let y=22;SURVEY.forEach((t,ti)=>{if(y>PH-22){newPage();topBar();y=13;}fr(M,y,CW,8,2,255,200,225);sf(7.5,'bold',180,0,70);pdf.text(t.icon+'  '+t.theme,M+3,y+5.5);y+=11;t.questions.forEach((q,qi)=>{const mv=myVotes[ti][qi],v=votes[ti][qi];const ch=14;if(y+ch>PH-10){newPage();topBar();y=13;}fr(M,y,CW,ch,2,255,240,248);fr(M+2,y+2.5,7,9,2,255,120,170);sf(5.5,'bold',200,0,80);pdf.text('Q'+(qi+1),M+5.5,y+8,{align:'center'});sf(6,'normal',120,30,70);pdf.text(q.text.length>72?q.text.substring(0,69)+'…':q.text,M+12,y+6.5,{maxWidth:CW*0.58});const rl=mv==='yes'?'YES':mv==='no'?'NO':mv==='neutral'?'UNSURE':'—';const[rR,rG,rB]=mv==='yes'?[255,70,140]:mv==='no'?[180,0,60]:[180,60,120];fr(M+CW-30,y+3.5,28,7,2,rR,rG,rB);sf(5.5,'bold',255,240,248);pdf.text(rl,M+CW-16,y+8,{align:'center'});sf(4.5,'normal',160,60,100);pdf.text('Y:'+v.yes+' N:'+v.no+' ?:'+v.neutral,M+CW-30,y+12.5);y+=ch+2;});y+=3;});msg.textContent='Capturing charts…';const oc=document.getElementById('chart-overall');if(oc){newPage();topBar();sf(10,'bold',180,0,70);pdf.text('◈  Overall Results',M,12);try{const id=oc.toDataURL('image/png',1);pdf.addImage(id,'PNG',M,18,CW,Math.min(CW*(oc.height/oc.width),88));}catch(e){}}for(const ti of SURVEY.keys()){msg.textContent='Module '+(ti+1)+' chart…';const c=document.getElementById('chart-sec-'+ti);if(!c)continue;newPage();topBar();sf(9,'bold',180,0,70);pdf.text(SURVEY[ti].icon+'  '+SURVEY[ti].theme,M,12);sf(6.5,'normal',140,40,90);pdf.text('Module '+(ti+1),M,18);let ky=24;SURVEY[ti].questions.forEach((q,qi)=>{if(ky<52){sf(5,'normal',140,60,100);pdf.text('Q'+(qi+1)+': '+q.text.substring(0,70),M,ky,{maxWidth:CW});ky+=4.2;}});try{const id=c.toDataURL('image/png',1);const iy=Math.max(ky+4,26);pdf.addImage(id,'PNG',M,iy,CW,Math.min(CW*(c.height/c.width),PH-iy-12));}catch(e){}}msg.textContent='Saving…';pdf.save('carebot22-'+sk(username)+'-'+Date.now()+'.pdf');ov.classList.remove('show');btn.disabled=false;if(eb)eb.disabled=false;showToast('✦ PDF saved');}
+
+const ADMIN_PASSWORD='laborvisible2025';
+function showResetModal(){document.getElementById('reset-modal').classList.add('show');document.getElementById('reset-pw').value='';document.getElementById('reset-err').style.display='none';document.getElementById('btn-confirm-reset').textContent='Reset All Data';document.getElementById('btn-confirm-reset').disabled=false;setTimeout(()=>document.getElementById('reset-pw').focus(),120);}
+function closeResetModal(){document.getElementById('reset-modal').classList.remove('show');}
+async function confirmReset(){const pw=document.getElementById('reset-pw').value,err=document.getElementById('reset-err');if(pw!==ADMIN_PASSWORD){err.style.display='block';document.getElementById('reset-pw').value='';document.getElementById('reset-pw').focus();return;}err.style.display='none';const btn=document.getElementById('btn-confirm-reset');btn.textContent='Resetting…';btn.disabled=true;if(!isDemo&&db){try{const snap=await fsGetDocs(fsCollection(db,'kc_responses'));let batch=fsWriteBatch(db),count=0;for(const d of snap.docs){batch.delete(d.ref);count++;if(count===490){await batch.commit();batch=fsWriteBatch(db);count=0;}}if(count>0)await batch.commit();showToast('✦ All votes cleared');}catch(e){console.error(e);showToast('⚠ Error: '+e.message);btn.textContent='Reset All Data';btn.disabled=false;return;}}SURVEY.forEach((_,ti)=>{myVotes[ti]={};SURVEY[ti].questions.forEach((_,qi)=>{votes[ti][qi]={yes:0,no:0,neutral:0};});});sessionStorage.removeItem('kc_votes');sessionStorage.removeItem('kc_changes');changeLog=[];Object.values(liveCharts).forEach(c=>{try{c.destroy();}catch(e){}});liveCharts={};document.getElementById('results-section').classList.remove('show');document.getElementById('reveal-section').classList.remove('show');buildSections();closeResetModal();showToast('✦ Survey reset complete');}
+document.addEventListener('click',e=>{if(e.target===document.getElementById('reset-modal'))closeResetModal();});
+
+let _tt;
+function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');clearTimeout(_tt);_tt=setTimeout(()=>t.classList.remove('show'),3200);}
+</script>
+</body>
+</html>
