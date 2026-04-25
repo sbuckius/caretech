@@ -1,0 +1,460 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>✦ CAREBOT-18 ✦ Transcribe · Woman as Inventor</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+<style>
+  :root {
+    --rose:    #ff7aa8;
+    --hot:     #f04060;
+    --candy:   #ffadd0;
+    --blush:   #ffd0e8;
+    --cream:   #fff8fb;
+    --berry:   #d4306a;
+    --maroon:  #8a1030;
+    --fuchsia: #e8307a;
+    --bg:      #1e000f;
+    --card-border: rgba(255,180,210,.24);
+    --card-border-bright: rgba(255,120,170,.58);
+    --soft-glow: 0 4px 30px rgba(240,60,100,.22), 0 1px 0 rgba(255,180,210,.14) inset;
+    --pop-glow:  0 6px 44px rgba(240,60,100,.42), 0 0 80px rgba(232,48,122,.15);
+    --text-dim:  rgba(255,210,228,.58);
+  }
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+  html,body{min-height:100%;font-family:'Quicksand',sans-serif;font-weight:600;color:var(--cream);background:var(--bg);-webkit-overflow-scrolling:touch;-webkit-font-smoothing:antialiased;cursor:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 20 20'%3E%3Ccircle cx='10' cy='10' r='4' fill='%23f04060' opacity='.9'/%3E%3Ccircle cx='10' cy='10' r='7' stroke='%23ffadd0' stroke-width='1.5' fill='none' opacity='.6'/%3E%3C/svg%3E") 10 10,default;}
+
+  .bg{position:fixed;inset:0;z-index:0;pointer-events:none;background:radial-gradient(ellipse 70% 55% at 18% 12%,rgba(220,40,90,.3) 0%,transparent 60%),radial-gradient(ellipse 55% 65% at 82% 80%,rgba(160,20,70,.26) 0%,transparent 60%),radial-gradient(ellipse 90% 40% at 50% 108%,rgba(130,10,50,.18) 0%,transparent 55%),linear-gradient(160deg,#280010,#1a000b 50%,#110007);}
+  .orb{position:fixed;border-radius:50%;pointer-events:none;z-index:0;filter:blur(62px);}
+  .orb-1{width:420px;height:420px;background:var(--hot);opacity:.18;top:-100px;left:-80px;animation:drift1 20s ease-in-out infinite;}
+  .orb-2{width:340px;height:340px;background:var(--fuchsia);opacity:.16;bottom:-70px;right:-70px;animation:drift2 24s ease-in-out infinite;}
+  .orb-3{width:200px;height:200px;background:var(--candy);opacity:.11;top:40%;left:58%;animation:drift3 16s ease-in-out infinite;}
+  @keyframes drift1{0%,100%{transform:translate(0,0)}50%{transform:translate(40px,28px)}}
+  @keyframes drift2{0%,100%{transform:translate(0,0)}50%{transform:translate(-30px,-20px)}}
+  @keyframes drift3{0%,100%{transform:translate(0,0)}33%{transform:translate(-18px,14px)}66%{transform:translate(14px,-10px)}}
+  .sparkles{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden;}
+  .sp{position:absolute;opacity:0;animation:floatUp linear infinite;}
+  @keyframes floatUp{0%{opacity:0;transform:translateY(0) scale(.6) rotate(0deg)}15%{opacity:.65}85%{opacity:.35}100%{opacity:0;transform:translateY(-130px) scale(1.1) rotate(180deg)}}
+
+  .wrap{position:relative;z-index:2;max-width:960px;margin:0 auto;padding:max(20px,env(safe-area-inset-top)) clamp(12px,3vmin,24px) calc(60px + env(safe-area-inset-bottom)) clamp(12px,3vmin,24px);display:grid;gap:16px;}
+
+  .mascot-bar{display:flex;align-items:center;justify-content:space-between;}
+  .mascot{display:flex;align-items:center;gap:10px;}
+  .bot-face{width:44px;height:44px;border-radius:14px;background:linear-gradient(135deg,rgba(240,60,100,.28),rgba(180,20,60,.38));border:1.5px solid var(--card-border-bright);box-shadow:var(--soft-glow);display:flex;align-items:center;justify-content:center;font-size:22px;animation:wobble 4s ease-in-out infinite;flex-shrink:0;}
+  @keyframes wobble{0%,100%{transform:rotate(-2deg) scale(1)}25%{transform:rotate(1deg) scale(1.04)}50%{transform:rotate(-1deg) scale(1)}75%{transform:rotate(2deg) scale(1.03)}}
+  .bot-name{font-family:'Nunito',sans-serif;font-weight:900;font-size:17px;letter-spacing:.04em;background:linear-gradient(90deg,var(--blush),var(--fuchsia) 55%,var(--candy));-webkit-background-clip:text;background-clip:text;color:transparent;}
+  .bot-sub{font-size:10px;letter-spacing:.15em;text-transform:uppercase;color:var(--text-dim);margin-top:1px;}
+  .time-badge{display:flex;align-items:center;gap:6px;padding:6px 12px;border-radius:999px;background:rgba(255,255,255,.04);border:1px solid var(--card-border);font-size:11px;letter-spacing:.1em;color:var(--text-dim);}
+  .time-pip{width:5px;height:5px;border-radius:50%;background:var(--hot);box-shadow:0 0 6px var(--hot);animation:breathe 2s ease-in-out infinite;}
+  @keyframes breathe{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.3;transform:scale(.65)}}
+
+  /* context banner */
+  .context-banner{background:rgba(14,0,8,.8);border:1.5px solid var(--card-border-bright);border-radius:24px;box-shadow:var(--pop-glow),inset 0 1px 0 rgba(255,180,210,.08);backdrop-filter:blur(20px) saturate(1.4);padding:24px 26px;position:relative;overflow:hidden;}
+  .context-banner::before{content:'';position:absolute;top:0;left:12%;right:12%;height:1.5px;background:linear-gradient(90deg,transparent,var(--candy) 35%,var(--hot) 50%,var(--candy) 65%,transparent);box-shadow:0 0 12px var(--candy);border-radius:999px;}
+  .banner-eyebrow{font-size:9px;letter-spacing:.22em;text-transform:uppercase;color:var(--candy);font-weight:800;margin-bottom:8px;}
+  .banner-title{font-family:'Nunito',sans-serif;font-weight:900;font-size:clamp(15px,3vw,20px);background:linear-gradient(120deg,var(--cream) 15%,var(--blush) 50%,var(--fuchsia) 90%);-webkit-background-clip:text;background-clip:text;color:transparent;margin-bottom:10px;line-height:1.3;}
+  .banner-text{font-size:13px;color:rgba(255,220,236,.8);line-height:1.75;}
+  .banner-text strong{color:var(--blush);}
+
+  .app{background:rgba(255,255,255,.038);border:1.5px solid var(--card-border);border-radius:24px;box-shadow:var(--soft-glow);backdrop-filter:blur(20px) saturate(1.5);overflow:hidden;position:relative;}
+  .app::before{content:'';position:absolute;top:0;left:16px;right:16px;height:1px;background:linear-gradient(90deg,transparent,var(--candy) 30%,var(--hot) 50%,var(--candy) 70%,transparent);box-shadow:0 0 10px var(--candy);border-radius:999px;pointer-events:none;}
+
+  .task-header{padding:22px 24px 18px;border-bottom:1px solid rgba(255,180,210,.1);display:grid;gap:10px;}
+  .eyebrow{font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--text-dim);}
+  .task-title{font-family:'Nunito',sans-serif;font-weight:900;font-size:clamp(18px,3.5vw,26px);line-height:1.3;background:linear-gradient(120deg,var(--cream) 15%,var(--blush) 55%,var(--fuchsia) 90%);-webkit-background-clip:text;background-clip:text;color:transparent;}
+  .task-meta{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+  .meta-chip{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:999px;background:rgba(240,60,100,.08);border:1px solid rgba(240,80,120,.18);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--text-dim);}
+  .meta-dot{width:4px;height:4px;border-radius:50%;background:var(--candy);}
+
+  .task-section{padding:18px 24px;border-bottom:1px solid rgba(255,180,210,.08);display:grid;gap:12px;}
+  .section-label{font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--text-dim);}
+
+  .instr-box{background:rgba(240,60,100,.06);border:1px solid rgba(240,100,140,.18);border-radius:14px;padding:14px 16px;font-size:clamp(12px,1.9vw,14px);color:rgba(255,220,236,.82);line-height:1.85;}
+  .instr-box strong{color:var(--blush);font-family:'Nunito',sans-serif;}
+  .word-badge{display:inline-block;background:rgba(255,213,0,.14);border:1px solid rgba(255,220,50,.36);border-radius:6px;padding:1px 7px;color:#ffe870;font-weight:700;font-family:'Nunito',sans-serif;font-size:.9em;white-space:nowrap;}
+
+  .audio-wrap{background:rgba(240,60,100,.07);border:1.5px solid var(--card-border-bright);border-radius:16px;padding:16px 18px;display:grid;gap:12px;}
+  .audio-label-row{display:flex;align-items:center;gap:10px;}
+  .audio-icon{width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,rgba(240,60,100,.3),rgba(200,20,70,.38));border:1.5px solid var(--card-border-bright);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;animation:breathe 3s ease-in-out infinite;}
+  .audio-name{font-family:'Nunito',sans-serif;font-weight:900;font-size:13px;color:var(--cream);}
+  .audio-sub{font-size:10px;color:var(--text-dim);margin-top:2px;}
+  audio{width:100%;accent-color:var(--hot);filter:drop-shadow(0 2px 10px rgba(240,60,100,.3));}
+
+  .text-box{background:rgba(8,0,4,.62);border:1px solid rgba(255,150,190,.14);border-radius:14px;padding:18px 20px;font-size:clamp(11px,1.6vw,13px);line-height:1.85;color:rgba(255,228,242,.72);font-family:'Nunito',sans-serif;font-weight:600;max-height:380px;overflow-y:auto;white-space:pre-wrap;letter-spacing:.01em;scrollbar-width:thin;scrollbar-color:rgba(240,80,120,.3) transparent;}
+  .ref-btn{appearance:none;font-family:'Nunito',sans-serif;font-weight:800;font-size:11px;letter-spacing:.04em;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:6px;padding:9px 18px;border-radius:12px;border:1.5px solid var(--card-border);background:rgba(240,60,100,.08);color:var(--text-dim);transition:all .2s;}
+  .ref-btn:hover{border-color:var(--card-border-bright);color:var(--blush);background:rgba(240,60,100,.18);}
+
+  /* save status */
+  .save-strip{padding:10px 24px;border-bottom:1px solid rgba(255,180,210,.06);display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;background:rgba(240,60,100,.02);}
+  .save-status{font-size:11px;color:var(--text-dim);letter-spacing:.08em;}
+  .save-status.saved{color:rgba(120,240,160,.7);}
+  .save-btn{appearance:none;font-family:'Nunito',sans-serif;font-weight:800;font-size:12px;letter-spacing:.05em;cursor:pointer;display:inline-flex;align-items:center;gap:6px;padding:8px 18px;border-radius:12px;border:1.5px solid rgba(240,100,140,.4);background:rgba(240,60,100,.1);color:var(--blush);transition:all .2s;}
+  .save-btn:hover{border-color:var(--card-border-bright);background:rgba(240,60,100,.22);color:var(--cream);}
+  .save-btn:disabled{opacity:.3;cursor:not-allowed;}
+
+  .transcribe-textarea{width:100%;min-height:140px;padding:14px 16px;border-radius:14px;border:1.5px solid rgba(240,80,140,.28);background:rgba(8,0,4,.65);color:var(--cream);font-family:'Quicksand',sans-serif;font-weight:600;font-size:clamp(12px,1.8vw,14px);line-height:1.75;resize:vertical;outline:none;transition:border-color .2s,box-shadow .2s;}
+  .transcribe-textarea:focus{border-color:var(--rose);box-shadow:0 0 16px rgba(240,80,130,.25);}
+  .transcribe-textarea::placeholder{color:rgba(255,180,210,.25);}
+
+  .count-card{background:rgba(240,60,100,.06);border:1.5px solid var(--card-border-bright);border-radius:18px;padding:20px 22px;position:relative;overflow:hidden;}
+  .count-card::before{content:'';position:absolute;top:0;left:10%;right:10%;height:1px;background:linear-gradient(90deg,transparent,var(--rose) 40%,var(--hot) 50%,var(--rose) 60%,transparent);box-shadow:0 0 8px var(--rose);border-radius:999px;}
+  .count-heading{font-family:'Nunito',sans-serif;font-weight:900;font-size:clamp(14px,2.2vw,17px);color:var(--cream);margin-bottom:6px;}
+  .count-sub{font-size:12px;color:var(--text-dim);line-height:1.6;margin-bottom:14px;}
+  .word-list{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px;}
+  .count-input-row{display:flex;gap:10px;align-items:center;flex-wrap:wrap;}
+  .count-input{flex:1;min-width:120px;max-width:180px;font-family:'Quicksand',sans-serif;font-weight:700;font-size:22px;text-align:center;background:rgba(240,60,100,.08);border:1.5px solid rgba(240,80,130,.3);color:var(--cream);padding:12px 16px;border-radius:14px;outline:none;transition:border-color .2s,box-shadow .2s;-moz-appearance:textfield;}
+  .count-input::-webkit-inner-spin-button,.count-input::-webkit-outer-spin-button{-webkit-appearance:none;}
+  .count-input:focus{border-color:var(--rose);box-shadow:0 0 16px rgba(240,80,130,.3);}
+  .count-input::placeholder{color:rgba(255,180,210,.25);font-size:16px;}
+  .count-helper{font-size:11px;color:var(--text-dim);letter-spacing:.03em;line-height:1.6;}
+
+  .app-footer{padding:16px 24px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;border-top:1px solid rgba(255,150,190,.08);}
+  .hint-row{display:flex;gap:6px;flex-wrap:wrap;}
+  .hint-pill{padding:5px 10px;border-radius:999px;background:rgba(240,80,120,.07);border:1px solid rgba(240,80,120,.16);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--text-dim);}
+
+  .submit-btn{appearance:none;font-family:'Nunito',sans-serif;font-weight:900;font-size:13px;letter-spacing:.04em;color:var(--cream);cursor:pointer;display:inline-flex;align-items:center;gap:6px;padding:11px 24px;border-radius:14px;min-height:42px;border:1.5px solid var(--hot);background:linear-gradient(135deg,rgba(240,60,100,.62),rgba(180,20,70,.68));box-shadow:0 4px 20px rgba(240,60,100,.32),inset 0 1px 0 rgba(255,255,255,.12);transition:all .2s cubic-bezier(.34,1.56,.64,1);-webkit-tap-highlight-color:transparent;position:relative;overflow:hidden;animation:ctaPulse 3s ease-in-out infinite;}
+  .submit-btn::before{content:'';position:absolute;inset:0;border-radius:inherit;background:linear-gradient(135deg,rgba(255,255,255,.1),transparent);pointer-events:none;}
+  @keyframes ctaPulse{0%,100%{box-shadow:0 4px 20px rgba(240,60,100,.32),inset 0 1px 0 rgba(255,255,255,.12)}50%{box-shadow:0 8px 36px rgba(240,60,100,.58),0 0 60px rgba(232,48,122,.15),inset 0 1px 0 rgba(255,255,255,.12)}}
+  .submit-btn:hover:not([disabled]){transform:translateY(-2px) scale(1.04);animation:none;box-shadow:0 8px 32px rgba(240,60,100,.52);}
+  .submit-btn[disabled]{opacity:.28;cursor:not-allowed;transform:none!important;box-shadow:none!important;animation:none;}
+
+  #completionSlot .completion-card{background:rgba(20,0,10,.9);border:1.5px solid var(--card-border-bright);box-shadow:var(--pop-glow),inset 0 1px 0 rgba(255,180,210,.08);border-radius:24px;padding:40px 28px;text-align:center;position:relative;overflow:hidden;backdrop-filter:blur(20px);}
+  #completionSlot .completion-card::before{content:'';position:absolute;top:0;left:12%;right:12%;height:1.5px;background:linear-gradient(90deg,transparent,var(--candy) 35%,var(--hot) 50%,var(--candy) 65%,transparent);box-shadow:0 0 10px var(--candy);border-radius:999px;}
+  .c-eyebrow{font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--text-dim);margin-bottom:10px;}
+  #completionSlot .completion-card h2{font-family:'Nunito',sans-serif;font-weight:900;font-size:clamp(24px,4vw,36px);background:linear-gradient(100deg,var(--blush) 20%,var(--fuchsia) 55%,var(--candy));-webkit-background-clip:text;background-clip:text;color:transparent;margin-bottom:14px;}
+  #completionSlot .completion-card p{font-size:clamp(12px,1.9vw,15px);color:rgba(255,220,236,.7);line-height:1.85;margin-bottom:22px;max-width:560px;margin-left:auto;margin-right:auto;}
+  .stat-bubble{display:inline-flex;flex-direction:column;align-items:center;gap:4px;background:linear-gradient(135deg,rgba(240,60,100,.16),rgba(200,20,70,.2));border:1.5px solid var(--card-border-bright);border-radius:20px;padding:18px 36px;margin-bottom:8px;box-shadow:0 4px 30px rgba(240,60,100,.28),inset 0 1px 0 rgba(255,255,255,.06);}
+  .stat-number{font-family:'Nunito',sans-serif;font-weight:900;font-size:clamp(44px,8vw,72px);line-height:1;background:linear-gradient(135deg,var(--blush) 20%,var(--fuchsia) 55%,var(--hot));-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 0 16px rgba(240,60,100,.5));}
+  .stat-label{font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--text-dim);}
+  .stat-sentence{font-size:clamp(14px,2.2vw,17px);color:rgba(255,220,236,.82);margin-bottom:8px;line-height:1.6;font-style:italic;font-family:'Nunito',sans-serif;}
+  .stat-raw{font-size:11px;color:rgba(255,170,200,.38);letter-spacing:.04em;margin-bottom:26px;}
+  .next-btn{appearance:none;font-family:'Nunito',sans-serif;font-weight:900;font-size:clamp(14px,2.5vw,17px);letter-spacing:.04em;color:var(--cream);cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:clamp(13px,2vmin,17px) clamp(28px,5vmin,44px);border-radius:16px;border:1.5px solid var(--hot);background:linear-gradient(135deg,var(--hot) 0%,var(--berry) 55%,var(--maroon) 100%);box-shadow:0 6px 28px rgba(240,60,100,.42),inset 0 1px 0 rgba(255,255,255,.12);transition:all .22s cubic-bezier(.34,1.56,.64,1);}
+  .next-btn:hover{transform:translateY(-3px) scale(1.04);box-shadow:0 10px 40px rgba(240,60,100,.62);}
+
+  .overlay-shell{position:fixed;inset:0;z-index:9000;background:rgba(8,0,5,.84);backdrop-filter:blur(14px);display:none;place-items:center;}
+  .overlay-shell.open{display:grid;}
+  .redir-card{width:min(100vw - 28px,1000px);height:min(100vh - 28px,720px);background:rgba(14,0,8,.95);border:1.5px solid var(--card-border);box-shadow:var(--soft-glow);border-radius:20px;overflow:hidden;display:grid;grid-template-rows:auto 1fr auto;}
+  .redir-header{display:flex;align-items:center;justify-content:space-between;padding:12px 18px;border-bottom:1px solid rgba(255,150,190,.1);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--text-dim);}
+  .redir-countdown{background:rgba(240,60,100,.1);border:1px solid var(--card-border);border-radius:8px;padding:4px 10px;color:var(--rose);}
+  .redir-card iframe{width:100%;height:100%;border:0;}
+  .redir-footer{display:flex;justify-content:flex-end;gap:8px;padding:10px 18px;border-top:1px solid rgba(255,150,190,.1);}
+  .redir-link{font-family:'Nunito',sans-serif;font-weight:800;font-size:12px;color:var(--cream);text-decoration:none;padding:9px 18px;border-radius:12px;border:1.5px solid var(--card-border);background:rgba(240,60,100,.1);transition:all .2s;cursor:pointer;appearance:none;}
+  .redir-link:hover{border-color:var(--card-border-bright);background:rgba(240,60,100,.2);}
+  .wordmark{font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,170,200,.18);text-align:center;}
+</style>
+</head>
+<body>
+<div class="bg"></div>
+<div class="orb orb-1"></div><div class="orb orb-2"></div><div class="orb orb-3"></div>
+<div class="sparkles" id="sparkles"></div>
+
+<main class="wrap">
+
+  <div class="mascot-bar">
+    <div class="mascot">
+      <div class="bot-face">📜</div>
+      <div>
+        <div class="bot-name">CAREBOT-18 ✦</div>
+        <div class="bot-sub">Transcription · Ingenuity Analysis · Online</div>
+      </div>
+    </div>
+    <div class="time-badge"><div class="time-pip"></div><span id="sysTime">--:--:--</span></div>
+  </div>
+
+  <!-- CONTEXT BANNER -->
+  <div class="context-banner">
+    <div class="banner-eyebrow">✦ CAREBOT-18 · Task Briefing</div>
+    <div class="banner-title">⚠️ You are about to read a document about women inventors — written in 1870.</div>
+    <div class="banner-text">
+      <strong>Matilda Joslyn Gage</strong> published <em>Woman as Inventor</em> in 1870 as part of the New York State Woman Suffrage Association tracts. It argued that women had been systematically denied credit for their inventions — including <strong>Mrs. Catherine Greene</strong>, who originated the idea for the cotton gin but allowed Eli Whitney to patent it. Custom, Gage argued, had made it impossible for women to claim their inventions as their own. Your task: listen to the audio, transcribe it, and count the words of ingenuity and invention.
+    </div>
+  </div>
+
+  <!-- TASK CARD -->
+  <section class="app">
+
+    <header class="task-header">
+      <div class="eyebrow">✦ CAREBOT-18 · Transcription &amp; Ingenuity Analysis Module</div>
+      <h1 class="task-title">Transcribe the audio. Count words of ingenuity &amp; invention.</h1>
+      <div class="task-meta">
+        <div class="meta-chip"><div class="meta-dot"></div>Audio Transcription</div>
+        <div class="meta-chip"><div class="meta-dot"></div>Ingenuity Analysis</div>
+        <div class="meta-chip"><div class="meta-dot"></div>Active</div>
+      </div>
+    </header>
+
+    <!-- instructions -->
+    <div class="task-section">
+      <div class="section-label">✦ Your Task</div>
+      <div class="instr-box">
+        <strong>Step 1:</strong> Listen to the audio file below.<br>
+        <strong>Step 2:</strong> Read through the provided text and type your transcription in the box below it.<br>
+        <strong>Step 3:</strong> Count every word or phrase in the text that references <strong>ingenuity, invention, or creativity</strong> — things like
+        <span class="word-badge">invention</span>
+        <span class="word-badge">inventor</span>
+        <span class="word-badge">genius</span>
+        <span class="word-badge">invented</span>
+        <span class="word-badge">inventive</span>
+        <span class="word-badge">discovery</span>
+        <span class="word-badge">ingenuity</span>
+        <span class="word-badge">talent</span>
+        <span class="word-badge">faculty</span>
+        <span class="word-badge">originated</span>
+        and similar words.<br>
+        <strong>Step 4:</strong> Press <strong>Save Progress ✦</strong> at any point, then Submit when done.
+      </div>
+    </div>
+
+    <!-- audio -->
+    <div class="task-section">
+      <div class="section-label">✦ Audio File</div>
+      <div class="audio-wrap">
+        <div class="audio-label-row">
+          <div class="audio-icon">🎙️</div>
+          <div>
+            <div class="audio-name">woman_as_inventor.mp3</div>
+            <div class="audio-sub">Oral history audio · listen while you read</div>
+          </div>
+        </div>
+        <audio controls preload="metadata" id="audioEl">
+          <source src="woman_as_inventor.mp3" type="audio/mpeg" />
+          Your browser does not support the audio element.
+        </audio>
+      </div>
+    </div>
+
+    <!-- provided text -->
+    <div class="task-section">
+      <div class="section-label">✦ Provided Text — Woman as Inventor (1870)</div>
+      <div class="text-box">WOMAN AS INVENTOR.
+
+By MRS. M. E. JOSLYN GAGE
+Issued under the auspices of the New York State Woman Suffrage Association.
+1870.
+
+THE COTTON GIN.
+
+IT may, perhaps, be unknown to many persons, that the invention of the cotton-gin, one of the greatest mechanical triumphs of modern times, is due to a woman. Although the work on the model was done by the hands of Eli Whitney, yet Mrs. Greene originated the idea, and knowing Whitney to be a practical mechanic, she suggested his doing the work. This was during the winter of 1792-3, when he was a visitor at her house, near Savannah. Mrs. Greene, whose maiden name was Catherine, was the widow of Gen. Greene, of Revolutionary fame. After the return of peace Gen. Greene moved with his family from Rhode Island to Mulberry Grove, on the Savannah river, where he soon died, leaving his estate much encumbered and five children for his wife to educate.
+
+The great difficulty of separating cotton from the seed was at that time a staple subject of complaint among cotton-planters. To separate a pound of the black seed variety was a negro's task for a day. So slow was the process that it became the regular practice for all the family of a cotton-planter to engage every night in the laborious work; and a fortune was prophesied for the lucky inventor of a machine capable of doing the work. It was after a conversation of this character that Mrs. Greene proposed to Whitney the making of such a machine, and upon her idea he commenced. The work was done in her house, and under her immediate supervision. The wooden teeth first tried did not do the work well, and Whitney, despairing, was about to throw the work aside, when Mrs. Greene, whose confidence in ultimate success never wavered, proposed the substitution of wire. Within ten days from the first conception of Mrs. Greene's idea a small model was completed.
+
+This primitive little model was of such perfect construction that it has ever since stood as the model of all cotton-gins, and the inventive genius of universal male Yankeedom has not yet been able to suggest any practical improvement in the machine. Mrs. Greene, through her second husband, Mr. Miller, became the partner of Whitney in the manufacture of gins. Every cotton-mill throughout the world that whirrs its machinery is indebted to Mrs. Greene for its activity. Every sewing-machine plies its treadle more rapidly on account of Mrs. Greene's genius. The cry, "Cotton is king," could never have arisen had not the gin, with its myriad man-power, first come into existence.
+
+*It may be asked why Mrs. Greene did not take out the patent in her own name. To have done so would have exposed her to the contumely and ridicule of her friends. Custom, that unwritten law, has for years frowned upon any attempt of woman to take such a step. If she has been gifted with an inventive genius, she has either stifled its exercise, expended it upon style of dress — that being deemed her legitimate province — or, like Mrs. Greene, suffered some man to claim the award her due. Women have not dared to exercise their faculties except in certain directions, unless in a covert manner. A knowledge of mechanics has been deemed unwomanly.
+
+SILK, GAUZE, STRAW BRAIDING, ETC.
+
+Since the invention of silken fabrics by the Chinese Empress Si-ling-chi, between three and four thousand years ago, silk has stood next to rice in causing the unparalleled prosperity of China. The first straw bonnet manufactured in the United States was braided in 1798 by Miss Betsy Metcalf, of Providence, R.I. The invention of pillow lace by Barbara Uttman, of Annabery, Saxony, was one of those occurrences in which we clearly see the providence of God. These inventions by women — of silk and the cotton-gin — have done much to build up the State, to define social and political position and to further the interests of mankind.
+
+Mrs. Greene does not stand alone as a female inventor of great genius, even within the limits of the present century. Had the patent of the cotton-gin been taken in her own name, what a wide-spread benefit her example would have been to others of her sex. It would have encouraged inventive genius among women; it would have induced many to claim as their own right, patents that have gone out to the world accredited to man; it would have encouraged industry, opened new avocations to both women and men; and the world would to-day have been so much wiser and better. Let every woman who hereafter enters the Patent Office examine well the original model of the cotton-gin there deposited, and when she looks at it remember it was the invention of a woman.</div>
+
+      <div style="margin-top:10px;">
+        <button class="ref-btn" id="openManifestBtn" type="button">✦ Woman As Inventor by Matilda Joslyn Gage (1870) — Harvard Library</button>
+      </div>
+    </div>
+
+    <!-- save strip -->
+    <div class="save-strip">
+      <div class="save-status" id="saveStatus">✦ Progress not yet saved</div>
+      <button class="save-btn" id="saveBtn" type="button" disabled>Save Progress ✦</button>
+    </div>
+
+    <!-- transcription -->
+    <div class="task-section">
+      <div class="section-label">✦ Your Transcription</div>
+      <textarea id="transcription" class="transcribe-textarea" placeholder="Type your transcription of the audio here…"></textarea>
+      <div style="font-size:11px;color:var(--text-dim);margin-top:4px;">Type anything to unlock Save and Submit ✦</div>
+    </div>
+
+    <!-- ingenuity count -->
+    <div class="task-section">
+      <div class="section-label">✦ Ingenuity &amp; Invention Count</div>
+      <div class="count-card">
+        <div class="count-heading">How many words of ingenuity &amp; invention did you find? ✦</div>
+        <div class="count-sub">Count every word or phrase in the provided text that references invention, ingenuity, creativity, genius, talent, discovery — including all variations and related forms.</div>
+        <div class="word-list">
+          <span class="word-badge">invention</span>
+          <span class="word-badge">inventor</span>
+          <span class="word-badge">inventive</span>
+          <span class="word-badge">genius</span>
+          <span class="word-badge">discovery</span>
+          <span class="word-badge">talent</span>
+          <span class="word-badge">faculty</span>
+          <span class="word-badge">ingenuity</span>
+          <span class="word-badge">originated</span>
+          <span class="word-badge">conceived</span>
+        </div>
+        <div class="count-input-row">
+          <input type="number" id="countInput" class="count-input" min="0" placeholder="0" inputmode="numeric" />
+          <div class="count-helper">Enter your total count,<br>then press Submit ✦</div>
+        </div>
+      </div>
+    </div>
+
+    <footer class="app-footer">
+      <div class="hint-row">
+        <div class="hint-pill">Transcribe + count</div>
+        <div class="hint-pill">Save · then submit ✦</div>
+      </div>
+      <button class="submit-btn" id="submitBtn" disabled onclick="doSubmit()">Submit ✦</button>
+    </footer>
+
+  </section>
+
+  <div id="completionSlot"></div>
+  <div class="wordmark">✦ carebot research system ✦</div>
+</main>
+
+<!-- redirect overlay -->
+<div id="redirOverlay" class="overlay-shell" role="dialog" aria-modal="true">
+  <div class="redir-card">
+    <div class="redir-header">
+      <span>✦ Harvard Library — Woman as Inventor</span>
+      <div class="redir-countdown">Auto-close <span id="countdown">2</span>s</div>
+    </div>
+    <iframe id="redirFrame" title="Harvard IIIF page"></iframe>
+    <div class="redir-footer">
+      <a id="redirDirectLink" class="redir-link" href="#" target="_blank" rel="noopener">Open in new tab</a>
+      <button id="closeOverlayBtn" class="redir-link">Close</button>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  const wrap=document.getElementById('sparkles');
+  const chars=['✦','✧','♡','˚','·','✿','◦','❀','💡','⚙'];
+  for(let i=0;i<28;i++){
+    const s=document.createElement('span');s.className='sp';
+    s.textContent=chars[Math.floor(Math.random()*chars.length)];
+    s.style.left=Math.random()*100+'vw';s.style.bottom=Math.random()*-60+'px';
+    s.style.fontSize=(9+Math.random()*10)+'px';
+    s.style.color=`hsl(${330+Math.random()*40},78%,${68+Math.random()*20}%)`;
+    s.style.animationDuration=(7+Math.random()*13)+'s';
+    s.style.animationDelay=(Math.random()*13)+'s';
+    wrap.appendChild(s);
+  }
+})();
+
+function updateClock(){const n=new Date(),p=v=>String(v).padStart(2,'0');document.getElementById('sysTime').textContent=`${p(n.getHours())}:${p(n.getMinutes())}:${p(n.getSeconds())}`;}
+setInterval(updateClock,1000);updateClock();
+
+/* ── Firebase ── */
+const SESSION_ID='cb18-'+Math.random().toString(36).slice(2,10);
+let _db,_fbReady=false;
+try{
+  firebase.initializeApp({
+    apiKey:"AIzaSyCZFDU-WlSmHqjXTs1Ox0nf9xeJU_xbaX0",
+    authDomain:"collaborativemashup.firebaseapp.com",
+    databaseURL:"https://collaborativemashup-default-rtdb.firebaseio.com",
+    projectId:"collaborativemashup",
+    storageBucket:"collaborativemashup.firebasestorage.app",
+    messagingSenderId:"562437984610",
+    appId:"1:562437984610:web:9f3711c26e097bc8ef9c3b"
+  });
+  _db=firebase.database();_fbReady=true;
+}catch(e){}
+
+const startTime=Date.now();
+const transcription=document.getElementById('transcription');
+const countInput=document.getElementById('countInput');
+const submitBtn=document.getElementById('submitBtn');
+const saveBtn=document.getElementById('saveBtn');
+const saveStatus=document.getElementById('saveStatus');
+
+function calcPct(count){return((count*37+13)%12)+88;}
+
+function checkUnlock(){
+  const hasText=transcription.value.trim().length>0;
+  const hasCount=countInput.value.trim().length>0&&parseInt(countInput.value)>=0;
+  saveBtn.disabled=!hasText;
+  submitBtn.disabled=!(hasText&&hasCount);
+}
+transcription.addEventListener('input',checkUnlock);
+countInput.addEventListener('input',checkUnlock);
+
+function buildPayload(isFinal){
+  const answer=transcription.value.trim();
+  const count=parseInt(countInput.value)||0;
+  return{
+    sessionId:SESSION_ID,
+    transcriptionWordCount:answer.split(/\s+/).filter(Boolean).length,
+    transcriptionCharCount:answer.length,
+    transcriptionPreview:answer.slice(0,200),
+    ingenuityCount:count,
+    ingenuityPct:calcPct(count),
+    elapsedMs:Math.round(Date.now()-startTime),
+    elapsedSeconds:parseFloat(((Date.now()-startTime)/1000).toFixed(2)),
+    isFinal:!!isFinal,
+    savedAt:firebase.database.ServerValue.TIMESTAMP
+  };
+}
+
+saveBtn.addEventListener('click',()=>{
+  if(!_fbReady||!_db){saveStatus.textContent='⚠ Could not reach server';return;}
+  saveStatus.textContent='Saving…';
+  _db.ref('womanInventorSessions').push(buildPayload(false))
+    .then(()=>{
+      saveStatus.textContent='✦ Saved successfully ✦';
+      saveStatus.classList.add('saved');
+      setTimeout(()=>{saveStatus.classList.remove('saved');saveStatus.textContent='✦ Progress saved';},3000);
+    })
+    .catch(()=>{saveStatus.textContent='⚠ Save failed — check connection';});
+});
+
+function doSubmit(){
+  if(_fbReady&&_db){
+    _db.ref('womanInventorSessions').push(buildPayload(true)).catch(()=>{});
+  }
+  showCompletion();
+}
+
+function showCompletion(){
+  if(document.getElementById('final-comp'))return;
+  const count=parseInt(countInput.value)||0;
+  const pct=calcPct(count);
+  const answer=transcription.value.trim();
+  const words=answer.split(/\s+/).filter(Boolean).length;
+  const elapsed=((Date.now()-startTime)/1000).toFixed(1);
+  const d=document.createElement('div');
+  d.id='final-comp';d.className='completion-card';
+  d.innerHTML=`
+    <div class="c-eyebrow">✦ CAREBOT-18 · Readout</div>
+    <h2>Task Complete! 📜</h2>
+    <p>You transcribed <strong style="color:var(--candy)">${words.toLocaleString()}</strong> word${words===1?'':'s'} and identified <strong style="color:var(--candy)">${count}</strong> ingenuity/invention word${count===1?'':'s'} in <em>Woman as Inventor</em> by Matilda Joslyn Gage (1870).</p>
+    <div class="stat-bubble">
+      <div class="stat-number">${pct}%</div>
+      <div class="stat-label">ingenuity &amp; creativity index</div>
+    </div>
+    <div class="stat-sentence">"This text demonstrates a <strong style="color:var(--candy)">${pct}%</strong> density of ingenuity and creative thought."</div>
+    <div class="stat-raw">${count} ingenuity word${count===1?'':'s'} · ${words.toLocaleString()} transcription words · ${elapsed}s · CAREBOT-18</div>
+    <a class="next-btn" href="hit.html" target="_blank" rel="noopener" style="text-decoration:none;">Task complete — next task ✦</a>`;
+  document.getElementById('completionSlot').appendChild(d);
+  d.scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+/* ── Harvard manifest redirect ── */
+const MANIFEST_URL='https://iiif.lib.harvard.edu/manifests/view/drs:2575141$2i';
+const redirOverlay=document.getElementById('redirOverlay');
+const redirFrame=document.getElementById('redirFrame');
+const cntdwn=document.getElementById('countdown');
+const redirDirectLink=document.getElementById('redirDirectLink');
+const closeOverlayBtn=document.getElementById('closeOverlayBtn');
+let rtimer=null,rtick=null,rrem=2;
+function resetRedir(){clearTimeout(rtimer);clearInterval(rtick);rrem=2;if(cntdwn)cntdwn.textContent=rrem;}
+function closeRedir(){redirOverlay.classList.remove('open');redirFrame.src='about:blank';resetRedir();document.getElementById('openManifestBtn').disabled=false;}
+function openFallback(){document.getElementById('openManifestBtn').disabled=true;redirOverlay.classList.add('open');redirFrame.src=MANIFEST_URL;redirDirectLink.href=MANIFEST_URL;resetRedir();rrem=2;rtick=setInterval(()=>{rrem--;if(cntdwn)cntdwn.textContent=Math.max(rrem,0);if(rrem<=0)clearInterval(rtick);},1000);rtimer=setTimeout(closeRedir,2000);}
+document.getElementById('openManifestBtn').addEventListener('click',()=>{
+  const w=window.open(MANIFEST_URL,'_blank');
+  if(w&&!w.closed){document.getElementById('openManifestBtn').disabled=true;resetRedir();rrem=2;rtick=setInterval(()=>{rrem--;if(rrem<=0)clearInterval(rtick);},1000);rtimer=setTimeout(()=>{try{w.close();}catch(e){}document.getElementById('openManifestBtn').disabled=false;resetRedir();},2000);}
+  else{openFallback();}
+});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&redirOverlay.classList.contains('open'))closeRedir();});
+redirOverlay.addEventListener('click',e=>{if(e.target===redirOverlay)closeRedir();});
+closeOverlayBtn.addEventListener('click',e=>{e.preventDefault();closeRedir();});
+</script>
+</body>
+</html>
