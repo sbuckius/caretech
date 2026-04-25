@@ -162,6 +162,11 @@ html,body{min-height:100%;font-family:var(--fb);font-weight:600;color:var(--crea
 .bot-foot.stamping{animation:footStamp .3s ease-in-out 6!important;}
 
 .wordmark{margin-top:18px;font-family:var(--fb);font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:rgba(240,100,140,.1);}
+
+/* ── CSV export button ── */
+.csv-export-btn{appearance:none;font-family:var(--fb);font-weight:700;font-size:9px;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;padding:4px 10px;border-radius:999px;background:rgba(255,45,107,.08);border:1px solid var(--border);color:var(--muted);transition:all .18s;white-space:nowrap;}
+.csv-export-btn:hover{background:rgba(255,45,107,.18);border-color:var(--border2);color:var(--blush);}
+.csv-export-btn:active{transform:scale(.96);}
 </style>
 </head>
 <body>
@@ -332,6 +337,8 @@ html,body{min-height:100%;font-family:var(--fb);font-weight:600;color:var(--crea
     <div class="stats-bar">
       <div class="stat-pill"><div class="stat-dot"></div><span id="statResponses">Loading data…</span></div>
       <div class="stat-pill"><span id="statPattern">Ask me anything</span></div>
+    </div>
+      <button class="csv-export-btn" onclick="exportCSV18()">⬇ Export CSV</button>
     </div>
 
     <div class="bot-torso-wrap">
@@ -598,6 +605,32 @@ async function init(){
   chatInput.focus();
 }
 setTimeout(init,400);
+
+/* ── CSV export helpers ── */
+function q(v){ return '"'+(v==null?'':String(v).replace(/"/g,'""'))+'"'; }
+function dlCSV(csv, filename){
+  const blob = new Blob([csv], {type:'text/csv;charset=utf-8;'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = filename; a.style.display='none';
+  document.body.appendChild(a); a.click();
+  setTimeout(()=>{ URL.revokeObjectURL(url); a.remove(); }, 500);
+}
+
+async function exportCSV18(){
+  if(!_fbReady18){alert('No data connection.');return;}
+  try{
+    const snap=await _db18.ref('womanInventorSessions').once('value');
+    const rows=Object.values(snap.val()||{});
+    if(!rows.length){alert('No data to export yet.');return;}
+    let csv='sessionId,transcriptionWordCount,transcriptionCharCount,ingenuityCount,ingenuityPct,elapsedMs,elapsedSeconds,isFinal,transcriptionPreview,timestamp\n';
+    rows.forEach(r=>{
+      const preview=q((r.transcriptionPreview||'').replace(/\n/g,' '));
+      csv+=`${q(r.sessionId)},${r.transcriptionWordCount},${r.transcriptionCharCount},${r.ingenuityCount},${r.ingenuityPct},${r.elapsedMs},${r.elapsedSeconds},${r.isFinal},${preview},${r.savedAt||''}\n`;
+    });
+    dlCSV(csv,'carebot18-woman-as-inventor.csv');
+  }catch(e){alert('Export failed: '+e.message);}
+}
 </script>
 </body>
 </html>

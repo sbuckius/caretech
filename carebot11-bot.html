@@ -179,6 +179,11 @@ html,body{min-height:100%;font-family:var(--fb);font-weight:600;color:var(--crea
 .bot-foot.clacking{animation:footClack .38s ease-in-out 6!important;}
 
 .wordmark{margin-top:18px;font-family:var(--fb);font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,100,140,.12);}
+
+/* ── CSV export button ── */
+.csv-export-btn{appearance:none;font-family:var(--fb);font-weight:700;font-size:9px;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;padding:4px 10px;border-radius:999px;background:rgba(255,45,107,.08);border:1px solid var(--border);color:var(--muted);transition:all .18s;white-space:nowrap;}
+.csv-export-btn:hover{background:rgba(255,45,107,.18);border-color:var(--border2);color:var(--blush);}
+.csv-export-btn:active{transform:scale(.96);}
 </style>
 </head>
 <body>
@@ -388,6 +393,8 @@ html,body{min-height:100%;font-family:var(--fb);font-weight:600;color:var(--crea
     <div class="stats-bar">
       <div class="stat-pill"><div class="stat-dot"></div><span id="statResponses">Research explainer</span></div>
       <div class="stat-pill"><span id="statPattern">Ask me anything</span></div>
+    </div>
+      <button class="csv-export-btn" onclick="exportCSV11()">⬇ Export CSV</button>
     </div>
 
     <div class="bot-torso-wrap">
@@ -689,6 +696,31 @@ async function init(){
   chatInput.focus();
 }
 setTimeout(init,400);
+
+/* ── CSV export helpers ── */
+function q(v){ return '"'+(v==null?'':String(v).replace(/"/g,'""'))+'"'; }
+function dlCSV(csv, filename){
+  const blob = new Blob([csv], {type:'text/csv;charset=utf-8;'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = filename; a.style.display='none';
+  document.body.appendChild(a); a.click();
+  setTimeout(()=>{ URL.revokeObjectURL(url); a.remove(); }, 500);
+}
+
+async function exportCSV11(){
+  if(!_fbReady11){alert('No data connection.');return;}
+  try{
+    const [sessSnap,itemSnap]=await Promise.all([_db11.ref('replacementCostSessions').once('value'),_db11.ref('replacementCostItems').once('value')]);
+    const sess=Object.values(sessSnap.val()||{});
+    const items=Object.values(itemSnap.val()||{});
+    if(!sess.length&&!items.length){alert('No data to export yet.');return;}
+    let csv='type,sessionId,imageFilename,cents,dollars,totalCents,totalDollars,totalImages,timestamp\n';
+    items.forEach(r=>{csv+=`item,${q(r.sessionId)},${q(r.imageFilename)},${r.cents},${r.dollars},,,,${r.annotatedAt||''}\n`;});
+    sess.forEach(r=>{csv+=`session,${q(r.sessionId)},,,,${r.totalCents},${r.totalDollars},${r.totalImages},${r.completedAt||''}\n`;});
+    dlCSV(csv,'carebot11-replacement-cost.csv');
+  }catch(e){alert('Export failed: '+e.message);}
+}
 </script>
 </body>
 </html>
