@@ -1,0 +1,246 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>✦ CAREBOT-20 ✦ Scan to Access Your Work</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+<style>
+  :root {
+    --pink:    #ff66b3;
+    --bubble:  #ff9fd6;
+    --rose:    #ff5c8a;
+    --hot:     #ff2d6b;
+    --candy:   #ffadd0;
+    --blush:   #ffd0e8;
+    --cream:   #fff8fb;
+    --red:     #ff3b30;
+    --maroon:  #800000;
+    --deep:    #5a0020;
+    --purple:  #6a0dad;
+    --bg:      #1a0012;
+    --card-border: rgba(255,160,210,.24);
+    --card-border-bright: rgba(255,100,180,.58);
+    --soft-glow: 0 4px 30px rgba(255,45,107,.22), 0 1px 0 rgba(255,180,210,.14) inset;
+    --pop-glow:  0 8px 50px rgba(255,45,107,.42), 0 0 90px rgba(255,30,128,.15);
+    --text-dim:  rgba(255,210,235,.55);
+  }
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+  html,body{min-height:100svh;font-family:'Quicksand',sans-serif;font-weight:600;color:var(--cream);background:var(--bg);-webkit-font-smoothing:antialiased;cursor:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 20 20'%3E%3Ccircle cx='10' cy='10' r='4' fill='%23ff2d6b' opacity='.9'/%3E%3Ccircle cx='10' cy='10' r='7' stroke='%23ffadd0' stroke-width='1.5' fill='none' opacity='.6'/%3E%3C/svg%3E") 10 10,default;}
+
+  /* animated gradient bg */
+  .bg-layer{position:fixed;inset:0;z-index:0;pointer-events:none;
+    background:radial-gradient(ellipse 70% 55% at 15% 10%,rgba(255,60,180,.28) 0%,transparent 55%),
+               radial-gradient(ellipse 55% 60% at 85% 80%,rgba(106,13,173,.32) 0%,transparent 55%),
+               radial-gradient(ellipse 60% 50% at 50% 50%,rgba(255,40,80,.14) 0%,transparent 60%),
+               linear-gradient(155deg,#28001a,#1a000f 40%,#0e000c 70%,#120010);}
+  .orb{position:fixed;border-radius:50%;pointer-events:none;z-index:0;filter:blur(65px);}
+  .orb-1{width:440px;height:440px;background:var(--pink);  opacity:.2; top:-100px;left:-80px; animation:drift1 20s ease-in-out infinite;}
+  .orb-2{width:360px;height:360px;background:var(--purple);opacity:.18;bottom:-70px;right:-70px;animation:drift2 24s ease-in-out infinite;}
+  .orb-3{width:220px;height:220px;background:var(--bubble);opacity:.13;top:38%;left:55%;        animation:drift3 17s ease-in-out infinite;}
+  @keyframes drift1{0%,100%{transform:translate(0,0)}50%{transform:translate(36px,24px)}}
+  @keyframes drift2{0%,100%{transform:translate(0,0)}50%{transform:translate(-28px,-18px)}}
+  @keyframes drift3{0%,100%{transform:translate(0,0)}33%{transform:translate(-16px,12px)}66%{transform:translate(12px,-10px)}}
+  .sparkles{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden;}
+  .sp{position:absolute;opacity:0;animation:floatUp linear infinite;}
+  @keyframes floatUp{0%{opacity:0;transform:translateY(0) scale(.6) rotate(0deg)}15%{opacity:.7}85%{opacity:.4}100%{opacity:0;transform:translateY(-130px) scale(1.1) rotate(180deg)}}
+
+  .screen{position:relative;z-index:2;min-height:100svh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:max(20px,env(safe-area-inset-top)) clamp(14px,4vmin,28px) max(20px,env(safe-area-inset-bottom)) clamp(14px,4vmin,28px);gap:16px;}
+
+  /* mascot bar */
+  .mascot-bar{width:100%;max-width:520px;display:flex;align-items:center;justify-content:space-between;}
+  .mascot{display:flex;align-items:center;gap:10px;}
+  .bot-face{width:42px;height:42px;border-radius:13px;background:linear-gradient(135deg,rgba(255,102,179,.28),rgba(106,13,173,.38));border:1.5px solid var(--card-border-bright);box-shadow:var(--soft-glow);display:flex;align-items:center;justify-content:center;font-size:20px;animation:wobble 4s ease-in-out infinite;flex-shrink:0;}
+  @keyframes wobble{0%,100%{transform:rotate(-2deg) scale(1)}25%{transform:rotate(1deg) scale(1.04)}50%{transform:rotate(-1deg) scale(1)}75%{transform:rotate(2deg) scale(1.03)}}
+  .bot-name{font-family:'Nunito',sans-serif;font-weight:900;font-size:16px;letter-spacing:.04em;background:linear-gradient(90deg,var(--blush),var(--pink) 55%,var(--bubble));-webkit-background-clip:text;background-clip:text;color:transparent;}
+  .bot-sub{font-size:9px;letter-spacing:.15em;text-transform:uppercase;color:var(--text-dim);margin-top:1px;}
+  .time-badge{display:flex;align-items:center;gap:6px;padding:5px 11px;border-radius:999px;background:rgba(255,255,255,.04);border:1px solid var(--card-border);font-size:10px;letter-spacing:.1em;color:var(--text-dim);}
+  .time-pip{width:5px;height:5px;border-radius:50%;background:var(--hot);box-shadow:0 0 6px var(--hot);animation:breathe 2s ease-in-out infinite;}
+  @keyframes breathe{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.3;transform:scale(.65)}}
+
+  /* context banner */
+  .context-banner{width:min(100%,520px);background:rgba(14,0,8,.8);border:1.5px solid var(--card-border-bright);border-radius:22px;box-shadow:var(--pop-glow),inset 0 1px 0 rgba(255,180,210,.08);backdrop-filter:blur(20px) saturate(1.4);padding:18px 22px;position:relative;overflow:hidden;}
+  .context-banner::before{content:'';position:absolute;top:0;left:12%;right:12%;height:1.5px;background:linear-gradient(90deg,transparent,var(--bubble) 35%,var(--pink) 50%,var(--bubble) 65%,transparent);box-shadow:0 0 12px var(--bubble);border-radius:999px;}
+  .banner-eyebrow{font-size:9px;letter-spacing:.22em;text-transform:uppercase;color:var(--bubble);font-weight:800;margin-bottom:6px;}
+  .banner-title{font-family:'Nunito',sans-serif;font-weight:900;font-size:clamp(13px,2.5vw,16px);background:linear-gradient(120deg,var(--cream) 15%,var(--blush) 55%,var(--pink) 90%);-webkit-background-clip:text;background-clip:text;color:transparent;margin-bottom:6px;line-height:1.3;}
+  .banner-text{font-size:12px;color:rgba(255,220,240,.75);line-height:1.7;}
+  .banner-text strong{color:var(--blush);}
+
+  /* main card */
+  .card{width:min(92vw,520px);background:rgba(15,0,8,.8);border:1.5px solid var(--card-border-bright);border-radius:28px;box-shadow:var(--pop-glow),inset 0 1px 0 rgba(255,180,210,.07);backdrop-filter:blur(22px) saturate(1.5);-webkit-backdrop-filter:blur(22px) saturate(1.5);padding:clamp(24px,5vw,40px) clamp(20px,5vw,36px);display:grid;gap:22px;position:relative;overflow:hidden;text-align:center;}
+  .card::before{content:'';position:absolute;top:0;left:10%;right:10%;height:1.5px;background:linear-gradient(90deg,transparent,var(--bubble) 30%,var(--pink) 50%,var(--bubble) 70%,transparent);box-shadow:0 0 14px var(--bubble);border-radius:999px;}
+
+  .eyebrow{font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--text-dim);margin-bottom:6px;}
+  .heading{font-family:'Nunito',sans-serif;font-weight:900;font-size:clamp(20px,4.5vw,28px);line-height:1.25;background:linear-gradient(120deg,var(--cream) 20%,var(--blush) 55%,var(--pink) 85%);-webkit-background-clip:text;background-clip:text;color:transparent;}
+  .sub{font-size:clamp(12px,2.5vw,14px);color:var(--text-dim);margin-top:4px;line-height:1.6;}
+
+  /* timer strip */
+  .timer-strip{display:flex;align-items:center;justify-content:center;gap:8px;font-size:10px;letter-spacing:.1em;color:rgba(255,170,220,.35);text-transform:uppercase;}
+  .timer-val{font-family:'Nunito',sans-serif;font-weight:800;color:rgba(255,170,220,.4);letter-spacing:.04em;}
+
+  /* QR wrap */
+  .qr-outer{display:flex;flex-direction:column;align-items:center;gap:14px;}
+  .qr-wrap{display:inline-block;padding:clamp(12px,2.5vw,18px);background:rgba(255,255,255,.96);border-radius:18px;box-shadow:0 8px 40px rgba(255,45,107,.35),0 0 0 2px rgba(255,100,180,.4);position:relative;transition:box-shadow .3s;}
+  .qr-wrap:hover{box-shadow:0 12px 55px rgba(255,45,107,.55),0 0 0 2px rgba(255,150,210,.65);}
+  .qr-wrap img{display:block;width:min(65vw,340px);height:auto;aspect-ratio:1/1;object-fit:contain;border-radius:8px;}
+
+  /* scan pulse ring */
+  .scan-ring{position:absolute;inset:-8px;border-radius:24px;border:2px solid var(--bubble);opacity:0;animation:scanPulse 3s ease-in-out infinite;}
+  @keyframes scanPulse{0%,100%{opacity:0;transform:scale(1)}40%{opacity:.55;transform:scale(1.03)}70%{opacity:.2;transform:scale(1.06)}}
+
+  /* accent bars */
+  .accents{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:4px;}
+  .bar{height:5px;border-radius:999px;}
+  .bar.pink   {background:var(--bubble);}
+  .bar.red    {background:var(--hot);}
+  .bar.maroon {background:var(--maroon);}
+  .bar.purple {background:var(--purple);}
+
+  /* instruction chips */
+  .instr-row{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;}
+  .instr-chip{padding:5px 11px;border-radius:999px;background:rgba(255,102,179,.07);border:1px solid rgba(255,102,179,.2);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--text-dim);}
+
+  .wordmark{font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,160,210,.18);}
+
+  @media print{
+    body{background:#fff;animation:none;}
+    .card{box-shadow:none;border:none;background:#fff;}
+    .heading,.sub,.wordmark{color:#000;}
+    .accents,.context-banner,.mascot-bar,.timer-strip,.instr-row{display:none;}
+    .bg-layer,.orb,.sparkles{display:none;}
+    .qr-wrap{box-shadow:none;}
+  }
+</style>
+</head>
+<body>
+<div class="bg-layer"></div>
+<div class="orb orb-1"></div><div class="orb orb-2"></div><div class="orb orb-3"></div>
+<div class="sparkles" id="sparkles"></div>
+
+<div class="screen">
+
+  <div class="mascot-bar">
+    <div class="mascot">
+      <div class="bot-face">◼</div>
+      <div>
+        <div class="bot-name">CAREBOT-20 ✦</div>
+        <div class="bot-sub">QR Access · Labor Gateway · Online</div>
+      </div>
+    </div>
+    <div class="time-badge"><div class="time-pip"></div><span id="sysTime">--:--:--</span></div>
+  </div>
+
+  <!-- context banner -->
+  <div class="context-banner">
+    <div class="banner-eyebrow">✦ CAREBOT-20 · Task Briefing</div>
+    <div class="banner-title">⚠️ You are about to access your work through a QR code.</div>
+    <div class="banner-text">
+      <strong>QR codes</strong> are the gateway mechanism for many forms of gig and platform labor — from Mechanical Turk task links to delivery app pickups to warehouse scan-in systems. Scanning is a labor gesture. This screen records how long you spent here before scanning.
+    </div>
+  </div>
+
+  <!-- main card -->
+  <main class="card" role="main" aria-labelledby="cb20-title">
+    <div>
+      <div class="eyebrow">✦ CAREBOT-20 · Access Module</div>
+      <h1 class="heading" id="cb20-title">Scan to access your work.</h1>
+      <p class="sub">Open your camera, point at the QR code, and tap the banner.</p>
+    </div>
+
+    <div class="timer-strip">
+      <span>Dwell time ✦</span>
+      <span class="timer-val" id="timerDisplay">0.0s</span>
+    </div>
+
+    <div class="qr-outer">
+      <div class="qr-wrap" id="qrWrap">
+        <div class="scan-ring"></div>
+        <img class="qr" src="qr_1.png" alt="QR code to access your task" id="qrImg" />
+      </div>
+      <div class="accents" aria-hidden="true">
+        <div class="bar pink"></div>
+        <div class="bar red"></div>
+        <div class="bar maroon"></div>
+        <div class="bar purple"></div>
+      </div>
+    </div>
+
+    <div class="instr-row">
+      <div class="instr-chip">Open camera</div>
+      <div class="instr-chip">Point at QR</div>
+      <div class="instr-chip">Tap banner</div>
+    </div>
+  </main>
+
+  <div class="wordmark">✦ carebot research system ✦</div>
+</div>
+
+<script>
+function updateClock(){const n=new Date(),p=v=>String(v).padStart(2,'0');document.getElementById('sysTime').textContent=`${p(n.getHours())}:${p(n.getMinutes())}:${p(n.getSeconds())}`;}
+setInterval(updateClock,1000);updateClock();
+
+(function(){
+  const wrap=document.getElementById('sparkles');
+  const chars=['✦','✧','♡','˚','·','✿','◦','❀','◼'];
+  for(let i=0;i<28;i++){
+    const s=document.createElement('span');s.className='sp';
+    s.textContent=chars[Math.floor(Math.random()*chars.length)];
+    s.style.left=Math.random()*100+'vw';s.style.bottom=Math.random()*-60+'px';
+    s.style.fontSize=(9+Math.random()*10)+'px';
+    s.style.color=`hsl(${300+Math.random()*60},75%,${65+Math.random()*22}%)`;
+    s.style.animationDuration=(7+Math.random()*13)+'s';
+    s.style.animationDelay=(Math.random()*13)+'s';
+    wrap.appendChild(s);
+  }
+})();
+
+/* ── Firebase ── */
+const SESSION_ID='cb20-'+Math.random().toString(36).slice(2,10);
+let _db,_fbReady=false;
+try{
+  firebase.initializeApp({
+    apiKey:"AIzaSyCZFDU-WlSmHqjXTs1Ox0nf9xeJU_xbaX0",
+    authDomain:"collaborativemashup.firebaseapp.com",
+    databaseURL:"https://collaborativemashup-default-rtdb.firebaseio.com",
+    projectId:"collaborativemashup",
+    storageBucket:"collaborativemashup.firebasestorage.app",
+    messagingSenderId:"562437984610",
+    appId:"1:562437984610:web:9f3711c26e097bc8ef9c3b"
+  });
+  _db=firebase.database();_fbReady=true;
+}catch(e){}
+
+/* ── Timer ── */
+const pageLoad=Date.now();
+let saved=false;
+const timerInterval=setInterval(()=>{
+  document.getElementById('timerDisplay').textContent=((Date.now()-pageLoad)/1000).toFixed(1)+'s';
+},100);
+
+/* save dwell time when user navigates away or after 60s */
+function saveDwell(trigger){
+  if(saved)return;saved=true;
+  if(!_fbReady||!_db)return;
+  const dwellMs=Date.now()-pageLoad;
+  _db.ref('qrAccessSessions').push({
+    sessionId:SESSION_ID,
+    dwellMs:Math.round(dwellMs),
+    dwellSeconds:parseFloat((dwellMs/1000).toFixed(2)),
+    trigger, // 'visibilitychange' | 'timeout' | 'beforeunload'
+    qrFile:'qr_1.png',
+    visitedAt:firebase.database.ServerValue.TIMESTAMP
+  }).catch(()=>{});
+}
+
+/* fire on tab switch / scan (most mobile browsers fire visibilitychange when camera opens) */
+document.addEventListener('visibilitychange',()=>{
+  if(document.hidden) saveDwell('visibilitychange');
+});
+window.addEventListener('beforeunload',()=>saveDwell('beforeunload'));
+/* fallback: save after 60s regardless */
+setTimeout(()=>saveDwell('timeout'),60000);
+</script>
+</body>
+</html>
