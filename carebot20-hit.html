@@ -82,9 +82,9 @@
 
   /* QR wrap */
   .qr-outer{display:flex;flex-direction:column;align-items:center;gap:14px;}
-  .qr-wrap{display:inline-block;padding:clamp(12px,2.5vw,18px);background:rgba(255,255,255,.96);border-radius:18px;box-shadow:0 8px 40px rgba(255,45,107,.35),0 0 0 2px rgba(255,100,180,.4);position:relative;transition:box-shadow .3s;}
-  .qr-wrap:hover{box-shadow:0 12px 55px rgba(255,45,107,.55),0 0 0 2px rgba(255,150,210,.65);}
-  .qr-wrap img{display:block;width:min(65vw,340px);height:auto;aspect-ratio:1/1;object-fit:contain;border-radius:8px;}
+  .qr-wrap{display:inline-block;padding:0;background:transparent;border-radius:18px;box-shadow:none;position:relative;transition:box-shadow .3s;}
+  .qr-wrap:hover{box-shadow:0 12px 55px rgba(255,45,107,.35);}
+  .qr-wrap img{display:block;width:min(65vw,340px);height:auto;aspect-ratio:1/1;object-fit:contain;border-radius:18px;}
 
   /* scan pulse ring */
   .scan-ring{position:absolute;inset:-8px;border-radius:24px;border:2px solid var(--bubble);opacity:0;animation:scanPulse 3s ease-in-out infinite;}
@@ -156,7 +156,6 @@
 
     <div class="qr-outer">
       <div class="qr-wrap" id="qrWrap">
-        <div class="scan-ring"></div>
         <img class="qr" src="qr_1.png" alt="QR code to access your task" id="qrImg" />
       </div>
       <div class="accents" aria-hidden="true">
