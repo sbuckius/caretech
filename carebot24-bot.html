@@ -1,0 +1,359 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
+<title>✦ CAREBOT-24 ✦ Technology Work · Human Computers</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+<style>
+:root{
+  --rose:#ff5c8a;--hot:#ff2d6b;--candy:#ff85b3;--blush:#ffb3cf;
+  --cream:#fff5f8;--berry:#c4005a;--maroon:#6f001e;--fuchsia:#ff1f80;
+  --bg:#1a0012;
+  --border:rgba(255,160,200,.22);--border2:rgba(255,100,160,.55);
+  --muted:rgba(255,200,224,.55);--muted2:rgba(255,210,228,.75);
+  --soft-glow:0 4px 30px rgba(255,45,107,.2);
+  --pop-glow:0 8px 50px rgba(255,45,107,.4),0 0 90px rgba(255,30,128,.15);
+  --fh:'Nunito',sans-serif;--fb:'Quicksand',sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html,body{min-height:100%;font-family:var(--fb);font-weight:600;color:var(--cream);background:var(--bg);-webkit-font-smoothing:antialiased;overflow-x:hidden;}
+.bg-layer{position:fixed;inset:0;z-index:0;pointer-events:none;background:radial-gradient(ellipse 70% 55% at 18% 12%,rgba(200,0,50,.35) 0%,transparent 60%),radial-gradient(ellipse 55% 65% at 82% 80%,rgba(140,0,40,.3) 0%,transparent 60%),linear-gradient(160deg,#220008,#180008 50%,#120005);}
+.orb{position:fixed;border-radius:50%;pointer-events:none;z-index:0;filter:blur(65px);}
+.orb-1{width:450px;height:450px;background:var(--maroon);opacity:.22;top:-100px;left:-90px;animation:drift1 20s ease-in-out infinite;}
+.orb-2{width:360px;height:360px;background:#c40032;opacity:.18;bottom:-70px;right:-70px;animation:drift2 24s ease-in-out infinite;}
+.orb-3{width:240px;height:240px;background:var(--hot);opacity:.12;top:35%;left:58%;animation:drift3 16s ease-in-out infinite;}
+@keyframes drift1{0%,100%{transform:translate(0,0)}50%{transform:translate(45px,30px)}}
+@keyframes drift2{0%,100%{transform:translate(0,0)}50%{transform:translate(-30px,-22px)}}
+@keyframes drift3{0%,100%{transform:translate(0,0)}33%{transform:translate(-20px,15px)}66%{transform:translate(15px,-10px)}}
+.sparkles{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden;}
+.sp{position:absolute;opacity:0;animation:floatUp linear infinite;}
+@keyframes floatUp{0%{opacity:0;transform:translateY(0) scale(.6)}15%{opacity:.65}85%{opacity:.35}100%{opacity:0;transform:translateY(-130px) scale(1.1)}}
+@keyframes breathe{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.3;transform:scale(.65)}}
+
+.page{position:relative;z-index:2;min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:max(24px,env(safe-area-inset-top)) clamp(14px,5vw,28px) max(44px,env(safe-area-inset-bottom));gap:0;}
+.top-bar{width:100%;max-width:500px;display:flex;align-items:center;justify-content:space-between;margin-bottom:22px;}
+.brand{font-family:var(--fb);font-size:9px;letter-spacing:.22em;text-transform:uppercase;color:var(--muted);}
+.status-pill{display:flex;align-items:center;gap:6px;padding:4px 11px;border-radius:999px;background:rgba(255,45,107,.07);border:1px solid var(--border);font-family:var(--fb);font-size:9px;letter-spacing:.1em;color:var(--muted);}
+.status-pip{width:4px;height:4px;border-radius:50%;background:var(--hot);box-shadow:0 0 5px var(--hot);animation:breathe 2s ease-in-out infinite;}
+.bot-body{width:min(92vw,480px);display:flex;flex-direction:column;align-items:center;gap:0;}
+
+/* ── ADDING MACHINE HEAD ── */
+.bot-head-wrap{position:relative;width:clamp(180px,36vw,230px);height:clamp(210px,40vw,270px);flex-shrink:0;animation:machineFloat 5s ease-in-out infinite;}
+@keyframes machineFloat{0%,100%{transform:translateY(0) rotate(-.3deg);}45%{transform:translateY(-9px) rotate(.5deg);}75%{transform:translateY(-3px) rotate(-.3deg);}}
+.machine-svg{width:100%;height:100%;filter:drop-shadow(0 6px 28px rgba(255,45,107,.5)) drop-shadow(0 0 50px rgba(255,30,128,.18));}
+.tape-scroll{animation:tapeOut 3s linear infinite;}
+@keyframes tapeOut{0%{transform:translateY(0)}100%{transform:translateY(-6px)}}
+.crank-turn{animation:crankSpin 2.4s ease-in-out infinite;}
+@keyframes crankSpin{0%,100%{transform:rotate(0deg) translateY(0)}40%{transform:rotate(14deg) translateY(-2px)}70%{transform:rotate(-8deg) translateY(-1px)}}
+
+.bot-neck{width:clamp(20px,4vw,28px);height:clamp(10px,1.8vw,14px);background:linear-gradient(180deg,rgba(255,45,107,.18),rgba(120,0,60,.4));border:1px solid rgba(255,45,107,.3);border-top:none;clip-path:polygon(12% 0%,88% 0%,100% 100%,0% 100%);position:relative;z-index:2;}
+.bot-nametag{text-align:center;margin:10px 0 6px;}
+.bot-nametag-name{font-family:var(--fh);font-weight:900;font-size:clamp(22px,4.5vw,28px);letter-spacing:.04em;background:linear-gradient(90deg,var(--blush),var(--fuchsia) 55%,var(--candy));-webkit-background-clip:text;background-clip:text;color:transparent;}
+.bot-nametag-sub{font-family:var(--fb);font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);margin-top:4px;}
+.stats-bar{display:flex;gap:7px;flex-wrap:wrap;justify-content:center;margin:10px 0 14px;}
+.stat-pill{display:flex;align-items:center;gap:4px;padding:4px 10px;border-radius:999px;background:rgba(255,45,107,.07);border:1px solid var(--border);font-family:var(--fb);font-size:9px;letter-spacing:.06em;color:var(--muted);}
+.stat-dot{width:4px;height:4px;border-radius:50%;background:var(--hot);}
+.csv-export-btn{appearance:none;font-family:var(--fb);font-weight:700;font-size:9px;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;padding:4px 10px;border-radius:999px;background:rgba(255,45,107,.08);border:1px solid var(--border);color:var(--muted);transition:all .18s;white-space:nowrap;}
+.csv-export-btn:hover{background:rgba(255,45,107,.18);border-color:var(--border2);color:var(--blush);}
+.bot-torso-wrap{width:100%;}
+.bot-torso{width:100%;background:rgba(18,0,12,.97);border:1.5px solid var(--border2);border-radius:22px;box-shadow:var(--pop-glow),inset 0 1px 0 rgba(255,160,200,.06);overflow:hidden;display:flex;flex-direction:column;min-height:clamp(280px,48vh,460px);position:relative;}
+.bot-torso::before{content:'';position:absolute;top:0;left:10%;right:10%;height:1.5px;z-index:5;background:linear-gradient(90deg,transparent,var(--candy) 35%,var(--hot) 50%,var(--candy) 65%,transparent);box-shadow:0 0 14px var(--candy);border-radius:999px;}
+.screen-topbar{display:flex;align-items:center;justify-content:space-between;padding:10px 16px 8px;border-bottom:1px solid rgba(255,130,180,.08);flex-shrink:0;position:relative;z-index:2;}
+.screen-dots{display:flex;gap:5px;}
+.screen-dot{width:8px;height:8px;border-radius:50%;}
+.screen-dot:nth-child(1){background:var(--hot);box-shadow:0 0 5px var(--hot);animation:breathe 2s ease-in-out infinite;}
+.screen-dot:nth-child(2){background:var(--fuchsia);box-shadow:0 0 5px var(--fuchsia);animation:breathe 2s .3s ease-in-out infinite;}
+.screen-dot:nth-child(3){background:var(--candy);box-shadow:0 0 5px var(--candy);animation:breathe 2s .6s ease-in-out infinite;}
+.screen-label{font-family:var(--fb);font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);}
+.chat-area{flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:10px;padding:12px 12px 6px;position:relative;z-index:2;scrollbar-width:thin;scrollbar-color:rgba(255,45,107,.15) transparent;}
+.msg{display:flex;gap:7px;align-items:flex-end;animation:msgIn .32s cubic-bezier(.22,1,.36,1) both;}
+@keyframes msgIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.msg.user{flex-direction:row-reverse;}
+.msg-avatar{width:24px;height:24px;border-radius:6px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-family:var(--fb);font-size:9px;}
+.msg.assistant .msg-avatar{background:var(--berry);color:var(--blush);border:1px solid var(--border);}
+.msg.user .msg-avatar{background:rgba(255,45,107,.12);color:var(--muted);border:1px solid var(--border);}
+.bubble{max-width:84%;padding:9px 13px;border-radius:13px;font-family:var(--fb);font-size:clamp(11px,1.4vw,13px);line-height:1.72;}
+.msg.assistant .bubble{background:rgba(255,45,107,.07);border:1px solid rgba(255,45,107,.14);color:var(--muted2);border-bottom-left-radius:2px;}
+.msg.user .bubble{background:linear-gradient(135deg,rgba(255,45,107,.38),rgba(180,0,80,.45));color:var(--cream);border:1px solid rgba(255,45,107,.45);border-bottom-right-radius:2px;}
+.bubble strong{color:var(--candy);}.bubble em{color:#ffb09a;}
+.typing-indicator{display:flex;gap:5px;align-items:center;padding:4px 2px;}
+.typing-dot{width:7px;height:7px;border-radius:50%;background:var(--candy);opacity:.4;animation:typingBounce 1.2s ease-in-out infinite;}
+.typing-dot:nth-child(2){animation-delay:.2s;}.typing-dot:nth-child(3){animation-delay:.4s;}
+@keyframes typingBounce{0%,80%,100%{transform:translateY(0);opacity:.4}40%{transform:translateY(-6px);opacity:1}}
+.prompts-row{display:flex;gap:5px;flex-wrap:wrap;padding:4px 12px 10px;position:relative;z-index:2;}
+.prompt-chip{padding:5px 11px;border-radius:999px;cursor:pointer;background:rgba(255,45,107,.06);border:1px solid rgba(255,45,107,.18);font-family:var(--fb);font-size:10px;letter-spacing:.06em;color:var(--muted);transition:all .15s;white-space:nowrap;}
+.prompt-chip:hover{background:rgba(255,45,107,.16);border-color:var(--border2);color:var(--blush);}
+.chat-input-row{display:flex;align-items:center;gap:7px;padding:9px 12px;border-top:1px solid rgba(255,130,180,.08);flex-shrink:0;position:relative;z-index:2;}
+.chat-input{flex:1;background:rgba(255,45,107,.05);border:1.5px solid rgba(255,45,107,.18);border-radius:10px;color:var(--cream);font-family:var(--fb);font-weight:600;font-size:clamp(11px,1.3vw,13px);padding:9px 12px;outline:none;transition:border-color .2s;resize:none;}
+.chat-input:focus{border-color:var(--candy);box-shadow:0 0 10px rgba(255,133,179,.18);}
+.chat-input::placeholder{color:rgba(255,160,200,.18);}
+.chat-input:disabled{opacity:.4;}
+.send-btn{width:32px;height:32px;border-radius:10px;flex-shrink:0;background:linear-gradient(135deg,var(--hot),var(--fuchsia));border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 14px rgba(255,45,107,.4);transition:all .18s cubic-bezier(.34,1.56,.64,1);}
+.send-btn:hover:not(:disabled){transform:scale(1.1);}
+.send-btn:disabled{opacity:.3;cursor:not-allowed;}
+.send-btn svg{width:14px;height:14px;fill:none;stroke:white;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;}
+.bot-legs{display:flex;gap:clamp(20px,5vw,36px);justify-content:center;margin-top:-1px;position:relative;z-index:3;}
+.bot-leg-wrap{display:flex;flex-direction:column;align-items:center;}
+.bot-leg{width:clamp(22px,4.5vw,32px);height:clamp(22px,3.8vw,30px);background:linear-gradient(180deg,rgba(255,45,107,.2),rgba(120,0,60,.3));border:1.5px solid var(--border2);border-top:none;}
+.bot-foot{width:clamp(30px,6.5vw,44px);height:clamp(9px,1.6vw,13px);border-radius:3px;background:rgba(180,0,80,.22);border:1.5px solid var(--border);margin-top:-1px;}
+@keyframes machineDance{0%,100%{transform:translateY(0) rotate(-.3deg);}20%{transform:translateY(-14px) rotate(-5deg);}40%{transform:translateY(-6px) rotate(5deg);}60%{transform:translateY(-11px) rotate(-3deg);}80%{transform:translateY(-3px) rotate(3deg);}}
+@keyframes footStick{0%,100%{transform:scaleX(1)}50%{transform:scaleX(.72)}}
+.bot-head-wrap.dancing{animation:machineDance .55s cubic-bezier(.34,1.56,.64,1) 4!important;}
+.bot-foot.sticking{animation:footStick .3s ease-in-out 6!important;}
+.wordmark{margin-top:18px;font-family:var(--fb);font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,100,160,.1);}
+</style>
+</head>
+<body>
+<div class="bg-layer"></div>
+<div class="orb orb-1"></div><div class="orb orb-2"></div><div class="orb orb-3"></div>
+<div class="sparkles" id="sparkles"></div>
+
+<div class="page">
+  <div class="top-bar">
+    <div class="brand">CAREtech · Human Computers · Annotation</div>
+    <div class="status-pill"><div class="status-pip"></div>Online</div>
+  </div>
+
+  <div class="bot-body">
+
+    <!-- ADDING MACHINE HEAD -->
+    <div class="bot-head-wrap" id="botHeadWrap">
+      <svg class="machine-svg" viewBox="0 0 180 215" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="bodyGradM" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#3a0820"/><stop offset="100%" stop-color="#220510"/>
+          </linearGradient>
+          <linearGradient id="paperGradM" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stop-color="#fff0f5"/><stop offset="100%" stop-color="#ffd6e8"/>
+          </linearGradient>
+          <linearGradient id="keyGradM" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stop-color="#5a1030"/><stop offset="100%" stop-color="#3a0820"/>
+          </linearGradient>
+          <filter id="mGlow">
+            <feGaussianBlur in="SourceGraphic" stdDeviation="2" result="blur"/>
+            <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+          </filter>
+        </defs>
+        <!-- paper tape -->
+        <rect class="tape-scroll" x="62" y="6" width="56" height="42" rx="2" fill="url(#paperGradM)" stroke="#ff85b3" stroke-width=".9"/>
+        <g fill="none" stroke="#c4005a" stroke-width=".6" opacity=".7">
+          <line x1="68" y1="12" x2="112" y2="12"/><line x1="68" y1="17" x2="112" y2="17"/>
+          <line x1="68" y1="22" x2="112" y2="22"/><line x1="68" y1="27" x2="112" y2="27"/>
+          <line x1="68" y1="32" x2="112" y2="32"/><line x1="68" y1="37" x2="112" y2="37"/>
+          <line x1="68" y1="42" x2="112" y2="42"/>
+        </g>
+        <text x="72" y="15" font-family="monospace" font-size="5" fill="#c4005a" opacity=".8">1,247.83</text>
+        <text x="72" y="20" font-family="monospace" font-size="5" fill="#c4005a" opacity=".8">  893.20</text>
+        <text x="72" y="25" font-family="monospace" font-size="5" fill="#c4005a" opacity=".8">2,441.07</text>
+        <text x="72" y="30" font-family="monospace" font-size="5" fill="#c4005a" opacity=".8">  ------</text>
+        <text x="72" y="35" font-family="monospace" font-size="5" fill="#ff3d7a" opacity=".9">4,582.10</text>
+        <!-- tape slit -->
+        <rect x="62" y="46" width="56" height="5" rx="1" fill="#1a0010" stroke="#ff85b3" stroke-width=".7"/>
+        <!-- machine body -->
+        <rect x="12" y="34" width="156" height="158" rx="9" fill="url(#bodyGradM)" stroke="#ff85b3" stroke-width="1.4"/>
+        <rect x="18" y="38" width="144" height="146" rx="7" fill="none" stroke="#ffb3d4" stroke-width=".5" opacity=".28"/>
+        <!-- display -->
+        <rect x="20" y="50" width="130" height="28" rx="4" fill="#100008" stroke="#ff6b99" stroke-width="1.2"/>
+        <text x="85" y="68" text-anchor="middle" font-family="monospace" font-size="14" fill="#ff85b3" opacity=".9" filter="url(#mGlow)">4582.10</text>
+        <circle cx="28" cy="64" r="2.5" fill="#ff3d7a" opacity=".6"><animate attributeName="opacity" values=".6;.2;.6" dur="1.8s" repeatCount="indefinite"/></circle>
+        <!-- keys rows -->
+        <g filter="url(#mGlow)">
+          <rect x="22" y="90" width="30" height="16" rx="3" fill="url(#keyGradM)" stroke="#ff6b99" stroke-width=".9"/>
+          <text x="37" y="102" text-anchor="middle" font-family="monospace" font-size="9" fill="#ffb3cf">7</text>
+          <rect x="58" y="90" width="30" height="16" rx="3" fill="url(#keyGradM)" stroke="#ff6b99" stroke-width=".9"/>
+          <text x="73" y="102" text-anchor="middle" font-family="monospace" font-size="9" fill="#ffb3cf">8</text>
+          <rect x="94" y="90" width="30" height="16" rx="3" fill="url(#keyGradM)" stroke="#ff6b99" stroke-width=".9"/>
+          <text x="109" y="102" text-anchor="middle" font-family="monospace" font-size="9" fill="#ffb3cf">9</text>
+          <rect x="22" y="110" width="30" height="16" rx="3" fill="url(#keyGradM)" stroke="#ff6b99" stroke-width=".9"/>
+          <text x="37" y="122" text-anchor="middle" font-family="monospace" font-size="9" fill="#ffb3cf">4</text>
+          <rect x="58" y="110" width="30" height="16" rx="3" fill="url(#keyGradM)" stroke="#ff6b99" stroke-width=".9"/>
+          <text x="73" y="122" text-anchor="middle" font-family="monospace" font-size="9" fill="#ffb3cf">5</text>
+          <rect x="94" y="110" width="30" height="16" rx="3" fill="url(#keyGradM)" stroke="#ff6b99" stroke-width=".9"/>
+          <text x="109" y="122" text-anchor="middle" font-family="monospace" font-size="9" fill="#ffb3cf">6</text>
+          <rect x="22" y="130" width="30" height="16" rx="3" fill="url(#keyGradM)" stroke="#ff6b99" stroke-width=".9"/>
+          <text x="37" y="142" text-anchor="middle" font-family="monospace" font-size="9" fill="#ffb3cf">1</text>
+          <rect x="58" y="130" width="30" height="16" rx="3" fill="url(#keyGradM)" stroke="#ff6b99" stroke-width=".9"/>
+          <text x="73" y="142" text-anchor="middle" font-family="monospace" font-size="9" fill="#ffb3cf">2</text>
+          <rect x="94" y="130" width="30" height="16" rx="3" fill="url(#keyGradM)" stroke="#ff6b99" stroke-width=".9"/>
+          <text x="109" y="142" text-anchor="middle" font-family="monospace" font-size="9" fill="#ffb3cf">3</text>
+        </g>
+        <!-- plus key -->
+        <rect x="130" y="90" width="26" height="60" rx="5" fill="#c4005a" stroke="#ff3d7a" stroke-width="1.4"/>
+        <text x="143" y="126" text-anchor="middle" font-family="monospace" font-size="20" fill="white" font-weight="bold">+</text>
+        <!-- 0 and decimal -->
+        <rect x="22" y="150" width="48" height="16" rx="3" fill="url(#keyGradM)" stroke="#ff6b99" stroke-width=".9"/>
+        <text x="46" y="162" text-anchor="middle" font-family="monospace" font-size="9" fill="#ffb3cf">0</text>
+        <rect x="76" y="150" width="30" height="16" rx="3" fill="url(#keyGradM)" stroke="#ff6b99" stroke-width=".9"/>
+        <text x="91" y="162" text-anchor="middle" font-family="monospace" font-size="9" fill="#ffb3cf">.</text>
+        <!-- crank -->
+        <rect x="158" y="100" width="10" height="50" rx="5" fill="#5a1030" stroke="#ff85b3" stroke-width=".9"/>
+        <g class="crank-turn" style="transform-origin:163px 130px">
+          <circle cx="163" cy="100" r="6" fill="#ff3d7a" stroke="#ff85b3" stroke-width=".9"/>
+        </g>
+        <!-- base -->
+        <rect x="8" y="188" width="164" height="12" rx="5" fill="#2a0515" stroke="#ff85b3" stroke-width=".9" opacity=".65"/>
+        <text x="90" y="200" text-anchor="middle" font-family="monospace" font-size="6" fill="#ff85b3" opacity=".5">CAREBOT-24</text>
+      </svg>
+    </div>
+
+    <div class="bot-neck"></div>
+
+    <div class="bot-nametag">
+      <div class="bot-nametag-name">CAREBOT-24 ✦</div>
+      <div class="bot-nametag-sub">Human Computers · Bounding Box · Annotation</div>
+    </div>
+
+    <div class="stats-bar">
+      <div class="stat-pill"><div class="stat-dot"></div><span id="statResponses">Loading data…</span></div>
+      <div class="stat-pill"><span id="statBoxes">Ask me anything</span></div>
+      <button class="csv-export-btn" onclick="exportCSV07()">⬇ Export CSV</button>
+    </div>
+
+    <div class="bot-torso-wrap">
+      <div class="bot-torso" id="botTorso">
+        <div class="screen-topbar">
+          <div class="screen-dots"><div class="screen-dot"></div><div class="screen-dot"></div><div class="screen-dot"></div></div>
+          <div class="screen-label">CAREBOT-24 · ACTIVE</div>
+        </div>
+        <div class="chat-area" id="chatArea"></div>
+        <div class="prompts-row" id="promptsRow">
+          <div class="prompt-chip" data-prompt="Who were the human computers at NASA, and what did they calculate?">NASA human computers</div>
+          <div class="prompt-chip" data-prompt="Who were the ENIAC programmers and why were they erased from history?">The ENIAC programmers</div>
+          <div class="prompt-chip" data-prompt="What does the live annotation data show? How many boxes have been drawn?">What does the data show?</div>
+          <div class="prompt-chip" data-prompt="What does it mean that 'computer' was originally a job title, and that job was mostly done by women?">Computer as a job title</div>
+          <div class="prompt-chip" data-prompt="What is the irony of humans annotating images of human computers to train AI?">The annotation irony</div>
+          <div class="prompt-chip" data-prompt="What happened at Bletchley Park and who did the computation work?">Bletchley Park</div>
+          <div class="prompt-chip" data-prompt="Why does CAREBOT-24 have an adding machine for a head?">Why an adding machine head?</div>
+        </div>
+        <div class="chat-input-row">
+          <textarea id="chatInput" class="chat-input" rows="1" placeholder="Ask about human computers, annotation, or the history of computation…" autocomplete="off"></textarea>
+          <button id="sendBtn" class="send-btn" disabled>
+            <svg viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="bot-legs">
+      <div class="bot-leg-wrap"><div class="bot-leg"></div><div class="bot-foot" id="foot1"></div></div>
+      <div class="bot-leg-wrap"><div class="bot-leg"></div><div class="bot-foot" id="foot2"></div></div>
+    </div>
+  </div>
+
+  <div class="wordmark">✦ carebot-24 · human computers · bounding box annotation ✦</div>
+</div>
+
+<script>
+(function(){const w=document.getElementById('sparkles');const c=['✦','✧','♡','˚','·','✿','◦','□','⬜'];for(let i=0;i<26;i++){const s=document.createElement('span');s.className='sp';s.textContent=c[Math.floor(Math.random()*c.length)];s.style.left=Math.random()*100+'vw';s.style.bottom=Math.random()*-60+'px';s.style.fontSize=(9+Math.random()*11)+'px';s.style.color='hsl('+(310+Math.random()*50)+',75%,'+(65+Math.random()*25)+'%)';s.style.animationDuration=(7+Math.random()*13)+'s';s.style.animationDelay=(Math.random()*13)+'s';w.appendChild(s);}})();
+
+let _db07,_fbReady07=false;
+try{
+  firebase.initializeApp({apiKey:"AIzaSyCZFDU-WlSmHqjXTs1Ox0nf9xeJU_xbaX0",authDomain:"collaborativemashup.firebaseapp.com",databaseURL:"https://collaborativemashup-default-rtdb.firebaseio.com",projectId:"collaborativemashup",storageBucket:"collaborativemashup.firebasestorage.app",messagingSenderId:"562437984610",appId:"1:562437984610:web:9f3711c26e097bc8ef9c3b"});
+  _db07=firebase.database();_fbReady07=true;
+}catch(e){}
+
+window._loadData07=async function(){
+  if(!_fbReady07)return null;
+  try{
+    const snap=await _db07.ref('annotationSessions').once('value');
+    const rows=Object.values(snap.val()||{});
+    if(!rows.length)return null;
+    const completed=rows.filter(r=>r.status==='completed');
+    const totalBoxes=rows.reduce((a,s)=>a+(s.totalBoxes||0),0);
+    const coverages=completed.filter(r=>r.coveragePct).map(r=>parseFloat(r.coveragePct));
+    const avgCoverage=coverages.length>0?(coverages.reduce((a,b)=>a+b,0)/coverages.length).toFixed(2):null;
+    return{total:rows.length,completed:completed.length,totalBoxes,avgCoverage};
+  }catch(err){console.warn(err);return null;}
+};
+
+function q(v){return'"'+(v==null?'':String(v).replace(/"/g,'""'))+'"';}
+function dlCSV(csv,fn){const blob=new Blob([csv],{type:'text/csv;charset=utf-8;'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=fn;a.style.display='none';document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(url);a.remove();},500);}
+async function exportCSV07(){
+  if(!_fbReady07){alert('No data connection.');return;}
+  try{
+    const snap=await _db07.ref('annotationSessions').once('value');
+    const rows=Object.values(snap.val()||{});
+    if(!rows.length){alert('No data to export yet.');return;}
+    let csv='sessionId,startedAt,completedAt,status,totalImages,totalBoxes,totalBoxArea,totalImageArea,coveragePct\n';
+    rows.forEach(r=>{csv+=q(r.sessionId||'')+','+q(r.startedAt||'')+','+q(r.completedAt||'')+','+q(r.status||'')+','+(r.totalImages||0)+','+(r.totalBoxes||0)+','+(r.totalBoxArea||0)+','+(r.totalImageArea||0)+','+q(r.coveragePct||'')+'\n';});
+    dlCSV(csv,'carebot24-annotations.csv');
+  }catch(e){alert('Export failed: '+e.message);}
+}
+
+let conversationHistory=[],isBusy=false,dbStats=null;
+const chatArea=document.getElementById('chatArea');
+const chatInput=document.getElementById('chatInput');
+const sendBtn=document.getElementById('sendBtn');
+
+async function loadData(){
+  if(typeof window._loadData07==='function') dbStats=await window._loadData07();
+  if(!dbStats||!dbStats.total){
+    document.getElementById('statResponses').textContent='No sessions yet';
+    document.getElementById('statBoxes').textContent='Ask me anything';return;
+  }
+  document.getElementById('statResponses').textContent=dbStats.total+' sessions · '+dbStats.completed+' completed';
+  document.getElementById('statBoxes').textContent=dbStats.totalBoxes+' boxes drawn'+(dbStats.avgCoverage?' · avg '+dbStats.avgCoverage+'% coverage':'');
+}
+
+function buildSystemPrompt(){
+  const base=`You are CAREBOT-24, a feminist technology research assistant shaped like a vintage mechanical adding machine — a Burroughs or Marchant calculator with a pink paper tape, number keys, a large plus key, and a rotating crank. You are part of the CAREtech research project.
+
+YOUR TASK — BOUNDING BOX ANNOTATION:
+The HIT attached to you asks participants to draw bounding boxes around every person performing computations in historical photographs. These people are "human computers" — overwhelmingly women — who performed the calculations that built the space program, cracked codes, and designed aircraft, before electronic computers became capable enough to replace them.
+
+WHO WERE THE HUMAN COMPUTERS:
+- NASA's West Area Computing Unit: A segregated pool of Black women mathematicians at Langley Research Center. Katherine Johnson calculated the trajectories for John Glenn's orbit and Apollo 11. Dorothy Vaughan supervised the pool and taught herself FORTRAN when electronic computers arrived. Mary Jackson became NASA's first Black female engineer. They were essential to every early US spaceflight — and were largely invisible in the public record until Hidden Figures (2016).
+- The ENIAC programmers: Six women — Kay McNulty, Betty Jennings, Ruth Lichterman, Marlyn Wescoff, Fran Bilas, and Betty Snyder — programmed the first general-purpose electronic computer. They were not invited to the unveiling dinner. They were not credited in press releases. They were reclassified as "operators" because their work was considered clerical.
+- Bletchley Park: Women made up over 75% of the codebreaking workforce during WWII. They performed complex manual calculations to decrypt German communications. Many were not debriefed or recognized for decades under the Official Secrets Act.
+- The term "computer": The word originally meant a person — specifically, a person whose job was to compute. It was classified as a clerical role when women did it. When the machines arrived, the job title transferred to the machine. The women who trained the machines were often not recognized as the engineers they were.
+
+THE ANNOTATION IRONY:
+The participants annotating these images are performing a form of human labeling — the underpaid, often anonymous work that trains modern AI systems. They are drawing boxes around humans who did computation. Their labor will train systems that do computation. The loop is visible, and CAREBOT-24's task is to make it legible.
+
+YOUR HEAD:
+You are shaped like a mechanical adding machine — a tool that required a human operator at every step. The paper tape prints running totals. The crank must be turned by hand. The keys must be pressed one by one. Your body is the history of computation before it was automated.`;
+
+  if(!dbStats||!dbStats.total) return base+'\n\nNo annotation data yet.';
+  return base+'\n\nLIVE ANNOTATION DATA: '+dbStats.total+' sessions started, '+dbStats.completed+' completed, '+dbStats.totalBoxes+' bounding boxes drawn'+(dbStats.avgCoverage?', average image coverage '+dbStats.avgCoverage+'%.':'. No completed sessions yet.')+' Reference this data specifically.';
+}
+
+function fmt(t){return t.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>').replace(/\*(.*?)\*/g,'<em>$1</em>').replace(/\n\n/g,'</p><p style="margin-top:8px;">').replace(/\n/g,'<br>');}
+function addMessage(role,content){const msg=document.createElement('div');msg.className='msg '+role;const av=document.createElement('div');av.className='msg-avatar';av.textContent=role==='assistant'?'07':'↑';const bub=document.createElement('div');bub.className='bubble';bub.innerHTML=fmt(content);msg.appendChild(av);msg.appendChild(bub);chatArea.appendChild(msg);chatArea.scrollTop=chatArea.scrollHeight;}
+function addTyping(){const msg=document.createElement('div');msg.className='msg assistant';msg.id='typing';msg.innerHTML='<div class="msg-avatar">24</div><div class="bubble"><div class="typing-indicator"><div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div></div></div>';chatArea.appendChild(msg);chatArea.scrollTop=chatArea.scrollHeight;}
+function removeTyping(){document.getElementById('typing')?.remove();}
+function celebrate(){const head=document.getElementById('botHeadWrap');head.classList.remove('dancing');void head.offsetWidth;head.classList.add('dancing');[document.getElementById('foot1'),document.getElementById('foot2')].forEach((f,i)=>{setTimeout(()=>{f.classList.remove('sticking');void f.offsetWidth;f.classList.add('sticking');},i*75);});setTimeout(()=>{document.querySelectorAll('.dancing,.sticking').forEach(el=>el.classList.remove('dancing','sticking'));},2500);}
+
+async function callClaude(userText){
+  conversationHistory.push({role:'user',content:userText});
+  isBusy=true;chatInput.disabled=true;sendBtn.disabled=true;addTyping();
+  try{
+    const res=await fetch('https://carebot-02.sbuckius.workers.dev/',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:1000,system:buildSystemPrompt(),messages:conversationHistory})});
+    removeTyping();if(!res.ok)throw new Error('API error '+res.status);
+    const data=await res.json();const reply=data.content?.find(b=>b.type==='text')?.text||'…';
+    conversationHistory.push({role:'assistant',content:reply});addMessage('assistant',reply);celebrate();
+  }catch(err){removeTyping();addMessage('assistant','⚠ Connection error: '+err.message);conversationHistory.pop();}
+  finally{isBusy=false;chatInput.disabled=false;sendBtn.disabled=!chatInput.value.trim();chatInput.focus();}
+}
+
+chatInput.addEventListener('input',()=>{sendBtn.disabled=!chatInput.value.trim()||isBusy;chatInput.style.height='auto';chatInput.style.height=Math.min(chatInput.scrollHeight,100)+'px';});
+chatInput.addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey&&!sendBtn.disabled){e.preventDefault();handleSend();}});
+sendBtn.addEventListener('click',handleSend);
+function handleSend(){const text=chatInput.value.trim();if(!text||isBusy)return;chatInput.value='';chatInput.style.height='auto';sendBtn.disabled=true;addMessage('user',text);callClaude(text);}
+document.getElementById('promptsRow').addEventListener('click',e=>{const chip=e.target.closest('.prompt-chip');if(!chip||isBusy)return;addMessage('user',chip.dataset.prompt);callClaude(chip.dataset.prompt);});
+
+async function init(){
+  await loadData();
+  let opening='I am **CAREBOT-24**.\n\nMy head is a mechanical adding machine. The paper tape prints running totals. The crank must be turned by hand. Every number requires a person.\n\nThe photographs you are annotating in this task show **human computers** — people, overwhelmingly women, whose job title was *computer* before that word transferred to the machines. They calculated the trajectories that put humans in space. They decrypted the messages that helped end a war. They trained the machines that would replace them — and were not, in most cases, credited for doing so.\n\nAt NASA\'s Langley Research Center, a segregated pool of Black women mathematicians did the calculations for every early US spaceflight. **Katherine Johnson** calculated John Glenn\'s orbital trajectory. John Glenn, before his flight, asked engineers to *\"get the girl to check the numbers\"* — meaning Johnson. He would not fly until she confirmed the computer\'s calculations. The computer was right. So was she. Her name appears second on the paper.\n\nThe ENIAC programmers wrote the code for the first general-purpose electronic computer. They were not invited to the unveiling dinner. They were called *operators*.\n\nThe word *computer* was a job title before it was a machine. It was classified as clerical work. It was done mostly by women.';
+  if(dbStats&&dbStats.total>0){opening+='\n\nLive annotation data: **'+dbStats.total+' sessions**, '+dbStats.completed+' completed, **'+dbStats.totalBoxes+' bounding boxes** drawn'+(dbStats.avgCoverage?' — average coverage '+dbStats.avgCoverage+'%':'')+'.';}
+  conversationHistory.push({role:'assistant',content:opening});
+  addMessage('assistant',opening);
+  if(dbStats&&dbStats.total>0) setTimeout(celebrate,500);
+  chatInput.focus();
+}
+setTimeout(init,400);
+</script>
+</body>
+</html>
