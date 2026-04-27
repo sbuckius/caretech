@@ -1,0 +1,629 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>✦ CAREBOT-33 ✦ CEO · Robot · Human</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;900&family=Quicksand:wght@500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --bg:#0e0008;--cream:#fff5f8;
+  --purple:#ff2d6b;--violet:#ff85b3;--violet-soft:#ffb3cf;
+  --pink:#ff2d6b;--candy:#ff85b3;
+  --teal:#c4005a;--teal-soft:#ffb3cf;
+  --muted:rgba(255,180,210,.5);--muted2:rgba(255,210,228,.72);
+  --border:rgba(255,100,150,.22);--border2:rgba(255,60,120,.5);
+  --surface:rgba(14,0,32,.97);
+  --fh:'Nunito',sans-serif;--fb:'Quicksand',sans-serif;--fm:'DM Mono',monospace;
+  --ceo:#6f001e;--robot:#1a000e;--human:#6f001e;
+}
+html,body{min-height:100%;font-family:var(--fb);font-weight:600;color:var(--cream);background:var(--bg);-webkit-font-smoothing:antialiased;}
+::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px}
+.bg-layer{position:fixed;inset:0;z-index:0;pointer-events:none;background:radial-gradient(ellipse 60% 50% at 10% 85%,rgba(120,0,200,.22) 0%,transparent 58%),radial-gradient(ellipse 50% 40% at 90% 10%,rgba(180,0,80,.18) 0%,transparent 58%),linear-gradient(155deg,#120008,#0e0008 50%,#030008);}
+.orb{position:fixed;border-radius:50%;pointer-events:none;z-index:0;filter:blur(65px);}
+.orb-1{width:380px;height:380px;background:#6f001e;opacity:.22;bottom:-80px;left:-70px;animation:d1 21s ease-in-out infinite;}
+.orb-2{width:300px;height:300px;background:#c4005a;opacity:.15;top:-60px;right:-60px;animation:d2 25s ease-in-out infinite;}
+.orb-3{width:200px;height:200px;background:var(--hot);opacity:.1;top:42%;left:55%;animation:d3 17s ease-in-out infinite;}
+@keyframes d1{0%,100%{transform:translate(0,0)}50%{transform:translate(38px,26px)}}
+@keyframes d2{0%,100%{transform:translate(0,0)}50%{transform:translate(-28px,-20px)}}
+@keyframes d3{0%,100%{transform:translate(0,0)}33%{transform:translate(-16px,12px)}66%{transform:translate(12px,-9px)}}
+.sparkles{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden;}
+.sp{position:absolute;opacity:0;animation:floatUp linear infinite;}
+@keyframes floatUp{0%{opacity:0;transform:translateY(0) scale(.6)}15%{opacity:.55}85%{opacity:.28}100%{opacity:0;transform:translateY(-130px) scale(1.1)}}
+@keyframes breathe{0%,100%{opacity:1}50%{opacity:.2}}
+
+.screen{position:relative;z-index:2;min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:max(16px,env(safe-area-inset-top)) clamp(12px,4vmin,22px) calc(44px + env(safe-area-inset-bottom));gap:13px;}
+
+/* TOPBAR */
+.cb-topbar{width:100%;max-width:680px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:7px;}
+.cb-logo{display:flex;align-items:center;gap:10px;}
+.cb-icon{width:40px;height:40px;border-radius:10px;background:rgba(255,45,107,.18);border:1.5px solid var(--border2);display:flex;align-items:center;justify-content:center;font-size:18px;animation:wobble 4s ease-in-out infinite;}
+@keyframes wobble{0%,100%{transform:rotate(-2deg) scale(1)}25%{transform:rotate(1.5deg) scale(1.04)}50%{transform:rotate(-1deg)}75%{transform:rotate(2deg) scale(1.03)}}
+.cb-name{font-family:var(--fh);font-weight:900;font-size:12px;background:linear-gradient(90deg,var(--blush),var(--candy) 55%,var(--candy));-webkit-background-clip:text;background-clip:text;color:transparent;}
+.cb-sub{font-size:9px;letter-spacing:.15em;text-transform:uppercase;color:var(--muted);margin-top:1px;}
+.cb-badges{display:flex;gap:6px;align-items:center;flex-wrap:wrap;}
+.cb-badge{font-size:10px;padding:4px 10px;border-radius:999px;background:rgba(255,255,255,.04);border:1px solid var(--border);color:var(--muted);letter-spacing:.06em;display:flex;align-items:center;gap:5px;}
+.cb-pip{display:inline-block;width:5px;height:5px;border-radius:50%;background:var(--hot);animation:breathe 2s ease-in-out infinite;vertical-align:middle;margin-right:4px;}
+.btn-csv{appearance:none;display:flex;align-items:center;gap:.26rem;background:rgba(255,45,107,.1);color:var(--candy);border:1.5px solid var(--border2);border-radius:9px;padding:.26rem .65rem;font-family:var(--fb);font-size:.6rem;font-weight:700;cursor:pointer;letter-spacing:.04em;transition:all .2s;white-space:nowrap;}
+.btn-csv:hover{background:rgba(255,45,107,.22);transform:translateY(-1px);}
+
+/* STATS */
+.stats-bar{width:100%;max-width:680px;display:flex;align-items:center;gap:.6rem;flex-wrap:wrap;padding:.5rem .9rem;background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:13px;}
+.stat-chip{display:flex;align-items:center;gap:.3rem;font-size:.62rem;font-weight:700;color:var(--muted);letter-spacing:.06em;text-transform:uppercase;background:rgba(255,45,107,.06);border:1px solid rgba(255,45,107,.13);border-radius:999px;padding:.18rem .6rem;}
+.stat-chip strong{color:var(--candy);}
+
+/* ARGUMENT CARD */
+.arg-card{width:100%;max-width:680px;background:var(--surface);border:1.5px solid var(--border2);border-radius:18px;padding:20px;position:relative;overflow:hidden;box-shadow:0 4px 28px rgba(255,45,107,.18),inset 0 1px 0 rgba(255,100,150,.06);}
+.arg-card::before{content:'';position:absolute;top:0;left:10%;right:10%;height:1.5px;background:linear-gradient(90deg,transparent,var(--candy) 35%,var(--hot) 50%,var(--candy) 65%,transparent);box-shadow:0 0 10px var(--candy);border-radius:999px;}
+.arg-eyebrow{font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);margin-bottom:10px;}
+.arg-title{font-family:var(--fh);font-weight:900;font-size:clamp(15px,3vw,19px);background:linear-gradient(90deg,var(--blush),var(--hot) 55%,var(--candy));-webkit-background-clip:text;background-clip:text;color:transparent;margin-bottom:14px;line-height:1.3;}
+.arg-body{font-size:13px;line-height:1.82;color:var(--muted2);}
+.arg-body strong{color:var(--candy);font-weight:700;}
+.arg-body em{color:var(--candy);font-style:normal;}
+
+/* THREE IDENTITY CARDS */
+.identity-row{width:100%;max-width:680px;display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}
+.id-card{border-radius:14px;padding:14px;position:relative;overflow:hidden;}
+.id-card::before{content:'';position:absolute;top:0;left:10%;right:10%;height:1px;border-radius:999px;}
+.id-card.ceo{background:rgba(100,0,30,.35);border:1.5px solid rgba(255,80,130,.4);}
+.id-card.ceo::before{background:linear-gradient(90deg,transparent,#ff85b3 50%,transparent);}
+.id-card.robot{background:rgba(14,0,32,.8);border:1.5px solid rgba(255,45,107,.5);}
+.id-card.robot::before{background:linear-gradient(90deg,transparent,#ff2d6b 50%,transparent);}
+.id-card.human{background:rgba(180,0,50,.2);border:1.5px solid rgba(255,80,130,.35);}
+.id-card.human::before{background:linear-gradient(90deg,transparent,#ff85b3 50%,transparent);}
+.id-label{font-family:var(--fh);font-weight:900;font-size:11px;letter-spacing:.14em;text-transform:uppercase;margin-bottom:6px;}
+.id-card.ceo .id-label{color:#ffb3cf;}
+.id-card.robot .id-label{color:var(--candy);}
+.id-card.human .id-label{color:var(--blush);}
+.id-desc{font-size:11px;line-height:1.65;color:var(--muted);}
+
+/* DATA MODULE — shared card wrapper */
+.data-card{width:100%;max-width:680px;background:var(--surface);border:1.5px solid var(--border2);border-radius:18px;overflow:hidden;position:relative;box-shadow:0 4px 28px rgba(255,45,107,.15);}
+.data-card::before{content:'';position:absolute;top:0;left:10%;right:10%;height:1.5px;background:linear-gradient(90deg,transparent,var(--candy) 35%,var(--hot) 50%,var(--candy) 65%,transparent);box-shadow:0 0 10px var(--hot);border-radius:999px;}
+.data-header{padding:14px 17px 11px;border-bottom:1px solid var(--border);}
+.data-eyebrow{font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);margin-bottom:5px;}
+.data-title{font-family:var(--fh);font-weight:900;font-size:14px;background:linear-gradient(90deg,var(--blush),var(--hot));-webkit-background-clip:text;background-clip:text;color:transparent;line-height:1.3;}
+.data-sub{font-size:11px;color:var(--muted);margin-top:4px;line-height:1.6;}
+
+/* REFLECTION MODULE */
+.reflect-body{padding:14px 17px;}
+.reflect-q{font-size:12px;font-weight:700;color:var(--cream);margin-bottom:10px;line-height:1.5;}
+.identity-btns{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;}
+.id-btn{appearance:none;font-family:var(--fh);font-weight:900;font-size:11px;letter-spacing:.08em;text-transform:uppercase;padding:8px 16px;border-radius:10px;cursor:pointer;border:1.5px solid;transition:all .18s;}
+.id-btn.ceo-btn{color:#ffb3cf;background:rgba(100,0,30,.2);border-color:rgba(255,80,130,.4);}
+.id-btn.ceo-btn.active,.id-btn.ceo-btn:hover{background:rgba(60,52,137,.55);border-color:#ff85b3;color:var(--blush);}
+.id-btn.robot-btn{color:var(--candy);background:rgba(255,45,107,.1);border-color:rgba(255,45,107,.4);}
+.id-btn.robot-btn.active,.id-btn.robot-btn:hover{background:rgba(255,45,107,.3);border-color:var(--hot);color:var(--blush);}
+.id-btn.human-btn{color:var(--blush);background:rgba(180,0,50,.18);border-color:rgba(255,80,130,.3);}
+.id-btn.human-btn.active,.id-btn.human-btn:hover{background:rgba(180,0,50,.45);border-color:var(--blush);color:#fff5f8;}
+.id-btn.all-btn{color:var(--candy);background:rgba(255,45,107,.1);border-color:rgba(255,45,107,.3);}
+.id-btn.all-btn.active,.id-btn.all-btn:hover{background:rgba(255,45,107,.28);border-color:var(--pink);color:var(--cream);}
+.reflect-text{width:100%;padding:9px 13px;background:rgba(255,255,255,.05);border:1.5px solid var(--border);border-radius:11px;font-family:var(--fb);font-weight:600;font-size:12px;color:var(--cream);outline:none;transition:border-color .2s;resize:vertical;min-height:72px;}
+.reflect-text:focus{border-color:var(--candy);box-shadow:0 0 0 3px rgba(255,45,107,.1);}
+.reflect-text::placeholder{color:var(--muted);}
+
+/* ANNOTATION MODULE */
+.annot-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:6px;padding:10px 14px;}
+.annot-item{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:8px 11px;background:rgba(255,255,255,.03);border:1px solid rgba(255,100,150,.1);border-radius:10px;transition:border-color .2s;}
+.annot-item.sel-ceo{border-color:rgba(255,80,130,.5);background:rgba(100,0,30,.18);}
+.annot-item.sel-robot{border-color:rgba(255,45,107,.5);background:rgba(255,45,107,.12);}
+.annot-item.sel-human{border-color:rgba(255,80,130,.45);background:rgba(180,0,50,.15);}
+.annot-task{font-size:12px;font-weight:700;color:var(--cream);flex:1;}
+.annot-btns{display:flex;gap:4px;flex-shrink:0;}
+.annot-btn{padding:3px 8px;border-radius:6px;font-family:var(--fb);font-weight:700;font-size:9px;letter-spacing:.06em;text-transform:uppercase;cursor:pointer;border:1px solid transparent;transition:all .18s;appearance:none;}
+.annot-btn.ceo{background:rgba(100,0,30,.2);color:#ffb3cf;border-color:rgba(255,80,130,.3);}
+.annot-btn.ceo:hover,.annot-btn.ceo.active{background:rgba(180,0,50,.5);border-color:#ff85b3;color:var(--cream);}
+.annot-btn.robot{background:rgba(255,45,107,.12);color:var(--candy);border-color:rgba(255,45,107,.3);}
+.annot-btn.robot:hover,.annot-btn.robot.active{background:rgba(255,45,107,.35);border-color:var(--hot);color:var(--cream);}
+.annot-btn.human{background:rgba(180,0,50,.15);color:var(--blush);border-color:rgba(255,80,130,.25);}
+.annot-btn.human:hover,.annot-btn.human.active{background:rgba(180,0,50,.45);border-color:var(--blush);color:var(--cream);}
+.annot-footer{padding:10px 15px 14px;display:flex;gap:8px;align-items:center;border-top:1px solid var(--border);}
+.annot-progress{font-size:10px;color:var(--muted);font-weight:700;}
+
+/* POLL MODULE */
+.poll-body{padding:14px 17px;}
+.poll-q{font-size:12px;font-weight:700;color:var(--cream);margin-bottom:12px;line-height:1.5;}
+.poll-options{display:flex;flex-direction:column;gap:7px;margin-bottom:12px;}
+.poll-opt{appearance:none;width:100%;text-align:left;padding:11px 14px;border-radius:10px;background:rgba(255,45,107,.06);border:1.5px solid var(--border);color:var(--muted2);font-family:var(--fb);font-weight:600;font-size:12px;cursor:pointer;transition:all .18s;display:flex;align-items:center;gap:10px;}
+.poll-opt:hover{background:rgba(255,45,107,.14);border-color:var(--border2);color:var(--cream);}
+.poll-opt.selected{background:rgba(255,45,107,.22);border-color:var(--hot);color:var(--blush);}
+.poll-opt.submitted{pointer-events:none;}
+.poll-check{width:16px;height:16px;border-radius:50%;border:1.5px solid var(--border2);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:9px;transition:all .18s;}
+.poll-opt.selected .poll-check{background:var(--hot);border-color:var(--hot);color:var(--cream);}
+.poll-bar-wrap{margin-top:4px;display:none;}
+.poll-bar-wrap.show{display:block;}
+.poll-bar-row{display:flex;align-items:center;gap:8px;margin-bottom:5px;font-size:10px;color:var(--muted);}
+.poll-bar-track{flex:1;height:5px;border-radius:999px;background:rgba(255,100,150,.1);overflow:hidden;}
+.poll-bar-fill{height:100%;border-radius:999px;background:var(--hot);transition:width .5s;}
+.poll-pct{font-size:10px;color:var(--candy);min-width:30px;text-align:right;}
+
+/* RESOLUTION RATING */
+.rating-body{padding:14px 17px;}
+.rating-q{font-size:12px;font-weight:700;color:var(--cream);margin-bottom:5px;line-height:1.5;}
+.rating-sub{font-size:11px;color:var(--muted);margin-bottom:12px;line-height:1.5;}
+.rating-scale{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-bottom:10px;}
+.r-label{font-size:10px;color:var(--muted);letter-spacing:.06em;}
+.r-num{width:36px;height:36px;border-radius:8px;border:1.5px solid var(--border);background:rgba(255,45,107,.06);color:var(--muted);font-family:var(--fh);font-weight:900;font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .18s;appearance:none;}
+.r-num:hover,.r-num.lit{background:rgba(255,45,107,.28);border-color:var(--hot);color:var(--blush);}
+.r-num.submitted{pointer-events:none;}
+
+/* SHARED SUBMIT BTN */
+.data-submit{appearance:none;font-family:var(--fh);font-weight:900;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--cream);background:linear-gradient(135deg,var(--hot),#c4005a);border:none;border-radius:10px;padding:9px 18px;cursor:pointer;box-shadow:0 3px 14px rgba(255,45,107,.3);transition:all .2s;}
+.data-submit:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(255,45,107,.44);}
+.data-submit:disabled{opacity:.4;cursor:not-allowed;transform:none;box-shadow:none;}
+.data-submit.done{background:linear-gradient(135deg,rgba(100,200,100,.4),rgba(60,160,60,.5));box-shadow:none;cursor:default;}
+
+/* Q&A INPUT */
+.cb-card{width:100%;max-width:680px;background:var(--surface);border:1.5px solid var(--border2);border-radius:18px;padding:17px;position:relative;overflow:hidden;}
+.cb-card::before{content:'';position:absolute;top:0;left:10%;right:10%;height:1.5px;background:linear-gradient(90deg,transparent,var(--candy) 35%,var(--hot) 50%,var(--candy) 65%,transparent);box-shadow:0 0 10px var(--candy);border-radius:999px;}
+.cb-eyebrow{font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);margin-bottom:10px;}
+.cb-row{display:flex;gap:8px;margin-bottom:7px;flex-wrap:wrap;}
+.cb-row:last-child{margin-bottom:0;}
+.cb-input{flex:1;padding:9px 13px;background:rgba(255,255,255,.05);border:1.5px solid var(--border);border-radius:11px;font-family:var(--fb);font-weight:600;font-size:13px;color:var(--cream);outline:none;transition:border-color .2s;min-width:0;}
+.cb-input:focus{border-color:var(--candy);box-shadow:0 0 0 3px rgba(255,45,107,.1);}
+.cb-input::placeholder{color:var(--muted);}
+.cb-name-in{max-width:148px;flex:0 0 148px;}
+.cb-btn{font-family:var(--fh);font-weight:900;font-size:12px;letter-spacing:.05em;color:var(--cream);display:inline-flex;align-items:center;gap:5px;padding:9px 17px;border-radius:11px;border:1.5px solid var(--border2);cursor:pointer;transition:all .2s;white-space:nowrap;appearance:none;}
+.cb-btn.primary{background:linear-gradient(135deg,var(--hot),#c4005a);box-shadow:0 4px 16px rgba(255,45,107,.28);}
+.cb-btn.primary:hover{transform:translateY(-2px);box-shadow:0 6px 22px rgba(255,45,107,.44);}
+.cb-btn.soft{background:rgba(255,255,255,.04);color:var(--muted);border-color:var(--border);font-size:11px;}
+.cb-btn.soft:hover{background:rgba(255,45,107,.12);color:var(--candy);}
+.cb-btn:active{transform:scale(.97);}
+
+/* MESSAGES */
+.cb-msgs{width:100%;max-width:680px;display:flex;flex-direction:column;gap:13px;}
+.cb-empty{text-align:center;padding:42px 18px;color:var(--muted);}
+.cb-empty h3{font-family:var(--fh);font-weight:900;font-size:16px;background:linear-gradient(90deg,var(--blush),var(--hot));-webkit-background-clip:text;background-clip:text;color:transparent;margin-bottom:7px;}
+.cb-empty p{font-size:12px;}
+.cb-pair{animation:slideUp .35s ease-out;}
+@keyframes slideUp{from{opacity:0;transform:translateY(13px)}to{opacity:1;transform:translateY(0)}}
+.cb-meta{font-size:11px;color:var(--muted);margin-bottom:5px;}
+.cb-qbubble{display:inline-block;background:linear-gradient(135deg,var(--hot),#c4005a);color:#fff;padding:9px 14px;border-radius:16px 16px 16px 3px;font-size:13px;margin-bottom:11px;max-width:88%;line-height:1.5;box-shadow:0 3px 12px rgba(255,45,107,.26);}
+.cb-pcard{background:rgba(14,0,32,.9);border:1.5px solid var(--border2);border-radius:13px;overflow:hidden;margin-bottom:7px;}
+.cb-phead{background:linear-gradient(135deg,rgba(255,45,107,.78),rgba(85,0,170,.84));padding:8px 13px;}
+.cb-plabel{font-family:var(--fh);font-weight:900;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:#fff;}
+.cb-pbody{padding:13px;}
+.cb-ptext{font-size:13px;line-height:1.7;color:rgba(220,200,255,.88);}
+.cb-psrc{margin-top:9px;padding-top:9px;border-top:1px solid rgba(255,100,150,.1);font-size:11px;color:var(--muted);}
+.cb-psrc a{color:var(--candy);text-decoration:none;}
+.cb-psrc a:hover{text-decoration:underline;}
+.cb-mcard{background:rgba(14,0,32,.9);border:1.5px solid rgba(255,80,130,.3);border-radius:13px;overflow:hidden;}
+.cb-mhead{background:linear-gradient(135deg,rgba(29,158,117,.75),rgba(8,80,65,.82));padding:8px 13px;}
+.cb-mlabel{font-family:var(--fh);font-weight:900;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:#fff;}
+.cb-mbody{padding:13px;}
+.cb-mtext{font-family:var(--fm);font-size:11.5px;line-height:1.85;color:rgba(160,240,210,.85);white-space:pre-wrap;}
+.cb-spkrow{padding:7px 13px 11px;display:flex;gap:7px;}
+
+.cb-bottom{width:100%;max-width:680px;background:linear-gradient(135deg,rgba(60,0,100,.8),rgba(30,0,50,.92));border:1.5px solid var(--border2);border-radius:18px;padding:17px;text-align:center;position:relative;overflow:hidden;box-shadow:0 8px 48px rgba(255,45,107,.3);}
+.cb-bottom::before{content:'';position:absolute;top:0;left:10%;right:10%;height:1.5px;background:linear-gradient(90deg,transparent,var(--candy) 35%,var(--hot) 50%,var(--candy) 65%,transparent);border-radius:999px;}
+.cb-btitle{font-family:var(--fh);font-weight:900;font-size:15px;background:linear-gradient(90deg,var(--blush),var(--hot),var(--candy));-webkit-background-clip:text;background-clip:text;color:transparent;margin-bottom:11px;}
+.cb-link{display:inline-flex;align-items:center;gap:5px;font-family:var(--fh);font-weight:900;font-size:13px;color:var(--cream);background:linear-gradient(135deg,var(--hot),#c4005a);padding:11px 23px;border-radius:13px;text-decoration:none;border:1.5px solid var(--hot);box-shadow:0 4px 18px rgba(255,45,107,.32);transition:all .2s;}
+.cb-link:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(255,45,107,.46);}
+.cb-modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:999;align-items:center;justify-content:center;}
+.cb-modal.open{display:flex;}
+.cb-mbox{background:rgba(14,0,32,.97);border:1.5px solid var(--border2);border-radius:18px;padding:24px 22px;max-width:340px;width:90%;box-shadow:0 8px 38px rgba(255,45,107,.38);position:relative;}
+.cb-mbox::before{content:'';position:absolute;top:0;left:10%;right:10%;height:1.5px;background:linear-gradient(90deg,transparent,var(--candy) 35%,var(--hot) 50%,var(--candy) 65%,transparent);border-radius:999px;}
+.cb-mtitle{font-family:var(--fh);font-weight:900;font-size:16px;color:var(--blush);margin-bottom:9px;}
+.cb-mbodytxt{font-size:12px;color:var(--muted);line-height:1.6;margin-bottom:15px;}
+.cb-mbtns{display:flex;gap:9px;}
+.cb-err{font-size:11px;color:var(--pink);margin-top:6px;min-height:16px;}
+.cb-wmark{font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,100,150,.1);padding-bottom:8px;}
+@media(max-width:500px){.identity-row{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+<div class="bg-layer"></div>
+<div class="orb orb-1"></div><div class="orb orb-2"></div><div class="orb orb-3"></div>
+<div class="sparkles" id="sparkles"></div>
+
+<div class="screen">
+
+  <div class="cb-topbar">
+    <div class="cb-logo">
+      <div class="cb-icon">⚙</div>
+      <div>
+        <div class="cb-name">CAREBOT-33 ✦ CEO · ROBOT · HUMAN</div>
+        <div class="cb-sub">Three identities · One body · No resolution · CAREtech</div>
+      </div>
+    </div>
+    <div class="cb-badges">
+      <div class="cb-badge" id="onlineCount"><span class="cb-pip"></span>Connecting…</div>
+      <div class="cb-badge" id="sysTime">--:--</div>
+      <button class="btn-csv" onclick="downloadCSV()">⬇ Export CSV</button>
+    </div>
+  </div>
+
+  <div class="stats-bar">
+    <div class="stat-chip">Questions <strong id="st-q">—</strong></div>
+    <div class="stat-chip">Reflections <strong id="st-r">—</strong></div>
+    <div class="stat-chip">Strongest identity <strong id="st-id">—</strong></div>
+    <div class="stat-chip">Who owns robot <strong id="st-own">—</strong></div>
+    <div class="stat-chip">Avg resolution <strong id="st-res">—</strong></div>
+    <div class="stat-chip">Online <strong id="st-online">—</strong></div>
+  </div>
+
+  <!-- ARGUMENT -->
+  <div class="arg-card">
+    <div class="arg-eyebrow">✦ CAREBOT-33 · You Just Watched This</div>
+    <div class="arg-title">You just watched one person be three things at once. What did you see?</div>
+    <div class="arg-body">
+      You watched a person walk onstage in a robot costume. Rectangular head. Blue left eye scanning. Red right eye burning. LED mouth bar. Camera on top, blinking red — always recording.<br><br>
+      You watched them speak in pseudocode. <em>dataPoints++. print("Her name is Karen Diamond.").</em> You watched them sit on the floor and count inventors on their fingers and run out of fingers. You watched them pick up an apron that had been on the floor since Module 02 and tie it over the chassis.<br><br>
+      You watched a <strong>CEO</strong> — the person who built the system — speak the code that names what the system was built to name. You watched a <strong>robot</strong> — trained on domestic labor, $15/hr workers, $38 billion market — wash the dishes, fold the laundry, wipe the surface, with the camera still recording. You watched a <strong>human</strong> — Karen Diamond, Catharine Greene, Matilda Joslyn Gage, the unnamed worker — do all of it at the same time.<br><br>
+      They did not resolve this. They walked off still wearing the apron. The contradiction ran for 35 minutes and then it stopped. It did not end. It stopped.<br><br>
+      <em>You were in the room. This form is asking you what you saw.</em>
+    </div>
+  </div>
+
+  <!-- THREE IDENTITY CARDS -->
+  <div class="identity-row">
+    <div class="id-card ceo">
+      <div class="id-label">// the CEO</div>
+      <div class="id-desc">You watched them speak the code. Stand upright. Place the apron on the floor. They built this. They are accountable for it. You could feel the difference between those two things.</div>
+    </div>
+    <div class="id-card robot">
+      <div class="id-label">// the robot</div>
+      <div class="id-desc">You watched the robot wash the dishes. Fold the laundry. Wipe the surface. Camera recording. Apron on. The robot was very good at this. It had been trained. You watched it be trained in real time.</div>
+    </div>
+    <div class="id-card human">
+      <div class="id-label">// the human</div>
+      <div class="id-desc">You watched them sit on the floor. Name the inventors. Run out of fingers. Stand back up slowly. Feed the invisible cards as Karen Diamond. That slowness was not theatrical. It was accurate.</div>
+    </div>
+  </div>
+
+  <!-- MODULE 1: REFLECTION -->
+  <div class="data-card">
+    <div class="data-header">
+      <div class="data-eyebrow">✦ Data Module 1 of 4 · Reflection</div>
+      <div class="data-title">Which identity did you feel most strongly while watching?</div>
+      <div class="data-sub">You were in the room. You watched this. Select the identity you felt most present in the performance, and write one sentence about what made you feel it.</div>
+    </div>
+    <div class="reflect-body">
+      <div class="reflect-q">While watching, I felt most strongly:</div>
+      <div class="identity-btns">
+        <button class="id-btn ceo-btn" id="rfl-ceo" onclick="selectIdentity('ceo')">// CEO</button>
+        <button class="id-btn robot-btn" id="rfl-robot" onclick="selectIdentity('robot')">// ROBOT</button>
+        <button class="id-btn human-btn" id="rfl-human" onclick="selectIdentity('human')">// HUMAN</button>
+        <button class="id-btn all-btn" id="rfl-all" onclick="selectIdentity('all')">// all three simultaneously</button>
+      </div>
+      <textarea class="reflect-text" id="reflectText" placeholder="One sentence — what did you see that made you feel this?"></textarea>
+      <div style="display:flex;justify-content:flex-end;margin-top:8px;">
+        <button class="data-submit" id="reflectSubmit" onclick="submitReflection()" disabled>✦ Submit Reflection</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODULE 2: ANNOTATION -->
+  <div class="data-card">
+    <div class="data-header">
+      <div class="data-eyebrow">✦ Data Module 2 of 4 · Annotation</div>
+      <div class="data-title">You watched them perform all 18 tasks. Label each one.</div>
+      <div class="data-sub">You watched the performer do each of these in the robot costume, apron on, camera recording. Now label them. <strong style="color:#ffb3cf">CEO</strong> = delegated, outsourced, managed from a distance · <strong style="color:var(--candy)">Robot</strong> = the body of the training data, the target of the $38B market · <strong style="color:var(--blush)">Human</strong> = embodied, expert, present — and almost never credited as expertise</div>
+    </div>
+    <div class="annot-grid" id="annotGrid33"></div>
+    <div class="annot-footer">
+      <div class="annot-progress" id="annotProgress33">0 / 18 labeled</div>
+      <div style="flex:1"></div>
+      <button class="data-submit" id="annotSubmit33" onclick="submitAnnotation33()" disabled>✦ Submit Annotations</button>
+    </div>
+  </div>
+
+  <!-- MODULE 3: POLL -->
+  <div class="data-card">
+    <div class="data-header">
+      <div class="data-eyebrow">✦ Data Module 3 of 4 · Poll</div>
+      <div class="data-title">You just watched the robot perform domestic labor. Who owns it?</div>
+      <div class="data-sub">The person you watched on that stage is inside a robot costume trained on domestic labor data. The workers who trained it earn $35,000–$45,000/yr. The robot costs $20,000–$200,000. Who owns it?</div>
+    </div>
+    <div class="poll-body">
+      <div class="poll-options" id="pollOptions">
+        <button class="poll-opt" data-v="ceo" onclick="selectPoll(this)"><span class="poll-check"></span>The CEO / the company that built it</button>
+        <button class="poll-opt" data-v="worker" onclick="selectPoll(this)"><span class="poll-check"></span>The worker who trained it</button>
+        <button class="poll-opt" data-v="corporation" onclick="selectPoll(this)"><span class="poll-check"></span>The corporation that deploys it</button>
+        <button class="poll-opt" data-v="nobody" onclick="selectPoll(this)"><span class="poll-check"></span>Nobody owns it — it owns itself</button>
+        <button class="poll-opt" data-v="wealthy" onclick="selectPoll(this)"><span class="poll-check"></span>Whoever can afford to buy it ($20k–$200k)</button>
+      </div>
+      <div class="poll-bar-wrap" id="pollBars"></div>
+      <div style="display:flex;justify-content:flex-end;margin-top:8px;">
+        <button class="data-submit" id="pollSubmit" onclick="submitPoll()" disabled>✦ Submit Vote</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODULE 4: RESOLUTION RATING -->
+  <div class="data-card">
+    <div class="data-header">
+      <div class="data-eyebrow">✦ Data Module 4 of 4 · Resolution Rating</div>
+      <div class="data-title">You watched the contradiction run for 35 minutes. How resolved does it feel now?</div>
+      <div class="data-sub">CEO + Robot + Human in one body, one costume, 35 minutes. They walked off still wearing the apron. They did not resolve it. How does it feel to you, now, having watched it?</div>
+    </div>
+    <div class="rating-body">
+      <div class="rating-q">1 = still running, unresolved · 5 = arrived somewhere</div>
+      <div class="rating-sub">(There is no correct answer. You were in the room. The research question is whether something held — or whether it needed to.)</div>
+      <div class="rating-scale">
+        <span class="r-label">unresolved</span>
+        <button class="r-num" id="rr-1" onclick="selectResolution(1)">1</button>
+        <button class="r-num" id="rr-2" onclick="selectResolution(2)">2</button>
+        <button class="r-num" id="rr-3" onclick="selectResolution(3)">3</button>
+        <button class="r-num" id="rr-4" onclick="selectResolution(4)">4</button>
+        <button class="r-num" id="rr-5" onclick="selectResolution(5)">5</button>
+        <span class="r-label">resolved</span>
+      </div>
+      <div style="display:flex;justify-content:flex-end;margin-top:4px;">
+        <button class="data-submit" id="resolutionSubmit" onclick="submitResolution()" disabled>✦ Submit Rating</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q&A -->
+  <div class="cb-card">
+    <div class="cb-eyebrow">✦ Ask a Question · You Just Watched This · Everyone Sees the Same Answers · Showing Last 3</div>
+    <div class="cb-row">
+      <input class="cb-input cb-name-in" type="text" id="userName" placeholder="Your name…">
+      <input class="cb-input" type="text" id="userQuestion" placeholder="Ask about what you just saw — the costume, the apron, the code, the 18 tasks…" autocomplete="off">
+      <button class="cb-btn primary" onclick="askQuestion()">✦ Ask</button>
+      <button class="cb-btn soft" onclick="showAdminModal()" title="Admin">⚙</button>
+    </div>
+  </div>
+
+  <div class="cb-msgs" id="outputArea">
+    <div class="cb-empty"><h3>✦ Answers appear here</h3><p>Ask about what you just watched and tap Ask</p></div>
+  </div>
+
+  <div class="cb-bottom">
+    <div class="cb-btitle">✦ Thank you for being in the room.</div>
+    <a class="cb-link" href="hit.html" rel="noopener">✦ Advance to next task</a>
+  </div>
+  <div class="cb-wmark">✦ carebot-33 · you were in the room · caretech ✦</div>
+</div>
+
+<div class="cb-modal" id="adminModal">
+  <div class="cb-mbox">
+    <div class="cb-mtitle">🔒 Admin Reset</div>
+    <div class="cb-mbodytxt">Enter the admin passcode to clear Q&A messages.</div>
+    <input class="cb-input" type="password" id="adminPass" placeholder="Enter passcode…" style="width:100%;margin-bottom:6px;">
+    <div class="cb-err" id="adminErr"></div>
+    <div class="cb-mbtns" style="margin-top:10px;">
+      <button class="cb-btn soft" style="flex:1" onclick="closeAdminModal()">Cancel</button>
+      <button class="cb-btn primary" style="flex:1" onclick="confirmAdminReset()">Reset Messages</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const ADMIN='caretech33';const MAX=3;
+function updateClock(){const n=new Date(),p=v=>String(v).padStart(2,'0');document.getElementById('sysTime').textContent=p(n.getHours())+':'+p(n.getMinutes());}
+setInterval(updateClock,1000);updateClock();
+(function(){const w=document.getElementById('sparkles');const c=['✦','✧','⚙','˚','·','◦','▫','//'];for(let i=0;i<26;i++){const s=document.createElement('span');s.className='sp';s.textContent=c[Math.floor(Math.random()*c.length)];s.style.left=Math.random()*100+'vw';s.style.bottom=Math.random()*-60+'px';s.style.fontSize=(8+Math.random()*10)+'px';s.style.color='hsl('+(270+Math.random()*80)+',65%,'+(60+Math.random()*28)+'%)';s.style.animationDuration=(7+Math.random()*13)+'s';s.style.animationDelay=(Math.random()*13)+'s';w.appendChild(s);}})();
+
+/* Firebase */
+let db,msgRef,respRef,onlineRef,fbReady=false;
+let currentUser=localStorage.getItem('cb33User')||'';
+let userColor=localStorage.getItem('cb33Color')||genColor();
+function genColor(){const c=['#ffb3cf','#ff85b3','#ab47bc','#ff2d6b','#c4005a','#ff9800'];const v=c[Math.floor(Math.random()*c.length)];localStorage.setItem('cb33Color',v);return v;}
+try{
+  firebase.initializeApp({apiKey:"AIzaSyCZFDU-WlSmHqjXTs1Ox0nf9xeJU_xbaX0",authDomain:"collaborativemashup.firebaseapp.com",databaseURL:"https://collaborativemashup-default-rtdb.firebaseio.com",projectId:"collaborativemashup",storageBucket:"collaborativemashup.firebasestorage.app",messagingSenderId:"562437984610",appId:"1:562437984610:web:9f3711c26e097bc8ef9c3b"});
+  db=firebase.database();msgRef=db.ref('cb33Messages');respRef=db.ref('cb33Responses');onlineRef=db.ref('cb33Online');fbReady=true;
+  if(currentUser)trackPresence();
+  msgRef.on('value',s=>document.getElementById('st-q').textContent=s.numChildren());
+  respRef.on('value',s=>{
+    const all=[];s.forEach(c=>all.push(c.val()));
+    const reflections=all.filter(r=>r.type==='reflection');
+    const polls=all.filter(r=>r.type==='poll');
+    const ratings=all.filter(r=>r.type==='resolution');
+    document.getElementById('st-r').textContent=reflections.length;
+    if(reflections.length){const counts={ceo:0,robot:0,human:0,all:0};reflections.forEach(r=>{if(r.identity)counts[r.identity]=(counts[r.identity]||0)+1;});const top=Object.entries(counts).sort((a,b)=>b[1]-a[1])[0];document.getElementById('st-id').textContent=top?'//'+top[0]:'—';}
+    if(polls.length){const pc={};polls.forEach(p=>{if(p.vote)pc[p.vote]=(pc[p.vote]||0)+1;});const tp=Object.entries(pc).sort((a,b)=>b[1]-a[1])[0];document.getElementById('st-own').textContent=tp?tp[0]:'—';}
+    if(ratings.length){const avg=(ratings.reduce((a,r)=>a+(r.rating||0),0)/ratings.length).toFixed(1);document.getElementById('st-res').textContent=avg+'/5';}
+  });
+  onlineRef.on('value',s=>{const c=Object.keys(s.val()||{}).length;document.getElementById('onlineCount').innerHTML='<span class="cb-pip"></span>'+c+' online';document.getElementById('st-online').textContent=c;});
+  let initialDone=false;
+  msgRef.orderByKey().limitToLast(MAX).once('value',snap=>{
+    const area=document.getElementById('outputArea');area.innerHTML='';
+    const items=[];snap.forEach(c=>{items.push({key:c.key,val:c.val()});});
+    if(!items.length){area.innerHTML='<div class="cb-empty"><h3>✦ Answers appear here</h3><p>Ask about what you just watched and tap Ask</p></div>';}
+    else{items.reverse().forEach(({key,val})=>renderPair(val,key,false));}
+    initialDone=true;
+    const lastKey=items.length?items[items.length-1].key:null;
+    const nq=lastKey?msgRef.orderByKey().startAfter(lastKey):msgRef.orderByKey().limitToLast(1);
+    nq.on('child_added',snap=>{
+      if(!initialDone)return;
+      const area=document.getElementById('outputArea');
+      const emp=area.querySelector('.cb-empty');if(emp)emp.remove();
+      const pairs=area.querySelectorAll('.cb-pair');if(pairs.length>=MAX)pairs[pairs.length-1].remove();
+      renderPair(snap.val(),snap.key,true);
+    });
+  });
+}catch(e){fbReady=false;document.getElementById('onlineCount').textContent='Offline';}
+
+function trackPresence(){if(!onlineRef||!currentUser)return;const r=onlineRef.child(currentUser.replace(/[.#$[\]]/g,'_'));r.set({name:currentUser,ts:firebase.database.ServerValue.TIMESTAMP});r.onDisconnect().remove();}
+document.getElementById('userName').addEventListener('change',function(){currentUser=this.value.trim();localStorage.setItem('cb33User',currentUser);if(currentUser&&fbReady)trackPresence();});
+
+function q(v){return'"'+(v==null?'':String(v).replace(/"/g,'""'))+'"';}
+function downloadCSV(){
+  if(!fbReady){alert('No connection.');return;}
+  Promise.all([msgRef.once('value'),respRef.once('value')]).then(([ms,rs])=>{
+    let csv='Type,Timestamp,UserName,Content,Identity,Vote,Rating,Task,Label\n';
+    ms.forEach(d=>{const m=d.val();csv+='question,'+q(m.ts?new Date(m.ts).toISOString():'')+','+q(m.userName||'')+','+q(m.question||'')+',,,,\n';});
+    rs.forEach(d=>{const r=d.val();
+      if(r.type==='reflection')csv+='reflection,'+q(r.ts?new Date(r.ts).toISOString():'')+','+q(r.userName||'')+','+q(r.text||'')+','+q(r.identity||'')+',,,,\n';
+      else if(r.type==='poll')csv+='poll,'+q(r.ts?new Date(r.ts).toISOString():'')+','+q(r.userName||'')+',,,,'+q(r.vote||'')+',,\n';
+      else if(r.type==='resolution')csv+='resolution,'+q(r.ts?new Date(r.ts).toISOString():'')+','+q(r.userName||'')+',,,,'+(r.rating||0)+',,\n';
+      else if(r.type==='annotation'&&r.labels)Object.entries(r.labels).forEach(([task,label])=>{csv+='annotation,'+q(r.ts?new Date(r.ts).toISOString():'')+','+q(r.userName||'')+',,,,,,'+q(task.replace(/-/g,' '))+','+q(label)+'\n';});
+    });
+    const blob=new Blob([csv],{type:'text/csv'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='carebot33-'+Date.now()+'.csv';document.body.appendChild(a);a.click();document.body.removeChild(a);URL.revokeObjectURL(url);
+  }).catch(e=>alert('Export failed: '+e.message));
+}
+
+/* REFLECTION */
+let selectedIdentity=null;
+function selectIdentity(v){
+  selectedIdentity=v;
+  ['ceo','robot','human','all'].forEach(id=>{document.getElementById('rfl-'+id).classList.toggle('active',id===v);});
+  updateReflectSubmit();
+}
+document.getElementById('reflectText').addEventListener('input',updateReflectSubmit);
+function updateReflectSubmit(){document.getElementById('reflectSubmit').disabled=!selectedIdentity||!document.getElementById('reflectText').value.trim();}
+let reflectDone=false;
+function submitReflection(){
+  if(reflectDone||!selectedIdentity)return;
+  const name=document.getElementById('userName').value.trim()||'Anon';
+  const payload={type:'reflection',identity:selectedIdentity,text:document.getElementById('reflectText').value.trim(),userName:name,userColor,ts:fbReady?firebase.database.ServerValue.TIMESTAMP:Date.now()};
+  if(fbReady&&respRef)respRef.push(payload).catch(()=>{});
+  reflectDone=true;const btn=document.getElementById('reflectSubmit');btn.textContent='✓ Reflection Saved';btn.classList.add('done');btn.disabled=true;
+  document.querySelectorAll('.id-btn').forEach(b=>{b.disabled=true;b.style.opacity='.5';b.style.cursor='default';});
+  document.getElementById('reflectText').disabled=true;
+}
+
+/* ANNOTATION */
+const TASKS33=[
+  {id:'washing-dishes',name:'Washing dishes'},{id:'cooking-meals',name:'Cooking meals'},
+  {id:'vacuuming',name:'Vacuuming floors'},{id:'mopping',name:'Mopping floors'},
+  {id:'laundry-washing',name:'Washing laundry'},{id:'laundry-folding',name:'Folding laundry'},
+  {id:'grocery-shopping',name:'Grocery shopping'},{id:'feeding-children',name:'Feeding children'},
+  {id:'bathing-children',name:'Bathing children'},{id:'bathing-elderly',name:'Bathing elderly'},
+  {id:'medication',name:'Administering medication'},{id:'wiping-surfaces',name:'Wiping surfaces'},
+  {id:'toilet-cleaning',name:'Cleaning toilets'},{id:'taking-out-trash',name:'Taking out trash'},
+  {id:'making-beds',name:'Making beds'},{id:'pet-care',name:'Pet care'},
+  {id:'home-organizing',name:'Home organizing'},{id:'transporting-children',name:'Transporting children'}
+];
+const annotLabels33={};let annotDone33=false;
+function renderAnnotGrid33(){
+  const grid=document.getElementById('annotGrid33');grid.innerHTML='';
+  TASKS33.forEach(task=>{
+    const item=document.createElement('div');item.className='annot-item';item.id='ai33-'+task.id;
+    item.innerHTML='<div class="annot-task">'+escH(task.name)+'</div><div class="annot-btns"><button class="annot-btn ceo" id="ab33-ceo-'+task.id+'" onclick="setLabel33(\''+task.id+'\',\'ceo\')">CEO</button><button class="annot-btn robot" id="ab33-robot-'+task.id+'" onclick="setLabel33(\''+task.id+'\',\'robot\')">Robot</button><button class="annot-btn human" id="ab33-human-'+task.id+'" onclick="setLabel33(\''+task.id+'\',\'human\')">Human</button></div>';
+    grid.appendChild(item);
+  });
+}
+function setLabel33(id,label){
+  if(annotDone33)return;
+  annotLabels33[id]=label;
+  document.getElementById('ai33-'+id).className='annot-item sel-'+label;
+  ['ceo','robot','human'].forEach(l=>{const b=document.getElementById('ab33-'+l+'-'+id);if(b)b.classList.toggle('active',l===label);});
+  const count=Object.keys(annotLabels33).length;
+  document.getElementById('annotProgress33').textContent=count+' / '+TASKS33.length+' labeled';
+  document.getElementById('annotSubmit33').disabled=count<TASKS33.length;
+}
+function submitAnnotation33(){
+  if(annotDone33)return;
+  const name=document.getElementById('userName').value.trim()||'Anon';
+  const payload={type:'annotation',labels:{...annotLabels33},userName:name,userColor,ts:fbReady?firebase.database.ServerValue.TIMESTAMP:Date.now()};
+  if(fbReady&&respRef)respRef.push(payload).catch(()=>{});
+  annotDone33=true;const btn=document.getElementById('annotSubmit33');btn.textContent='✓ Annotations Saved';btn.classList.add('done');btn.disabled=true;
+  document.querySelectorAll('.annot-btn').forEach(b=>{b.disabled=true;b.style.opacity='.4';b.style.cursor='default';});
+}
+renderAnnotGrid33();
+
+/* POLL */
+let selectedPollVal=null;let pollDone=false;
+function selectPoll(btn){
+  if(pollDone)return;
+  selectedPollVal=btn.dataset.v;
+  document.querySelectorAll('.poll-opt').forEach(b=>b.classList.toggle('selected',b===btn));
+  document.getElementById('pollSubmit').disabled=false;
+}
+function submitPoll(){
+  if(pollDone||!selectedPollVal)return;
+  const name=document.getElementById('userName').value.trim()||'Anon';
+  const payload={type:'poll',vote:selectedPollVal,userName:name,userColor,ts:fbReady?firebase.database.ServerValue.TIMESTAMP:Date.now()};
+  if(fbReady&&respRef)respRef.push(payload).catch(()=>{});
+  pollDone=true;
+  const btn=document.getElementById('pollSubmit');btn.textContent='✓ Vote Saved';btn.classList.add('done');btn.disabled=true;
+  document.querySelectorAll('.poll-opt').forEach(b=>{b.classList.add('submitted');b.style.cursor='default';});
+  /* show live bars — need to compute from existing data */
+  if(fbReady&&respRef){
+    respRef.once('value').then(snap=>{
+      const votes={ceo:0,worker:0,corporation:0,nobody:0,wealthy:0};
+      snap.forEach(c=>{const v=c.val();if(v.type==='poll'&&v.vote)votes[v.vote]=(votes[v.vote]||0)+1;});
+      const total=Object.values(votes).reduce((a,b)=>a+b,0)||1;
+      const labels={ceo:'The company',worker:'The worker',corporation:'The corporation',nobody:'Nobody / itself',wealthy:'Whoever buys it'};
+      const bars=document.getElementById('pollBars');bars.innerHTML='';
+      Object.entries(votes).forEach(([k,n])=>{
+        const pct=Math.round(n/total*100);
+        bars.innerHTML+=`<div class="poll-bar-row"><span style="min-width:120px">${labels[k]}</span><div class="poll-bar-track"><div class="poll-bar-fill" style="width:${pct}%"></div></div><span class="poll-pct">${pct}%</span></div>`;
+      });
+      bars.classList.add('show');
+    });
+  }
+}
+
+/* RESOLUTION RATING */
+let selectedResolution=null;let resolutionDone=false;
+function selectResolution(n){
+  if(resolutionDone)return;
+  selectedResolution=n;
+  for(let i=1;i<=5;i++){document.getElementById('rr-'+i).classList.toggle('lit',i<=n);}
+  document.getElementById('resolutionSubmit').disabled=false;
+}
+function submitResolution(){
+  if(resolutionDone||!selectedResolution)return;
+  const name=document.getElementById('userName').value.trim()||'Anon';
+  const payload={type:'resolution',rating:selectedResolution,userName:name,userColor,ts:fbReady?firebase.database.ServerValue.TIMESTAMP:Date.now()};
+  if(fbReady&&respRef)respRef.push(payload).catch(()=>{});
+  resolutionDone=true;
+  const btn=document.getElementById('resolutionSubmit');btn.textContent='✓ Rating Saved';btn.classList.add('done');btn.disabled=true;
+  for(let i=1;i<=5;i++){const b=document.getElementById('rr-'+i);b.classList.add('submitted');b.style.cursor='default';}
+}
+
+/* Q&A RESPONSES */
+const responses=[
+  {text:"The CEO is the person who built the system that names what was unnamed. That is a real role. Institutional power. Accountability. Something was made. The CEO speaks the pseudocode. The CEO placed the apron on the floor in Module 02. The CEO is also the one who built the carebots — 33 research interfaces, each one a question the system doesn't want asked.",source:"CARETECH_CEO.exe — performance score v2.0",link:"https://sbuckius.github.io/if-carebot-research",identity:"CEO",theme:"THE CEO SPEAKS THE CODE",moves:["1. STAND at center — structured, upright, CEO posture — you built this","2. MIME the mouse — Engelbart's demo — slowly across an invisible surface","3. TYPE the code — fingers on invisible keyboard — speak what you type","4. PLACE the apron on the floor — carefully, deliberately — step back","5. FREEZE — you watched them call out: 'I am the CEO. I built the system. I placed the apron there.'"]},
+  {text:"The robot is what the system is studying. The humanoid machine trained on domestic labor data collected by gig workers wearing head-mounted cameras for $15 an hour. The robot is the product. Figure AI raised $675M. Physical Intelligence raised $400M. The market is $38 billion by 2035. The workers who trained the robot earn $35,000–$45,000 per year. The robot does not own itself. The worker does not own the robot. This is not a side effect. It is the business model.",source:"CARETECH_CEO.exe — Module 07: domestic_labor_pipeline()",link:"https://sbuckius.github.io/if-carebot-research",identity:"ROBOT",theme:"THE ROBOT WEARS THE APRON",moves:["1. STRAP the camera to your forehead — adjust the strap — camera recording","2. STAND with robot precision — arms slightly away from body — panel posture","3. EYES asymmetric — left eye scanning blue / right eye burning red — hold it","4. PICK UP the apron — tie it over the chassis — begin the domestic tasks","5. FREEZE mid-task — call out: 'I am the robot. I was trained to do this. I did not choose to.'"]},
+  {text:"The human is the worker inside both. The worker who fed the training data. The worker who is inside the robot because the robot learned from her body. Karen Diamond fed the cards. She is named once. In 1883 Matilda Joslyn Gage wrote: 'That woman has not been an inventor to an equal extent with man is not so much a subject of surprise as that she should have invented at all.' The human is what neither the code nor the labor can fully contain.",source:"Woman as Inventor — Matilda Joslyn Gage (1883) · IBM 29 Card Punch film (1967)",link:"https://archive.org/details/jstor-25118326",identity:"HUMAN",theme:"THE HUMAN INSIDE THE MACHINE",moves:["1. SIT on the floor — cross-legged — close to the ground — this is 1883","2. NAME the inventors — count on fingers — run out of fingers — open both hands","3. STAND BACK UP — slowly — this is the act of being recovered","4. SIT at the invisible IBM 29 — Karen Diamond — feed the cards — punch the columns","5. FREEZE — you watched them hold the invisible deck out toward the audience. Her name is Karen Diamond. She made this. It was 1967."]},
+  {text:"The apron over the chassis is the image that holds all three at once. The CEO put the apron on the floor. The robot picked it up. The human tied it. In performance, the apron moves from the floor (Module 02, placed there when Engelbart credits his wife with 'putting up with him') to the body (Module 07, tied over the robot chassis when domestic task training begins). It is never removed at the end. The CEO walks off still wearing it.",source:"CARETECH_CEO.exe — costume design v3.0 · performance score v2.0",link:"https://sbuckius.github.io/if-carebot-research",identity:"ALL THREE",theme:"THE APRON OVER THE CHASSIS",moves:["1. PLACE the apron on the floor — Module 02 — do not explain it — step back","2. STAND in robot posture for Modules 03–06 — apron visible on floor behind you","3. WALK to the apron — pick it up — tie it over the chassis — Module 07 begins","4. PERFORM all 18 domestic tasks with the apron on — camera recording","5. FREEZE — do not remove the apron — walk off stage wearing it — the CEO layer does not return."]},
+  {text:"The performance costume is a humanoid robot — the carebot-31 chassis made physical. Rectangular robot head with blue left eye (data collection) and red right eye (who benefits?). LED mouth bar in purple segments. Head-mounted camera with blinking red light. Chest display showing patent language data — purple lines (feminine-coded words) and orange lines (masculine-coded words) interleaved. The costume has two states: DORMANT (Modules 01–06) and ACTIVATED (Module 07 onward, when the apron goes on and the 18 domestic tasks begin).",source:"Humanoid robot costume diagram — CARETECH_CEO.exe v3.0",link:"https://sbuckius.github.io/if-carebot-research",identity:"ROBOT",theme:"DORMANT TO ACTIVATED",moves:["1. STAND in DORMANT state — eyes dim — mouth bar barely lit — status: DORMANT","2. Speak the code — Module 01 through 06 — precise, methodical, expert","3. MODULE 07 — strap the camera — eyes light up full — both colors — status: ACTIVE","4. Tie the apron — chest screen scrolling — begin the 18 tasks in sequence","5. FREEZE — call out: 'CARETECH_CEO.exe is running. The program is the performance.'"]},
+  {text:"Miss Honeywell was presented at the Instruments, Electronics and Automation Exhibition at Olympia in 1963 as 'the ultimate in automation — the humanronic saleswoman of tomorrow.' Her handler, Mark Wilson, formerly a conjurer, charged Honeywell controls £2,000 for bringing her over from Hollywood. When asked to prove she was a genuine robot by taking her head off, he closed the cabinet. He said: 'There are delicate micro circuits, integrated digital logic nodules, not to be disturbed.' The question of whether she was a robot or a woman was never resolved. That was by design.",source:"Miss Honeywell — newsreel, Olympia Exhibition, 1963",link:"https://www.youtube.com/watch?v=6e8mj7r7V60",identity:"ROBOT",theme:"MISS HONEYWELL SEQUENCE",moves:["1. STAND in the cabinet — still — this is Miss Honeywell — let them look","2. SPEAK in a high-pitched voice — 'Assistant? Nothing. I'd make someone a very good wife.'","3. The journalist asks: take her head off — prove she's a robot","4. CLOSE the cabinet — mime it — 'Delicate micro circuits. Not to be disturbed.'","5. FREEZE — call out: 'She could have fooled me. We will never know. That was by design.'"]},
+  {text:"Douglas Engelbart opened the Mother of All Demos in 1968 by saying: 'I hope you'll go along with this rather unusual setting and the fact that I remain seated when I get introduced.' At the end, he dedicated the entire presentation to his wife and daughters 'for what they've put up with over these years with a husband dedicated in a monomaniac way to something very well.' They are credited with tolerance. Their names are not in the historical record. Their labor made the demo possible. It is called: putting up with.",source:"Mother of All Demos — Douglas Engelbart, SRI, December 9, 1968",link:"https://www.youtube.com/watch?v=yJDv-zdhzMY",identity:"HUMAN",theme:"PUTTING UP WITH SEQUENCE",moves:["1. MIME the mouse — right hand low — moving across an invisible surface — this is Engelbart","2. DEMONSTRATE the future — look out at the audience — show them something extraordinary","3. STOP — drop the hand — 'At the end he dedicated this to his wife and daughters.'","4. 'For what they've put up with.' — say it again — 'putting up with'","5. FREEZE — call out: 'Their labor made this. It was called tolerance.'"]},
+  {text:"Matilda Joslyn Gage wrote in 1883: 'The inventions of a nation are closely connected with the freedom of its people.' She also wrote: 'While, as has been shown, many of the world's most important inventions are due to woman, the proportion of feminine inventors is much less than of masculine, which arises from the fact that woman does not possess the same amount of freedom as man.' The cotton gin. The paper bag machine. The railroad noise deadener. The word processor. The trajectory calculations. All due to women. The census said they didn't exist.",source:"Woman as Inventor — Matilda Joslyn Gage, North American Review, 1883",link:"https://archive.org/details/jstor-25118326",identity:"HUMAN",theme:"THE CENSUS WAS WRONG",moves:["1. SIT on the floor — 1883 — furious and precise","2. LIST THE INVENTORS — count on fingers — cotton gin, paper bags, railroad, word processor, trajectory","3. 'The census said they didn't exist.' — stand up slowly","4. OPEN BOTH HANDS — the gesture of something that cannot be contained","5. FREEZE — call out: 'The census was wrong. She named them anyway. We are reading the list now.'"]},
+  {text:"CAREtech is a research system at sbuckius.github.io/if-carebot-research. 33 carebots — each one a HIT (Human Intelligence Task) and a BOT (AI research assistant with a head). The heads are: necktie, abacus, piston, keyboard, punch card, apron, waveform, orbital arc, patent scroll, checkbox, QR code, name tag, CRT monitor, circuit board with heart, adding machine, pencil, compass, sigma Σ, card hopper, vial, humanoid robot, magnifying glass, and — for carebot-33 — the performance score itself. Scrolling pseudocode. The head is the program.",source:"if-carebot-research — sbuckius.github.io, 2024–2025",link:"https://sbuckius.github.io/if-carebot-research",identity:"CEO",theme:"32 CAREBOTS AND ONE MORE",moves:["1. WALK the width of the stage — each step is one carebot — count them under your breath","2. STOP at carebot-15 — the apron — look down at it on the floor","3. STEP OVER IT — continue walking","4. ARRIVE at carebot-33 — you — stop — face forward","5. FREEZE — call out: '33 carebots. Each one is a question the system doesn't want asked.'"]},
+  {text:"The research question underneath all of this: can a contradiction be held without resolution? The CEO and the robot and the human are all true simultaneously. The performance does not resolve them. The costume does not resolve them. The apron over the chassis is not a resolution — it is a demonstration that all three coexist in the same body. The program does not exit cleanly. It just stops. dataPoints = 6. All names recovered. All data saved. CARETECH_CEO.exe has exited. Thank you.",source:"CARETECH_CEO.exe — Module 08: RETURN findings",link:"https://sbuckius.github.io/if-carebot-research",identity:"ALL THREE",theme:"DO NOT RESOLVE THE TENSION",moves:["1. WALK to the front of the stage — as close to the audience as you can get","2. LOOK at them — not performing — just looking — 4 full seconds","3. Raise both arms — not wide, not theatrical — just up — palms forward — a quiet offer","4. Hold for 5 counts — then lower","5. FREEZE — head slightly down — not a bow — an acknowledgment — then walk off — apron still on."]}
+];
+
+let recentlyShown=[];
+function getResponse(){let avail=responses.filter((_,i)=>!recentlyShown.includes(i));if(avail.length<3){recentlyShown=[];avail=responses;}const ri=Math.floor(Math.random()*avail.length);const sel=avail[ri];recentlyShown.push(responses.indexOf(sel));if(recentlyShown.length>6)recentlyShown.shift();return sel;}
+function generateMovement(resp){const theme=resp.theme||'THREE IDENTITIES';const moves=resp.moves||['1. STAND — all three at once — CEO, robot, human — hold it','2. SPEAK the code — the argument — do not resolve it','3. PERFORM the labor — the 18 tasks — camera recording','4. NAME the workers — name Karen Diamond — name the inventors','5. FREEZE — call out: \'You are not resolving the contradiction. You are running it.\''];return'HIP HOP SEQUENCE: '+theme+'\nIDENTITY: '+resp.identity+'\n\n'+moves.join('\n')+'\n\nENERGY: Precise, deliberate, unresolved. Every move holds three meanings. Do not pick one.';}
+
+function askQuestion(){
+  const q2=document.getElementById('userQuestion').value.trim();
+  const name=document.getElementById('userName').value.trim();
+  if(!name){alert('Please enter your name first!');document.getElementById('userName').focus();return;}
+  if(!q2){alert('Please type a question!');return;}
+  const resp=getResponse();const mv=generateMovement(resp);
+  const payload={question:q2,answerText:resp.text,answerSource:resp.source,answerLink:resp.link,movement:mv,identity:resp.identity,userName:name,userColor,ts:fbReady?firebase.database.ServerValue.TIMESTAMP:Date.now()};
+  if(fbReady&&msgRef){msgRef.push(payload).catch(()=>localDisplay(q2,resp,mv,name));}
+  else{localDisplay(q2,resp,mv,name);}
+  document.getElementById('userQuestion').value='';
+}
+
+let localMessages=[];
+function localDisplay(q2,resp,mv,name){const area=document.getElementById('outputArea');localMessages.unshift({question:q2,answerText:resp.text,answerSource:resp.source,answerLink:resp.link,movement:mv,identity:resp.identity,userName:name,userColor});if(localMessages.length>MAX)localMessages=localMessages.slice(0,MAX);area.innerHTML='';localMessages.forEach((msg,i)=>renderPair(msg,null,i===0));}
+
+let audioCtx=null;
+function playChime(){try{if(!audioCtx)audioCtx=new(window.AudioContext||window.webkitAudioContext)();const ctx=audioCtx;[[329.63,0],[415.30,0.18],[493.88,0.36]].forEach(([freq,delay])=>{const osc=ctx.createOscillator();const gain=ctx.createGain();osc.connect(gain);gain.connect(ctx.destination);osc.type='sine';osc.frequency.value=freq;const t=ctx.currentTime+delay;gain.gain.setValueAtTime(0,t);gain.gain.linearRampToValueAtTime(0.35,t+0.04);gain.gain.exponentialRampToValueAtTime(0.001,t+0.7);osc.start(t);osc.stop(t+0.72);});}catch(e){}}
+
+function renderPair(msg,key,playAudio=false){
+  const area=document.getElementById('outputArea');
+  const el=document.createElement('div');el.className='cb-pair';if(key)el.id='pair-'+key;
+  const idColor=msg.identity==='CEO'?'#ffb3cf':msg.identity==='ROBOT'?'#ffb3cf':msg.identity==='HUMAN'?'#ffb3cf':'#ff85b3';
+  el.innerHTML='<div class="cb-meta"><strong style="color:'+escH(msg.userColor||'#ffb3cf')+'">'+escH(msg.userName||'Anon')+'</strong> asked:</div><div class="cb-qbubble">❓ '+escH(msg.question)+'</div><div class="cb-pcard"><div class="cb-phead"><span class="cb-plabel">⚙ '+escH(msg.identity||'ALL THREE')+' · From the Research Record</span></div><div class="cb-pbody"><div class="cb-ptext">'+escH(msg.answerText)+'</div><div class="cb-psrc">Source: <a href="'+escH(msg.answerLink)+'" target="_blank" rel="noopener">'+escH(msg.answerSource)+'</a></div></div></div><div class="cb-mcard"><div class="cb-mhead"><span class="cb-mlabel">🎭 Movement Instructions — '+escH(msg.identity||'ALL THREE')+'</span></div><div class="cb-mbody"><div class="cb-mtext">'+escH(msg.movement)+'</div></div><div class="cb-spkrow"><button class="cb-btn soft" style="font-size:11px;padding:7px 13px;border-color:rgba(255,80,130,.3);color:var(--blush);" onclick="speakText(this)">🔊 Read Aloud</button><button class="cb-btn soft" style="font-size:11px;padding:7px 13px;" onclick="stopSpeech()">⏹ Stop</button></div></div>';
+  area.insertBefore(el,area.firstChild);
+  if(playAudio){playChime();setTimeout(()=>speakMovement(msg.movement),950);}
+}
+
+function speakMovement(text){if(!('speechSynthesis' in window))return;window.speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(text);u.rate=0.88;u.pitch=1.0;const trySpeak=()=>{const voices=window.speechSynthesis.getVoices();const fv=voices.find(v=>v.lang==='en-US'&&/female|woman|samantha|victoria|karen|zira|helen|linda|amy|emma|joanna|salli|kimberly|kendra|susan/i.test(v.name))||voices.find(v=>v.lang==='en-US');if(fv)u.voice=fv;u.lang='en-US';window.speechSynthesis.speak(u);};if(window.speechSynthesis.getVoices().length){trySpeak();}else{window.speechSynthesis.onvoiceschanged=trySpeak;}}
+function speakText(btn){speakMovement(btn.closest('.cb-mcard').querySelector('.cb-mtext').textContent);}
+function stopSpeech(){if('speechSynthesis' in window)window.speechSynthesis.cancel();}
+function escH(s){const d=document.createElement('div');d.textContent=s||'';return d.innerHTML;}
+document.getElementById('userQuestion').addEventListener('keypress',e=>{if(e.key==='Enter')askQuestion();});
+function showAdminModal(){document.getElementById('adminModal').classList.add('open');document.getElementById('adminErr').textContent='';document.getElementById('adminPass').value='';setTimeout(()=>document.getElementById('adminPass').focus(),100);}
+function closeAdminModal(){document.getElementById('adminModal').classList.remove('open');}
+function confirmAdminReset(){if(document.getElementById('adminPass').value!==ADMIN){document.getElementById('adminErr').textContent='Incorrect passcode.';document.getElementById('adminPass').value='';document.getElementById('adminPass').focus();return;}document.getElementById('outputArea').innerHTML='<div class="cb-empty"><h3>✦ Messages cleared</h3><p>Type a question to begin</p></div>';if(fbReady&&msgRef)msgRef.remove().catch(()=>{});localMessages=[];recentlyShown=[];closeAdminModal();}
+document.getElementById('adminPass').addEventListener('keypress',e=>{if(e.key==='Enter')confirmAdminReset();});
+window.addEventListener('beforeunload',()=>{if(onlineRef&&currentUser)onlineRef.child(currentUser.replace(/[.#$[\]]/g,'_')).remove();if('speechSynthesis' in window)window.speechSynthesis.cancel();});
+</script>
+</body>
+</html>
