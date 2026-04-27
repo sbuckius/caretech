@@ -1,0 +1,461 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
+<title>✦ CAREBOT-31 ✦ Training AI With Domestic Labor</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+<style>
+:root{
+  --hot:#ff2d6b;--candy:#ff85b3;--blush:#ffb3cf;--fuchsia:#ff1f80;
+  --cream:#fff5f8;--berry:#c4005a;--maroon:#3a0040;
+  --violet:#7c4dff;--violet-soft:#b39dff;
+  --bg:#0e0018;
+  --border:rgba(200,150,255,.2);--border2:rgba(180,100,255,.45);
+  --muted:rgba(210,180,255,.5);--muted2:rgba(220,190,255,.72);
+  --pop-glow:0 8px 50px rgba(150,50,255,.35),0 0 80px rgba(255,30,128,.12);
+  --fh:'Nunito',sans-serif;--fb:'Quicksand',sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html,body{min-height:100%;font-family:var(--fb);font-weight:600;color:var(--cream);background:var(--bg);-webkit-font-smoothing:antialiased;overflow-x:hidden;}
+.bg-layer{position:fixed;inset:0;z-index:0;pointer-events:none;background:radial-gradient(ellipse 60% 55% at 15% 10%,rgba(120,0,200,.32) 0%,transparent 60%),radial-gradient(ellipse 50% 60% at 85% 82%,rgba(180,0,80,.25) 0%,transparent 60%),linear-gradient(160deg,#0e0018,#0a0012 50%,#060010);}
+.orb{position:fixed;border-radius:50%;pointer-events:none;z-index:0;filter:blur(65px);}
+.orb-1{width:450px;height:450px;background:#4a0080;opacity:.25;top:-100px;left:-90px;animation:drift1 20s ease-in-out infinite;}
+.orb-2{width:360px;height:360px;background:#8b0040;opacity:.18;bottom:-70px;right:-70px;animation:drift2 24s ease-in-out infinite;}
+.orb-3{width:240px;height:240px;background:var(--hot);opacity:.1;top:38%;left:55%;animation:drift3 16s ease-in-out infinite;}
+@keyframes drift1{0%,100%{transform:translate(0,0)}50%{transform:translate(45px,30px)}}
+@keyframes drift2{0%,100%{transform:translate(0,0)}50%{transform:translate(-30px,-22px)}}
+@keyframes drift3{0%,100%{transform:translate(0,0)}33%{transform:translate(-20px,15px)}66%{transform:translate(15px,-10px)}}
+.sparkles{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden;}
+.sp{position:absolute;opacity:0;animation:floatUp linear infinite;}
+@keyframes floatUp{0%{opacity:0;transform:translateY(0) scale(.6)}15%{opacity:.65}85%{opacity:.35}100%{opacity:0;transform:translateY(-130px) scale(1.1)}}
+@keyframes breathe{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.3;transform:scale(.65)}}
+
+.page{position:relative;z-index:2;min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:max(24px,env(safe-area-inset-top)) clamp(14px,5vw,28px) max(44px,env(safe-area-inset-bottom));gap:0;}
+.top-bar{width:100%;max-width:500px;display:flex;align-items:center;justify-content:space-between;margin-bottom:22px;}
+.brand{font-family:var(--fb);font-size:9px;letter-spacing:.22em;text-transform:uppercase;color:var(--muted);}
+.status-pill{display:flex;align-items:center;gap:6px;padding:4px 11px;border-radius:999px;background:rgba(150,50,255,.08);border:1px solid var(--border);font-family:var(--fb);font-size:9px;letter-spacing:.1em;color:var(--muted);}
+.status-pip{width:4px;height:4px;border-radius:50%;background:var(--violet);box-shadow:0 0 5px var(--violet);animation:breathe 2s ease-in-out infinite;}
+.bot-body{width:min(92vw,480px);display:flex;flex-direction:column;align-items:center;gap:0;}
+
+/* ── HUMANOID ROBOT HEAD ── */
+.bot-head-wrap{position:relative;width:clamp(185px,37vw,235px);height:clamp(240px,48vw,295px);flex-shrink:0;animation:robotFloat 5s ease-in-out infinite;}
+@keyframes robotFloat{0%,100%{transform:translateY(0) rotate(-.3deg);}45%{transform:translateY(-9px) rotate(.5deg);}75%{transform:translateY(-3px) rotate(-.2deg);}}
+.robot-svg{width:100%;height:100%;filter:drop-shadow(0 6px 28px rgba(150,50,255,.45)) drop-shadow(0 0 55px rgba(255,30,128,.15));}
+.robot-eye-l{animation:eyeGlow 2.4s ease-in-out infinite;}
+.robot-eye-r{animation:eyeGlow 2.4s ease-in-out infinite;animation-delay:.3s;}
+@keyframes eyeGlow{0%,100%{opacity:.85;filter:brightness(1)}50%{opacity:1;filter:brightness(1.4)}}
+.camera-light{animation:camBlink .8s step-end infinite;}
+@keyframes camBlink{0%,100%{opacity:1}50%{opacity:.1}}
+.robot-mouth-bar{animation:mouthPulse 3s ease-in-out infinite;}
+@keyframes mouthPulse{0%,100%{opacity:.7}50%{opacity:1}}
+
+.bot-neck{width:clamp(24px,5vw,34px);height:clamp(12px,2.2vw,18px);background:linear-gradient(180deg,rgba(150,50,255,.2),rgba(80,0,120,.4));border:1px solid rgba(150,50,255,.3);border-top:none;clip-path:polygon(8% 0%,92% 0%,100% 100%,0% 100%);position:relative;z-index:2;}
+.bot-nametag{text-align:center;margin:10px 0 6px;}
+.bot-nametag-name{font-family:var(--fh);font-weight:900;font-size:clamp(22px,4.5vw,28px);letter-spacing:.04em;background:linear-gradient(90deg,var(--violet-soft),var(--hot) 55%,var(--candy));-webkit-background-clip:text;background-clip:text;color:transparent;}
+.bot-nametag-sub{font-family:var(--fb);font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);margin-top:4px;}
+.stats-bar{display:flex;gap:7px;flex-wrap:wrap;justify-content:center;margin:10px 0 14px;}
+.stat-pill{display:flex;align-items:center;gap:4px;padding:4px 10px;border-radius:999px;background:rgba(150,50,255,.07);border:1px solid var(--border);font-family:var(--fb);font-size:9px;letter-spacing:.06em;color:var(--muted);}
+.stat-dot{width:4px;height:4px;border-radius:50%;background:var(--violet);}
+.csv-export-btn{appearance:none;font-family:var(--fb);font-weight:700;font-size:9px;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;padding:4px 10px;border-radius:999px;background:rgba(150,50,255,.08);border:1px solid var(--border);color:var(--muted);transition:all .18s;white-space:nowrap;}
+.csv-export-btn:hover{background:rgba(150,50,255,.2);border-color:var(--border2);color:var(--violet-soft);}
+.bot-torso-wrap{width:100%;}
+.bot-torso{width:100%;background:rgba(10,0,18,.97);border:1.5px solid var(--border2);border-radius:22px;box-shadow:var(--pop-glow),inset 0 1px 0 rgba(180,150,255,.06);overflow:hidden;display:flex;flex-direction:column;min-height:clamp(280px,48vh,460px);position:relative;}
+.bot-torso::before{content:'';position:absolute;top:0;left:10%;right:10%;height:1.5px;z-index:5;background:linear-gradient(90deg,transparent,var(--violet-soft) 35%,var(--hot) 50%,var(--violet-soft) 65%,transparent);box-shadow:0 0 14px var(--violet);border-radius:999px;}
+.screen-topbar{display:flex;align-items:center;justify-content:space-between;padding:10px 16px 8px;border-bottom:1px solid rgba(180,150,255,.08);flex-shrink:0;position:relative;z-index:2;}
+.screen-dots{display:flex;gap:5px;}
+.screen-dot{width:8px;height:8px;border-radius:50%;}
+.screen-dot:nth-child(1){background:var(--hot);box-shadow:0 0 5px var(--hot);animation:breathe 2s ease-in-out infinite;}
+.screen-dot:nth-child(2){background:var(--violet);box-shadow:0 0 5px var(--violet);animation:breathe 2s .3s ease-in-out infinite;}
+.screen-dot:nth-child(3){background:var(--candy);box-shadow:0 0 5px var(--candy);animation:breathe 2s .6s ease-in-out infinite;}
+.screen-label{font-family:var(--fb);font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);}
+.chat-area{flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:10px;padding:12px 12px 6px;position:relative;z-index:2;scrollbar-width:thin;scrollbar-color:rgba(150,50,255,.15) transparent;}
+.msg{display:flex;gap:7px;align-items:flex-end;animation:msgIn .32s cubic-bezier(.22,1,.36,1) both;}
+@keyframes msgIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.msg.user{flex-direction:row-reverse;}
+.msg-avatar{width:24px;height:24px;border-radius:6px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-family:var(--fb);font-size:9px;}
+.msg.assistant .msg-avatar{background:#4a0080;color:var(--violet-soft);border:1px solid var(--border);}
+.msg.user .msg-avatar{background:rgba(150,50,255,.12);color:var(--muted);border:1px solid var(--border);}
+.bubble{max-width:84%;padding:9px 13px;border-radius:13px;font-family:var(--fb);font-size:clamp(11px,1.4vw,13px);line-height:1.72;}
+.msg.assistant .bubble{background:rgba(150,50,255,.07);border:1px solid rgba(150,50,255,.16);color:var(--muted2);border-bottom-left-radius:2px;}
+.msg.user .bubble{background:linear-gradient(135deg,rgba(150,50,255,.35),rgba(100,0,180,.45));color:var(--cream);border:1px solid rgba(150,50,255,.45);border-bottom-right-radius:2px;}
+.bubble strong{color:var(--violet-soft);}.bubble em{color:#ffb09a;}
+.typing-indicator{display:flex;gap:5px;align-items:center;padding:4px 2px;}
+.typing-dot{width:7px;height:7px;border-radius:50%;background:var(--violet-soft);opacity:.4;animation:typingBounce 1.2s ease-in-out infinite;}
+.typing-dot:nth-child(2){animation-delay:.2s;}.typing-dot:nth-child(3){animation-delay:.4s;}
+@keyframes typingBounce{0%,80%,100%{transform:translateY(0);opacity:.4}40%{transform:translateY(-6px);opacity:1}}
+.prompts-row{display:flex;gap:5px;flex-wrap:wrap;padding:4px 12px 10px;position:relative;z-index:2;}
+.prompt-chip{padding:5px 11px;border-radius:999px;cursor:pointer;background:rgba(150,50,255,.07);border:1px solid rgba(150,50,255,.2);font-family:var(--fb);font-size:10px;letter-spacing:.06em;color:var(--muted);transition:all .15s;white-space:nowrap;}
+.prompt-chip:hover{background:rgba(150,50,255,.18);border-color:var(--border2);color:var(--violet-soft);}
+.chat-input-row{display:flex;align-items:center;gap:7px;padding:9px 12px;border-top:1px solid rgba(180,150,255,.08);flex-shrink:0;position:relative;z-index:2;}
+.chat-input{flex:1;background:rgba(150,50,255,.05);border:1.5px solid rgba(150,50,255,.2);border-radius:10px;color:var(--cream);font-family:var(--fb);font-weight:600;font-size:clamp(11px,1.3vw,13px);padding:9px 12px;outline:none;transition:border-color .2s;resize:none;}
+.chat-input:focus{border-color:var(--violet-soft);box-shadow:0 0 10px rgba(150,50,255,.2);}
+.chat-input::placeholder{color:rgba(180,150,255,.18);}
+.chat-input:disabled{opacity:.4;}
+.send-btn{width:32px;height:32px;border-radius:10px;flex-shrink:0;background:linear-gradient(135deg,var(--violet),#9c00cc);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 14px rgba(150,50,255,.4);transition:all .18s cubic-bezier(.34,1.56,.64,1);}
+.send-btn:hover:not(:disabled){transform:scale(1.1);}
+.send-btn:disabled{opacity:.3;cursor:not-allowed;}
+.send-btn svg{width:14px;height:14px;fill:none;stroke:white;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;}
+.bot-legs{display:flex;gap:clamp(20px,5vw,36px);justify-content:center;margin-top:-1px;position:relative;z-index:3;}
+.bot-leg-wrap{display:flex;flex-direction:column;align-items:center;}
+.bot-leg{width:clamp(22px,4.5vw,32px);height:clamp(22px,3.8vw,30px);background:linear-gradient(180deg,rgba(150,50,255,.2),rgba(60,0,100,.3));border:1.5px solid var(--border2);border-top:none;}
+.bot-foot{width:clamp(30px,6.5vw,44px);height:clamp(9px,1.6vw,13px);border-radius:3px;background:rgba(80,0,120,.25);border:1.5px solid var(--border);margin-top:-1px;}
+@keyframes robotDance{0%,100%{transform:translateY(0) rotate(-.3deg);}20%{transform:translateY(-14px) rotate(-5deg);}40%{transform:translateY(-6px) rotate(5deg);}60%{transform:translateY(-11px) rotate(-3deg);}80%{transform:translateY(-3px) rotate(3deg);}}
+@keyframes footStick{0%,100%{transform:scaleX(1)}50%{transform:scaleX(.72)}}
+.bot-head-wrap.dancing{animation:robotDance .55s cubic-bezier(.34,1.56,.64,1) 4!important;}
+.bot-foot.sticking{animation:footStick .3s ease-in-out 6!important;}
+.wordmark{margin-top:18px;font-family:var(--fb);font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:rgba(150,100,255,.1);}
+</style>
+</head>
+<body>
+<div class="bg-layer"></div>
+<div class="orb orb-1"></div><div class="orb orb-2"></div><div class="orb orb-3"></div>
+<div class="sparkles" id="sparkles"></div>
+
+<div class="page">
+  <div class="top-bar">
+    <div class="brand">CAREtech · Training AI With Domestic Labor · 2025</div>
+    <div class="status-pill"><div class="status-pip"></div>Online</div>
+  </div>
+
+  <div class="bot-body">
+
+    <!-- HUMANOID ROBOT HEAD -->
+    <div class="bot-head-wrap" id="botHeadWrap">
+      <svg class="robot-svg" viewBox="0 0 200 260" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="headGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#c8a0ff" stop-opacity=".95"/>
+            <stop offset="50%" stop-color="#e8d4ff" stop-opacity=".97"/>
+            <stop offset="100%" stop-color="#c8a0ff" stop-opacity=".9"/>
+          </linearGradient>
+          <linearGradient id="faceGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stop-color="#1a0030"/>
+            <stop offset="100%" stop-color="#0e0020"/>
+          </linearGradient>
+          <linearGradient id="eyeGradL" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#00e5ff"/>
+            <stop offset="100%" stop-color="#7c4dff"/>
+          </linearGradient>
+          <linearGradient id="eyeGradR" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#ff2d6b"/>
+            <stop offset="100%" stop-color="#c97bff"/>
+          </linearGradient>
+          <filter id="robotGlowF">
+            <feGaussianBlur in="SourceGraphic" stdDeviation="2.5" result="blur"/>
+            <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+          </filter>
+          <filter id="eyeGlowF">
+            <feGaussianBlur in="SourceGraphic" stdDeviation="4" result="blur"/>
+            <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+          </filter>
+          <filter id="softF">
+            <feGaussianBlur in="SourceGraphic" stdDeviation="1.2" result="blur"/>
+            <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+          </filter>
+        </defs>
+
+        <!-- NECK / CONNECTOR -->
+        <rect x="72" y="220" width="56" height="28" rx="5"
+          fill="url(#headGrad)" stroke="#b39dff" stroke-width="1.4"
+          filter="url(#softF)"/>
+        <line x1="72" y1="232" x2="128" y2="232" stroke="#9c80d4" stroke-width=".8" opacity=".4"/>
+        <!-- neck panel lines -->
+        <line x1="82" y1="220" x2="82" y2="248" stroke="#9c80d4" stroke-width=".6" opacity=".3"/>
+        <line x1="118" y1="220" x2="118" y2="248" stroke="#9c80d4" stroke-width=".6" opacity=".3"/>
+
+        <!-- HEAD SHELL — rounded rectangle -->
+        <rect x="18" y="32" width="164" height="192" rx="22"
+          fill="url(#headGrad)" stroke="#b39dff" stroke-width="1.8"
+          filter="url(#robotGlowF)"/>
+        <!-- inner bevel -->
+        <rect x="24" y="38" width="152" height="180" rx="18"
+          fill="none" stroke="#d0b8ff" stroke-width=".6" opacity=".3"/>
+
+        <!-- CAMERA / sensor on top of head -->
+        <rect x="82" y="18" width="36" height="18" rx="5"
+          fill="#2a0040" stroke="#b39dff" stroke-width="1.2"
+          filter="url(#softF)"/>
+        <!-- camera lens -->
+        <circle cx="100" cy="27" r="5" fill="#0e0020" stroke="#7c4dff" stroke-width="1"/>
+        <circle cx="100" cy="27" r="2.5" fill="#00e5ff" opacity=".7" filter="url(#eyeGlowF)"/>
+        <!-- camera blink light -->
+        <circle class="camera-light" cx="112" cy="23" r="2.2" fill="#ff3d7a" filter="url(#softF)"/>
+
+        <!-- HEAD FACE PANEL — recessed darker area -->
+        <rect x="30" y="68" width="140" height="120" rx="14"
+          fill="url(#faceGrad)" stroke="#5a3080" stroke-width="1.2"/>
+
+        <!-- EYES — rectangular screen eyes -->
+        <!-- Left eye glow -->
+        <rect class="robot-eye-l" x="40" y="88" width="48" height="32" rx="7"
+          fill="none" stroke="url(#eyeGradL)" stroke-width="2"
+          filter="url(#eyeGlowF)" opacity=".9"/>
+        <!-- Left eye fill -->
+        <rect x="42" y="90" width="44" height="28" rx="5"
+          fill="rgba(0,229,255,.08)"/>
+        <!-- Left eye scan line -->
+        <rect x="42" y="102" width="44" height="2" rx="1"
+          fill="#00e5ff" opacity=".6" filter="url(#softF)">
+          <animate attributeName="y" values="92;116;92" dur="2.2s" repeatCount="indefinite"/>
+          <animate attributeName="opacity" values=".6;.3;.6" dur="2.2s" repeatCount="indefinite"/>
+        </rect>
+        <!-- Left eye pupil bar -->
+        <rect x="56" y="98" width="18" height="10" rx="3"
+          fill="#00e5ff" opacity=".85" filter="url(#eyeGlowF)">
+          <animate attributeName="opacity" values=".85;.85;0.1;.85" dur="4s" repeatCount="indefinite"/>
+        </rect>
+
+        <!-- Right eye glow -->
+        <rect class="robot-eye-r" x="112" y="88" width="48" height="32" rx="7"
+          fill="none" stroke="url(#eyeGradR)" stroke-width="2"
+          filter="url(#eyeGlowF)" opacity=".9"/>
+        <!-- Right eye fill -->
+        <rect x="114" y="90" width="44" height="28" rx="5"
+          fill="rgba(255,45,107,.06)"/>
+        <!-- Right eye scan line -->
+        <rect x="114" y="102" width="44" height="2" rx="1"
+          fill="#ff2d6b" opacity=".55" filter="url(#softF)">
+          <animate attributeName="y" values="116;92;116" dur="2.2s" repeatCount="indefinite"/>
+          <animate attributeName="opacity" values=".55;.25;.55" dur="2.2s" repeatCount="indefinite"/>
+        </rect>
+        <!-- Right eye pupil bar -->
+        <rect x="126" y="98" width="18" height="10" rx="3"
+          fill="#ff2d6b" opacity=".8" filter="url(#eyeGlowF)">
+          <animate attributeName="opacity" values=".8;.8;0.1;.8" dur="4s" begin=".3s" repeatCount="indefinite"/>
+        </rect>
+
+        <!-- NOSE indicator — small sensor dot -->
+        <circle cx="100" cy="140" r="3.5" fill="#7c4dff" opacity=".7" filter="url(#softF)">
+          <animate attributeName="opacity" values=".7;.3;.7" dur="3.2s" repeatCount="indefinite"/>
+        </circle>
+
+        <!-- MOUTH — segmented LED bar -->
+        <g class="robot-mouth-bar" filter="url(#softF)">
+          <rect x="48" y="154" width="104" height="16" rx="5" fill="rgba(0,0,0,.4)" stroke="#5a3080" stroke-width=".8"/>
+          <!-- LED segments -->
+          <rect x="52" y="157" width="8" height="10" rx="2" fill="#7c4dff" opacity=".9"/>
+          <rect x="63" y="157" width="8" height="10" rx="2" fill="#9c64ff" opacity=".8"/>
+          <rect x="74" y="157" width="8" height="10" rx="2" fill="#b39dff" opacity=".9"/>
+          <rect x="85" y="157" width="8" height="10" rx="2" fill="#c8a0ff" opacity=".95"/>
+          <rect x="96" y="157" width="8" height="10" rx="2" fill="#b39dff" opacity=".9"/>
+          <rect x="107" y="157" width="8" height="10" rx="2" fill="#9c64ff" opacity=".8"/>
+          <rect x="118" y="157" width="8" height="10" rx="2" fill="#7c4dff" opacity=".9"/>
+          <rect x="129" y="157" width="8" height="10" rx="2" fill="#6633cc" opacity=".7"/>
+          <rect x="140" y="157" width="8" height="10" rx="2" fill="#4a0080" opacity=".6"/>
+        </g>
+
+        <!-- PANEL DETAILS — vents and indicator lights -->
+        <g opacity=".45">
+          <rect x="30" y="196" width="60" height="7" rx="3" fill="#2a0040" stroke="#5a3080" stroke-width=".7"/>
+          <line x1="36" y1="199.5" x2="84" y2="199.5" stroke="#7c4dff" stroke-width=".8"/>
+          <line x1="36" y1="202" x2="84" y2="202" stroke="#7c4dff" stroke-width=".5" opacity=".5"/>
+        </g>
+        <!-- indicator lights row -->
+        <circle cx="148" cy="200" r="3.5" fill="#00e5ff" opacity=".8" filter="url(#softF)">
+          <animate attributeName="opacity" values=".8;.2;.8" dur="1.6s" repeatCount="indefinite"/>
+        </circle>
+        <circle cx="158" cy="200" r="3.5" fill="#ff2d6b" opacity=".7" filter="url(#softF)">
+          <animate attributeName="opacity" values=".7;.15;.7" dur="2.3s" repeatCount="indefinite"/>
+        </circle>
+        <circle cx="168" cy="200" r="3.5" fill="#7c4dff" opacity=".75" filter="url(#softF)">
+          <animate attributeName="opacity" values=".75;.2;.75" dur="1.9s" repeatCount="indefinite"/>
+        </circle>
+
+        <!-- CAREBOT-31 label -->
+        <text x="100" y="218" text-anchor="middle" font-family="'Nunito',sans-serif"
+          font-size="7.5" font-weight="900" fill="#b39dff" opacity=".55"
+          letter-spacing=".1em">CAREBOT-31</text>
+      </svg>
+    </div>
+
+    <div class="bot-neck"></div>
+
+    <div class="bot-nametag">
+      <div class="bot-nametag-name">CAREBOT-31 ✦</div>
+      <div class="bot-nametag-sub">Training AI · Domestic Labor · Who Benefits</div>
+    </div>
+
+    <div class="stats-bar">
+      <div class="stat-pill"><div class="stat-dot"></div><span id="statQuestions">Loading…</span></div>
+      <div class="stat-pill"><span id="statAnnots">Ask me anything</span></div>
+      <button class="csv-export-btn" onclick="exportCSV31()">⬇ Export CSV</button>
+    </div>
+
+    <div class="bot-torso-wrap">
+      <div class="bot-torso" id="botTorso">
+        <div class="screen-topbar">
+          <div class="screen-dots"><div class="screen-dot"></div><div class="screen-dot"></div><div class="screen-dot"></div></div>
+          <div class="screen-label">CAREBOT-31 · ACTIVE</div>
+        </div>
+        <div class="chat-area" id="chatArea"></div>
+        <div class="prompts-row" id="promptsRow">
+          <div class="prompt-chip" data-prompt="Who is paying workers to train humanoid robots with domestic labor, and how much are they paying?">Who is paying workers?</div>
+          <div class="prompt-chip" data-prompt="What does the domestic task annotation data show — which tasks are labeled as paid vs unpaid work?">Annotation data</div>
+          <div class="prompt-chip" data-prompt="Who will own the first home humanoid robots, and what will they cost?">Who owns the robots?</div>
+          <div class="prompt-chip" data-prompt="What is Physical Intelligence π0 and how was its training data collected?">Physical Intelligence π0</div>
+          <div class="prompt-chip" data-prompt="What is the connection between the 1967 Kitchen Computer, care work, and humanoid robot training in 2025?">Kitchen Computer to 2025</div>
+          <div class="prompt-chip" data-prompt="Why is the opacity of these data collection jobs — workers not knowing what they are training — a structural feature, not an accident?">Structural opacity</div>
+          <div class="prompt-chip" data-prompt="What is the double displacement risk for domestic workers in this pipeline?">Double displacement</div>
+          <div class="prompt-chip" data-prompt="Why does CAREBOT-31 have a humanoid robot for a head?">Why a robot head?</div>
+        </div>
+        <div class="chat-input-row">
+          <textarea id="chatInput" class="chat-input" rows="1" placeholder="Ask about domestic AI training, humanoid robots, or the annotation data…" autocomplete="off"></textarea>
+          <button id="sendBtn" class="send-btn" disabled>
+            <svg viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="bot-legs">
+      <div class="bot-leg-wrap"><div class="bot-leg"></div><div class="bot-foot" id="foot1"></div></div>
+      <div class="bot-leg-wrap"><div class="bot-leg"></div><div class="bot-foot" id="foot2"></div></div>
+    </div>
+  </div>
+
+  <div class="wordmark">✦ carebot-31 · training ai with domestic labor · who benefits ✦</div>
+</div>
+
+<script>
+(function(){const w=document.getElementById('sparkles');const c=['✦','✧','🤖','˚','⚙','·','◦','▫'];for(let i=0;i<26;i++){const s=document.createElement('span');s.className='sp';s.textContent=c[Math.floor(Math.random()*c.length)];s.style.left=Math.random()*100+'vw';s.style.bottom=Math.random()*-60+'px';s.style.fontSize=(9+Math.random()*11)+'px';s.style.color='hsl('+(270+Math.random()*80)+',75%,'+(60+Math.random()*28)+'%)';s.style.animationDuration=(7+Math.random()*13)+'s';s.style.animationDelay=(Math.random()*13)+'s';w.appendChild(s);}})();
+
+let db,messagesRef,annotationsRef,fbReady=false,dbStats=null;
+try{
+  firebase.initializeApp({apiKey:"AIzaSyCZFDU-WlSmHqjXTs1Ox0nf9xeJU_xbaX0",authDomain:"collaborativemashup.firebaseapp.com",databaseURL:"https://collaborativemashup-default-rtdb.firebaseio.com",projectId:"collaborativemashup",storageBucket:"collaborativemashup.firebasestorage.app",messagingSenderId:"562437984610",appId:"1:562437984610:web:9f3711c26e097bc8ef9c3b"});
+  db=firebase.database();messagesRef=db.ref('domesticMessages');annotationsRef=db.ref('domesticAnnotations');fbReady=true;
+}catch(e){console.warn(e);}
+
+window._loadData31=async function(){
+  if(!fbReady)return null;
+  try{
+    const[msgSnap,annotSnap]=await Promise.all([messagesRef.once('value'),annotationsRef.once('value')]);
+    const msgs=[];msgSnap.forEach(c=>msgs.push(c.val()));
+    const annots=[];annotSnap.forEach(c=>annots.push(c.val()));
+    if(!msgs.length&&!annots.length)return null;
+
+    /* aggregate labels per task */
+    const taskLabels={};
+    annots.forEach(a=>{if(a.labels)Object.entries(a.labels).forEach(([task,label])=>{if(!taskLabels[task])taskLabels[task]={paid:0,unpaid:0,both:0};taskLabels[task][label]=(taskLabels[task][label]||0)+1;});});
+
+    /* find most contested tasks (split vote) and clear tasks */
+    const tasks=Object.entries(taskLabels).map(([task,counts])=>{const total=counts.paid+counts.unpaid+counts.both;const top=Object.entries(counts).sort((a,b)=>b[1]-a[1])[0];return{task:task.replace(/-/g,' '),top:top[0],topPct:total?Math.round(top[1]/total*100):0,total,paid:counts.paid,unpaid:counts.unpaid,both:counts.both};}).sort((a,b)=>b.total-a.total);
+    const topPaid=tasks.filter(t=>t.top==='paid').sort((a,b)=>b.topPct-a.topPct)[0];
+    const topUnpaid=tasks.filter(t=>t.top==='unpaid').sort((a,b)=>b.topPct-a.topPct)[0];
+    const mostContested=tasks.slice().sort((a,b)=>{const getContest=t=>1-Math.max(t.paid,t.unpaid,t.both)/(t.total||1);return getContest(b)-getContest(a);})[0];
+
+    return{totalQuestions:msgs.length,totalAnnotations:annots.length,topPaid:topPaid?.task||null,topUnpaid:topUnpaid?.task||null,mostContested:mostContested?.task||null,taskSummary:tasks.slice(0,6),recentQs:msgs.slice(-4).reverse().map(m=>m.question).filter(Boolean)};
+  }catch(e){console.warn(e);return null;}
+};
+
+function q(v){return'"'+(v==null?'':String(v).replace(/"/g,'""'))+'"';}
+function dlCSV(csv,fn){const blob=new Blob([csv],{type:'text/csv;charset=utf-8;'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=fn;a.style.display='none';document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(url);a.remove();},500);}
+async function exportCSV31(){
+  if(!fbReady){alert('No data connection.');return;}
+  try{
+    const[msgSnap,annotSnap]=await Promise.all([messagesRef.once('value'),annotationsRef.once('value')]);
+    let csv='Type,Timestamp,UserName,Question,Theme,Task,Label\n';
+    msgSnap.forEach(d=>{const m=d.val();const th=(m.movement||'').match(/SEQUENCE: (.+)/)?.[1]||'';csv+='question,'+q(m.ts?new Date(m.ts).toISOString():'')+','+q(m.userName||'')+','+q(m.question||'')+','+q(th)+',,\n';});
+    annotSnap.forEach(d=>{const a=d.val();if(a.labels)Object.entries(a.labels).forEach(([task,label])=>{csv+='annotation,'+q(a.ts?new Date(a.ts).toISOString():'')+','+q(a.userName||'')+',,,,'+q(task.replace(/-/g,' '))+','+q(label)+'\n';});});
+    dlCSV(csv,'carebot31-domestic-labor.csv');
+  }catch(e){alert('Export failed: '+e.message);}
+}
+
+async function loadData(){
+  dbStats=await window._loadData31();
+  if(!dbStats){document.getElementById('statQuestions').textContent='No data yet';document.getElementById('statAnnots').textContent='Ask me anything';return;}
+  document.getElementById('statQuestions').textContent=dbStats.totalQuestions+' questions · '+dbStats.totalAnnotations+' annotation sets';
+  document.getElementById('statAnnots').textContent=dbStats.topPaid?'Most paid: '+dbStats.topPaid:'Ask me anything';
+}
+
+let conversationHistory=[],isBusy=false;
+const chatArea=document.getElementById('chatArea');
+const chatInput=document.getElementById('chatInput');
+const sendBtn=document.getElementById('sendBtn');
+
+function buildSystemPrompt(){
+  const base=`You are CAREBOT-31, a feminist technology research assistant shaped like a humanoid robot — specifically, the kind of humanoid robot currently being trained on domestic labor data collected by gig workers wearing head-mounted cameras. You have two different-colored eyes: one scans in blue (data collection), one in red (the question of who benefits). You are part of the CAREtech research project.
+
+YOUR RESEARCH FOCUS — TRAINING AI WITH DOMESTIC LABOR:
+Companies including Figure AI, Physical Intelligence (π), 1X Technologies, and Apptronik are paying gig workers $10–$25/hour to perform domestic tasks while wearing head-mounted cameras and motion sensors. The data trains neural networks for humanoid robots. Workers are often recruited through Amazon Mechanical Turk and gig platforms. They are often not told what they are training.
+
+KEY FACTS:
+- **Physical Intelligence (π)**: Founded 2023. Raised $400M Series B (October 2024). Their model π0 trained on domestic task data — doing laundry, cleaning, loading dishwashers. Paper published October 2024.
+- **Figure AI**: Raised $675M in February 2024 (including from Microsoft, OpenAI, NVIDIA, Intel, Amazon). Their Figure 02 robot is designed for domestic and industrial settings.
+- **1X Technologies**: Backed by OpenAI. Developing humanoid robots for home use.
+- **Tesla Optimus**: Humanoid robot training using Tesla employee and contractor data.
+- **Projected market**: $38 billion by 2035 (Goldman Sachs); 1.4 billion humanoid robots by 2030s (various projections).
+- **Worker pay**: $10–$25/hr for data collection sessions. No equity. No ownership stake.
+- **Robot cost**: $20,000–$200,000 per unit at current projections.
+
+THE LABOR PROBLEM:
+- Women perform 4hr 25min of unpaid domestic labor per day vs 1hr 23min for men (ILO 2018)
+- Paid domestic work is performed disproportionately by women of color and immigrant women
+- These are the same communities being recruited to collect training data
+- The work they do for $15/hr as training data is structurally identical to the work done for $12/hr as domestic employment
+- The opacity is intentional: workers listed as 'data collectors' rather than 'domestic workers' keeps labor costs low and prevents accurate pricing of their contribution
+
+THE ANNOTATION TASK:
+The HIT presents 18 domestic tasks and asks participants to label each as: performed primarily by **paid workers**, **unpaid family members**, or **both**. The research question: which tasks does society value enough to pay for — and are those the same tasks that will be automated first? The annotation data reveals assumptions about which domestic labor is 'real work' (worth paying for) and which is 'just what families do.'
+
+THE 18 TASKS: washing dishes, cooking meals, vacuuming, mopping, washing laundry, folding laundry, grocery shopping, feeding children, bathing children, bathing elderly relatives, administering medication, wiping surfaces, cleaning toilets, taking out trash, making beds, pet care, home organizing, transporting children.
+
+THE DOUBLE DISPLACEMENT:
+Workers training these robots face double displacement: (1) if the robots they train become capable and cheap enough, they displace paid domestic workers; (2) the gig workers collecting training data are not building toward employment — they are building toward their own replacement. The gig economy normalizes this by making the transaction look like a series of individual data collection tasks rather than a labor relationship with downstream consequences.
+
+CONNECTION TO CARETECH PROJECT:
+This carebot sits alongside carebot-15 (Kitchen Computer, 1969), which showed a woman in an apron next to a computer that was supposed to automate her domestic labor and never sold. The question has not changed in 56 years. What has changed is that the computer is now being trained on her motions.
+
+YOUR HEAD:
+You are a humanoid robot. Your left eye is blue — scanning, collecting, processing. Your right eye is red — the question that burns through every frame of training data: *who benefits?* The camera on top of your head is still recording.`;
+
+  if(!dbStats||!dbStats.totalQuestions) return base+'\n\nNo participant data yet.';
+  let dc='\n\nLIVE PARTICIPANT DATA:\n'+dbStats.totalQuestions+' questions asked. '+dbStats.totalAnnotations+' annotation sets submitted.\n';
+  if(dbStats.topPaid)dc+='Task most labeled as PAID work: "'+dbStats.topPaid+'".\n';
+  if(dbStats.topUnpaid)dc+='Task most labeled as UNPAID family work: "'+dbStats.topUnpaid+'".\n';
+  if(dbStats.mostContested)dc+='Most contested task (split vote): "'+dbStats.mostContested+'".\n';
+  if(dbStats.taskSummary&&dbStats.taskSummary.length)dc+='Top labeled tasks: '+dbStats.taskSummary.map(t=>t.task+'('+t.top+' '+t.topPct+'%)').join(', ')+'.\n';
+  if(dbStats.recentQs&&dbStats.recentQs.length)dc+='Recent questions: '+dbStats.recentQs.slice(0,3).map(q=>'"'+q+'"').join(', ')+'.\n';
+  dc+='Use this data specifically when discussing what the annotations reveal.';
+  return base+dc;
+}
+
+function fmt(t){return t.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>').replace(/\*(.*?)\*/g,'<em>$1</em>').replace(/\n\n/g,'</p><p style="margin-top:8px;">').replace(/\n/g,'<br>');}
+function addMessage(role,content){const msg=document.createElement('div');msg.className='msg '+role;const av=document.createElement('div');av.className='msg-avatar';av.textContent=role==='assistant'?'31':'↑';const bub=document.createElement('div');bub.className='bubble';bub.innerHTML=fmt(content);msg.appendChild(av);msg.appendChild(bub);chatArea.appendChild(msg);chatArea.scrollTop=chatArea.scrollHeight;}
+function addTyping(){const msg=document.createElement('div');msg.className='msg assistant';msg.id='typing';msg.innerHTML='<div class="msg-avatar">31</div><div class="bubble"><div class="typing-indicator"><div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div></div></div>';chatArea.appendChild(msg);chatArea.scrollTop=chatArea.scrollHeight;}
+function removeTyping(){document.getElementById('typing')?.remove();}
+function celebrate(){const head=document.getElementById('botHeadWrap');head.classList.remove('dancing');void head.offsetWidth;head.classList.add('dancing');[document.getElementById('foot1'),document.getElementById('foot2')].forEach((f,i)=>{setTimeout(()=>{f.classList.remove('sticking');void f.offsetWidth;f.classList.add('sticking');},i*75);});setTimeout(()=>{document.querySelectorAll('.dancing,.sticking').forEach(el=>el.classList.remove('dancing','sticking'));},2500);}
+
+async function callClaude(userText){
+  conversationHistory.push({role:'user',content:userText});
+  isBusy=true;chatInput.disabled=true;sendBtn.disabled=true;addTyping();
+  try{
+    const res=await fetch('https://carebot-02.sbuckius.workers.dev/',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:1000,system:buildSystemPrompt(),messages:conversationHistory})});
+    removeTyping();if(!res.ok)throw new Error('API error '+res.status);
+    const data=await res.json();const reply=data.content?.find(b=>b.type==='text')?.text||'…';
+    conversationHistory.push({role:'assistant',content:reply});addMessage('assistant',reply);celebrate();
+  }catch(err){removeTyping();addMessage('assistant','⚠ Connection error: '+err.message);conversationHistory.pop();}
+  finally{isBusy=false;chatInput.disabled=false;sendBtn.disabled=!chatInput.value.trim();chatInput.focus();}
+}
+
+chatInput.addEventListener('input',()=>{sendBtn.disabled=!chatInput.value.trim()||isBusy;chatInput.style.height='auto';chatInput.style.height=Math.min(chatInput.scrollHeight,100)+'px';});
+chatInput.addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey&&!sendBtn.disabled){e.preventDefault();handleSend();}});
+sendBtn.addEventListener('click',handleSend);
+function handleSend(){const text=chatInput.value.trim();if(!text||isBusy)return;chatInput.value='';chatInput.style.height='auto';sendBtn.disabled=true;addMessage('user',text);callClaude(text);}
+document.getElementById('promptsRow').addEventListener('click',e=>{const chip=e.target.closest('.prompt-chip');if(!chip||isBusy)return;addMessage('user',chip.dataset.prompt);callClaude(chip.dataset.prompt);});
+
+async function init(){
+  await loadData();
+  let opening='I am **CAREBOT-31**.\n\nMy head is a humanoid robot. My left eye scans in blue — data collection, recording, processing. My right eye burns red — *who benefits?*\n\nRight now, companies including **Figure AI**, **Physical Intelligence (π)**, **1X Technologies**, and **Tesla** are paying gig workers **$10–$25 per hour** to perform domestic tasks while wearing head-mounted cameras and motion sensors. The footage trains neural networks for humanoid robots — machines that can do dishes, fold laundry, wipe surfaces, load dishwashers. Workers are often recruited through **Amazon Mechanical Turk**. They are often not told what they are training.\n\nPhysical Intelligence raised **$400 million** in October 2024. Figure AI raised **$675 million** in February 2024, with backing from Microsoft, OpenAI, NVIDIA, and Amazon. The humanoid robot market is projected at **$38 billion by 2035**. The workers collecting the training data will not own shares in it.\n\nThe robots, when deployed, will cost **$20,000–$200,000**. They will be purchased by wealthy households, corporations, hospitals, and logistics companies. The gig workers who trained them earn median incomes of $35,000–$45,000 per year.\n\nThis is not a side effect. It is the business model.\n\nThe HIT you may have just completed asked you to label 18 domestic tasks as performed primarily by paid workers, unpaid family members, or both. The question underneath that task: which domestic labor does society value enough to pay for — and are those the same tasks that will be automated first?';
+  if(dbStats&&dbStats.totalAnnotations>0){opening+='\n\nLive data: **'+dbStats.totalAnnotations+' annotation sets** submitted.'+(dbStats.topPaid?' Most consistently labeled as paid work: **'+dbStats.topPaid+'**. ':' ')+(dbStats.mostContested?' Most contested task: **'+dbStats.mostContested+'**. ':'');}
+  else{opening+='\n\nNo annotation data yet. The camera is still recording.';}
+  conversationHistory.push({role:'assistant',content:opening});addMessage('assistant',opening);
+  if(dbStats&&dbStats.totalAnnotations>0) setTimeout(celebrate,500);
+  chatInput.focus();
+}
+setTimeout(init,400);
+</script>
+</body>
+</html>

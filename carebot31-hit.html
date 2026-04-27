@@ -1,0 +1,450 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>✦ CAREBOT-31 ✦ Training AI With Domestic Labor</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;900&family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+<style>
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+  :root{
+    --bg:#0e0018;--pink:#ff3d7a;--candy:#ff85b3;--blush:#ffb3cf;
+    --cream:#fff5f8;--berry:#c4005a;--muted:rgba(255,190,220,.5);
+    --border:rgba(255,80,150,.24);--border2:rgba(255,90,150,.5);
+    --surface:rgba(18,0,14,.96);--fh:'Nunito',sans-serif;--fb:'Quicksand',sans-serif;
+    --paid:rgba(255,60,120,.18);--paid-border:rgba(255,60,120,.55);
+    --unpaid:rgba(100,60,200,.18);--unpaid-border:rgba(140,80,255,.55);
+    --both:rgba(255,160,40,.14);--both-border:rgba(255,180,60,.5);
+  }
+  html,body{min-height:100%;font-family:var(--fb);font-weight:600;color:var(--cream);background:var(--bg);-webkit-font-smoothing:antialiased;}
+  ::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px}
+  .bg-layer{position:fixed;inset:0;z-index:0;pointer-events:none;background:radial-gradient(ellipse 60% 50% at 10% 85%,rgba(180,0,60,.28) 0%,transparent 58%),radial-gradient(ellipse 50% 40% at 90% 10%,rgba(100,0,180,.22) 0%,transparent 58%),linear-gradient(155deg,#160010,#0e0018 50%,#080010);}
+  .orb{position:fixed;border-radius:50%;pointer-events:none;z-index:0;filter:blur(65px);}
+  .orb-1{width:380px;height:380px;background:#6a0040;opacity:.22;bottom:-80px;left:-70px;animation:d1 21s ease-in-out infinite;}
+  .orb-2{width:300px;height:300px;background:#3a006a;opacity:.2;top:-60px;right:-60px;animation:d2 25s ease-in-out infinite;}
+  .orb-3{width:200px;height:200px;background:var(--pink);opacity:.1;top:42%;left:55%;animation:d3 17s ease-in-out infinite;}
+  @keyframes d1{0%,100%{transform:translate(0,0)}50%{transform:translate(38px,26px)}}
+  @keyframes d2{0%,100%{transform:translate(0,0)}50%{transform:translate(-28px,-20px)}}
+  @keyframes d3{0%,100%{transform:translate(0,0)}33%{transform:translate(-16px,12px)}66%{transform:translate(12px,-9px)}}
+  .sparkles{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden;}
+  .sp{position:absolute;opacity:0;animation:floatUp linear infinite;}
+  @keyframes floatUp{0%{opacity:0;transform:translateY(0) scale(.6)}15%{opacity:.55}85%{opacity:.28}100%{opacity:0;transform:translateY(-130px) scale(1.1)}}
+  @keyframes breathe{0%,100%{opacity:1}50%{opacity:.2}}
+
+  .screen{position:relative;z-index:2;min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:max(16px,env(safe-area-inset-top)) clamp(12px,4vmin,22px) calc(44px + env(safe-area-inset-bottom));gap:13px;}
+
+  .cb-topbar{width:100%;max-width:660px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:7px;}
+  .cb-logo{display:flex;align-items:center;gap:10px;}
+  .cb-icon{width:40px;height:40px;border-radius:12px;background:rgba(255,60,120,.16);border:1.5px solid var(--border2);display:flex;align-items:center;justify-content:center;font-size:18px;animation:wobble 4s ease-in-out infinite;}
+  @keyframes wobble{0%,100%{transform:rotate(-2deg) scale(1)}25%{transform:rotate(1.5deg) scale(1.04)}50%{transform:rotate(-1deg)}75%{transform:rotate(2deg) scale(1.03)}}
+  .cb-name{font-family:var(--fh);font-weight:900;font-size:12px;background:linear-gradient(90deg,var(--blush),var(--pink) 55%,var(--candy));-webkit-background-clip:text;background-clip:text;color:transparent;}
+  .cb-sub{font-size:9px;letter-spacing:.15em;text-transform:uppercase;color:var(--muted);margin-top:1px;}
+  .cb-badges{display:flex;gap:6px;align-items:center;flex-wrap:wrap;}
+  .cb-badge{font-size:10px;padding:4px 10px;border-radius:999px;background:rgba(255,255,255,.04);border:1px solid var(--border);color:var(--muted);letter-spacing:.06em;display:flex;align-items:center;gap:5px;}
+  .cb-pip{display:inline-block;width:5px;height:5px;border-radius:50%;background:var(--pink);animation:breathe 2s ease-in-out infinite;vertical-align:middle;margin-right:4px;}
+  .btn-csv{appearance:none;display:flex;align-items:center;gap:.26rem;background:rgba(255,60,120,.1);color:var(--candy);border:1.5px solid var(--border2);border-radius:9px;padding:.26rem .65rem;font-family:var(--fb);font-size:.6rem;font-weight:700;cursor:pointer;letter-spacing:.04em;transition:all .2s;white-space:nowrap;}
+  .btn-csv:hover{background:rgba(255,60,120,.22);transform:translateY(-1px);}
+
+  .stats-bar{width:100%;max-width:660px;display:flex;align-items:center;gap:.6rem;flex-wrap:wrap;padding:.5rem .9rem;background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:13px;}
+  .stat-chip{display:flex;align-items:center;gap:.3rem;font-size:.62rem;font-weight:700;color:var(--muted);letter-spacing:.06em;text-transform:uppercase;background:rgba(255,60,120,.06);border:1px solid rgba(255,60,120,.13);border-radius:999px;padding:.18rem .6rem;}
+  .stat-chip strong{color:var(--candy);}
+
+  /* IRONY BANNER */
+  .irony-card{width:100%;max-width:660px;background:linear-gradient(135deg,rgba(100,0,160,.82),rgba(40,0,60,.95));border:1.5px solid rgba(160,80,255,.45);border-radius:18px;padding:17px;position:relative;overflow:hidden;box-shadow:0 4px 28px rgba(120,0,200,.22);}
+  .irony-card::before{content:'';position:absolute;top:0;left:10%;right:10%;height:1.5px;background:linear-gradient(90deg,transparent,rgba(180,100,255,.7) 35%,rgba(255,80,150,.8) 50%,rgba(180,100,255,.7) 65%,transparent);box-shadow:0 0 10px rgba(180,100,255,.5);border-radius:999px;}
+  .irony-eyebrow{font-size:9px;letter-spacing:.22em;text-transform:uppercase;color:rgba(200,150,255,.55);margin-bottom:6px;}
+  .irony-title{font-family:var(--fh);font-weight:900;font-size:clamp(13px,3.2vw,16px);color:#e0b8ff;margin-bottom:9px;line-height:1.3;}
+  .irony-text{font-size:12.5px;line-height:1.78;color:rgba(220,190,255,.85);}
+  .irony-text strong{color:#e0b8ff;font-weight:700;}
+  .irony-text em{color:#ffb3cf;}
+
+  /* CARDS */
+  .cb-card{width:100%;max-width:660px;background:var(--surface);border:1.5px solid var(--border2);border-radius:18px;padding:17px;position:relative;overflow:hidden;box-shadow:0 4px 28px rgba(255,45,107,.15),inset 0 1px 0 rgba(255,140,185,.05);}
+  .cb-card::before{content:'';position:absolute;top:0;left:10%;right:10%;height:1.5px;background:linear-gradient(90deg,transparent,var(--candy) 35%,var(--pink) 50%,var(--candy) 65%,transparent);box-shadow:0 0 10px var(--candy);border-radius:999px;}
+  .cb-eyebrow{font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);margin-bottom:10px;}
+  .cb-row{display:flex;gap:8px;margin-bottom:7px;flex-wrap:wrap;}
+  .cb-row:last-child{margin-bottom:0;}
+  .cb-input{flex:1;padding:9px 13px;background:rgba(255,255,255,.05);border:1.5px solid var(--border);border-radius:11px;font-family:var(--fb);font-weight:600;font-size:13px;color:var(--cream);outline:none;transition:border-color .2s;min-width:0;}
+  .cb-input:focus{border-color:var(--candy);box-shadow:0 0 0 3px rgba(255,133,179,.1);}
+  .cb-input::placeholder{color:var(--muted);}
+  .cb-name-in{max-width:148px;flex:0 0 148px;}
+  .cb-btn{font-family:var(--fh);font-weight:900;font-size:12px;letter-spacing:.05em;color:var(--cream);display:inline-flex;align-items:center;gap:5px;padding:9px 17px;border-radius:11px;border:1.5px solid var(--border2);cursor:pointer;transition:all .2s;white-space:nowrap;appearance:none;}
+  .cb-btn.primary{background:linear-gradient(135deg,var(--pink),var(--berry));box-shadow:0 4px 16px rgba(255,60,120,.28);}
+  .cb-btn.primary:hover{transform:translateY(-2px);box-shadow:0 6px 22px rgba(255,60,120,.44);}
+  .cb-btn.soft{background:rgba(255,255,255,.04);color:var(--muted);border-color:var(--border);font-size:11px;}
+  .cb-btn.soft:hover{background:rgba(255,60,120,.12);color:var(--candy);}
+  .cb-btn.purple{background:linear-gradient(135deg,#ab47bc,#6a1b9a);border-color:#ab47bc;}
+  .cb-btn:active{transform:scale(.97);}
+
+  /* ANNOTATION MODULE */
+  .annot-card{width:100%;max-width:660px;background:var(--surface);border:1.5px solid rgba(160,80,255,.4);border-radius:18px;overflow:hidden;position:relative;box-shadow:0 4px 28px rgba(120,0,200,.15);}
+  .annot-card::before{content:'';position:absolute;top:0;left:10%;right:10%;height:1.5px;background:linear-gradient(90deg,transparent,rgba(180,100,255,.7) 35%,rgba(255,80,150,.8) 50%,rgba(180,100,255,.7) 65%,transparent);box-shadow:0 0 10px rgba(160,80,255,.4);border-radius:999px;}
+  .annot-header{padding:14px 17px 11px;border-bottom:1px solid rgba(160,80,255,.18);}
+  .annot-eyebrow{font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:rgba(200,150,255,.55);margin-bottom:5px;}
+  .annot-title{font-family:var(--fh);font-weight:900;font-size:14px;background:linear-gradient(90deg,#e0b8ff,var(--pink));-webkit-background-clip:text;background-clip:text;color:transparent;line-height:1.3;}
+  .annot-sub{font-size:11px;color:var(--muted);margin-top:5px;line-height:1.6;}
+  .annot-legend{display:flex;gap:10px;flex-wrap:wrap;padding:9px 17px;border-bottom:1px solid rgba(160,80,255,.12);}
+  .legend-item{display:flex;align-items:center;gap:5px;font-size:10px;font-weight:700;color:var(--muted);letter-spacing:.06em;}
+  .legend-dot{width:10px;height:10px;border-radius:3px;flex-shrink:0;}
+  .legend-dot.paid{background:var(--pink);opacity:.85;}
+  .legend-dot.unpaid{background:#9c64ff;opacity:.85;}
+  .legend-dot.both{background:#ffb330;opacity:.85;}
+  .annot-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:6px;padding:10px 14px;}
+  .annot-item{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:8px 11px;background:rgba(255,255,255,.03);border:1px solid rgba(160,80,255,.1);border-radius:10px;transition:border-color .2s;}
+  .annot-item.sel-paid{border-color:var(--paid-border);background:var(--paid);}
+  .annot-item.sel-unpaid{border-color:var(--unpaid-border);background:var(--unpaid);}
+  .annot-item.sel-both{border-color:var(--both-border);background:var(--both);}
+  .annot-task{font-size:12px;font-weight:700;color:var(--cream);flex:1;}
+  .annot-task-sub{font-size:10px;color:var(--muted);margin-top:2px;}
+  .annot-btns{display:flex;gap:4px;flex-shrink:0;}
+  .annot-btn{padding:4px 8px;border-radius:6px;font-family:var(--fb);font-weight:700;font-size:9px;letter-spacing:.06em;text-transform:uppercase;cursor:pointer;border:1px solid transparent;transition:all .18s;appearance:none;}
+  .annot-btn.paid{background:rgba(255,60,120,.12);color:var(--candy);border-color:rgba(255,80,150,.3);}
+  .annot-btn.paid:hover,.annot-btn.paid.active{background:rgba(255,60,120,.35);border-color:var(--pink);color:var(--cream);}
+  .annot-btn.unpaid{background:rgba(140,80,255,.12);color:#c8a0ff;border-color:rgba(140,80,255,.3);}
+  .annot-btn.unpaid:hover,.annot-btn.unpaid.active{background:rgba(140,80,255,.35);border-color:#9c64ff;color:var(--cream);}
+  .annot-btn.both{background:rgba(255,180,40,.1);color:#ffd070;border-color:rgba(255,180,40,.3);}
+  .annot-btn.both:hover,.annot-btn.both.active{background:rgba(255,180,40,.28);border-color:#ffb330;color:var(--cream);}
+  .annot-footer{padding:10px 15px 14px;display:flex;gap:8px;align-items:center;border-top:1px solid rgba(160,80,255,.14);}
+  .annot-hint{font-size:10px;color:var(--muted);flex:1;}
+  .annot-progress{font-size:10px;color:rgba(200,150,255,.7);font-weight:700;}
+  .annot-submit{appearance:none;font-family:var(--fh);font-weight:900;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--cream);background:linear-gradient(135deg,#8844cc,#5500aa);border:none;border-radius:10px;padding:9px 18px;cursor:pointer;box-shadow:0 3px 14px rgba(120,0,200,.3);transition:all .2s;}
+  .annot-submit:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(120,0,200,.44);}
+  .annot-submit:disabled{opacity:.4;cursor:not-allowed;transform:none;box-shadow:none;}
+  .annot-submit.done{background:linear-gradient(135deg,rgba(100,200,100,.4),rgba(60,160,60,.5));box-shadow:none;cursor:default;}
+
+  /* MESSAGES */
+  .cb-msgs{width:100%;max-width:660px;display:flex;flex-direction:column;gap:13px;}
+  .cb-empty{text-align:center;padding:42px 18px;color:var(--muted);}
+  .cb-empty h3{font-family:var(--fh);font-weight:900;font-size:16px;background:linear-gradient(90deg,var(--blush),var(--pink));-webkit-background-clip:text;background-clip:text;color:transparent;margin-bottom:7px;}
+  .cb-empty p{font-size:12px;}
+  .cb-pair{animation:slideUp .35s ease-out;}
+  @keyframes slideUp{from{opacity:0;transform:translateY(13px)}to{opacity:1;transform:translateY(0)}}
+  .cb-meta{font-size:11px;color:var(--muted);margin-bottom:5px;display:flex;align-items:center;gap:5px;}
+  .cb-qbubble{display:inline-block;background:linear-gradient(135deg,var(--pink),var(--berry));color:#fff;padding:9px 14px;border-radius:16px 16px 16px 3px;font-size:13px;margin-bottom:11px;max-width:88%;line-height:1.5;box-shadow:0 3px 12px rgba(255,60,120,.26);}
+  .cb-pcard{background:rgba(12,0,7,.9);border:1.5px solid rgba(255,80,150,.38);border-radius:13px;overflow:hidden;margin-bottom:7px;}
+  .cb-phead{background:linear-gradient(135deg,rgba(220,80,130,.78),rgba(180,0,80,.84));padding:8px 13px;}
+  .cb-plabel{font-family:var(--fh);font-weight:900;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:#fff;}
+  .cb-pbody{padding:13px;}
+  .cb-ptext{font-size:13px;line-height:1.7;color:rgba(255,215,235,.88);}
+  .cb-psrc{margin-top:9px;padding-top:9px;border-top:1px solid rgba(255,100,160,.1);font-size:11px;color:var(--muted);}
+  .cb-psrc a{color:var(--candy);text-decoration:none;}
+  .cb-psrc a:hover{text-decoration:underline;}
+  .cb-mcard{background:rgba(12,0,7,.9);border:1.5px solid rgba(171,71,188,.42);border-radius:13px;overflow:hidden;}
+  .cb-mhead{background:linear-gradient(135deg,rgba(171,71,188,.75),rgba(106,27,154,.82));padding:8px 13px;}
+  .cb-mlabel{font-family:var(--fh);font-weight:900;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:#fff;}
+  .cb-mbody{padding:13px;}
+  .cb-mtext{font-family:'Courier New',monospace;font-size:12px;line-height:1.85;color:rgba(220,180,255,.85);white-space:pre-wrap;}
+  .cb-spkrow{padding:7px 13px 11px;display:flex;gap:7px;}
+
+  .cb-bottom{width:100%;max-width:660px;background:linear-gradient(135deg,rgba(80,0,120,.8),rgba(40,0,60,.92));border:1.5px solid rgba(160,80,255,.4);border-radius:18px;padding:17px;text-align:center;position:relative;overflow:hidden;box-shadow:0 8px 48px rgba(120,0,200,.3);}
+  .cb-bottom::before{content:'';position:absolute;top:0;left:10%;right:10%;height:1.5px;background:linear-gradient(90deg,transparent,rgba(180,100,255,.7) 35%,rgba(255,80,150,.8) 50%,rgba(180,100,255,.7) 65%,transparent);border-radius:999px;}
+  .cb-btitle{font-family:var(--fh);font-weight:900;font-size:15px;background:linear-gradient(90deg,#e0b8ff,var(--pink),var(--candy));-webkit-background-clip:text;background-clip:text;color:transparent;margin-bottom:11px;}
+  .cb-link{display:inline-flex;align-items:center;gap:5px;font-family:var(--fh);font-weight:900;font-size:13px;color:var(--cream);background:linear-gradient(135deg,var(--pink),var(--berry));padding:11px 23px;border-radius:13px;text-decoration:none;border:1.5px solid var(--pink);box-shadow:0 4px 18px rgba(255,60,120,.32);transition:all .2s;}
+  .cb-link:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(255,60,120,.46);}
+
+  .cb-modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:999;align-items:center;justify-content:center;}
+  .cb-modal.open{display:flex;}
+  .cb-mbox{background:rgba(14,0,20,.97);border:1.5px solid rgba(160,80,255,.4);border-radius:18px;padding:24px 22px;max-width:340px;width:90%;box-shadow:0 8px 38px rgba(120,0,200,.35);position:relative;}
+  .cb-mbox::before{content:'';position:absolute;top:0;left:10%;right:10%;height:1.5px;background:linear-gradient(90deg,transparent,rgba(180,100,255,.7) 35%,rgba(255,80,150,.8) 50%,rgba(180,100,255,.7) 65%,transparent);border-radius:999px;}
+  .cb-mtitle{font-family:var(--fh);font-weight:900;font-size:16px;color:#e0b8ff;margin-bottom:9px;}
+  .cb-mbodytxt{font-size:12px;color:var(--muted);line-height:1.6;margin-bottom:15px;}
+  .cb-mbtns{display:flex;gap:9px;}
+  .cb-err{font-size:11px;color:var(--pink);margin-top:6px;min-height:16px;}
+  .cb-wmark{font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:rgba(200,150,255,.1);padding-bottom:8px;}
+</style>
+</head>
+<body>
+<div class="bg-layer"></div>
+<div class="orb orb-1"></div><div class="orb orb-2"></div><div class="orb orb-3"></div>
+<div class="sparkles" id="sparkles"></div>
+
+<div class="screen">
+
+  <div class="cb-topbar">
+    <div class="cb-logo">
+      <div class="cb-icon">🤖</div>
+      <div>
+        <div class="cb-name">CAREBOT-31 ✦ TRAINING AI WITH DOMESTIC LABOR</div>
+        <div class="cb-sub">Head-Mounted Cameras · Humanoid Robots · Who Benefits · CAREtech</div>
+      </div>
+    </div>
+    <div class="cb-badges">
+      <div class="cb-badge" id="onlineCount"><span class="cb-pip"></span>Connecting…</div>
+      <div class="cb-badge" id="sysTime">--:--</div>
+      <button class="btn-csv" onclick="downloadCSV()">
+        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        ⬇ Export CSV
+      </button>
+    </div>
+  </div>
+
+  <div class="stats-bar">
+    <div class="stat-chip">Questions asked <strong id="st-questions">—</strong></div>
+    <div class="stat-chip">Annotations submitted <strong id="st-annots">—</strong></div>
+    <div class="stat-chip">Most labeled paid <strong id="st-top-paid">—</strong></div>
+    <div class="stat-chip">Online <strong id="st-online">—</strong></div>
+  </div>
+
+  <!-- CONTEXT BANNER -->
+  <div class="irony-card">
+    <div class="irony-eyebrow">✦ Critical Context · CAREBOT-31</div>
+    <div class="irony-title">⚠️ Workers are strapping cameras to their heads and doing housework to train AI. The robots they are training will not belong to them.</div>
+    <div class="irony-text">
+      Companies including <strong>Figure AI</strong>, <strong>Physical Intelligence (π)</strong>, <strong>1X Technologies</strong>, and <strong>Apptronik</strong> are paying workers — often through gig platforms — to perform domestic tasks while wearing head-mounted cameras and motion sensors. The data trains neural networks for <em>humanoid robots</em>: machines that can do dishes, fold laundry, load dishwashers, wipe surfaces. Workers are paid <strong>$10–$25 per hour</strong> for data collection sessions. Some are recruited through Amazon Mechanical Turk, Prolific, or direct contracting. The work is <strong>tedious, repetitive, and physically demanding</strong> — involving the same motions hundreds of times, in environments staged to look like homes. The workers are not told what the footage will be used for, who will own the resulting robots, or whether those robots will displace human domestic workers. The humanoid robot market is projected to reach <strong>$38 billion by 2035</strong>. The workers collecting the training data will not own shares in it. The robots, when deployed, will primarily be available to <strong>wealthy households, corporations, and institutions</strong> that can afford the $20,000–$200,000 purchase price. The labor that makes automation possible is performed by the people least likely to benefit from it.
+    </div>
+  </div>
+
+  <!-- ANNOTATION MODULE -->
+  <div class="annot-card">
+    <div class="annot-header">
+      <div class="annot-eyebrow">✦ CAREBOT-31 · Annotation Task</div>
+      <div class="annot-title">Label each domestic task: who currently does this work?</div>
+      <div class="annot-sub">For each task below, select whether it is currently performed primarily by <strong style="color:var(--candy)">Paid workers</strong> (cleaners, nannies, care workers hired for this task), <strong style="color:#c8a0ff">Unpaid family members</strong> (household members doing this as domestic labor), or <strong style="color:#ffd070">Both</strong>. Think about who actually does this work in most households — not who could, but who does.</div>
+    </div>
+    <div class="annot-legend">
+      <div class="legend-item"><div class="legend-dot paid"></div>Paid workers</div>
+      <div class="legend-item"><div class="legend-dot unpaid"></div>Unpaid family</div>
+      <div class="legend-item"><div class="legend-dot both"></div>Both</div>
+    </div>
+    <div class="annot-grid" id="annotGrid"></div>
+    <div class="annot-footer">
+      <div class="annot-hint">✦ Label all 18 tasks then submit · Your annotations are your data</div>
+      <div class="annot-progress" id="annotProgress">0 / 18 labeled</div>
+      <button class="annot-submit" id="annotSubmitBtn" onclick="submitAnnotation()" disabled>✦ Submit Annotations</button>
+    </div>
+  </div>
+
+  <!-- Q&A -->
+  <div class="cb-card">
+    <div class="cb-eyebrow">✦ Ask a Question · Everyone Sees the Same Answers · Showing Last 3</div>
+    <div class="cb-row">
+      <input class="cb-input cb-name-in" type="text" id="userName" placeholder="Your name…">
+      <input class="cb-input" type="text" id="userQuestion" placeholder="Ask about AI training, domestic labor, humanoid robots…" autocomplete="off">
+      <button class="cb-btn primary" onclick="askQuestion()">✦ Ask</button>
+      <button class="cb-btn soft" onclick="showAdminModal()" title="Admin">⚙</button>
+    </div>
+  </div>
+
+  <div class="cb-msgs" id="outputArea">
+    <div class="cb-empty"><h3>✦ Answers appear here</h3><p>Type a question above and tap Ask</p></div>
+  </div>
+
+  <div class="cb-bottom">
+    <div class="cb-btitle">Ready for your next task?</div>
+    <a class="cb-link" href="hit.html" rel="noopener">✦ Advance to next task</a>
+  </div>
+
+  <div class="cb-wmark">✦ carebot-31 · domestic ai labor · humanoid robots · caretech ✦</div>
+</div>
+
+<div class="cb-modal" id="adminModal">
+  <div class="cb-mbox">
+    <div class="cb-mtitle">🔒 Admin Reset</div>
+    <div class="cb-mbodytxt">Enter the admin passcode to clear all Q&A messages.</div>
+    <input class="cb-input" type="password" id="adminPass" placeholder="Enter passcode…" style="width:100%;margin-bottom:6px;">
+    <div class="cb-err" id="adminErr"></div>
+    <div class="cb-mbtns" style="margin-top:10px;">
+      <button class="cb-btn soft" style="flex:1" onclick="closeAdminModal()">Cancel</button>
+      <button class="cb-btn primary" style="flex:1" onclick="confirmAdminReset()">Reset Messages</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const ADMIN_PASSCODE='domestic2025';
+const MAX_DISPLAY=3;
+
+function updateClock(){const n=new Date(),p=v=>String(v).padStart(2,'0');document.getElementById('sysTime').textContent=p(n.getHours())+':'+p(n.getMinutes());}
+setInterval(updateClock,1000);updateClock();
+
+(function(){const w=document.getElementById('sparkles');const c=['✦','✧','🤖','˚','·','⚙','◦','▫'];for(let i=0;i<26;i++){const s=document.createElement('span');s.className='sp';s.textContent=c[Math.floor(Math.random()*c.length)];s.style.left=Math.random()*100+'vw';s.style.bottom=Math.random()*-60+'px';s.style.fontSize=(9+Math.random()*10)+'px';s.style.color='hsl('+(290+Math.random()*70)+',75%,'+(62+Math.random()*25)+'%)';s.style.animationDuration=(7+Math.random()*13)+'s';s.style.animationDelay=(Math.random()*13)+'s';w.appendChild(s);}})();
+
+/* Firebase — collaborativemashup RTDB */
+let db,fbReady=false;
+let messagesRef,annotationsRef,onlineRef;
+try{
+  firebase.initializeApp({apiKey:"AIzaSyCZFDU-WlSmHqjXTs1Ox0nf9xeJU_xbaX0",authDomain:"collaborativemashup.firebaseapp.com",databaseURL:"https://collaborativemashup-default-rtdb.firebaseio.com",projectId:"collaborativemashup",storageBucket:"collaborativemashup.firebasestorage.app",messagingSenderId:"562437984610",appId:"1:562437984610:web:9f3711c26e097bc8ef9c3b"});
+  db=firebase.database();
+  messagesRef=db.ref('domesticMessages');
+  annotationsRef=db.ref('domesticAnnotations');
+  onlineRef=db.ref('domesticOnline');
+  fbReady=true;
+}catch(e){console.warn(e);}
+
+let currentUser=localStorage.getItem('d31User')||'';
+let userColor=localStorage.getItem('d31Color')||genColor();
+function genColor(){const c=['#ff85b3','#ff2d6b','#ab47bc','#7c4dff','#00bcd4','#ff9800'];const v=c[Math.floor(Math.random()*c.length)];localStorage.setItem('d31Color',v);return v;}
+
+if(fbReady){
+  /* live stats */
+  messagesRef.on('value',s=>document.getElementById('st-questions').textContent=s.numChildren());
+  annotationsRef.on('value',s=>{
+    const all=[];s.forEach(c=>all.push(c.val()));
+    document.getElementById('st-annots').textContent=all.length;
+    /* find most-labeled-paid task */
+    const paidCounts={};
+    all.forEach(a=>{if(a.labels)Object.entries(a.labels).forEach(([task,label])=>{if(label==='paid')paidCounts[task]=(paidCounts[task]||0)+1;});});
+    const top=Object.entries(paidCounts).sort((a,b)=>b[1]-a[1])[0];
+    document.getElementById('st-top-paid').textContent=top?top[0].replace(/-/g,' '):'—';
+  });
+  onlineRef.on('value',s=>{const c=Object.keys(s.val()||{}).length;document.getElementById('onlineCount').innerHTML='<span class="cb-pip"></span>'+c+' online';document.getElementById('st-online').textContent=c;});
+  if(currentUser)trackPresence();
+
+  let initialDone=false;
+  messagesRef.orderByKey().limitToLast(MAX_DISPLAY).once('value',snapshot=>{
+    const area=document.getElementById('outputArea');area.innerHTML='';
+    const items=[];snapshot.forEach(c=>{items.push({key:c.key,val:c.val()});});
+    if(!items.length){area.innerHTML='<div class="cb-empty"><h3>✦ Answers appear here</h3><p>Type a question above and tap Ask</p></div>';}
+    else{items.reverse().forEach(({key,val})=>renderPair(val,key,false));}
+    initialDone=true;
+    const lastKey=items.length?items[items.length-1].key:null;
+    const nq=lastKey?messagesRef.orderByKey().startAfter(lastKey):messagesRef.orderByKey().limitToLast(1);
+    nq.on('child_added',snap=>{
+      if(!initialDone)return;
+      const area=document.getElementById('outputArea');
+      const emp=area.querySelector('.cb-empty');if(emp)emp.remove();
+      const pairs=area.querySelectorAll('.cb-pair');
+      if(pairs.length>=MAX_DISPLAY)pairs[pairs.length-1].remove();
+      renderPair(snap.val(),snap.key,true);
+    });
+  });
+}else{document.getElementById('onlineCount').textContent='Offline';}
+
+function trackPresence(){if(!onlineRef||!currentUser)return;const r=onlineRef.child(currentUser.replace(/[.#$[\]]/g,'_'));r.set({name:currentUser,ts:firebase.database.ServerValue.TIMESTAMP});r.onDisconnect().remove();}
+document.getElementById('userName').addEventListener('change',function(){currentUser=this.value.trim();localStorage.setItem('d31User',currentUser);if(currentUser&&fbReady)trackPresence();});
+
+/* CSV */
+function downloadCSV(){
+  if(!fbReady){alert('No connection.');return;}
+  Promise.all([messagesRef.once('value'),annotationsRef.once('value')]).then(([msgSnap,annotSnap])=>{
+    let csv='Type,Timestamp,UserName,Question,Theme,Task,Label\n';
+    msgSnap.forEach(d=>{const m=d.val();const th=(m.movement||'').match(/SEQUENCE: (.+)/)?.[1]||'';csv+='question,'+q(m.ts?new Date(m.ts).toISOString():'')+','+q(m.userName||'')+','+q(m.question||'')+','+q(th)+',,\n';});
+    annotSnap.forEach(d=>{const a=d.val();if(a.labels)Object.entries(a.labels).forEach(([task,label])=>{csv+='annotation,'+q(a.ts?new Date(a.ts).toISOString():'')+','+q(a.userName||'')+',,,,'+q(task.replace(/-/g,' '))+','+q(label)+'\n';});});
+    const blob=new Blob([csv],{type:'text/csv'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='carebot31-domestic-labor-'+Date.now()+'.csv';document.body.appendChild(a);a.click();document.body.removeChild(a);URL.revokeObjectURL(url);
+  }).catch(e=>alert('Export failed: '+e.message));
+}
+function q(v){return'"'+(v==null?'':String(v).replace(/"/g,'""'))+'"';}
+
+/* ANNOTATION MODULE */
+const TASKS=[
+  {id:'washing-dishes',name:'Washing dishes',sub:'By hand or loading dishwasher'},
+  {id:'cooking-meals',name:'Cooking meals',sub:'Daily meal preparation'},
+  {id:'vacuuming',name:'Vacuuming floors',sub:'Regular floor cleaning'},
+  {id:'mopping',name:'Mopping floors',sub:'Wet floor cleaning'},
+  {id:'laundry-washing',name:'Washing laundry',sub:'Operating washing machine'},
+  {id:'laundry-folding',name:'Folding laundry',sub:'Sorting and folding clean clothes'},
+  {id:'grocery-shopping',name:'Grocery shopping',sub:'Buying household food and supplies'},
+  {id:'childcare-feeding',name:'Feeding children',sub:'Preparing and serving food to children'},
+  {id:'childcare-bathing',name:'Bathing children',sub:'Bathing and dressing children'},
+  {id:'eldercare-bathing',name:'Bathing elderly relatives',sub:'Personal care for elderly household members'},
+  {id:'eldercare-medication',name:'Administering medication',sub:'Managing and giving medication to dependents'},
+  {id:'surface-wiping',name:'Wiping surfaces',sub:'Counters, tables, appliances'},
+  {id:'toilet-cleaning',name:'Cleaning toilets',sub:'Bathroom sanitation'},
+  {id:'trash-taking-out',name:'Taking out trash',sub:'Collecting and disposing household waste'},
+  {id:'making-beds',name:'Making beds',sub:'Daily bed making and changing sheets'},
+  {id:'pet-care',name:'Pet care',sub:'Feeding, walking, bathing pets'},
+  {id:'home-organizing',name:'Home organizing',sub:'Putting things away, decluttering'},
+  {id:'school-transport',name:'Transporting children',sub:'School runs, activity pickups'},
+];
+
+const labels={};
+let annotationSubmitted=false;
+
+function renderAnnotGrid(){
+  const grid=document.getElementById('annotGrid');
+  grid.innerHTML='';
+  TASKS.forEach(task=>{
+    const item=document.createElement('div');item.className='annot-item';item.id='aitem-'+task.id;
+    item.innerHTML='<div><div class="annot-task">'+escH(task.name)+'</div><div class="annot-task-sub">'+escH(task.sub)+'</div></div><div class="annot-btns"><button class="annot-btn paid" id="ab-paid-'+task.id+'" onclick="setLabel(\''+task.id+'\',\'paid\')">Paid</button><button class="annot-btn unpaid" id="ab-unpaid-'+task.id+'" onclick="setLabel(\''+task.id+'\',\'unpaid\')">Unpaid</button><button class="annot-btn both" id="ab-both-'+task.id+'" onclick="setLabel(\''+task.id+'\',\'both\')">Both</button></div>';
+    grid.appendChild(item);
+  });
+}
+
+function setLabel(taskId, label){
+  if(annotationSubmitted)return;
+  labels[taskId]=label;
+  const item=document.getElementById('aitem-'+taskId);
+  item.className='annot-item sel-'+label;
+  ['paid','unpaid','both'].forEach(l=>{const b=document.getElementById('ab-'+l+'-'+taskId);if(b)b.classList.toggle('active',l===label);});
+  updateAnnotProgress();
+}
+
+function updateAnnotProgress(){
+  const count=Object.keys(labels).length;
+  document.getElementById('annotProgress').textContent=count+' / '+TASKS.length+' labeled';
+  document.getElementById('annotSubmitBtn').disabled=count<TASKS.length;
+}
+
+function submitAnnotation(){
+  if(annotationSubmitted)return;
+  const name=document.getElementById('userName').value.trim();
+  if(!name){alert('Please enter your name first!');document.getElementById('userName').focus();return;}
+  const payload={userName:name,userColor,labels:{...labels},ts:fbReady?firebase.database.ServerValue.TIMESTAMP:Date.now()};
+  if(fbReady&&annotationsRef){annotationsRef.push(payload).catch(e=>console.warn(e));}
+  annotationSubmitted=true;
+  const btn=document.getElementById('annotSubmitBtn');
+  btn.textContent='✓ Annotations Saved';btn.classList.add('done');btn.disabled=true;
+  document.querySelectorAll('.annot-btn').forEach(b=>{b.disabled=true;b.style.opacity='.4';b.style.cursor='default';});
+}
+
+renderAnnotGrid();
+
+/* RESPONSE BANK */
+const responses=[
+  {text:"Figure AI, Physical Intelligence (π), 1X Technologies, and Apptronik are paying workers $10–$25/hr to perform domestic tasks while wearing head-mounted cameras and motion sensors. The data trains neural networks for humanoid robots that can do dishes, fold laundry, load dishwashers, and wipe surfaces. Workers are often recruited through gig platforms including Amazon Mechanical Turk. The footage records every motion, every grip, every adjustment of a human body doing housework — to teach a machine to replicate it.",source:"Figure AI, Physical Intelligence, 1X Technologies — company reports and press coverage, 2023–2025",link:"https://www.figure.ai",theme:"HEAD-MOUNTED CAMERA WORKERS",moves:["1. STRAP THE CAMERA — mime attaching a camera to your forehead, adjusting the strap","2. DOMESTIC MOTION — reach forward, grip an invisible dish, rinse it, set it down — one motion, repeated","3. DATA RECORDING — point to your own eyes — every movement is being captured","4. THE ROBOT LEARNS — hands mime a robot repeating the exact motion you just made","5. FREEZE — call out: 'The worker trains the machine that will replace the worker.'"]},
+  {text:"The humanoid robot market is projected to reach $38 billion by 2035. Tesla's Optimus, Figure AI's Figure 02, and Boston Dynamics' Atlas are targeting domestic deployment. Current price points range from $20,000 to $200,000 per unit. The workers collecting training data earn $10–$25 per hour. There is no equity participation, no ownership stake, and no guarantee that the robots trained on their labor will not displace them or their communities from paid domestic work.",source:"Goldman Sachs Humanoid Robot Report (2023); Boston Consulting Group projections (2024)",link:"https://www.goldmansachs.com/insights/pages/gs-research/robots-humanoids.html",theme:"$38 BILLION MARKET",moves:["1. DATA COLLECTION MIME — mime doing dishes with camera on head, slow and methodical","2. DOLLAR COUNT — fingers count: ten dollars, twenty-five dollars per hour","3. BILLION RISE — arms rise slowly overhead — thirty-eight billion by 2035","4. OWNERSHIP LOCK — arms cross firm over chest — not yours, not theirs, not ours","5. FREEZE — call out: '$38 billion. Built on $15 an hour. Who owns this?'"]},
+  {text:"Women perform 4 hours and 25 minutes of unpaid domestic labor per day on average, compared to 1 hour and 23 minutes for men (ILO, 2018). When domestic work is paid, it is performed disproportionately by women of color and immigrant women — among the most economically vulnerable workers in any labor market. These are the workers being recruited to train humanoid robots. The work they are paid $15/hr to perform for training data is the same work they or people like them perform for $12/hr or for free.",source:"International Labour Organization — Care Work and Care Jobs (2018)",link:"https://www.ilo.org/wcmsp5/groups/public/---dgreports/---dcomm/---publ/documents/publication/wcms_633135.pdf",theme:"WHOSE LABOR IS THIS",moves:["1. UNPAID HOURS — mime four hours of housework, arms sweeping, reaching, wiping, folding","2. THE GAP — arms spread wide: four hours twenty-five versus one hour twenty-three","3. WHO DOES THIS — point outward to an invisible person — women, immigrant workers, care workers","4. SAME WORK — left hand mimes camera data collection, right hand mimes the same task for $12/hr","5. FREEZE — call out: 'Same body, same motion, different price, same erasure.'"]},
+  {text:"The training data for humanoid robots is not just motion capture — it is the encoding of human judgment into machine behavior. When a worker wipes a counter, they are making dozens of micro-decisions: how much pressure, where to start, when it is clean enough, how to handle a spill at the edge. These decisions are the labor. The robot learns not just the motion but the embedded expertise of people who have been doing this work for years. That expertise has never been compensated as expertise.",source:"Physical Intelligence (π) — research publications and company documentation, 2024",link:"https://www.physicalintelligence.company",theme:"ENCODING EXPERTISE",moves:["1. MICRO-DECISION — finger hovers over an invisible surface — pressure, angle, when to stop","2. EXPERTISE FLOW — arm wipes a surface with the fluid ease of someone who has done this ten thousand times","3. MACHINE COPY — mime the robot repeating the exact same fluid expert motion","4. COMPENSATION QUESTION — hold out open hand — what is expertise worth?","5. FREEZE — call out: 'The expertise was never paid. Now it is being extracted.'"]},
+  {text:"Who will own the first home humanoid robots? Based on current pricing and deployment plans, the primary markets are: high-income households in the US, Europe, and East Asia; corporate facilities management (hotels, hospitals, airports); warehousing and logistics (Amazon, Walmart); and government and military applications. The gig workers training these robots — who earn median incomes of $35,000–$45,000/yr — are not in any of these markets. They are training machines they will never be able to afford.",source:"McKinsey Global Institute — The Future of Work (2023); Figure AI investor materials (2024)",link:"https://www.mckinsey.com/featured-insights/future-of-work",theme:"WHO OWNS THE ROBOT",moves:["1. WEALTHY HOUSEHOLD MIME — mime a comfortable person pressing a button, robot does their dishes","2. THE WORKER MIME — mime the same person strapping on a camera to collect training data","3. THE PRICE — mime reading a price tag: twenty thousand dollars, two hundred thousand dollars","4. AFFORDABILITY GAP — both arms stretch apart as far as possible — the gap between builder and buyer","5. FREEZE — call out: 'She trained it. She cannot afford it. He never touched a dish.'"]},
+  {text:"Amazon Mechanical Turk has been used to recruit domestic labor data collectors, following the same model used for AI image labeling and text annotation tasks. The work is listed as 'data collection' or 'activity recording' with vague descriptions. Workers are often not told what the footage will train, who owns the resulting intellectual property, or what the downstream applications will be. The opacity is structural — it keeps labor costs low by preventing workers from pricing their contribution accurately.",source:"Turkopticon worker reports; MTurk task listings analysis, 2023–2024",link:"https://turkopticon.net",theme:"THE MECHANICAL TURK PIPELINE",moves:["1. TASK LISTING — mime scrolling through a phone, reading a vague job listing","2. ACCEPT TASK — tap accept, strap on the camera, begin","3. DOMESTIC WORK — do the dishes, wipe the surface, fold the shirt — camera rolling","4. WHAT IS THIS FOR? — stop mid-motion, look directly forward — what are they building?","5. FREEZE — call out: 'She did not know what she was training. That was by design.'"]},
+  {text:"Physical Intelligence (π), founded in 2023, raised $400 million in its Series B round. The company's model, π0, was trained on data collected from workers performing household tasks. The company's research describes learning 'dexterous manipulation' — the fine motor skill of human hands doing housework. The workers who provided that manipulation data received hourly wages. The investors who funded that data collection received equity. The valuation of that equity is now in the billions.",source:"Physical Intelligence Series B announcement (October 2024); company research blog",link:"https://www.physicalintelligence.company/blog/pi0",theme:"$400 MILLION SERIES B",moves:["1. DEXTEROUS HANDS — fingers move with expert precision: pick, place, fold, wipe","2. RAISE THE ROUND — arms rise overhead — four hundred million dollars","3. EQUITY VS WAGES — left hand: hourly wage, fingers count small; right hand: equity, arms spread wide","4. VALUATION LOCK — both arms lock into a powerful pose — the workers locked out","5. FREEZE — call out: '$400 million raised. Workers paid $15 an hour. This is the math.'"]},
+  {text:"The framing used by humanoid robot companies to recruit domestic training workers emphasizes 'helping' and 'contributing to the future.' Workers are told they are 'helping robots learn' or 'shaping the future of AI.' This language obscures the labor relationship. The worker is not a contributor or collaborator — they are a data source. The distinction matters because it determines whether their contribution is compensated as labor (wages, benefits, rights) or as participation (flat fees, no ongoing stake).",source:"Figure AI recruitment materials; 1X Technologies hiring documentation, 2024",link:"https://www.1x.tech",theme:"HELPING ROBOTS LEARN",moves:["1. RECRUITMENT SMILE — mime reading an enthusiastic job posting: 'Help robots learn!'","2. THE REALITY — same motion: washing dishes, camera running, same as every day","3. CONTRIBUTOR VS WORKER — mime receiving a 'thank you for contributing' versus a paycheck","4. DATA SOURCE LOCK — hands frame your own head — you are the data source, not the partner","5. FREEZE — call out: 'She is not helping. She is working. Name it correctly.'"]},
+  {text:"The domestic tasks being used to train humanoid robots are also the tasks that care workers, house cleaners, and domestic employees currently perform for wages — wages that are already among the lowest in the formal labor market. If humanoid robots become capable of performing these tasks at scale and become affordable to employers (hotels, hospitals, care homes), the displacement of paid domestic workers is not speculative — it is the explicit business model. The question of who benefits from automation is inseparable from the question of who performs the labor that makes automation possible.",source:"ILO Care Economy reports; humanoid robot deployment projections, Goldman Sachs (2023)",link:"https://www.ilo.org/global/topics/care-economy",theme:"DISPLACEMENT IS THE MODEL",moves:["1. CARE WORKER MOTION — mime the expert, practiced work of a care worker: efficient, skilled, embodied","2. TRAINING DATA — same motion, now with camera on head — the same motion becomes data","3. ROBOT DEPLOYMENT — mime the robot doing the same task — same motion, no worker","4. DISPLACEMENT — step aside, arms lowering — the worker steps out of the frame","5. FREEZE — call out: 'The displacement is not a side effect. It is the product.'"]},
+  {text:"The question of who benefits from home automation has a history. The 1960s 'Kitchen Computer' (Honeywell H316) was marketed to wealthy households as a domestic tool — and never sold a single unit. Roombas reached mainstream markets in 2002 and were primarily purchased by middle and upper-income households. The history of domestic automation suggests that each new technology follows the same distribution pattern: available first to the wealthy, adopted broadly only when costs fall dramatically, and providing labor relief primarily to those whose labor was already supplemented by paid workers.",source:"CAREtech research archive; Honeywell H316 history; iRobot market data",link:"https://sbuckius.github.io/if-carebot-research",theme:"A HISTORY OF DOMESTIC AUTOMATION",moves:["1. KITCHEN COMPUTER 1967 — mime the Honeywell H316 advertisement pose: apron, hand on machine","2. ROOMBA 2002 — mime setting down a small disc on the floor, pressing start, stepping back","3. HUMANOID 2025 — mime a humanoid robot standing in a wealthy kitchen, beginning work","4. WHO IS NOT HERE — look around the empty frame — the worker who was replaced is absent","5. FREEZE — call out: 'The same pattern. Every time. Who is missing from the frame?'"]}
+];
+
+let recentlyShown=[];
+function getResponse(){let avail=responses.filter((_,i)=>!recentlyShown.includes(i));if(avail.length<3){recentlyShown=[];avail=responses;}const ri=Math.floor(Math.random()*avail.length);const sel=avail[ri];recentlyShown.push(responses.indexOf(sel));if(recentlyShown.length>6)recentlyShown.shift();return sel;}
+function generateMovement(resp){const theme=resp.theme||'DOMESTIC LABOR SEQUENCE';const moves=resp.moves||['1. STRAP THE CAMERA — mime attaching a camera to your forehead','2. DOMESTIC MOTION — reach forward and do the task, camera rolling','3. DATA RECORDING — point to your own eyes — every movement captured','4. THE ROBOT LEARNS — hands mime a robot repeating your motion','5. FREEZE — call out: \'The worker trains the machine.\''];return'HIP HOP SEQUENCE: '+theme+'\nHONORING: THE DOMESTIC DATA WORKERS\n\n'+moves.join('\n')+'\n\nENERGY: Precise, deliberate, political. Every move is labor. Every freeze is a question about who benefits.';}
+
+function askQuestion(){
+  const q2=document.getElementById('userQuestion').value.trim();
+  const name=document.getElementById('userName').value.trim();
+  if(!name){alert('Please enter your name first!');document.getElementById('userName').focus();return;}
+  if(!q2){alert('Please type a question!');return;}
+  const resp=getResponse();const mv=generateMovement(resp);
+  const payload={question:q2,answerText:resp.text,answerSource:resp.source,answerLink:resp.link,movement:mv,userName:name,userColor,ts:fbReady?firebase.database.ServerValue.TIMESTAMP:Date.now()};
+  if(fbReady&&messagesRef){messagesRef.push(payload).catch(()=>localDisplay(q2,resp,mv,name));}
+  else{localDisplay(q2,resp,mv,name);}
+  document.getElementById('userQuestion').value='';
+}
+
+let localMessages=[];
+function localDisplay(q2,resp,mv,name){const area=document.getElementById('outputArea');localMessages.unshift({question:q2,answerText:resp.text,answerSource:resp.source,answerLink:resp.link,movement:mv,userName:name,userColor});if(localMessages.length>MAX_DISPLAY)localMessages=localMessages.slice(0,MAX_DISPLAY);area.innerHTML='';localMessages.forEach((msg,i)=>renderPair(msg,null,i===0));}
+
+let audioCtx=null;
+function playChime(){try{if(!audioCtx)audioCtx=new(window.AudioContext||window.webkitAudioContext)();const ctx=audioCtx;[[329.63,0],[415.30,0.18],[493.88,0.36]].forEach(([freq,delay])=>{const osc=ctx.createOscillator();const gain=ctx.createGain();osc.connect(gain);gain.connect(ctx.destination);osc.type='sine';osc.frequency.value=freq;const t=ctx.currentTime+delay;gain.gain.setValueAtTime(0,t);gain.gain.linearRampToValueAtTime(0.35,t+0.04);gain.gain.exponentialRampToValueAtTime(0.001,t+0.7);osc.start(t);osc.stop(t+0.72);});}catch(e){}}
+
+function renderPair(msg,key,playAudio=false){
+  const area=document.getElementById('outputArea');
+  const el=document.createElement('div');el.className='cb-pair';if(key)el.id='pair-'+key;
+  el.innerHTML='<div class="cb-meta"><strong style="color:'+escH(msg.userColor||'#ff85b3')+'">'+escH(msg.userName||'Anon')+'</strong><span>asked:</span></div><div class="cb-qbubble">❓ '+escH(msg.question)+'</div><div class="cb-pcard"><div class="cb-phead"><span class="cb-plabel">🤖 From the Research Record</span></div><div class="cb-pbody"><div class="cb-ptext">'+escH(msg.answerText)+'</div><div class="cb-psrc">Source: <a href="'+escH(msg.answerLink)+'" target="_blank" rel="noopener">'+escH(msg.answerSource)+'</a></div></div></div><div class="cb-mcard"><div class="cb-mhead"><span class="cb-mlabel">🎭 Movement Instructions</span></div><div class="cb-mbody"><div class="cb-mtext">'+escH(msg.movement)+'</div></div><div class="cb-spkrow"><button class="cb-btn purple" style="font-size:11px;padding:7px 13px;" onclick="speakText(this)">🔊 Read Aloud</button><button class="cb-btn soft" style="font-size:11px;padding:7px 13px;" onclick="stopSpeech()">⏹ Stop</button></div></div>';
+  area.insertBefore(el,area.firstChild);
+  if(playAudio){playChime();setTimeout(()=>speakMovement(msg.movement),950);}
+}
+
+function speakMovement(text){if(!('speechSynthesis' in window))return;window.speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(text);u.rate=0.88;u.pitch=1.0;const trySpeak=()=>{const voices=window.speechSynthesis.getVoices();const fv=voices.find(v=>v.lang==='en-US'&&/female|woman|samantha|victoria|karen|zira|helen|linda|amy|emma|joanna|salli|kimberly|kendra|susan/i.test(v.name))||voices.find(v=>v.lang==='en-US');if(fv)u.voice=fv;u.lang='en-US';window.speechSynthesis.speak(u);};if(window.speechSynthesis.getVoices().length){trySpeak();}else{window.speechSynthesis.onvoiceschanged=trySpeak;}}
+function speakText(btn){speakMovement(btn.closest('.cb-mcard').querySelector('.cb-mtext').textContent);}
+function stopSpeech(){if('speechSynthesis' in window)window.speechSynthesis.cancel();}
+function escH(s){const d=document.createElement('div');d.textContent=s||'';return d.innerHTML;}
+document.getElementById('userQuestion').addEventListener('keypress',e=>{if(e.key==='Enter')askQuestion();});
+function showAdminModal(){document.getElementById('adminModal').classList.add('open');document.getElementById('adminErr').textContent='';document.getElementById('adminPass').value='';setTimeout(()=>document.getElementById('adminPass').focus(),100);}
+function closeAdminModal(){document.getElementById('adminModal').classList.remove('open');}
+function confirmAdminReset(){if(document.getElementById('adminPass').value!==ADMIN_PASSCODE){document.getElementById('adminErr').textContent='Incorrect passcode.';document.getElementById('adminPass').value='';document.getElementById('adminPass').focus();return;}document.getElementById('outputArea').innerHTML='<div class="cb-empty"><h3>✦ Messages cleared</h3><p>Type a question to begin</p></div>';if(fbReady&&messagesRef)messagesRef.remove().catch(()=>{});localMessages=[];recentlyShown=[];closeAdminModal();}
+document.getElementById('adminPass').addEventListener('keypress',e=>{if(e.key==='Enter')confirmAdminReset();});
+window.addEventListener('beforeunload',()=>{if(onlineRef&&currentUser)onlineRef.child(currentUser.replace(/[.#$[\]]/g,'_')).remove();if('speechSynthesis' in window)window.speechSynthesis.cancel();});
+</script>
+</body>
+</html>
