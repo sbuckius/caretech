@@ -1,0 +1,528 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>✦ CAREBOT-36 ✦ Just Become a CEO</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;900&family=Quicksand:wght@500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --bg:#0e0008;--pink:#ff2d6b;--candy:#ff85b3;--blush:#ffb3cf;
+  --cream:#fff5f8;--berry:#c4005a;--maroon:#6f001e;
+  --muted:rgba(255,190,220,.5);--muted2:rgba(255,210,228,.75);
+  --border:rgba(255,80,150,.22);--border2:rgba(255,60,120,.5);
+  --surface:rgba(20,0,10,.97);
+  --fh:'Nunito',sans-serif;--fb:'Quicksand',sans-serif;--fm:'DM Mono',monospace;
+  --blue:#93c5fd;--blue-bg:rgba(100,180,255,.07);--blue-border:rgba(100,180,255,.25);
+  --green:#4ade80;--green-bg:rgba(74,222,128,.07);--green-border:rgba(74,222,128,.25);
+  --amber:#f5c842;--amber-bg:rgba(245,200,66,.07);--amber-border:rgba(245,200,66,.25);
+}
+html,body{min-height:100%;font-family:var(--fb);font-weight:600;color:var(--cream);background:var(--bg);-webkit-font-smoothing:antialiased;}
+::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px}
+.bg-layer{position:fixed;inset:0;z-index:0;pointer-events:none;background:radial-gradient(ellipse 65% 50% at 8% 88%,rgba(180,0,50,.28) 0%,transparent 58%),radial-gradient(ellipse 55% 45% at 92% 8%,rgba(100,0,20,.22) 0%,transparent 58%),linear-gradient(155deg,#160008,#0e0008 50%,#080005);}
+.orb{position:fixed;border-radius:50%;pointer-events:none;z-index:0;filter:blur(65px);}
+.orb-1{width:380px;height:380px;background:#7a0028;opacity:.22;bottom:-80px;left:-70px;animation:d1 21s ease-in-out infinite;}
+.orb-2{width:300px;height:300px;background:#c4005a;opacity:.18;top:-60px;right:-60px;animation:d2 25s ease-in-out infinite;}
+@keyframes d1{0%,100%{transform:translate(0,0)}50%{transform:translate(38px,26px)}}
+@keyframes d2{0%,100%{transform:translate(0,0)}50%{transform:translate(-28px,-20px)}}
+@keyframes breathe{0%,100%{opacity:1}50%{opacity:.2}}
+.screen{position:relative;z-index:2;min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:max(16px,env(safe-area-inset-top)) clamp(12px,4vmin,22px) calc(44px + env(safe-area-inset-bottom));gap:13px;}
+.cb-topbar{width:100%;max-width:720px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:7px;}
+.cb-logo{display:flex;align-items:center;gap:10px;}
+.cb-icon{width:40px;height:40px;border-radius:12px;background:rgba(255,60,120,.16);border:1.5px solid var(--border2);display:flex;align-items:center;justify-content:center;font-size:18px;}
+.cb-name{font-family:var(--fh);font-weight:900;font-size:12px;background:linear-gradient(90deg,var(--blush),var(--pink) 55%,var(--candy));-webkit-background-clip:text;background-clip:text;color:transparent;}
+.cb-sub{font-size:9px;letter-spacing:.15em;text-transform:uppercase;color:var(--muted);margin-top:1px;}
+.cb-badges{display:flex;gap:6px;align-items:center;flex-wrap:wrap;}
+.cb-badge{font-size:10px;padding:4px 10px;border-radius:999px;background:rgba(255,255,255,.04);border:1px solid var(--border);color:var(--muted);display:flex;align-items:center;gap:5px;}
+.cb-pip{display:inline-block;width:5px;height:5px;border-radius:50%;background:var(--pink);animation:breathe 2s ease-in-out infinite;}
+.btn-csv{appearance:none;display:flex;align-items:center;gap:.26rem;background:rgba(255,60,120,.1);color:var(--candy);border:1.5px solid var(--border2);border-radius:9px;padding:.26rem .65rem;font-family:var(--fb);font-size:.6rem;font-weight:700;cursor:pointer;}
+.stats-bar{width:100%;max-width:720px;display:flex;align-items:center;gap:.6rem;flex-wrap:wrap;padding:.5rem .9rem;background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:13px;}
+.stat-chip{display:flex;align-items:center;gap:.3rem;font-size:.62rem;font-weight:700;color:var(--muted);letter-spacing:.06em;text-transform:uppercase;background:rgba(255,60,120,.06);border:1px solid rgba(255,60,120,.13);border-radius:999px;padding:.18rem .6rem;}
+.stat-chip strong{color:var(--candy);}
+/* IRONY CARD */
+.irony-card{width:100%;max-width:720px;background:linear-gradient(135deg,rgba(111,0,30,.88),rgba(50,0,15,.95));border:1.5px solid rgba(255,60,80,.4);border-radius:18px;padding:18px;position:relative;overflow:hidden;}
+.irony-card::before{content:'';position:absolute;top:0;left:10%;right:10%;height:1.5px;background:linear-gradient(90deg,transparent,var(--candy) 35%,var(--pink) 50%,var(--candy) 65%,transparent);box-shadow:0 0 10px var(--candy);border-radius:999px;}
+.irony-eyebrow{font-size:9px;letter-spacing:.22em;text-transform:uppercase;color:rgba(255,160,160,.55);margin-bottom:6px;}
+.irony-title{font-family:var(--fh);font-weight:900;font-size:clamp(14px,3vw,18px);color:#ffcccc;margin-bottom:10px;line-height:1.3;}
+.irony-body{font-size:12.5px;line-height:1.78;color:rgba(255,210,210,.82);}
+.irony-body strong{color:#ffcccc;}
+.irony-body em{color:var(--candy);}
+/* ADVICE TICKER */
+.advice-ticker{width:100%;max-width:720px;background:var(--blue-bg);border:1.5px solid var(--blue-border);border-radius:14px;padding:14px 16px;}
+.ticker-label{font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:rgba(147,197,253,.55);margin-bottom:10px;}
+.ticker-item{font-family:var(--fh);font-weight:900;font-size:clamp(12px,2.5vw,15px);color:#e0f0ff;line-height:1.4;margin-bottom:4px;}
+.ticker-src{font-size:10px;color:rgba(147,197,253,.55);font-style:italic;}
+.ticker-nav{display:flex;gap:8px;margin-top:12px;}
+.ticker-btn{appearance:none;font-family:var(--fb);font-weight:700;font-size:10px;padding:5px 12px;border-radius:7px;background:rgba(100,200,255,.08);border:1px solid rgba(100,200,255,.2);color:rgba(147,197,253,.7);cursor:pointer;}
+.ticker-counter{font-size:10px;color:rgba(147,197,253,.4);margin-left:auto;align-self:center;}
+/* TWO-COL */
+.two-col{width:100%;max-width:720px;display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+@media(max-width:540px){.two-col{grid-template-columns:1fr;}}
+.col-card{border-radius:14px;padding:14px;border:1.5px solid;position:relative;overflow:hidden;}
+.col-card::before{content:'';position:absolute;top:0;left:10%;right:10%;height:1px;border-radius:999px;}
+.col-card.advice{background:var(--blue-bg);border-color:var(--blue-border);}
+.col-card.advice::before{background:linear-gradient(90deg,transparent,var(--blue) 50%,transparent);}
+.col-card.reality{background:rgba(180,0,50,.12);border-color:rgba(255,60,80,.35);}
+.col-card.reality::before{background:linear-gradient(90deg,transparent,var(--pink) 50%,transparent);}
+.col-label{font-family:var(--fh);font-weight:900;font-size:10px;letter-spacing:.14em;text-transform:uppercase;margin-bottom:8px;}
+.col-card.advice .col-label{color:var(--blue);}
+.col-card.reality .col-label{color:var(--candy);}
+.cite-item{font-size:11px;line-height:1.65;color:var(--muted2);margin-bottom:8px;padding-bottom:8px;border-bottom:0.5px solid rgba(255,100,150,.1);}
+.cite-item:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0;}
+.cite-item strong{color:var(--cream);}
+.cite-src{font-size:9.5px;color:var(--muted);margin-top:3px;font-style:italic;}
+.cite-src a{color:var(--candy);text-decoration:none;}
+.cite-src a:hover{text-decoration:underline;}
+/* BARRIERS SECTION */
+.barriers-section{width:100%;max-width:720px;}
+.barriers-title{font-family:var(--fh);font-weight:900;font-size:14px;background:linear-gradient(90deg,var(--blush),var(--pink));-webkit-background-clip:text;background-clip:text;color:transparent;margin-bottom:4px;}
+.barriers-sub{font-size:11px;color:var(--muted);margin-bottom:12px;line-height:1.6;}
+.barriers-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+@media(max-width:540px){.barriers-grid{grid-template-columns:1fr;}}
+.barrier-card{border-radius:14px;padding:14px;border:1.5px solid;position:relative;overflow:hidden;}
+.barrier-card::before{content:'';position:absolute;top:0;left:8%;right:8%;height:1px;border-radius:999px;}
+.barrier-card.women{background:rgba(220,80,200,.07);border-color:rgba(220,80,200,.28);}
+.barrier-card.women::before{background:linear-gradient(90deg,transparent,#e879f9 50%,transparent);}
+.barrier-card.poc{background:rgba(255,165,0,.07);border-color:rgba(255,165,0,.28);}
+.barrier-card.poc::before{background:linear-gradient(90deg,transparent,var(--amber) 50%,transparent);}
+.barrier-card.both{background:rgba(255,60,120,.07);border-color:rgba(255,60,120,.28);}
+.barrier-card.both::before{background:linear-gradient(90deg,transparent,var(--pink) 50%,transparent);}
+.barrier-eyebrow{font-size:9px;letter-spacing:.16em;text-transform:uppercase;margin-bottom:8px;font-weight:700;}
+.barrier-card.women .barrier-eyebrow{color:#e879f9;}
+.barrier-card.poc .barrier-eyebrow{color:var(--amber);}
+.barrier-card.both .barrier-eyebrow{color:var(--candy);}
+.barrier-name{font-family:var(--fh);font-weight:900;font-size:13px;color:var(--cream);margin-bottom:6px;line-height:1.3;}
+.barrier-body{font-size:11px;line-height:1.7;color:var(--muted2);}
+.barrier-body strong{color:var(--cream);}
+.barrier-stat{margin-top:8px;padding:7px 10px;border-radius:8px;background:rgba(255,255,255,.04);font-size:10.5px;line-height:1.55;color:var(--muted2);}
+.barrier-stat strong{color:var(--candy);}
+.barrier-src{margin-top:6px;font-size:9.5px;color:var(--muted);font-style:italic;}
+.barrier-src a{color:var(--candy);text-decoration:none;}
+/* STAT GRID */
+.stat-grid-wrap{width:100%;max-width:720px;background:var(--surface);border:1.5px solid var(--border2);border-radius:18px;overflow:hidden;position:relative;}
+.stat-grid-wrap::before{content:'';position:absolute;top:0;left:10%;right:10%;height:1.5px;background:linear-gradient(90deg,transparent,var(--candy) 35%,var(--pink) 50%,var(--candy) 65%,transparent);box-shadow:0 0 10px var(--candy);border-radius:999px;}
+.stat-grid-header{padding:14px 17px 11px;border-bottom:1px solid var(--border);}
+.stat-grid-title{font-family:var(--fh);font-weight:900;font-size:14px;background:linear-gradient(90deg,var(--blush),var(--pink));-webkit-background-clip:text;background-clip:text;color:transparent;}
+.stat-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:8px;padding:14px 17px;}
+.stat-box{padding:10px 12px;background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:10px;}
+.stat-box-num{font-family:var(--fh);font-weight:900;font-size:22px;color:var(--candy);line-height:1;}
+.stat-box-label{font-size:10px;color:var(--muted);margin-top:4px;line-height:1.4;}
+/* DATA MODULE */
+.mod-card{width:100%;max-width:720px;background:var(--surface);border:1.5px solid var(--border2);border-radius:18px;overflow:hidden;position:relative;box-shadow:0 4px 28px rgba(255,45,107,.15);}
+.mod-card::before{content:'';position:absolute;top:0;left:10%;right:10%;height:1.5px;background:linear-gradient(90deg,transparent,var(--candy) 35%,var(--pink) 50%,var(--candy) 65%,transparent);box-shadow:0 0 10px var(--candy);border-radius:999px;}
+.mod-header{padding:14px 17px 11px;border-bottom:1px solid var(--border);}
+.mod-eyebrow{font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);margin-bottom:5px;}
+.mod-title{font-family:var(--fh);font-weight:900;font-size:14px;background:linear-gradient(90deg,var(--blush),var(--pink));-webkit-background-clip:text;background-clip:text;color:transparent;line-height:1.3;}
+.mod-sub{font-size:11px;color:var(--muted);margin-top:4px;line-height:1.6;}
+.mod-body{padding:14px 17px;}
+.open-label{font-size:11px;color:var(--cream);font-weight:700;margin-bottom:6px;margin-top:12px;line-height:1.5;}
+.open-label:first-child{margin-top:0;}
+.open-q{width:100%;padding:9px 13px;background:rgba(255,255,255,.05);border:1.5px solid var(--border);border-radius:11px;font-family:var(--fb);font-weight:600;font-size:12px;color:var(--cream);outline:none;transition:border-color .2s;resize:vertical;min-height:68px;}
+.open-q:focus{border-color:var(--candy);}
+.open-q::placeholder{color:var(--muted);}
+.rate-row{display:flex;gap:7px;margin-bottom:10px;flex-wrap:wrap;}
+.rate-btn{appearance:none;font-family:var(--fb);font-weight:700;font-size:11px;padding:6px 13px;border-radius:8px;cursor:pointer;border:1.5px solid var(--border);background:rgba(255,255,255,.04);color:var(--muted);transition:all .15s;}
+.rate-btn:hover{background:rgba(255,60,120,.12);border-color:var(--border2);color:var(--blush);}
+.rate-btn.active{background:rgba(255,60,120,.22);border-color:var(--pink);color:var(--cream);}
+.mod-footer{padding:10px 15px 14px;display:flex;gap:8px;align-items:center;border-top:1px solid var(--border);}
+.mod-progress{font-size:10px;color:var(--muted);font-weight:700;flex:1;}
+.mod-submit{appearance:none;font-family:var(--fh);font-weight:900;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--cream);background:linear-gradient(135deg,var(--pink),var(--berry));border:none;border-radius:10px;padding:9px 18px;cursor:pointer;transition:all .2s;}
+.mod-submit:disabled{opacity:.4;cursor:not-allowed;}
+.mod-submit.done{background:linear-gradient(135deg,rgba(100,200,100,.4),rgba(60,160,60,.5));cursor:default;}
+/* Q&A */
+.cb-card{width:100%;max-width:720px;background:var(--surface);border:1.5px solid var(--border2);border-radius:18px;padding:17px;position:relative;overflow:hidden;}
+.cb-card::before{content:'';position:absolute;top:0;left:10%;right:10%;height:1.5px;background:linear-gradient(90deg,transparent,var(--candy) 35%,var(--pink) 50%,var(--candy) 65%,transparent);box-shadow:0 0 10px var(--candy);border-radius:999px;}
+.cb-eyebrow{font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);margin-bottom:10px;}
+.cb-row{display:flex;gap:8px;flex-wrap:wrap;}
+.cb-input{flex:1;padding:9px 13px;background:rgba(255,255,255,.05);border:1.5px solid var(--border);border-radius:11px;font-family:var(--fb);font-weight:600;font-size:13px;color:var(--cream);outline:none;min-width:0;}
+.cb-input:focus{border-color:var(--candy);}
+.cb-input::placeholder{color:var(--muted);}
+.cb-name-in{max-width:148px;flex:0 0 148px;}
+.cb-btn{font-family:var(--fh);font-weight:900;font-size:12px;color:var(--cream);display:inline-flex;align-items:center;gap:5px;padding:9px 17px;border-radius:11px;border:1.5px solid var(--border2);cursor:pointer;transition:all .2s;white-space:nowrap;appearance:none;}
+.cb-btn.primary{background:linear-gradient(135deg,var(--pink),var(--berry));box-shadow:0 4px 16px rgba(255,60,120,.28);}
+.cb-btn.primary:hover{transform:translateY(-2px);}
+.cb-btn.soft{background:rgba(255,255,255,.04);color:var(--muted);border-color:var(--border);font-size:11px;}
+.cb-msgs{width:100%;max-width:720px;display:flex;flex-direction:column;gap:13px;}
+.cb-empty{text-align:center;padding:42px 18px;color:var(--muted);}
+.cb-empty h3{font-family:var(--fh);font-weight:900;font-size:16px;background:linear-gradient(90deg,var(--blush),var(--pink));-webkit-background-clip:text;background-clip:text;color:transparent;margin-bottom:7px;}
+.cb-pair{animation:slideUp .35s ease-out;}
+@keyframes slideUp{from{opacity:0;transform:translateY(13px)}to{opacity:1;transform:translateY(0)}}
+.cb-meta{font-size:11px;color:var(--muted);margin-bottom:5px;}
+.cb-qbubble{display:inline-block;background:linear-gradient(135deg,var(--pink),var(--berry));color:#fff;padding:9px 14px;border-radius:16px 16px 16px 3px;font-size:13px;margin-bottom:11px;max-width:88%;line-height:1.5;}
+.cb-pcard{background:rgba(12,0,7,.9);border:1.5px solid rgba(255,80,150,.38);border-radius:13px;overflow:hidden;margin-bottom:7px;}
+.cb-phead{background:linear-gradient(135deg,rgba(220,80,130,.78),rgba(180,0,80,.84));padding:8px 13px;}
+.cb-plabel{font-family:var(--fh);font-weight:900;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:#fff;}
+.cb-pbody{padding:13px;}
+.cb-ptext{font-size:13px;line-height:1.7;color:rgba(255,215,235,.88);}
+.cb-psrc{margin-top:9px;padding-top:9px;border-top:1px solid rgba(255,100,160,.1);font-size:11px;color:var(--muted);}
+.cb-psrc a{color:var(--candy);text-decoration:none;}
+.cb-mcard{background:rgba(12,0,7,.9);border:1.5px solid rgba(255,60,120,.3);border-radius:13px;overflow:hidden;}
+.cb-mhead{background:linear-gradient(135deg,rgba(200,0,80,.6),rgba(120,0,50,.7));padding:8px 13px;}
+.cb-mlabel{font-family:var(--fh);font-weight:900;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:#fff;}
+.cb-mbody{padding:13px;}
+.cb-mtext{font-family:var(--fm);font-size:11.5px;line-height:1.85;color:rgba(255,180,210,.85);white-space:pre-wrap;}
+.cb-spkrow{padding:7px 13px 11px;display:flex;gap:7px;}
+.cb-bottom{width:100%;max-width:720px;background:linear-gradient(135deg,rgba(111,0,30,.8),rgba(50,0,15,.92));border:1.5px solid var(--border2);border-radius:18px;padding:17px;text-align:center;position:relative;overflow:hidden;}
+.cb-bottom::before{content:'';position:absolute;top:0;left:10%;right:10%;height:1.5px;background:linear-gradient(90deg,transparent,var(--candy) 35%,var(--pink) 50%,var(--candy) 65%,transparent);border-radius:999px;}
+.cb-btitle{font-family:var(--fh);font-weight:900;font-size:15px;background:linear-gradient(90deg,var(--blush),var(--pink),var(--candy));-webkit-background-clip:text;background-clip:text;color:transparent;margin-bottom:11px;}
+.cb-link{display:inline-flex;align-items:center;gap:5px;font-family:var(--fh);font-weight:900;font-size:13px;color:var(--cream);background:linear-gradient(135deg,var(--pink),var(--berry));padding:11px 23px;border-radius:13px;text-decoration:none;box-shadow:0 4px 18px rgba(255,60,120,.32);transition:all .2s;}
+.cb-link:hover{transform:translateY(-2px);}
+.cb-modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:999;align-items:center;justify-content:center;}
+.cb-modal.open{display:flex;}
+.cb-mbox{background:rgba(14,0,8,.97);border:1.5px solid var(--border2);border-radius:18px;padding:24px 22px;max-width:340px;width:90%;position:relative;}
+.cb-mbox::before{content:'';position:absolute;top:0;left:10%;right:10%;height:1.5px;background:linear-gradient(90deg,transparent,var(--candy) 35%,var(--pink) 50%,var(--candy) 65%,transparent);border-radius:999px;}
+.cb-mtitle{font-family:var(--fh);font-weight:900;font-size:16px;color:var(--blush);margin-bottom:9px;}
+.cb-mbodytxt{font-size:12px;color:var(--muted);line-height:1.6;margin-bottom:15px;}
+.cb-mbtns{display:flex;gap:9px;}
+.cb-err{font-size:11px;color:var(--pink);margin-top:6px;min-height:16px;}
+.cb-wmark{font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,140,185,.1);padding-bottom:8px;text-align:center;}
+</style>
+</head>
+<body>
+<div class="bg-layer"></div>
+<div class="orb orb-1"></div><div class="orb orb-2"></div>
+<div class="screen">
+
+  <div class="cb-topbar">
+    <div class="cb-logo">
+      <div class="cb-icon">🎓</div>
+      <div>
+        <div class="cb-name">CAREBOT-36 ✦ JUST BECOME A CEO</div>
+        <div class="cb-sub">Graduate Unemployment · CEO Demographics · Barriers · CAREtech</div>
+      </div>
+    </div>
+    <div class="cb-badges">
+      <div class="cb-badge" id="onlineCount"><span class="cb-pip"></span>Connecting…</div>
+      <div class="cb-badge" id="sysTime">--:--</div>
+      <button class="btn-csv" onclick="downloadCSV()">⬇ Export CSV</button>
+    </div>
+  </div>
+
+  <div class="stats-bar">
+    <div class="stat-chip">Responses <strong id="st-r">—</strong></div>
+    <div class="stat-chip">Online <strong id="st-o">—</strong></div>
+  </div>
+
+  <!-- IRONY CARD -->
+  <div class="irony-card">
+    <div class="irony-eyebrow">✦ CAREBOT-36 · The Irony</div>
+    <div class="irony-title">College graduates can't find entry-level jobs. The advice: just become a CEO. The reality: the CEO chair has been occupied by almost exclusively one demographic for 50 years — and specific, documented barriers keep it that way.</div>
+    <div class="irony-body">
+      <strong>30%</strong> of 2025 graduates secured jobs in their field. <strong>33%</strong> are unemployed. The advice given by Indeed, GCU, Crummer, Crimson Education, and Inc. Magazine: pivot to entrepreneurship, <em>become a CEO.</em><br><br>
+      ~<strong>85%</strong> of Fortune 500 CEOs are white men. Women hold <strong>11%</strong>. No Black woman has ever led a top-10 tech company. Black founders received <strong>0.48%</strong> of US venture capital in 2024. The advice does not mention the broken rung, the glass cliff, the sponsorship gap, the double bind, or the 4.8-year tenure penalty. It addresses the individual. It ignores the structure.
+    </div>
+  </div>
+
+  <!-- ADVICE TICKER -->
+  <div class="advice-ticker">
+    <div class="ticker-label">✦ Actual advice being given to graduates who can't find jobs</div>
+    <div class="ticker-item" id="tickerItem"></div>
+    <div class="ticker-src" id="tickerSrc"></div>
+    <div class="ticker-nav">
+      <button class="ticker-btn" onclick="prevAdvice()">← Previous</button>
+      <button class="ticker-btn" onclick="nextAdvice()">Next →</button>
+      <span class="ticker-counter" id="tickerCount"></span>
+    </div>
+  </div>
+
+  <!-- MARKET / CEO TWO-COL -->
+  <div class="two-col">
+    <div class="col-card advice">
+      <div class="col-label">✦ The advice</div>
+      <div class="cite-item"><strong>Entrepreneur.com (Mar 2026)</strong> — Entry-level hiring dropped 6% Dec 2025–Feb 2026. The pivot: entrepreneurship, starting a company.
+        <div class="cite-src"><a href="https://www.entrepreneur.com/business-news/new-graduates-facing-toughest-job-market-since-pandemic" target="_blank">Entrepreneur.com, Mar 2026</a></div></div>
+      <div class="cite-item"><strong>Indeed Career Advice</strong> — "While you can become the CEO of an existing organization, you can also pursue this position by starting a company."
+        <div class="cite-src"><a href="https://www.indeed.com/career-advice/career-development/how-to-become-ceo" target="_blank">Indeed</a></div></div>
+      <div class="cite-item"><strong>Crummer / Rollins (2025)</strong> — "Early Advantage MBA for recent college graduates looking to jumpstart their career" toward becoming a CEO.
+        <div class="cite-src"><a href="https://crummer.rollins.edu/resources/how-to-become-a-ceo-of-a-company-in-5-steps/" target="_blank">Crummer, 2025</a></div></div>
+      <div class="cite-item"><strong>Inc. Magazine (Jan 2025)</strong> — More Gen-Zers are moving into entrepreneurship than older cohorts — cited as response to the job market.
+        <div class="cite-src"><a href="https://www.inc.com/kit-eaton/college-degrees-arent-landing-new-graduates-the-jobs-they-want-whats-going-on/91139574" target="_blank">Inc. Magazine, Jan 2025</a></div></div>
+    </div>
+    <div class="col-card reality">
+      <div class="col-label">✦ Who actually becomes a CEO</div>
+      <div class="cite-item"><strong>~85% of Fortune 500 CEOs are white men (2024)</strong> — In 2000 it was 96.4%. The gains went largely to white women.
+        <div class="cite-src"><a href="https://verdict.co.uk/?p=352276" target="_blank">Verdict / Zweigenhaft research</a></div></div>
+      <div class="cite-item"><strong>Women: 11% of Fortune 500 CEOs (2025)</strong> — All-time high. No Black woman has ever led a top-10 tech company.
+        <div class="cite-src"><a href="https://blog.aboveboard.com/fortune-500-diversity-2023" target="_blank">AboveBoard F500 Tracker</a></div></div>
+      <div class="cite-item"><strong>Black CEO tenure: 4.8 years vs 6.9 overall</strong> — shorter path, shorter tenure, harsher scrutiny.
+        <div class="cite-src"><a href="https://verdict.co.uk/?p=352276" target="_blank">Zweigenhaft / Verdict</a></div></div>
+      <div class="cite-item"><strong>Recent grads: 7% of new hires in 2024</strong> — down 25% from 2023. 33% of 2025 grads unemployed (Cengage Group).
+        <div class="cite-src"><a href="https://www.cengagegroup.com/news/press-releases/2025/cengage-group-2025-employability-report/" target="_blank">Cengage Group, 2025</a></div></div>
+    </div>
+  </div>
+
+  <!-- BARRIERS SECTION -->
+  <div class="barriers-section">
+    <div class="barriers-title">✦ The Specific Barriers — What the Advice Doesn't Say</div>
+    <div class="barriers-sub">The "just become a CEO" advice skips six documented, named, researched structural mechanisms that make that path significantly harder depending on who you are. These are not excuses. They are data.</div>
+    <div class="barriers-grid">
+
+      <div class="barrier-card both">
+        <div class="barrier-eyebrow">✦ Barrier 1 · Women + People of Color</div>
+        <div class="barrier-name">The Broken Rung</div>
+        <div class="barrier-body">The biggest barrier to the CEO chair doesn't happen at the top — it happens at the first step up to manager. For every 100 men promoted to their first manager role, only <strong>81 women</strong> make the same leap. For women of color, the drop is steeper at every stage. Women are 49% of entry-level employees and 29% of the C-suite. The path loses women at every rung — not because of ambition, but because of who gets promoted.</div>
+        <div class="barrier-stat"><strong>McKinsey / LeanIn Women in the Workplace (2025):</strong> Women underrepresented at every pipeline level for the 11th consecutive year. Only 29% of C-suite roles. Women of color: just 7% of C-suite.</div>
+        <div class="barrier-src">Source: <a href="https://www.mckinsey.com/capabilities/people-and-organizational-performance/our-insights/women-in-the-workplace" target="_blank">McKinsey / LeanIn, 2025</a></div>
+      </div>
+
+      <div class="barrier-card women">
+        <div class="barrier-eyebrow">✦ Barrier 2 · Women</div>
+        <div class="barrier-name">The Sponsorship Gap</div>
+        <div class="barrier-body">Mentors advise. Sponsors open doors. Women have fewer sponsors — the senior leaders who put your name forward for promotion, plum assignments, and stretch opportunities. Only <strong>31% of entry-level women</strong> have a sponsor vs <strong>45% of men</strong> at the same level. Without a sponsor, you do the work. Someone else gets promoted. The advice to network and connect never mentions that the networking itself is gendered.</div>
+        <div class="barrier-stat"><strong>INSEAD (Feb 2026):</strong> "Women are under-sponsored. While mentors advise, sponsors open doors." The barrier is not a shortage of capable women, but how boards define readiness and who gets advocated for.</div>
+        <div class="barrier-src">Source: <a href="https://knowledge.insead.edu/leadership-organisations/female-ceo-problem-solutions" target="_blank">INSEAD Knowledge, Feb 2026</a>; <a href="https://www.keystonepartners.com/resources/breaking-through-women-in-leadership/" target="_blank">Keystone Partners, Feb 2026</a></div>
+      </div>
+
+      <div class="barrier-card poc">
+        <div class="barrier-eyebrow">✦ Barrier 3 · People of Color</div>
+        <div class="barrier-name">The Glass Cliff</div>
+        <div class="barrier-body">After the murder of George Floyd in 2020, many companies hired Black women into leadership roles — often at companies that were already in crisis. This is the glass cliff: women and people of color are more likely to be appointed to leadership <strong>during organizational failure</strong>, not stability. They inherit problems they didn't create. When the company continues to struggle, the failure gets attributed to them personally — reinforcing stereotypes about their fitness to lead.</div>
+        <div class="barrier-stat"><strong>Center for Talent Innovation (2023):</strong> Black executives are <strong>2.5x more likely</strong> to be prematurely removed from leadership roles under "organizational restructuring." Female leaders are <strong>24% more likely</strong> to be fired than male counterparts.</div>
+        <div class="barrier-src">Source: <a href="https://www.catalyst.org/en-us/insights/2024/black-women-glass-cliff-workplace-systems" target="_blank">Catalyst, 2024</a>; <a href="https://hbr.org/podcast/2024/03/why-the-glass-cliff-persists" target="_blank">HBR, Mar 2024</a></div>
+      </div>
+
+      <div class="barrier-card both">
+        <div class="barrier-eyebrow">✦ Barrier 4 · Women + People of Color</div>
+        <div class="barrier-name">The Double Bind</div>
+        <div class="barrier-body">Be assertive: you're "aggressive." Be collaborative: you're "not leadership material." Behaviors rewarded as leadership potential in white men are penalized in women and people of color. The acceptable behavioral range is narrower. As one executive of color described it: <em>"I'm either too direct or not assertive enough."</em> The standard shifts depending on who you are. The advice to "develop leadership skills" doesn't name this.</div>
+        <div class="barrier-stat"><strong>Perceptual imprinting research (2024):</strong> People's visual templates for how leaders look have been skewed by constant exposure to white male leaders — making women and people of color appear "less like leaders" regardless of their actual qualifications.</div>
+        <div class="barrier-src">Source: <a href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC11967962/" target="_blank">PMC / Leadership Perception Study, 2024</a>; <a href="https://www.bridgespan.org/insights/nonprofit-leadership-transitions-four-ways-funders-can-support-leaders-of-color" target="_blank">Bridgespan</a></div>
+      </div>
+
+      <div class="barrier-card poc">
+        <div class="barrier-eyebrow">✦ Barrier 5 · People of Color</div>
+        <div class="barrier-name">The Capital Access Gap</div>
+        <div class="barrier-body">The advice to "start your own company and become a CEO" requires startup capital. In 2024, <strong>Black founders received 0.48%</strong> of all US venture capital funding despite Black Americans being 13.4% of the population. Women founders received <strong>approximately 2%</strong>. VC networks operate through existing connections — connections that have been historically built between white male investors and white male founders. The advice skips the capital requirement entirely.</div>
+        <div class="barrier-stat"><strong>UN Global Compact (2025):</strong> "Women entrepreneurs still receive less than 2% of global venture capital funding." The care economy is undervalued. Women-led sectors are chronically underinvested.</div>
+        <div class="barrier-src">Source: <a href="https://unglobalcompact.org/compactjournal/closing-gap-top-advancing-womens-leadership-business" target="_blank">UN Global Compact, 2025</a>; Crunchbase 2024 Diversity in VC</div>
+      </div>
+
+      <div class="barrier-card women">
+        <div class="barrier-eyebrow">✦ Barrier 6 · Women</div>
+        <div class="barrier-name">The Domestic Labor Tax</div>
+        <div class="barrier-body">Women with partners are more than <strong>3x as likely</strong> as men to be responsible for all or most housework. Nearly 25% of women who express reluctance about promotion cite personal obligations — vs 15% of men. Remote work, which helps women manage caregiving, simultaneously reduces their visibility and access to sponsors. The flexibility-visibility tradeoff is a documented mechanism. The advice to "network aggressively and seek promotion" ignores who is doing the second shift at home.</div>
+        <div class="barrier-stat"><strong>McKinsey / LeanIn (2026):</strong> Entry-level women working remotely are <strong>1.5x less likely to be promoted</strong> than in-office counterparts. The flexibility that manages caregiving reduces visibility that produces sponsorship.</div>
+        <div class="barrier-src">Source: <a href="https://www.keystonepartners.com/resources/breaking-through-women-in-leadership/" target="_blank">Keystone / McKinsey Women in the Workplace, Feb 2026</a></div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- STATS -->
+  <div class="stat-grid-wrap">
+    <div class="stat-grid-header">
+      <div class="mod-eyebrow">✦ The Numbers</div>
+      <div class="stat-grid-title">Entry-level disappearing. Chair still occupied. Barriers named.</div>
+    </div>
+    <div class="stat-grid">
+      <div class="stat-box"><div class="stat-box-num">30%</div><div class="stat-box-label">of 2025 graduates secured full-time jobs in their field (Cengage)</div></div>
+      <div class="stat-box"><div class="stat-box-num">33%</div><div class="stat-box-label">of 2025 graduates are unemployed and actively seeking work</div></div>
+      <div class="stat-box"><div class="stat-box-num">~85%</div><div class="stat-box-label">of Fortune 500 CEOs are white men (2024)</div></div>
+      <div class="stat-box"><div class="stat-box-num">11%</div><div class="stat-box-label">of Fortune 500 CEOs are women — all-time high, 2025</div></div>
+      <div class="stat-box"><div class="stat-box-num">81</div><div class="stat-box-label">women promoted to manager for every 100 men — the broken rung</div></div>
+      <div class="stat-box"><div class="stat-box-num">31%</div><div class="stat-box-label">of entry-level women have a sponsor vs 45% of men at same level</div></div>
+      <div class="stat-box"><div class="stat-box-num">2.5×</div><div class="stat-box-label">more likely: Black executives to be prematurely removed from leadership</div></div>
+      <div class="stat-box"><div class="stat-box-num">0.48%</div><div class="stat-box-label">of US venture capital went to Black founders in 2024</div></div>
+      <div class="stat-box"><div class="stat-box-num">4.8yr</div><div class="stat-box-label">average Black CEO tenure vs 6.9yr overall</div></div>
+      <div class="stat-box"><div class="stat-box-num">0</div><div class="stat-box-label">Black women who have ever led a top-10 tech company</div></div>
+      <div class="stat-box"><div class="stat-box-num">3×</div><div class="stat-box-label">more likely: women with partners responsible for all housework vs men</div></div>
+      <div class="stat-box"><div class="stat-box-num">7%</div><div class="stat-box-label">of new hires in 2024 were recent graduates — down 25% from 2023</div></div>
+    </div>
+  </div>
+
+  <!-- RESPONSE MODULE -->
+  <div class="mod-card">
+    <div class="mod-header">
+      <div class="mod-eyebrow">✦ Data Module · Respond to the Barriers</div>
+      <div class="mod-title">Which barrier was most surprising? What would honest advice say?</div>
+      <div class="mod-sub">The advice says: become a CEO. The barriers say: that path has named, documented structural mechanisms working against most people who try. Respond to what you found.</div>
+    </div>
+    <div class="mod-body">
+      <div class="open-label">Which of the six barriers was most surprising or least known to you?</div>
+      <div class="rate-row" id="barrierRow">
+        <button class="rate-btn" onclick="selectBarrier(this,'broken_rung')">Broken rung</button>
+        <button class="rate-btn" onclick="selectBarrier(this,'sponsorship')">Sponsorship gap</button>
+        <button class="rate-btn" onclick="selectBarrier(this,'glass_cliff')">Glass cliff</button>
+        <button class="rate-btn" onclick="selectBarrier(this,'double_bind')">Double bind</button>
+        <button class="rate-btn" onclick="selectBarrier(this,'capital')">Capital access</button>
+        <button class="rate-btn" onclick="selectBarrier(this,'domestic_tax')">Domestic labor tax</button>
+      </div>
+      <div class="open-label">How believable is the "just become a CEO" advice for the average 2025 graduate? (select one)</div>
+      <div class="rate-row" id="believeRow">
+        <button class="rate-btn" onclick="selectBelieve(this,'not_at_all')">Not at all believable</button>
+        <button class="rate-btn" onclick="selectBelieve(this,'aspirational')">Aspirational but dishonest</button>
+        <button class="rate-btn" onclick="selectBelieve(this,'depends')">Depends entirely on who you are</button>
+        <button class="rate-btn" onclick="selectBelieve(this,'possible')">Genuinely possible for many</button>
+      </div>
+      <div class="open-label">If the advice named these barriers honestly, what would it say?</div>
+      <textarea class="open-q" id="openQ1" placeholder="What would 'just become a CEO' advice look like if it told the truth about the broken rung, the glass cliff, the capital gap, and the double bind?"></textarea>
+      <div class="open-label">Who does this advice actually apply to without barriers? Be specific.</div>
+      <textarea class="open-q" id="openQ2" placeholder="What does a person need — beyond a degree and ambition — to make the CEO path realistic? What resources, access, networks, and circumstances are assumed?"></textarea>
+    </div>
+    <div class="mod-footer">
+      <div class="mod-progress" id="modProg">Complete all fields to submit</div>
+      <button class="mod-submit" id="modSubmit" onclick="submitResponse()" disabled>✦ Submit Response</button>
+    </div>
+  </div>
+
+  <!-- Q&A -->
+  <div class="cb-card">
+    <div class="cb-eyebrow">✦ Ask a Question · Showing Last 3</div>
+    <div class="cb-row">
+      <input class="cb-input cb-name-in" type="text" id="userName" placeholder="Your name…">
+      <input class="cb-input" type="text" id="userQuestion" placeholder="Ask about the barriers, graduate unemployment, CEO demographics…" autocomplete="off">
+      <button class="cb-btn primary" onclick="askQuestion()">✦ Ask</button>
+      <button class="cb-btn soft" onclick="showAdminModal()">⚙</button>
+    </div>
+  </div>
+  <div class="cb-msgs" id="outputArea">
+    <div class="cb-empty"><h3>✦ Answers appear here</h3><p>Type a question above and tap Ask</p></div>
+  </div>
+
+  <div class="cb-bottom">
+    <div class="cb-btitle">✦ Thank you for being in the room.</div>
+    <a class="cb-link" href="hit.html">✦ Advance to next task</a>
+  </div>
+  <div class="cb-wmark">✦ carebot-36 · just become a ceo · the chair has a demographic profile · caretech ✦</div>
+</div>
+
+<div class="cb-modal" id="adminModal">
+  <div class="cb-mbox">
+    <div class="cb-mtitle">🔒 Admin Reset</div>
+    <div class="cb-mbodytxt">Enter the admin passcode to clear Q&amp;A messages.</div>
+    <input class="cb-input" type="password" id="adminPass" placeholder="Enter passcode…" style="width:100%;margin-bottom:6px;">
+    <div class="cb-err" id="adminErr"></div>
+    <div class="cb-mbtns" style="margin-top:10px;">
+      <button class="cb-btn soft" style="flex:1" onclick="closeAdminModal()">Cancel</button>
+      <button class="cb-btn primary" style="flex:1" onclick="confirmAdminReset()">Reset</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const ADMIN='ceoadvice36';const MAX=3;
+function updateClock(){const n=new Date(),p=v=>String(v).padStart(2,'0');document.getElementById('sysTime').textContent=p(n.getHours())+':'+p(n.getMinutes());}
+setInterval(updateClock,1000);updateClock();
+
+/* TICKER */
+const ADVICE=[
+  {text:'"While you can become the CEO of an existing organization, you can also pursue this position by starting a company. Building your own business can be personally rewarding."',src:'Indeed Career Advice'},
+  {text:'"Founding a company or even volunteering for a charity can help you develop CEO leadership skills. Start developing your leadership and management skills in high school."',src:'Crummer School of Business / Rollins College, 2025'},
+  {text:'"More Gen-Zers and Millennials are moving into entrepreneurship or starting their own businesses after college than older cohorts did" — cited as a positive response to the job market.',src:'Inc. Magazine, January 2025'},
+  {text:'"Unless you start your own business, you will most likely not start your career as a CEO. Start out with management positions in your field of expertise."',src:'HowToBecome.com'},
+  {text:'"If you\'re serious about becoming a CEO, don\'t wait any longer — visit our website to explore our MBA programs."',src:'Crummer / Rollins College Early Advantage MBA, 2025'},
+  {text:'"Start making connections even before you graduate. Connections will help you get your foot in the door when you start looking for your first post-graduate job."',src:'Crimson Education CEO Guide, 2025'},
+  {text:'"The difficult search has pushed many graduates to rethink their post-college trajectories" — entrepreneurship and founding companies cited as alternatives to entry-level jobs.',src:'Entrepreneur.com, March 2026'},
+  {text:'"To become a CEO after 10th grade, you can break the process down into clear, doable steps you can start working on right now."',src:'Business coach article, 2025'},
+];
+let advIdx=0;
+function showAdvice(){const a=ADVICE[advIdx];document.getElementById('tickerItem').textContent=a.text;document.getElementById('tickerSrc').textContent='— '+a.src;document.getElementById('tickerCount').textContent=(advIdx+1)+' / '+ADVICE.length;}
+function nextAdvice(){advIdx=(advIdx+1)%ADVICE.length;showAdvice();}
+function prevAdvice(){advIdx=(advIdx-1+ADVICE.length)%ADVICE.length;showAdvice();}
+showAdvice();setInterval(nextAdvice,6000);
+
+let db,msgRef,respRef,onlineRef,fbReady=false;
+let currentUser=localStorage.getItem('cb36User')||'';
+let userColor=localStorage.getItem('cb36Color')||genColor();
+function genColor(){const c=['#ff85b3','#ff2d6b','#ffb3cf','#c4005a'];const v=c[Math.floor(Math.random()*c.length)];localStorage.setItem('cb36Color',v);return v;}
+try{
+  firebase.initializeApp({apiKey:"AIzaSyCZFDU-WlSmHqjXTs1Ox0nf9xeJU_xbaX0",authDomain:"collaborativemashup.firebaseapp.com",databaseURL:"https://collaborativemashup-default-rtdb.firebaseio.com",projectId:"collaborativemashup",storageBucket:"collaborativemashup.firebasestorage.app",messagingSenderId:"562437984610",appId:"1:562437984610:web:9f3711c26e097bc8ef9c3b"});
+  db=firebase.database();msgRef=db.ref('cb36Messages');respRef=db.ref('cb36Responses');onlineRef=db.ref('cb36Online');fbReady=true;
+  if(currentUser)trackPresence();
+  respRef.on('value',s=>{const all=[];s.forEach(c=>all.push(c.val()));document.getElementById('st-r').textContent=all.length;});
+  onlineRef.on('value',s=>{const c=Object.keys(s.val()||{}).length;document.getElementById('onlineCount').innerHTML='<span class="cb-pip"></span>'+c+' online';document.getElementById('st-o').textContent=c;});
+  let initDone=false;
+  msgRef.orderByKey().limitToLast(MAX).once('value',snap=>{
+    const area=document.getElementById('outputArea');area.innerHTML='';
+    const items=[];snap.forEach(c=>items.push({key:c.key,val:c.val()}));
+    if(!items.length)area.innerHTML='<div class="cb-empty"><h3>✦ Answers appear here</h3><p>Type a question above</p></div>';
+    else items.reverse().forEach(({key,val})=>renderPair(val,key,false));
+    initDone=true;
+    const lk=items.length?items[items.length-1].key:null;
+    const nq=lk?msgRef.orderByKey().startAfter(lk):msgRef.orderByKey().limitToLast(1);
+    nq.on('child_added',snap=>{
+      if(!initDone)return;
+      const area=document.getElementById('outputArea');area.querySelector('.cb-empty')?.remove();
+      const pairs=area.querySelectorAll('.cb-pair');if(pairs.length>=MAX)pairs[pairs.length-1].remove();
+      renderPair(snap.val(),snap.key,true);
+    });
+  });
+}catch(e){fbReady=false;document.getElementById('onlineCount').textContent='Offline';}
+function trackPresence(){if(!onlineRef||!currentUser)return;const r=onlineRef.child(currentUser.replace(/[.#$[\]]/g,'_'));r.set({name:currentUser,ts:firebase.database.ServerValue.TIMESTAMP});r.onDisconnect().remove();}
+document.getElementById('userName').addEventListener('change',function(){currentUser=this.value.trim();localStorage.setItem('cb36User',currentUser);if(currentUser&&fbReady)trackPresence();});
+
+let selectedBarrier=null,selectedBelieve=null;
+function selectBarrier(btn,val){selectedBarrier=val;document.querySelectorAll('#barrierRow .rate-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');checkSubmit();}
+function selectBelieve(btn,val){selectedBelieve=val;document.querySelectorAll('#believeRow .rate-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');checkSubmit();}
+['openQ1','openQ2'].forEach(id=>document.getElementById(id).addEventListener('input',checkSubmit));
+function checkSubmit(){const ok=selectedBarrier&&selectedBelieve&&document.getElementById('openQ1').value.trim().length>5&&document.getElementById('openQ2').value.trim().length>5;document.getElementById('modSubmit').disabled=!ok;document.getElementById('modProg').textContent=ok?'Ready to submit':'Complete all fields';}
+
+let modDone=false;
+function submitResponse(){
+  if(modDone)return;
+  const name=document.getElementById('userName').value.trim()||'Anon';
+  const payload={type:'response',mostSurprisingBarrier:selectedBarrier,believability:selectedBelieve,honestAdvice:document.getElementById('openQ1').value.trim(),whoItAppliesTo:document.getElementById('openQ2').value.trim(),userName:name,userColor,ts:fbReady?firebase.database.ServerValue.TIMESTAMP:Date.now()};
+  if(fbReady&&respRef)respRef.push(payload).catch(()=>{});
+  modDone=true;const btn=document.getElementById('modSubmit');btn.textContent='✓ Saved';btn.classList.add('done');btn.disabled=true;
+}
+function q(v){return'"'+(v==null?'':String(v).replace(/"/g,'""'))+'"';}
+function downloadCSV(){
+  if(!fbReady){alert('No connection.');return;}
+  Promise.all([msgRef.once('value'),respRef.once('value')]).then(([ms,rs])=>{
+    let csv='Type,Timestamp,UserName,MostSurprisingBarrier,Believability,HonestAdvice,WhoItAppliesTo\n';
+    ms.forEach(d=>{const m=d.val();csv+='question,'+q(m.ts?new Date(m.ts).toISOString():'')+','+q(m.userName)+',,,,'+q(m.question)+'\n';});
+    rs.forEach(d=>{const r=d.val();csv+='response,'+q(r.ts?new Date(r.ts).toISOString():'')+','+q(r.userName)+','+q(r.mostSurprisingBarrier)+','+q(r.believability)+','+q(r.honestAdvice)+','+q(r.whoItAppliesTo)+'\n';});
+    const blob=new Blob([csv],{type:'text/csv'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='carebot36-'+Date.now()+'.csv';document.body.appendChild(a);a.click();document.body.removeChild(a);URL.revokeObjectURL(url);
+  });
+}
+
+const responses=[
+  {text:"The biggest barrier to the CEO chair is not the glass ceiling — it's the broken rung. For every 100 men promoted to their first manager role, only 81 women make the same leap. McKinsey and LeanIn's Women in the Workplace 2025 report (11th consecutive year of data) shows women are 49% of entry-level employees and just 29% of C-suite roles — unchanged from 2024. For women of color, the pipeline is even steeper: they hold only 7% of C-suite positions. The path doesn't lose women at the top. It loses them at the first step, and then at every step after that.",source:"McKinsey / LeanIn Women in the Workplace (2025)",link:"https://www.mckinsey.com/capabilities/people-and-organizational-performance/our-insights/women-in-the-workplace",moves:["1. STAND at entry level — 100 people — mime the group — 49 women","2. FIRST STEP UP — 100 men step up — freeze — now 81 women step up — 19 remain","3. NEXT STEP — count again — fewer women — some step back","4. KEEP CLIMBING — each level — fewer — fewer — fewer","5. FREEZE at C-SUITE — call out: '49% at entry. 29% at the top. 7% women of color. The rung is broken before the ceiling.'"]},
+  {text:"The glass cliff is the phenomenon where women and people of color are more likely to be appointed to leadership positions during periods of organizational crisis — not stability. After the murder of George Floyd in 2020, many companies hired Black women into executive roles. Many of those organizations were already in crisis. When the crisis continued, the failure was attributed to the leader — not the conditions she inherited. Black executives are 2.5 times more likely to be prematurely removed from leadership roles under 'organizational restructuring' (Center for Talent Innovation, 2023). Female leaders are 24% more likely to be fired than male counterparts. The glass cliff means the first opportunity often comes with the highest risk of failure.",source:"Catalyst (2024); HBR 'Why the Glass Cliff Persists' (2024); Center for Talent Innovation (2023)",link:"https://www.catalyst.org/en-us/insights/2024/black-women-glass-cliff-workplace-systems",moves:["1. BREAKTHROUGH — mime shattering a ceiling — arrive at leadership — proud","2. LOOK AROUND — the organization is on fire — problems everywhere — inherited","3. WORK — work hard — reform — transform — but the crisis is structural","4. BLAMED — removed — 'performance misalignment' — 2.5x more likely","5. FREEZE — call out: 'She broke through. The cliff was waiting. The failure was attributed to her.'"]},
+  {text:"Mentors give advice. Sponsors open doors. The sponsorship gap is the documented difference in who advocates for whom in the room you're not in. Only 31% of entry-level women have a sponsor — someone who actively puts their name forward for promotion, assignments, and visibility — compared to 45% of men at the same level. Sponsorship happens in golf games, after-work drinks, informal conversations that rely on pre-existing social proximity. The networks where sponsors are found have been historically built between white male investors and executives. The advice to 'network aggressively' assumes those networks are equally accessible.",source:"McKinsey / LeanIn / Keystone Partners Women in the Workplace (2025–26)",link:"https://www.keystonepartners.com/resources/breaking-through-women-in-leadership/",moves:["1. DO THE WORK — excellent — promoted-ready — waiting","2. THE ROOM — mime a room you're not in — decisions being made","3. SPONSOR speaks — someone's name said — not yours","4. PROMOTED — another person — same qualifications — different network","5. FREEZE — call out: '31% of women have a sponsor. 45% of men. The door opened for someone else.'"]},
+  {text:"The advice to 'start a company' requires startup capital. In 2024, Black founders received 0.48% of all US venture capital funding, despite Black Americans being 13.4% of the US population. Women founders received approximately 2% of VC funding globally. Venture capital networks operate primarily through existing relationships — warm introductions, shared alumni networks, golf courses, conferences that require substantial fees to attend. The pipeline for VC funding is the same pipeline that produced the Fortune 500 demographic: mostly white, mostly male. 'Start a company and become a CEO' is advice that assumes capital access is equivalent. The data says it is not.",source:"Crunchbase 2024 Diversity in VC; UN Global Compact (2025)",link:"https://unglobalcompact.org/compactjournal/closing-gap-top-advancing-womens-leadership-business",moves:["1. GREAT IDEA — mime the pitch — confident — prepared — data solid","2. VC ROOM — enter the room — look around — not your network","3. PITCH — deliver it — the data is correct — the vision is strong","4. 0.48% — mime the fraction — almost nothing — the door stays closed","5. FREEZE — call out: '0.48% of all venture capital. 13.4% of the population. The advice did not mention this number.'"]},
+  {text:"Behaviors rewarded as leadership potential in white men are penalized in women and people of color. This is the double bind: the range of acceptable behavior is narrower for those who don't match the prototype of a leader — which research shows people have internalized as white and male. Be assertive: you're 'aggressive.' Be collaborative: you're 'not leadership material.' As one executive of color described: 'I'm either too direct or not assertive enough.' This is not anecdotal. A 2024 study on perceptual imprinting found people's visual and behavioral templates for leaders have been skewed by constant exposure to white male leaders in those roles.",source:"INSEAD Knowledge (Feb 2026); Nature Scientific Reports perceptual imprinting study (2024)",link:"https://knowledge.insead.edu/leadership-organisations/female-ceo-problem-solutions",moves:["1. ASSERTIVE — speak strongly — direct — confident","2. PENALIZED — 'too aggressive' — step back","3. COLLABORATIVE — soften — listen — invite — defer","4. PENALIZED AGAIN — 'not leadership material' — step back again","5. FREEZE — call out: 'There is no version that works. The double bind has no exit. That is the point.'"]},
+  {text:"Women with partners are more than 3 times as likely as men to be responsible for all or most housework. Nearly 25% of women who express reluctance about promotion cite personal obligations — vs 15% of men. Remote work, which helps women manage caregiving, creates a visibility trap: entry-level women working remotely are 1.5 times less likely to be promoted than their in-office counterparts. The same arrangement that makes working possible also reduces access to the sponsorship that produces promotions. This is not a choice gap. It is a structural inequity. The advice to 'network and seek stretch assignments' assumes equal time, energy, and bandwidth. The domestic labor data says that assumption is false.",source:"McKinsey / Keystone Partners Women in the Workplace (2025–26)",link:"https://www.keystonepartners.com/resources/breaking-through-women-in-leadership/",moves:["1. WORK ALL DAY — excellent — dedicated — promoted-ready","2. HOME — second shift — housework — caregiving — still going","3. REMOTE WORK — manage both — it's possible — barely","4. INVISIBLE — not in office — not seen — not sponsored — not promoted","5. FREEZE — call out: '3x more likely to do all the housework. 1.5x less likely to be promoted working remotely. The flexibility trap.'"]},
+];
+
+let recentlyShown=[];
+function getResponse(){let avail=responses.filter((_,i)=>!recentlyShown.includes(i));if(avail.length<2){recentlyShown=[];avail=responses;}const ri=Math.floor(Math.random()*avail.length);const sel=avail[ri];recentlyShown.push(responses.indexOf(sel));if(recentlyShown.length>4)recentlyShown.shift();return sel;}
+function generateMovement(r){return'HIP HOP SEQUENCE\n\n'+r.moves.join('\n')+'\n\nENERGY: Precise. Political. Each freeze is a named, documented barrier. The body carries the data.';}
+let audioCtx=null;
+function playChime(){try{if(!audioCtx)audioCtx=new(window.AudioContext||window.webkitAudioContext)();const ctx=audioCtx;[[329.63,0],[415.30,.18],[493.88,.36]].forEach(([f,d])=>{const o=ctx.createOscillator();const g=ctx.createGain();o.connect(g);g.connect(ctx.destination);o.type='sine';o.frequency.value=f;const t=ctx.currentTime+d;g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(.35,t+.04);g.gain.exponentialRampToValueAtTime(.001,t+.7);o.start(t);o.stop(t+.72);});}catch(e){}}
+function askQuestion(){
+  const q2=document.getElementById('userQuestion').value.trim();
+  const name=document.getElementById('userName').value.trim();
+  if(!name){alert('Please enter your name first!');return;}
+  if(!q2){alert('Please type a question!');return;}
+  const resp=getResponse();const mv=generateMovement(resp);
+  const payload={question:q2,answerText:resp.text,answerSource:resp.source,answerLink:resp.link,movement:mv,userName:name,userColor,ts:fbReady?firebase.database.ServerValue.TIMESTAMP:Date.now()};
+  if(fbReady&&msgRef)msgRef.push(payload).catch(()=>localDisplay(q2,resp,mv,name));
+  else localDisplay(q2,resp,mv,name);
+  document.getElementById('userQuestion').value='';
+}
+let localMessages=[];
+function localDisplay(q2,resp,mv,name){const area=document.getElementById('outputArea');localMessages.unshift({question:q2,answerText:resp.text,answerSource:resp.source,answerLink:resp.link,movement:mv,userName:name,userColor});if(localMessages.length>MAX)localMessages=localMessages.slice(0,MAX);area.innerHTML='';localMessages.forEach((msg,i)=>renderPair(msg,null,i===0));}
+function renderPair(msg,key,playAudio=false){
+  const area=document.getElementById('outputArea');
+  const el=document.createElement('div');el.className='cb-pair';if(key)el.id='pair-'+key;
+  el.innerHTML='<div class="cb-meta"><strong style="color:'+escH(msg.userColor||'#ff85b3')+'">'+escH(msg.userName||'Anon')+'</strong> asked:</div><div class="cb-qbubble">\u2753 '+escH(msg.question)+'</div><div class="cb-pcard"><div class="cb-phead"><span class="cb-plabel">\ud83c\udf93 From the Research Record</span></div><div class="cb-pbody"><div class="cb-ptext">'+escH(msg.answerText)+'</div><div class="cb-psrc">Source: <a href="'+escH(msg.answerLink)+'" target="_blank">'+escH(msg.answerSource)+'</a></div></div></div><div class="cb-mcard"><div class="cb-mhead"><span class="cb-mlabel">\ud83c\udfad Movement Instructions</span></div><div class="cb-mbody"><div class="cb-mtext">'+escH(msg.movement)+'</div></div><div class="cb-spkrow"><button class="cb-btn soft" style="font-size:11px;padding:7px 13px;" onclick="speakText(this)">\ud83d\udd0a Read Aloud</button><button class="cb-btn soft" style="font-size:11px;padding:7px 13px;" onclick="stopSpeech()">\u23f9 Stop</button></div></div>';
+  area.insertBefore(el,area.firstChild);
+  if(playAudio){playChime();setTimeout(()=>speakMovement(msg.movement),950);}
+}
+function speakMovement(text){if(!('speechSynthesis' in window))return;window.speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(text);u.rate=0.88;const trySpeak=()=>{const voices=window.speechSynthesis.getVoices();const fv=voices.find(v=>v.lang==='en-US'&&/female|woman|samantha|karen|amy|emma/i.test(v.name))||voices.find(v=>v.lang==='en-US');if(fv)u.voice=fv;window.speechSynthesis.speak(u);};if(window.speechSynthesis.getVoices().length)trySpeak();else window.speechSynthesis.onvoiceschanged=trySpeak;}
+function speakText(btn){speakMovement(btn.closest('.cb-mcard').querySelector('.cb-mtext').textContent);}
+function stopSpeech(){if('speechSynthesis' in window)window.speechSynthesis.cancel();}
+function escH(s){const d=document.createElement('div');d.textContent=s||'';return d.innerHTML;}
+document.getElementById('userQuestion').addEventListener('keypress',e=>{if(e.key==='Enter')askQuestion();});
+function showAdminModal(){document.getElementById('adminModal').classList.add('open');document.getElementById('adminErr').textContent='';document.getElementById('adminPass').value='';setTimeout(()=>document.getElementById('adminPass').focus(),100);}
+function closeAdminModal(){document.getElementById('adminModal').classList.remove('open');}
+function confirmAdminReset(){if(document.getElementById('adminPass').value!==ADMIN){document.getElementById('adminErr').textContent='Incorrect passcode.';document.getElementById('adminPass').value='';return;}document.getElementById('outputArea').innerHTML='<div class="cb-empty"><h3>\u2756 Messages cleared</h3><p>Type a question to begin</p></div>';if(fbReady&&msgRef)msgRef.remove().catch(()=>{});localMessages=[];recentlyShown=[];closeAdminModal();}
+document.getElementById('adminPass').addEventListener('keypress',e=>{if(e.key==='Enter')confirmAdminReset();});
+window.addEventListener('beforeunload',()=>{if(onlineRef&&currentUser)onlineRef.child(currentUser.replace(/[.#$[\]]/g,'_')).remove();if('speechSynthesis' in window)window.speechSynthesis.cancel();});
+</script>
+</body>
+</html>

@@ -1,0 +1,547 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>✦ CAREBOT-37 ✦ Pretty in Pink</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;900&family=Quicksand:wght@500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --bg:#0e0008;--pink:#ff2d6b;--candy:#ff85b3;--blush:#ffb3cf;
+  --cream:#fff5f8;--berry:#c4005a;--maroon:#6f001e;
+  --muted:rgba(255,190,220,.5);--muted2:rgba(255,210,228,.75);
+  --border:rgba(255,80,150,.22);--border2:rgba(255,60,120,.5);
+  --surface:rgba(20,0,10,.97);
+  --fh:'Nunito',sans-serif;--fb:'Quicksand',sans-serif;--fm:'DM Mono',monospace;
+  --boy:#4b8bff;--boy-bg:rgba(75,139,255,.08);--boy-border:rgba(75,139,255,.28);
+}
+html,body{min-height:100%;font-family:var(--fb);font-weight:600;color:var(--cream);background:var(--bg);-webkit-font-smoothing:antialiased;}
+::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px}
+.bg-layer{position:fixed;inset:0;z-index:0;pointer-events:none;background:radial-gradient(ellipse 65% 50% at 8% 88%,rgba(180,0,50,.28) 0%,transparent 58%),radial-gradient(ellipse 55% 45% at 92% 8%,rgba(100,0,20,.22) 0%,transparent 58%),linear-gradient(155deg,#160008,#0e0008 50%,#080005);}
+.orb{position:fixed;border-radius:50%;pointer-events:none;z-index:0;filter:blur(65px);}
+.orb-1{width:380px;height:380px;background:#7a0028;opacity:.22;bottom:-80px;left:-70px;animation:d1 21s ease-in-out infinite;}
+.orb-2{width:300px;height:300px;background:#c4005a;opacity:.18;top:-60px;right:-60px;animation:d2 25s ease-in-out infinite;}
+@keyframes d1{0%,100%{transform:translate(0,0)}50%{transform:translate(38px,26px)}}
+@keyframes d2{0%,100%{transform:translate(0,0)}50%{transform:translate(-28px,-20px)}}
+@keyframes breathe{0%,100%{opacity:1}50%{opacity:.2}}
+.screen{position:relative;z-index:2;min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:max(16px,env(safe-area-inset-top)) clamp(12px,4vmin,22px) calc(44px + env(safe-area-inset-bottom));gap:13px;}
+.cb-topbar{width:100%;max-width:720px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:7px;}
+.cb-logo{display:flex;align-items:center;gap:10px;}
+.cb-icon{width:40px;height:40px;border-radius:12px;background:rgba(255,60,120,.16);border:1.5px solid var(--border2);display:flex;align-items:center;justify-content:center;font-size:18px;}
+.cb-name{font-family:var(--fh);font-weight:900;font-size:12px;background:linear-gradient(90deg,var(--blush),var(--pink) 55%,var(--candy));-webkit-background-clip:text;background-clip:text;color:transparent;}
+.cb-sub{font-size:9px;letter-spacing:.15em;text-transform:uppercase;color:var(--muted);margin-top:1px;}
+.cb-badges{display:flex;gap:6px;align-items:center;flex-wrap:wrap;}
+.cb-badge{font-size:10px;padding:4px 10px;border-radius:999px;background:rgba(255,255,255,.04);border:1px solid var(--border);color:var(--muted);display:flex;align-items:center;gap:5px;}
+.cb-pip{display:inline-block;width:5px;height:5px;border-radius:50%;background:var(--pink);animation:breathe 2s ease-in-out infinite;}
+.btn-csv{appearance:none;background:rgba(255,60,120,.1);color:var(--candy);border:1.5px solid var(--border2);border-radius:9px;padding:.26rem .65rem;font-family:var(--fb);font-size:.6rem;font-weight:700;cursor:pointer;}
+.stats-bar{width:100%;max-width:720px;display:flex;align-items:center;gap:.6rem;flex-wrap:wrap;padding:.5rem .9rem;background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:13px;}
+.stat-chip{display:flex;align-items:center;gap:.3rem;font-size:.62rem;font-weight:700;color:var(--muted);letter-spacing:.06em;text-transform:uppercase;background:rgba(255,60,120,.06);border:1px solid rgba(255,60,120,.13);border-radius:999px;padding:.18rem .6rem;}
+.stat-chip strong{color:var(--candy);}
+.irony-card{width:100%;max-width:720px;background:linear-gradient(135deg,rgba(111,0,30,.88),rgba(50,0,15,.95));border:1.5px solid rgba(255,60,80,.4);border-radius:18px;padding:18px;position:relative;overflow:hidden;}
+.irony-card::before{content:'';position:absolute;top:0;left:10%;right:10%;height:1.5px;background:linear-gradient(90deg,transparent,var(--candy) 35%,var(--pink) 50%,var(--candy) 65%,transparent);box-shadow:0 0 10px var(--candy);border-radius:999px;}
+.irony-eyebrow{font-size:9px;letter-spacing:.22em;text-transform:uppercase;color:rgba(255,160,160,.55);margin-bottom:6px;}
+.irony-title{font-family:var(--fh);font-weight:900;font-size:clamp(14px,3vw,18px);color:#ffcccc;margin-bottom:10px;line-height:1.3;}
+.irony-body{font-size:12.5px;line-height:1.78;color:rgba(255,210,210,.82);}
+.irony-body strong{color:#ffcccc;}
+.irony-body em{color:var(--candy);}
+/* COLOR HISTORY */
+.history-section{width:100%;max-width:720px;}
+.section-title{font-family:var(--fh);font-weight:900;font-size:14px;background:linear-gradient(90deg,var(--blush),var(--pink));-webkit-background-clip:text;background-clip:text;color:transparent;margin-bottom:4px;}
+.section-sub{font-size:11px;color:var(--muted);margin-bottom:12px;line-height:1.6;}
+.timeline{display:flex;flex-direction:column;gap:0;}
+.tl-item{display:grid;grid-template-columns:80px 1fr;gap:0;}
+.tl-year{font-family:var(--fh);font-weight:900;font-size:13px;color:var(--candy);padding:12px 14px 12px 0;border-right:2px solid rgba(255,60,120,.25);text-align:right;position:relative;}
+.tl-year::after{content:'';position:absolute;right:-5px;top:50%;transform:translateY(-50%);width:8px;height:8px;border-radius:50%;background:var(--pink);box-shadow:0 0 8px var(--pink);}
+.tl-content{padding:12px 0 12px 18px;font-size:11.5px;line-height:1.7;color:var(--muted2);}
+.tl-content strong{color:var(--cream);}
+.tl-content em{color:var(--candy);}
+/* IRONY GRID */
+.irony-grid{width:100%;max-width:720px;display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+@media(max-width:540px){.irony-grid{grid-template-columns:1fr;}}
+.irony-tile{border-radius:14px;padding:14px;border:1.5px solid rgba(255,60,120,.28);background:rgba(255,60,120,.07);position:relative;overflow:hidden;}
+.irony-tile::before{content:'';position:absolute;top:0;left:8%;right:8%;height:1px;background:linear-gradient(90deg,transparent,var(--candy) 50%,transparent);border-radius:999px;}
+.irony-tile.blue{border-color:var(--boy-border);background:var(--boy-bg);}
+.irony-tile.blue::before{background:linear-gradient(90deg,transparent,var(--boy) 50%,transparent);}
+.tile-eyebrow{font-size:9px;letter-spacing:.16em;text-transform:uppercase;font-weight:700;margin-bottom:6px;color:var(--candy);}
+.irony-tile.blue .tile-eyebrow{color:var(--boy);}
+.tile-object{font-family:var(--fh);font-weight:900;font-size:15px;color:var(--cream);margin-bottom:6px;line-height:1.2;}
+.tile-body{font-size:11px;line-height:1.7;color:var(--muted2);}
+.tile-body strong{color:var(--cream);}
+.tile-stat{margin-top:8px;padding:6px 9px;border-radius:8px;background:rgba(255,255,255,.04);font-size:10px;line-height:1.55;color:var(--muted2);}
+.tile-stat strong{color:var(--candy);}
+/* PINK TAX CARD */
+.tax-card{width:100%;max-width:720px;background:linear-gradient(135deg,rgba(111,0,30,.88),rgba(50,0,15,.95));border:1.5px solid rgba(255,60,80,.4);border-radius:18px;padding:18px;position:relative;overflow:hidden;}
+.tax-card::before{content:'';position:absolute;top:0;left:10%;right:10%;height:1.5px;background:linear-gradient(90deg,transparent,var(--candy) 35%,var(--pink) 50%,var(--candy) 65%,transparent);box-shadow:0 0 10px var(--candy);border-radius:999px;}
+.tax-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:8px;margin-top:12px;}
+.tax-box{padding:10px 12px;background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:10px;}
+.tax-num{font-family:var(--fh);font-weight:900;font-size:22px;color:var(--candy);line-height:1;}
+.tax-label{font-size:10px;color:var(--muted);margin-top:3px;line-height:1.4;}
+/* OBJECT SORT */
+.sort-section{width:100%;max-width:720px;}
+.sort-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+@media(max-width:480px){.sort-grid{grid-template-columns:1fr;}}
+.sort-zone{border-radius:13px;padding:12px;border:1.5px solid;min-height:100px;}
+.sort-zone.pink-zone{border-color:rgba(255,60,120,.35);background:rgba(255,60,120,.06);}
+.sort-zone.blue-zone{border-color:var(--boy-border);background:var(--boy-bg);}
+.sort-zone.neutral-zone{border-color:rgba(200,200,200,.2);background:rgba(200,200,200,.04);}
+.sort-label{font-family:var(--fh);font-weight:900;font-size:10px;letter-spacing:.12em;text-transform:uppercase;margin-bottom:8px;}
+.sort-zone.pink-zone .sort-label{color:var(--candy);}
+.sort-zone.blue-zone .sort-label{color:var(--boy);}
+.sort-zone.neutral-zone .sort-label{color:rgba(200,200,200,.5);}
+.sort-items{display:flex;flex-wrap:wrap;gap:6px;min-height:40px;}
+.sort-item{padding:5px 11px;border-radius:999px;font-size:11px;font-weight:700;cursor:grab;user-select:none;border:1px solid;transition:all .15s;}
+.sort-item.in-pink{background:rgba(255,60,120,.18);border-color:var(--pink);color:var(--blush);}
+.sort-item.in-blue{background:rgba(75,139,255,.18);border-color:var(--boy);color:#93c5fd;}
+.sort-item.in-neutral{background:rgba(200,200,200,.1);border-color:rgba(200,200,200,.3);color:rgba(200,200,200,.7);}
+.sort-item.unsorted{background:rgba(255,255,255,.06);border-color:var(--border);color:var(--muted);}
+.sort-bank{display:flex;flex-wrap:wrap;gap:6px;padding:12px;background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:11px;min-height:50px;margin-bottom:10px;}
+.sort-instruction{font-size:10px;color:var(--muted);margin-bottom:8px;font-style:italic;}
+/* DATA MODULE */
+.mod-card{width:100%;max-width:720px;background:var(--surface);border:1.5px solid var(--border2);border-radius:18px;overflow:hidden;position:relative;box-shadow:0 4px 28px rgba(255,45,107,.15);}
+.mod-card::before{content:'';position:absolute;top:0;left:10%;right:10%;height:1.5px;background:linear-gradient(90deg,transparent,var(--candy) 35%,var(--pink) 50%,var(--candy) 65%,transparent);box-shadow:0 0 10px var(--candy);border-radius:999px;}
+.mod-header{padding:14px 17px 11px;border-bottom:1px solid var(--border);}
+.mod-eyebrow{font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);margin-bottom:5px;}
+.mod-title{font-family:var(--fh);font-weight:900;font-size:14px;background:linear-gradient(90deg,var(--blush),var(--pink));-webkit-background-clip:text;background-clip:text;color:transparent;line-height:1.3;}
+.mod-sub{font-size:11px;color:var(--muted);margin-top:4px;line-height:1.6;}
+.mod-body{padding:14px 17px;}
+.open-label{font-size:11px;color:var(--cream);font-weight:700;margin-bottom:6px;margin-top:12px;line-height:1.5;}
+.open-label:first-child{margin-top:0;}
+.open-q{width:100%;padding:9px 13px;background:rgba(255,255,255,.05);border:1.5px solid var(--border);border-radius:11px;font-family:var(--fb);font-weight:600;font-size:12px;color:var(--cream);outline:none;transition:border-color .2s;resize:vertical;min-height:68px;}
+.open-q:focus{border-color:var(--candy);}
+.open-q::placeholder{color:var(--muted);}
+.rate-row{display:flex;gap:7px;margin-bottom:10px;flex-wrap:wrap;}
+.rate-btn{appearance:none;font-family:var(--fb);font-weight:700;font-size:11px;padding:6px 13px;border-radius:8px;cursor:pointer;border:1.5px solid var(--border);background:rgba(255,255,255,.04);color:var(--muted);transition:all .15s;}
+.rate-btn:hover{background:rgba(255,60,120,.12);border-color:var(--border2);color:var(--blush);}
+.rate-btn.active{background:rgba(255,60,120,.22);border-color:var(--pink);color:var(--cream);}
+.mod-footer{padding:10px 15px 14px;display:flex;gap:8px;align-items:center;border-top:1px solid var(--border);}
+.mod-progress{font-size:10px;color:var(--muted);font-weight:700;flex:1;}
+.mod-submit{appearance:none;font-family:var(--fh);font-weight:900;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--cream);background:linear-gradient(135deg,var(--pink),var(--berry));border:none;border-radius:10px;padding:9px 18px;cursor:pointer;transition:all .2s;}
+.mod-submit:disabled{opacity:.4;cursor:not-allowed;}
+.mod-submit.done{background:linear-gradient(135deg,rgba(100,200,100,.4),rgba(60,160,60,.5));cursor:default;}
+/* Q&A */
+.cb-card{width:100%;max-width:720px;background:var(--surface);border:1.5px solid var(--border2);border-radius:18px;padding:17px;position:relative;overflow:hidden;}
+.cb-card::before{content:'';position:absolute;top:0;left:10%;right:10%;height:1.5px;background:linear-gradient(90deg,transparent,var(--candy) 35%,var(--pink) 50%,var(--candy) 65%,transparent);box-shadow:0 0 10px var(--candy);border-radius:999px;}
+.cb-eyebrow{font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);margin-bottom:10px;}
+.cb-row{display:flex;gap:8px;flex-wrap:wrap;}
+.cb-input{flex:1;padding:9px 13px;background:rgba(255,255,255,.05);border:1.5px solid var(--border);border-radius:11px;font-family:var(--fb);font-weight:600;font-size:13px;color:var(--cream);outline:none;min-width:0;}
+.cb-input:focus{border-color:var(--candy);}
+.cb-input::placeholder{color:var(--muted);}
+.cb-name-in{max-width:148px;flex:0 0 148px;}
+.cb-btn{font-family:var(--fh);font-weight:900;font-size:12px;color:var(--cream);display:inline-flex;align-items:center;gap:5px;padding:9px 17px;border-radius:11px;border:1.5px solid var(--border2);cursor:pointer;transition:all .2s;white-space:nowrap;appearance:none;}
+.cb-btn.primary{background:linear-gradient(135deg,var(--pink),var(--berry));box-shadow:0 4px 16px rgba(255,60,120,.28);}
+.cb-btn.primary:hover{transform:translateY(-2px);}
+.cb-btn.soft{background:rgba(255,255,255,.04);color:var(--muted);border-color:var(--border);font-size:11px;}
+.cb-btn.soft:hover{background:rgba(255,60,120,.12);color:var(--candy);}
+.cb-msgs{width:100%;max-width:720px;display:flex;flex-direction:column;gap:13px;}
+.cb-empty{text-align:center;padding:42px 18px;color:var(--muted);}
+.cb-empty h3{font-family:var(--fh);font-weight:900;font-size:16px;background:linear-gradient(90deg,var(--blush),var(--pink));-webkit-background-clip:text;background-clip:text;color:transparent;margin-bottom:7px;}
+.cb-pair{animation:slideUp .35s ease-out;}
+@keyframes slideUp{from{opacity:0;transform:translateY(13px)}to{opacity:1;transform:translateY(0)}}
+.cb-meta{font-size:11px;color:var(--muted);margin-bottom:5px;}
+.cb-qbubble{display:inline-block;background:linear-gradient(135deg,var(--pink),var(--berry));color:#fff;padding:9px 14px;border-radius:16px 16px 16px 3px;font-size:13px;margin-bottom:11px;max-width:88%;line-height:1.5;}
+.cb-pcard{background:rgba(12,0,7,.9);border:1.5px solid rgba(255,80,150,.38);border-radius:13px;overflow:hidden;margin-bottom:7px;}
+.cb-phead{background:linear-gradient(135deg,rgba(220,80,130,.78),rgba(180,0,80,.84));padding:8px 13px;}
+.cb-plabel{font-family:var(--fh);font-weight:900;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:#fff;}
+.cb-pbody{padding:13px;}
+.cb-ptext{font-size:13px;line-height:1.7;color:rgba(255,215,235,.88);}
+.cb-psrc{margin-top:9px;padding-top:9px;border-top:1px solid rgba(255,100,160,.1);font-size:11px;color:var(--muted);}
+.cb-psrc a{color:var(--candy);text-decoration:none;}
+.cb-mcard{background:rgba(12,0,7,.9);border:1.5px solid rgba(255,60,120,.3);border-radius:13px;overflow:hidden;}
+.cb-mhead{background:linear-gradient(135deg,rgba(200,0,80,.6),rgba(120,0,50,.7));padding:8px 13px;}
+.cb-mlabel{font-family:var(--fh);font-weight:900;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:#fff;}
+.cb-mbody{padding:13px;}
+.cb-mtext{font-family:var(--fm);font-size:11.5px;line-height:1.85;color:rgba(255,180,210,.85);white-space:pre-wrap;}
+.cb-spkrow{padding:7px 13px 11px;display:flex;gap:7px;}
+.cb-bottom{width:100%;max-width:720px;background:linear-gradient(135deg,rgba(111,0,30,.8),rgba(50,0,15,.92));border:1.5px solid var(--border2);border-radius:18px;padding:17px;text-align:center;position:relative;overflow:hidden;}
+.cb-bottom::before{content:'';position:absolute;top:0;left:10%;right:10%;height:1.5px;background:linear-gradient(90deg,transparent,var(--candy) 35%,var(--pink) 50%,var(--candy) 65%,transparent);border-radius:999px;}
+.cb-btitle{font-family:var(--fh);font-weight:900;font-size:15px;background:linear-gradient(90deg,var(--blush),var(--pink),var(--candy));-webkit-background-clip:text;background-clip:text;color:transparent;margin-bottom:11px;}
+.cb-link{display:inline-flex;align-items:center;gap:5px;font-family:var(--fh);font-weight:900;font-size:13px;color:var(--cream);background:linear-gradient(135deg,var(--pink),var(--berry));padding:11px 23px;border-radius:13px;text-decoration:none;box-shadow:0 4px 18px rgba(255,60,120,.32);transition:all .2s;}
+.cb-link:hover{transform:translateY(-2px);}
+.cb-modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:999;align-items:center;justify-content:center;}
+.cb-modal.open{display:flex;}
+.cb-mbox{background:rgba(14,0,8,.97);border:1.5px solid var(--border2);border-radius:18px;padding:24px 22px;max-width:340px;width:90%;position:relative;}
+.cb-mbox::before{content:'';position:absolute;top:0;left:10%;right:10%;height:1.5px;background:linear-gradient(90deg,transparent,var(--candy) 35%,var(--pink) 50%,var(--candy) 65%,transparent);border-radius:999px;}
+.cb-mtitle{font-family:var(--fh);font-weight:900;font-size:16px;color:var(--blush);margin-bottom:9px;}
+.cb-mbodytxt{font-size:12px;color:var(--muted);line-height:1.6;margin-bottom:15px;}
+.cb-mbtns{display:flex;gap:9px;}
+.cb-err{font-size:11px;color:var(--pink);margin-top:6px;min-height:16px;}
+.cb-wmark{font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,140,185,.1);padding-bottom:8px;text-align:center;}
+</style>
+</head>
+<body>
+<div class="bg-layer"></div><div class="orb orb-1"></div><div class="orb orb-2"></div>
+<div class="screen">
+
+  <div class="cb-topbar">
+    <div class="cb-logo">
+      <div class="cb-icon">🎀</div>
+      <div>
+        <div class="cb-name">CAREBOT-37 ✦ PRETTY IN PINK</div>
+        <div class="cb-sub">Color History · Pink Tax · Domestic Objects · Gendered Marketing · CAREtech</div>
+      </div>
+    </div>
+    <div class="cb-badges">
+      <div class="cb-badge" id="onlineCount"><span class="cb-pip"></span>Connecting…</div>
+      <div class="cb-badge" id="sysTime">--:--</div>
+      <button class="btn-csv" onclick="downloadCSV()">⬇ Export CSV</button>
+    </div>
+  </div>
+
+  <div class="stats-bar">
+    <div class="stat-chip">Responses <strong id="st-r">—</strong></div>
+    <div class="stat-chip">Online <strong id="st-o">—</strong></div>
+  </div>
+
+  <!-- IRONY CARD -->
+  <div class="irony-card">
+    <div class="irony-eyebrow">✦ CAREBOT-37 · The Irony</div>
+    <div class="irony-title">Pink used to be a boy color. It was considered strong, bold, a derivative of red. In 1918, stores recommended pink for boys, blue for girls. By 1940, marketing flipped it. Now pink means domesticity, femininity, caregiving — and the objects of that labor: the ironing board, the laundry basket, the vacuum, the desk. The color that once meant strength now marks the work nobody pays for.</div>
+    <div class="irony-body">
+      The flip happened in <strong>one generation</strong>, driven by marketing, not biology. The same industry that assigned pink to women then charged them <strong>17% more</strong> for pink products. The color brands domestic labor — the labor that holds up the economy while being excluded from it. <em>You can have it in pink.</em> The iron. The vacuum. The watering can. The laundry basket. The desk. The electronics. The wig. You can have your labor in any color, as long as it stays yours.
+    </div>
+  </div>
+
+  <!-- COLOR HISTORY TIMELINE -->
+  <div class="history-section">
+    <div class="section-title">✦ A Short History of Pink</div>
+    <div class="section-sub">The gender-color assignment we treat as natural is less than 100 years old — and it was manufactured.</div>
+    <div class="timeline">
+      <div class="tl-item">
+        <div class="tl-year">1700s</div>
+        <div class="tl-content"><strong>Pink is a masculine color.</strong> Considered a derivative of red — strong, decided, passionate. Blue is the feminine color — delicate, dainty, associated with the Virgin Mary. Boys wear pink. Girls wear blue. This is not controversial.</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-year">1880s</div>
+        <div class="tl-content"><strong>Before widely available dyes, all young children wore white.</strong> Boys and girls both wore long white dresses. Both wore long hair. Gender was not encoded in clothing for small children. Children were dressed for practicality — white cotton can be bleached.</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-year">1918</div>
+        <div class="tl-content"><strong>Earnshaw's Infants' Department trade publication states:</strong> <em>"The generally accepted rule is pink for the boys, and blue for the girls. The reason is that pink, being a more decided and stronger color, is more suitable for the boy, while blue, which is more delicate and dainty, is prettier for the girl."</em> This is the industry standard. Pink = boys.</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-year">1927</div>
+        <div class="tl-content"><strong>Time Magazine publishes a chart</strong> showing sex-appropriate colors according to leading US department stores: Filene's in Boston, Best & Co. in New York City, Halle's in Cleveland, Marshall Field in Chicago — all recommending <strong>pink for boys.</strong></div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-year">1940s</div>
+        <div class="tl-content"><strong>Marketing flips it.</strong> Baby boom. Mass consumer market. Targeted advertising to mothers. Pink becomes the girls' color; blue becomes the boys'. The switch is driven by manufacturers, not nature. <em>One generation. One industry decision. Permanent.</em></div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-year">1960s–70s</div>
+        <div class="tl-content"><strong>Women's liberation movement</strong> pushes back. Unisex baby clothing becomes fashionable. The pink-for-girls coding dips. Parents resist the binary. Neutral clothing returns.</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-year">1980s</div>
+        <div class="tl-content"><strong>Prenatal sex testing becomes widely available.</strong> Parents can find out before birth. Retail responds: two coded nurseries, two coded wardrobes, two coded toy aisles. Pink-for-girls entrenches permanently in American consumer culture. The toy aisle splits.</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-year">Now</div>
+        <div class="tl-content"><strong>Pink marks domestic labor objects</strong> sold to women: ironing boards, vacuums, laundry baskets, watering cans, desks, electronics, wigs. The color that once encoded strength now encodes caregiving. And those pink products cost <strong>17% more</strong>. The marketing that built the association also profits from it.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- IRONY GRID: THE OBJECTS -->
+  <div class="irony-grid">
+
+    <div class="irony-tile">
+      <div class="tile-eyebrow">✦ Object 01</div>
+      <div class="tile-object">The Pink Ironing Board</div>
+      <div class="tile-body">Ironing is domestic labor — unpaid, invisible, gendered. Pink the ironing board and it becomes a product, a purchase, a lifestyle object. The labor it represents — hours of standing, steaming, pressing — is not compensated. The board is sold at <strong>a premium for the pink version.</strong> The work it enables is valued at zero. The board is cute. The labor is free.</div>
+      <div class="tile-stat"><strong>Pink was once the color of strength.</strong> Now it marks the object of the labor that holds up the economy while being excluded from wage calculation.</div>
+    </div>
+
+    <div class="irony-tile">
+      <div class="tile-eyebrow">✦ Object 02</div>
+      <div class="tile-object">The Pink Laundry Basket</div>
+      <div class="tile-body">Laundry is the most frequently recurring domestic task. It never ends — wash, dry, fold, repeat. Pink the basket and it signals: this is hers. This is a woman's object in a woman's space doing a woman's work. The basket costs more in pink. The time to fill and empty it — <strong>hours each week, thousands of hours over a lifetime</strong> — does not appear in any national economic measurement.</div>
+      <div class="tile-stat">The CAREtech laundry basket head: checkmark eye for skills acknowledged, X eye for labor discarded. The basket holds what isn't counted.</div>
+    </div>
+
+    <div class="irony-tile">
+      <div class="tile-eyebrow">✦ Object 03</div>
+      <div class="tile-object">The Pink Vacuum</div>
+      <div class="tile-body">Vacuum cleaners were initially marketed to men as <strong>industrial efficiency machines</strong> — technology, engineering, power. As the product moved into the home and became associated with women's housework, it became pink, pastel, "elegant." The technology didn't change. The gender coding changed. And the price went up for the pink version. The same machine. Different color. Different customer. Higher cost.</div>
+      <div class="tile-stat"><strong>Gendered products are 17% more expensive</strong> than male gendered counterparts (Georgetown Law Journal, 2025). The vacuum is a case study.</div>
+    </div>
+
+    <div class="irony-tile">
+      <div class="tile-eyebrow">✦ Object 04</div>
+      <div class="tile-object">The Pink Watering Can</div>
+      <div class="tile-body">Gardening was historically a male domain — land management, agriculture, cultivation. As kitchen gardens became women's domestic responsibility and gardening became "hobby" rather than "labor," the objects pinkified. A pink watering can signals leisure, femininity, decorativeness. But the labor of tending growing things — food, home, children — is the same labor. The color reclassifies it. <strong>From production to decoration. From work to lifestyle.</strong></div>
+    </div>
+
+    <div class="irony-tile">
+      <div class="tile-eyebrow">✦ Object 05</div>
+      <div class="tile-object">The Pink Desk</div>
+      <div class="tile-body">A desk is a site of intellectual work, productivity, output. A pink desk signals: this is a girl's workspace — cute, soft, decorative. A girl's work. Not serious work. Not paid work. The same desk in black or white sells to executives. In pink it sells to <strong>teenage girls and mothers who work from home</strong>. The color assignment changes the perceived value of the labor performed at it. The desk is the same. The cultural weight of the work done there is not.</div>
+      <div class="tile-stat">The rolling pink desk in CARETECH_CEO.exe moves through the performance space as the CEO layer — authority, mobility, control — operated by a body in an apron.</div>
+    </div>
+
+    <div class="irony-tile">
+      <div class="tile-eyebrow">✦ Object 06</div>
+      <div class="tile-object">The Pink Electronics</div>
+      <div class="tile-body">Pink laptops, pink phones, pink earbuds. Technology is a male-coded field — <strong>less than 30% of the AI workforce is female</strong> (Global Gender Gap Report 2023). Pink electronics mark women as consumers of technology, not creators of it. The pink version of the same device costs more. The women who design the algorithms that run inside them are underrepresented, underpaid, and their work is credited to the product, not to them.</div>
+      <div class="tile-stat"><strong>Women make up less than 30% of the AI workforce</strong> and it drops to 15% at senior levels. Pink electronics signal welcome without power.</div>
+    </div>
+
+    <div class="irony-tile">
+      <div class="tile-eyebrow">✦ Object 07</div>
+      <div class="tile-object">The Pink Wig</div>
+      <div class="tile-body">Pink wigs are costume, performance, femininity made visible and exaggerated. In CARETECH_CEO.exe the pink wig passes between objects — placed on the chassis, the vacuum, the projector, the ironing board. Each object it lands on becomes gendered. The wig reveals the mechanism: femininity is not inside the object. It is assigned by color, by accessory, by marketing. Remove the wig. The object is neutral again. <strong>The gender was always a costume.</strong></div>
+    </div>
+
+    <div class="irony-tile">
+      <div class="tile-eyebrow">✦ Object 08</div>
+      <div class="tile-object">The Pink Tablecloth</div>
+      <div class="tile-body">Setting a table is hospitality labor — invisible, recurring, socially mandatory. A pink tablecloth marks the table as feminine domestic space. It was set by someone. It will be cleared by someone. That someone is <strong>statistically likely to be a woman</strong> — mothers perform 73% of cognitive household labor. The tablecloth signals welcome, warmth, care. It does not signal who cleaned it, pressed it, chose it, stored it, and will do it again next week.</div>
+    </div>
+
+    <div class="irony-tile blue" style="grid-column:1/-1;">
+      <div class="tile-eyebrow" style="color:var(--boy);">✦ The Original Pink — Before the Flip</div>
+      <div class="tile-object" style="font-size:16px;">In 1918, pink was the strong color. Blue was the delicate one.</div>
+      <div class="tile-body" style="font-size:12px;max-width:620px;">"The generally accepted rule is pink for the boys, and blue for the girls. The reason is that pink, being a more decided and stronger color, is more suitable for the boy, while blue, which is more delicate and dainty, is prettier for the girl." — <strong>Earnshaw's Infants' Department, June 1918</strong><br><br>The same color. A different century. A completely different meaning. The meaning was never in the color. It was always in the marketing. The strength was reassigned. The labor was kept.</div>
+    </div>
+  </div>
+
+  <!-- PINK TAX -->
+  <div class="tax-card">
+    <div class="irony-eyebrow">✦ The Pink Tax — The Color Costs More</div>
+    <div class="irony-title" style="font-size:15px;">Pink products are more expensive. The color that marks domestic labor also marks price markup.</div>
+    <div class="irony-body">Women are charged more for products that are functionally identical to men's versions — differentiated only by color, packaging, and scent. The same razor. The same shampoo. The same pen. The same desk. Pink = premium. The color that encodes domesticity also extracts payment for the privilege of having it.</div>
+    <div class="tax-grid">
+      <div class="tax-box"><div class="tax-num">17%</div><div class="tax-label">more expensive: gendered women's products vs male counterparts (Georgetown Law Journal, 2025)</div></div>
+      <div class="tax-box"><div class="tax-num">7%</div><div class="tax-label">more on average across five industries: women's products vs men's (NYC Dept of Consumer Affairs)</div></div>
+      <div class="tax-box"><div class="tax-num">13%</div><div class="tax-label">more for women's personal care and health products vs men's equivalent</div></div>
+      <div class="tax-box"><div class="tax-num">$1,300</div><div class="tax-label">extra per year women pay in gender-based pricing across all product categories</div></div>
+      <div class="tax-box"><div class="tax-num">42%</div><div class="tax-label">of the time: women pay more than men for comparable products (research summary)</div></div>
+      <div class="tax-box"><div class="tax-num">8%</div><div class="tax-label">more for women's clothing vs men's. Tariffs on imported women's apparel: 16.7% vs 13.6% for men's</div></div>
+    </div>
+  </div>
+
+  <!-- OBJECT SORT MODULE -->
+  <div class="sort-section">
+    <div class="section-title">✦ Sort the Objects — Who Does This Work?</div>
+    <div class="section-sub">These are objects from the CARETECH performance. Click each to cycle through: Pink (marked as women's work), Blue (historically male domain), Neutral (no inherent gender). Consider what the pink version costs — in money, in labor, in visibility.</div>
+    <div class="sort-bank" id="sortBank"></div>
+    <div class="sort-grid">
+      <div class="sort-zone pink-zone"><div class="sort-label">🩷 Pink — Women's domain</div><div class="sort-items" id="zPink"></div></div>
+      <div class="sort-zone blue-zone"><div class="sort-label">🔵 Blue — Historically male</div><div class="sort-items" id="zBlue"></div></div>
+    </div>
+    <div style="margin-top:10px;">
+      <div class="sort-zone neutral-zone"><div class="sort-label">⬜ Neutral — Neither / Both / Contested</div><div class="sort-items" id="zNeutral"></div></div>
+    </div>
+    <div style="font-size:10px;color:var(--muted);margin-top:8px;font-style:italic;">Click any placed item to move it back to unsorted. Your sorting is saved with your response.</div>
+  </div>
+
+  <!-- DATA MODULE -->
+  <div class="mod-card">
+    <div class="mod-header">
+      <div class="mod-eyebrow">✦ Data Module · Respond to the Color</div>
+      <div class="mod-title">What does pink do to an object? What does it cost?</div>
+      <div class="mod-sub">The color that once marked strength now marks domestic labor — and charges a premium for it. Respond to what you found in the irony of the pink object.</div>
+    </div>
+    <div class="mod-body">
+      <div class="open-label">Which pink object carries the most irony for you? (select one)</div>
+      <div class="rate-row" id="objectRow">
+        <button class="rate-btn" onclick="selectObject(this,'ironing_board')">Ironing board</button>
+        <button class="rate-btn" onclick="selectObject(this,'laundry_basket')">Laundry basket</button>
+        <button class="rate-btn" onclick="selectObject(this,'vacuum')">Vacuum</button>
+        <button class="rate-btn" onclick="selectObject(this,'watering_can')">Watering can</button>
+        <button class="rate-btn" onclick="selectObject(this,'desk')">Desk</button>
+        <button class="rate-btn" onclick="selectObject(this,'electronics')">Electronics</button>
+        <button class="rate-btn" onclick="selectObject(this,'wig')">Wig</button>
+        <button class="rate-btn" onclick="selectObject(this,'tablecloth')">Tablecloth</button>
+      </div>
+      <div class="open-label">Did you know that pink used to be a boy color before the 1940s?</div>
+      <div class="rate-row" id="knewRow">
+        <button class="rate-btn" onclick="selectKnew(this,'yes')">Yes, I knew this</button>
+        <button class="rate-btn" onclick="selectKnew(this,'no')">No, this is new to me</button>
+        <button class="rate-btn" onclick="selectKnew(this,'vaguely')">Vaguely — had heard it</button>
+      </div>
+      <div class="open-label">What does pink do to an object? What changes when something is pink?</div>
+      <textarea class="open-q" id="openQ1" placeholder="When you see a pink ironing board, a pink vacuum, a pink laptop — what does the color communicate? What does it assume? What does it charge?"></textarea>
+      <div class="open-label">Is there a pink object you own or have owned? What did the pink mean — to you, to others who saw it?</div>
+      <textarea class="open-q" id="openQ2" placeholder="Optional but welcome — a specific object, a specific moment of noticing the color."></textarea>
+    </div>
+    <div class="mod-footer">
+      <div class="mod-progress" id="modProg">Select an object and respond to continue</div>
+      <button class="mod-submit" id="modSubmit" onclick="submitResponse()" disabled>✦ Submit Response</button>
+    </div>
+  </div>
+
+  <!-- Q&A -->
+  <div class="cb-card">
+    <div class="cb-eyebrow">✦ Ask a Question · Showing Last 3</div>
+    <div class="cb-row">
+      <input class="cb-input cb-name-in" type="text" id="userName" placeholder="Your name…">
+      <input class="cb-input" type="text" id="userQuestion" placeholder="Ask about pink, color history, the pink tax, domestic labor objects…" autocomplete="off">
+      <button class="cb-btn primary" onclick="askQuestion()">✦ Ask</button>
+      <button class="cb-btn soft" onclick="showAdminModal()">⚙</button>
+    </div>
+  </div>
+  <div class="cb-msgs" id="outputArea">
+    <div class="cb-empty"><h3>✦ Answers appear here</h3><p>Type a question above and tap Ask</p></div>
+  </div>
+
+  <div class="cb-bottom">
+    <div class="cb-btitle">✦ Thank you for being in the room.</div>
+    <a class="cb-link" href="hit.html">✦ Advance to next task</a>
+  </div>
+  <div class="cb-wmark">✦ carebot-37 · pretty in pink · the color that once meant strength now marks the labor nobody pays for · caretech ✦</div>
+</div>
+
+<div class="cb-modal" id="adminModal">
+  <div class="cb-mbox">
+    <div class="cb-mtitle">🔒 Admin Reset</div>
+    <div class="cb-mbodytxt">Enter the admin passcode to clear Q&A messages.</div>
+    <input class="cb-input" type="password" id="adminPass" placeholder="Enter passcode…" style="width:100%;margin-bottom:6px;">
+    <div class="cb-err" id="adminErr"></div>
+    <div class="cb-mbtns" style="margin-top:10px;">
+      <button class="cb-btn soft" style="flex:1" onclick="closeAdminModal()">Cancel</button>
+      <button class="cb-btn primary" style="flex:1" onclick="confirmAdminReset()">Reset</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const ADMIN='pinkisnew37';const MAX=3;
+function updateClock(){const n=new Date(),p=v=>String(v).padStart(2,'0');document.getElementById('sysTime').textContent=p(n.getHours())+':'+p(n.getMinutes());}
+setInterval(updateClock,1000);updateClock();
+
+/* SORT MODULE */
+const OBJECTS=['Ironing board','Laundry basket','Vacuum','Watering can','Desk','Pink wig','Electronics','Tablecloth','Iron','Armour','Rolling chair','Teapot','Sunglasses','Clothes rack'];
+let sortState={};
+OBJECTS.forEach(o=>sortState[o]='unsorted');
+
+function renderSort(){
+  const bank=document.getElementById('sortBank');
+  const zp=document.getElementById('zPink');
+  const zb=document.getElementById('zBlue');
+  const zn=document.getElementById('zNeutral');
+  [bank,zp,zb,zn].forEach(el=>el.innerHTML='');
+  OBJECTS.forEach(obj=>{
+    const el=document.createElement('span');
+    el.className='sort-item';
+    const s=sortState[obj];
+    if(s==='unsorted'){el.classList.add('unsorted');bank.appendChild(el);}
+    else if(s==='pink'){el.classList.add('in-pink');zp.appendChild(el);}
+    else if(s==='blue'){el.classList.add('in-blue');zb.appendChild(el);}
+    else{el.classList.add('in-neutral');zn.appendChild(el);}
+    el.textContent=obj;
+    el.onclick=()=>cycleSort(obj);
+  });
+}
+function cycleSort(obj){
+  const cycle=['unsorted','pink','blue','neutral'];
+  const cur=cycle.indexOf(sortState[obj]);
+  sortState[obj]=cycle[(cur+1)%cycle.length];
+  renderSort();
+}
+renderSort();
+
+let db,msgRef,respRef,onlineRef,fbReady=false;
+let currentUser=localStorage.getItem('cb37User')||'';
+let userColor=localStorage.getItem('cb37Color')||genColor();
+function genColor(){const c=['#ff85b3','#ff2d6b','#ffb3cf','#c4005a'];const v=c[Math.floor(Math.random()*c.length)];localStorage.setItem('cb37Color',v);return v;}
+try{
+  firebase.initializeApp({apiKey:"AIzaSyCZFDU-WlSmHqjXTs1Ox0nf9xeJU_xbaX0",authDomain:"collaborativemashup.firebaseapp.com",databaseURL:"https://collaborativemashup-default-rtdb.firebaseio.com",projectId:"collaborativemashup",storageBucket:"collaborativemashup.firebasestorage.app",messagingSenderId:"562437984610",appId:"1:562437984610:web:9f3711c26e097bc8ef9c3b"});
+  db=firebase.database();msgRef=db.ref('cb37Messages');respRef=db.ref('cb37Responses');onlineRef=db.ref('cb37Online');fbReady=true;
+  if(currentUser)trackPresence();
+  respRef.on('value',s=>{const all=[];s.forEach(c=>all.push(c.val()));document.getElementById('st-r').textContent=all.length;});
+  onlineRef.on('value',s=>{const c=Object.keys(s.val()||{}).length;document.getElementById('onlineCount').innerHTML='<span class="cb-pip"></span>'+c+' online';document.getElementById('st-o').textContent=c;});
+  let initDone=false;
+  msgRef.orderByKey().limitToLast(MAX).once('value',snap=>{
+    const area=document.getElementById('outputArea');area.innerHTML='';
+    const items=[];snap.forEach(c=>items.push({key:c.key,val:c.val()}));
+    if(!items.length)area.innerHTML='<div class="cb-empty"><h3>✦ Answers appear here</h3><p>Type a question above</p></div>';
+    else items.reverse().forEach(({key,val})=>renderPair(val,key,false));
+    initDone=true;
+    const lk=items.length?items[items.length-1].key:null;
+    const nq=lk?msgRef.orderByKey().startAfter(lk):msgRef.orderByKey().limitToLast(1);
+    nq.on('child_added',snap=>{
+      if(!initDone)return;
+      const area=document.getElementById('outputArea');area.querySelector('.cb-empty')?.remove();
+      const pairs=area.querySelectorAll('.cb-pair');if(pairs.length>=MAX)pairs[pairs.length-1].remove();
+      renderPair(snap.val(),snap.key,true);
+    });
+  });
+}catch(e){fbReady=false;document.getElementById('onlineCount').textContent='Offline';}
+function trackPresence(){if(!onlineRef||!currentUser)return;const r=onlineRef.child(currentUser.replace(/[.#$[\]]/g,'_'));r.set({name:currentUser,ts:firebase.database.ServerValue.TIMESTAMP});r.onDisconnect().remove();}
+document.getElementById('userName').addEventListener('change',function(){currentUser=this.value.trim();localStorage.setItem('cb37User',currentUser);if(currentUser&&fbReady)trackPresence();});
+
+let selObject=null,selKnew=null;
+function selectObject(btn,val){selObject=val;document.querySelectorAll('#objectRow .rate-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');checkSubmit();}
+function selectKnew(btn,val){selKnew=val;document.querySelectorAll('#knewRow .rate-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');checkSubmit();}
+['openQ1','openQ2'].forEach(id=>document.getElementById(id).addEventListener('input',checkSubmit));
+function checkSubmit(){const ok=selObject&&selKnew&&document.getElementById('openQ1').value.trim().length>5;document.getElementById('modSubmit').disabled=!ok;document.getElementById('modProg').textContent=ok?'Ready to submit':'Select an object, answer the pink question, and write your response';}
+
+let modDone=false;
+function submitResponse(){
+  if(modDone)return;
+  const name=document.getElementById('userName').value.trim()||'Anon';
+  const payload={type:'response',mostIronicObject:selObject,knewPinkWasBoysColor:selKnew,whatPinkDoes:document.getElementById('openQ1').value.trim(),personalObject:document.getElementById('openQ2').value.trim(),sortData:JSON.stringify(sortState),userName:name,userColor,ts:fbReady?firebase.database.ServerValue.TIMESTAMP:Date.now()};
+  if(fbReady&&respRef)respRef.push(payload).catch(()=>{});
+  modDone=true;const btn=document.getElementById('modSubmit');btn.textContent='✓ Saved';btn.classList.add('done');btn.disabled=true;
+}
+function q(v){return'"'+(v==null?'':String(v).replace(/"/g,'""'))+'"';}
+function downloadCSV(){
+  if(!fbReady){alert('No connection.');return;}
+  Promise.all([msgRef.once('value'),respRef.once('value')]).then(([ms,rs])=>{
+    let csv='Type,Timestamp,UserName,MostIronicObject,KnewPinkHistory,WhatPinkDoes,PersonalObject,SortData\n';
+    ms.forEach(d=>{const m=d.val();csv+='question,'+q(m.ts?new Date(m.ts).toISOString():'')+','+q(m.userName)+',,,,'+q(m.question)+'\n';});
+    rs.forEach(d=>{const r=d.val();csv+='response,'+q(r.ts?new Date(r.ts).toISOString():'')+','+q(r.userName)+','+q(r.mostIronicObject)+','+q(r.knewPinkWasBoysColor)+','+q(r.whatPinkDoes)+','+q(r.personalObject)+','+q(r.sortData)+'\n';});
+    const blob=new Blob([csv],{type:'text/csv'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='carebot37-'+Date.now()+'.csv';document.body.appendChild(a);a.click();document.body.removeChild(a);URL.revokeObjectURL(url);
+  });
+}
+
+const responses=[
+  {text:"Pink was a boy color until the 1940s. In 1918, Earnshaw's Infants' Department — the major trade publication for infant clothing — stated the accepted rule as 'pink for the boys, and blue for the girls,' explaining that pink was 'more decided and stronger' and thus 'more suitable for the boy,' while blue was 'delicate and dainty' and 'prettier for the girl.' In 1927, Time Magazine published a chart showing that major US department stores in Boston, New York, Cleveland, and Chicago were recommending pink for boys. The flip happened in the 1940s, driven by mass-market manufacturing and targeted advertising. One industry decision. One generation. Permanent.",source:"Earnshaw's Infants' Department (1918); Time Magazine (1927); Britannica; Smithsonian Magazine",link:"https://www.britannica.com/story/has-pink-always-been-a-girly-color",moves:["1. HOLD a pink object — fully extended — 'this is strength'","2. TURN to face 1918 — hold it out — 'this is a boy's color'","3. THE FLIP — one sharp gesture — 1940s — hands swap positions","4. HOLD the same object — now it means something different — same color — different meaning","5. FREEZE — call out: 'The color did not change. The marketing did. In one decade. The strength was reassigned.'"]},
+  {text:"Gendered women's products are 17% more expensive than male gendered counterparts, according to the Georgetown Law Journal (2025). Products marketed to women cost more 42% of the time. The New York City Department of Consumer Affairs found women pay 7% more on average across five industries. Women spend approximately $1,300 more per year in gender-based pricing. The pink razor and the blue razor: same blade, different color, different price. The pink ironing board and the white one: same mechanism, different color, different price. The color that was assigned to domestic labor is also the color that extracts a premium from the person doing that labor.",source:"Georgetown Law Journal (2025); NYC Department of Consumer Affairs; ListenMoneyMatters 2025",link:"https://www.listenmoneymatters.com/the-pink-tax/",moves:["1. PICK UP a blue razor — price tag: $4.99 — set it down","2. PICK UP a pink razor — same razor — price tag: $5.39 — hold it up","3. COMPARE — look at both — same blade — different color","4. CALCULATE — mime the annual total — $1,300 more per year — across all categories","5. FREEZE — call out: '17% more. The color that marks domestic labor also marks price markup.'"]},
+  {text:"The vacuum cleaner was initially marketed to men. Early advertisements in the 1900s positioned the vacuum as an industrial efficiency machine — a technological achievement, a time-saving device operated by engineers and mechanics. As housework became more closely associated with women through the 20th century, the vacuum moved from male-coded technology into female-coded domestic appliance. By the time it was pink, it was an object of labor, not of technology. The same shift happened to the dishwasher, the washing machine, the microwave. Male-coded when introduced as innovation. Female-coded once domesticated. The technology didn't change. The gender coding changed — and with it, the cultural value of the work.",source:"History of domestic appliance marketing; Smithsonian National Museum of American History",link:"https://americanhistory.si.edu/collections/object-groups/vacuum-cleaners",moves:["1. ENTER as engineer — vacuum is a machine — technical — innovative — male","2. HAND IT OFF — the domestic space claims it — watch it go","3. THE PINK VERSION arrives — same mechanism — different color — different meaning","4. NOW it's housework — devalued — invisible — hers","5. FREEZE — call out: 'Technology when invented by men. Housework when used by women. The machine did not change.'"]},
+  {text:"In the CAREtech performance CARETECH_CEO.exe, a pink wig moves between objects: placed on the chassis, the vacuum, the projector, the ironing board. Each object it lands on becomes gendered by the wig's presence. This is the choreography of pink: it is not inherent in the object. It is applied. A vacuum is neutral until it is pink. A desk is neutral until it is pink. An ironing board is neutral until it is pink. The wig makes the mechanism visible — femininity is a costume placed on objects, a color assigned to labor, a signal of who is expected to perform the work. Remove the wig. The object is neutral again. The gender was always an assignment, not a fact.",source:"CARETECH_CEO.exe performance score — Object Choreography",link:"https://sbuckius.github.io/if-carebot-research/",moves:["1. HOLD the wig — no object is gendered yet","2. PLACE it on the vacuum — now the vacuum is pink — hers","3. MOVE it to the ironing board — now the board is pink — hers","4. MOVE it to the desk — now the desk is pink — hers","5. REMOVE IT — all objects neutral — FREEZE — call out: 'The wig reveals the mechanism. Femininity is placed. It is not inside the object.'"]},
+  {text:"The pink tablecloth marks domestic hospitality labor. Setting a table is a recurring, invisible act of care — it must be done before every meal and undone after. A pink tablecloth signals: this space is warm, welcoming, feminine. Someone arranged it. Someone will clear it. That someone is statistically likely to be a woman — mothers perform 73% of cognitive household labor. The tablecloth will be washed, dried, folded, and stored. None of this appears in any economic measurement. None of this is compensated. The pink marks it as decoration. The labor it requires is invisible. The care it signals is free.",source:"Susan Landers MD cognitive household labor study (2024); Motherly / McKinsey research",link:"https://susanlandersmd.com/working-mothers-carry-a-heavy-burden-of-cognitive-household-labor/",moves:["1. SPREAD the tablecloth — careful — precise — every fold deliberate","2. ARRANGE — place settings — glasses — flowers — complete the scene","3. MEAL happens — sit — eat — invisible hands behind the care","4. CLEAR IT — fold it — wash it — store it — ready for next time","5. FREEZE — call out: 'Set. Cleared. Washed. Folded. Stored. Repeated. Not measured. Not compensated. In pink.'"]},
+  {text:"The pink desk signals that a woman's intellectual work is softer, lighter, more decorative than the work done at a desk that is black, white, or walnut. The same desk. Different customer implied by color. A pink desk sells to teenage girls and mothers working from home. A non-pink desk sells to executives. The color communicates: the work done here is less serious. This is not accidental — it is the same mechanism that categorizes nursing as lower-paid than engineering, teaching as lower-valued than finance, caregiving as unpaid despite being the foundation the entire economy rests on. The desk is the same. The cultural value assigned to the work done at it is not.",source:"Gender marketing research; Georgetown Law Journal (2025); CARETECH performance",link:"https://thestatement.bokf.com/articles/2025/06/the-higher-cost-of-being-a-woman",moves:["1. SIT at the pink desk — working — focused — serious","2. SOMEONE sees it — the color sends a message — soft — light — hobby","3. SIT at a black desk — same work — different signal — authority — professionalism","4. SAME PERSON — same work — different desk color — different cultural reception","5. FREEZE — call out: 'The work is the same. The desk is the same. The pink changed the perceived value of everything done at it.'"]}
+];
+
+let recentlyShown=[];
+function getResponse(){let avail=responses.filter((_,i)=>!recentlyShown.includes(i));if(avail.length<2){recentlyShown=[];avail=responses;}const ri=Math.floor(Math.random()*avail.length);const sel=avail[ri];recentlyShown.push(responses.indexOf(sel));if(recentlyShown.length>4)recentlyShown.shift();return sel;}
+function generateMovement(r){return'HIP HOP SEQUENCE\n\n'+r.moves.join('\n')+'\n\nENERGY: Precise. The color is data. Every freeze names the mechanism. The pink is not decoration — it is argument.';}
+let audioCtx=null;
+function playChime(){try{if(!audioCtx)audioCtx=new(window.AudioContext||window.webkitAudioContext)();const ctx=audioCtx;[[329.63,0],[415.30,.18],[493.88,.36]].forEach(([f,d])=>{const o=ctx.createOscillator();const g=ctx.createGain();o.connect(g);g.connect(ctx.destination);o.type='sine';o.frequency.value=f;const t=ctx.currentTime+d;g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(.35,t+.04);g.gain.exponentialRampToValueAtTime(.001,t+.7);o.start(t);o.stop(t+.72);});}catch(e){}}
+function askQuestion(){
+  const q2=document.getElementById('userQuestion').value.trim();
+  const name=document.getElementById('userName').value.trim();
+  if(!name){alert('Please enter your name first!');return;}
+  if(!q2){alert('Please type a question!');return;}
+  const resp=getResponse();const mv=generateMovement(resp);
+  const payload={question:q2,answerText:resp.text,answerSource:resp.source,answerLink:resp.link,movement:mv,userName:name,userColor,ts:fbReady?firebase.database.ServerValue.TIMESTAMP:Date.now()};
+  if(fbReady&&msgRef)msgRef.push(payload).catch(()=>localDisplay(q2,resp,mv,name));
+  else localDisplay(q2,resp,mv,name);
+  document.getElementById('userQuestion').value='';
+}
+let localMessages=[];
+function localDisplay(q2,resp,mv,name){const area=document.getElementById('outputArea');localMessages.unshift({question:q2,answerText:resp.text,answerSource:resp.source,answerLink:resp.link,movement:mv,userName:name,userColor});if(localMessages.length>MAX)localMessages=localMessages.slice(0,MAX);area.innerHTML='';localMessages.forEach((msg,i)=>renderPair(msg,null,i===0));}
+function renderPair(msg,key,playAudio=false){
+  const area=document.getElementById('outputArea');
+  const el=document.createElement('div');el.className='cb-pair';if(key)el.id='pair-'+key;
+  el.innerHTML='<div class="cb-meta"><strong style="color:'+escH(msg.userColor||'#ff85b3')+'">'+escH(msg.userName||'Anon')+'</strong> asked:</div><div class="cb-qbubble">\u2753 '+escH(msg.question)+'</div><div class="cb-pcard"><div class="cb-phead"><span class="cb-plabel">\ud83c\udf80 From the Research Record</span></div><div class="cb-pbody"><div class="cb-ptext">'+escH(msg.answerText)+'</div><div class="cb-psrc">Source: <a href="'+escH(msg.answerLink)+'" target="_blank">'+escH(msg.answerSource)+'</a></div></div></div><div class="cb-mcard"><div class="cb-mhead"><span class="cb-mlabel">\ud83c\udfad Movement Instructions</span></div><div class="cb-mbody"><div class="cb-mtext">'+escH(msg.movement)+'</div></div><div class="cb-spkrow"><button class="cb-btn soft" style="font-size:11px;padding:7px 13px;" onclick="speakText(this)">\ud83d\udd0a Read Aloud</button><button class="cb-btn soft" style="font-size:11px;padding:7px 13px;" onclick="stopSpeech()">\u23f9 Stop</button></div></div>';
+  area.insertBefore(el,area.firstChild);
+  if(playAudio){playChime();setTimeout(()=>speakMovement(msg.movement),950);}
+}
+function speakMovement(text){if(!('speechSynthesis' in window))return;window.speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(text);u.rate=0.88;const trySpeak=()=>{const voices=window.speechSynthesis.getVoices();const fv=voices.find(v=>v.lang==='en-US'&&/female|woman|samantha|karen|amy|emma/i.test(v.name))||voices.find(v=>v.lang==='en-US');if(fv)u.voice=fv;window.speechSynthesis.speak(u);};if(window.speechSynthesis.getVoices().length)trySpeak();else window.speechSynthesis.onvoiceschanged=trySpeak;}
+function speakText(btn){speakMovement(btn.closest('.cb-mcard').querySelector('.cb-mtext').textContent);}
+function stopSpeech(){if('speechSynthesis' in window)window.speechSynthesis.cancel();}
+function escH(s){const d=document.createElement('div');d.textContent=s||'';return d.innerHTML;}
+document.getElementById('userQuestion').addEventListener('keypress',e=>{if(e.key==='Enter')askQuestion();});
+function showAdminModal(){document.getElementById('adminModal').classList.add('open');document.getElementById('adminErr').textContent='';document.getElementById('adminPass').value='';setTimeout(()=>document.getElementById('adminPass').focus(),100);}
+function closeAdminModal(){document.getElementById('adminModal').classList.remove('open');}
+function confirmAdminReset(){if(document.getElementById('adminPass').value!==ADMIN){document.getElementById('adminErr').textContent='Incorrect passcode.';document.getElementById('adminPass').value='';return;}document.getElementById('outputArea').innerHTML='<div class="cb-empty"><h3>\u2756 Messages cleared</h3><p>Type a question to begin</p></div>';if(fbReady&&msgRef)msgRef.remove().catch(()=>{});localMessages=[];recentlyShown=[];closeAdminModal();}
+document.getElementById('adminPass').addEventListener('keypress',e=>{if(e.key==='Enter')confirmAdminReset();});
+window.addEventListener('beforeunload',()=>{if(onlineRef&&currentUser)onlineRef.child(currentUser.replace(/[.#$[\]]/g,'_')).remove();if('speechSynthesis' in window)window.speechSynthesis.cancel();});
+</script>
+</body>
+</html>

@@ -1,0 +1,496 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>✦ CAREBOT-39 ✦ Mother in the Machine</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;900&family=Quicksand:wght@500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --bg:#0e0008;--teal:#c084fc;--teal-dim:rgba(192,132,252,.45);
+  --pink:#ff2d6b;--candy:#ff85b3;--blush:#ffb3cf;
+  --cream:#f0fffc;--berry:#c4005a;
+  --muted:rgba(220,150,255,.45);--muted2:rgba(245,200,255,.72);
+  --border:rgba(192,132,252,.18);--border2:rgba(192,132,252,.4);
+  --surface:rgba(10,4,14,.97);
+  --fh:'Nunito',sans-serif;--fb:'Quicksand',sans-serif;--fm:'DM Mono',monospace;
+}
+html,body{min-height:100%;font-family:var(--fb);font-weight:600;color:var(--cream);background:var(--bg);-webkit-font-smoothing:antialiased;}
+::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px}
+.bg-layer{position:fixed;inset:0;z-index:0;pointer-events:none;background:radial-gradient(ellipse 65% 50% at 10% 88%,rgba(80,0,80,.25) 0%,transparent 55%),radial-gradient(ellipse 55% 45% at 90% 8%,rgba(180,0,50,.18) 0%,transparent 55%),linear-gradient(155deg,#0e0008,#100812 50%,#0e0008);}
+.orb{position:fixed;border-radius:50%;pointer-events:none;z-index:0;filter:blur(65px);}
+.orb-1{width:380px;height:380px;background:#3b0040;opacity:.25;bottom:-80px;left:-70px;animation:d1 21s ease-in-out infinite;}
+.orb-2{width:300px;height:300px;background:#6f001e;opacity:.15;top:-60px;right:-60px;animation:d2 25s ease-in-out infinite;}
+@keyframes d1{0%,100%{transform:translate(0,0)}50%{transform:translate(38px,26px)}}
+@keyframes d2{0%,100%{transform:translate(0,0)}50%{transform:translate(-28px,-20px)}}
+@keyframes breathe{0%,100%{opacity:1}50%{opacity:.2}}
+.screen{position:relative;z-index:2;min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:max(16px,env(safe-area-inset-top)) clamp(12px,4vmin,22px) calc(44px + env(safe-area-inset-bottom));gap:13px;}
+.cb-topbar{width:100%;max-width:720px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:7px;}
+.cb-logo{display:flex;align-items:center;gap:10px;}
+.cb-icon{width:40px;height:40px;border-radius:12px;background:rgba(192,132,252,.1);border:1.5px solid var(--border2);display:flex;align-items:center;justify-content:center;font-size:18px;}
+.cb-name{font-family:var(--fh);font-weight:900;font-size:12px;background:linear-gradient(90deg,var(--teal),var(--candy) 55%,var(--blush));-webkit-background-clip:text;background-clip:text;color:transparent;}
+.cb-sub{font-size:9px;letter-spacing:.15em;text-transform:uppercase;color:var(--muted);margin-top:1px;}
+.cb-badges{display:flex;gap:6px;align-items:center;flex-wrap:wrap;}
+.cb-badge{font-size:10px;padding:4px 10px;border-radius:999px;background:rgba(192,132,252,.06);border:1px solid var(--border);color:var(--muted);display:flex;align-items:center;gap:5px;}
+.cb-pip{display:inline-block;width:5px;height:5px;border-radius:50%;background:var(--teal);animation:breathe 2s ease-in-out infinite;}
+.btn-csv{appearance:none;background:rgba(192,132,252,.08);color:var(--teal-dim);border:1.5px solid var(--border2);border-radius:9px;padding:.26rem .65rem;font-family:var(--fb);font-size:.6rem;font-weight:700;cursor:pointer;}
+.stats-bar{width:100%;max-width:720px;display:flex;align-items:center;gap:.6rem;flex-wrap:wrap;padding:.5rem .9rem;background:rgba(192,132,252,.03);border:1px solid var(--border);border-radius:13px;}
+.stat-chip{font-size:.62rem;font-weight:700;color:var(--muted);letter-spacing:.06em;text-transform:uppercase;background:rgba(192,132,252,.05);border:1px solid rgba(192,132,252,.12);border-radius:999px;padding:.18rem .6rem;}
+.stat-chip strong{color:var(--teal);}
+/* IRONY CARD */
+.irony-card{width:100%;max-width:720px;background:linear-gradient(135deg,rgba(40,0,40,.9),rgba(5,12,8,.95));border:1.5px solid rgba(192,132,252,.35);border-radius:18px;padding:18px;position:relative;overflow:hidden;}
+.irony-card::before{content:'';position:absolute;top:0;left:10%;right:10%;height:1.5px;background:linear-gradient(90deg,transparent,var(--teal) 35%,var(--candy) 50%,var(--teal) 65%,transparent);box-shadow:0 0 10px var(--teal);border-radius:999px;}
+.irony-eyebrow{font-size:9px;letter-spacing:.22em;text-transform:uppercase;color:rgba(192,132,252,.45);margin-bottom:6px;}
+.irony-title{font-family:var(--fh);font-weight:900;font-size:clamp(14px,3vw,18px);color:#f3ccff;margin-bottom:10px;line-height:1.3;}
+.irony-body{font-size:12.5px;line-height:1.78;color:rgba(245,200,255,.78);}
+.irony-body strong{color:#f3ccff;}
+.irony-body em{color:var(--teal);}
+/* TERM GRID */
+.section-title{width:100%;max-width:720px;font-family:var(--fh);font-weight:900;font-size:14px;background:linear-gradient(90deg,var(--teal),var(--candy));-webkit-background-clip:text;background-clip:text;color:transparent;margin-bottom:4px;}
+.section-sub{width:100%;max-width:720px;font-size:11px;color:var(--muted);margin-bottom:12px;line-height:1.6;}
+.term-grid{width:100%;max-width:720px;display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+@media(max-width:540px){.term-grid{grid-template-columns:1fr;}}
+.term-card{border-radius:13px;padding:13px;border:1.5px solid rgba(192,132,252,.22);background:rgba(192,132,252,.05);position:relative;overflow:hidden;}
+.term-card::before{content:'';position:absolute;top:0;left:8%;right:8%;height:1px;background:linear-gradient(90deg,transparent,var(--teal) 50%,transparent);border-radius:999px;}
+.term-card.pink{border-color:rgba(255,60,120,.22);background:rgba(255,60,120,.05);}
+.term-card.pink::before{background:linear-gradient(90deg,transparent,var(--candy) 50%,transparent);}
+.term-card.full{grid-column:1/-1;}
+.term-eyebrow{font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--teal);font-weight:700;margin-bottom:5px;font-family:var(--fm);}
+.term-card.pink .term-eyebrow{color:var(--candy);}
+.term-name{font-family:var(--fh);font-weight:900;font-size:15px;color:var(--cream);margin-bottom:6px;line-height:1.2;}
+.term-def{font-family:var(--fm);font-size:10.5px;color:var(--teal);margin-bottom:7px;line-height:1.4;}
+.term-body{font-size:11px;line-height:1.7;color:var(--muted2);}
+.term-body strong{color:var(--cream);}
+.term-src{margin-top:7px;font-size:9.5px;color:var(--muted);font-style:italic;}
+.term-src a{color:var(--teal);text-decoration:none;}
+/* WOMEN SECTION */
+.women-card{width:100%;max-width:720px;background:linear-gradient(135deg,rgba(30,0,15,.9),rgba(8,3,6,.95));border:1.5px solid rgba(255,60,120,.3);border-radius:18px;padding:18px;position:relative;overflow:hidden;}
+.women-card::before{content:'';position:absolute;top:0;left:10%;right:10%;height:1.5px;background:linear-gradient(90deg,transparent,var(--candy) 35%,var(--pink) 50%,var(--candy) 65%,transparent);box-shadow:0 0 10px var(--candy);border-radius:999px;}
+.hamilton-block{display:flex;gap:14px;align-items:flex-start;margin-bottom:14px;padding-bottom:14px;border-bottom:0.5px solid rgba(255,80,150,.12);}
+.hamilton-label{font-family:var(--fm);font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:var(--candy);margin-bottom:5px;}
+.hamilton-name{font-family:var(--fh);font-weight:900;font-size:15px;color:var(--cream);margin-bottom:6px;}
+.hamilton-body{font-size:11.5px;line-height:1.72;color:rgba(255,210,228,.78);}
+.hamilton-body strong{color:var(--cream);}
+.hamilton-body em{color:var(--candy);}
+/* STAT GRID */
+.stat-grid-wrap{width:100%;max-width:720px;background:var(--surface);border:1.5px solid var(--border2);border-radius:18px;overflow:hidden;position:relative;}
+.stat-grid-wrap::before{content:'';position:absolute;top:0;left:10%;right:10%;height:1.5px;background:linear-gradient(90deg,transparent,var(--teal) 35%,var(--candy) 50%,var(--teal) 65%,transparent);box-shadow:0 0 10px var(--teal);border-radius:999px;}
+.stat-grid-header{padding:14px 17px 11px;border-bottom:1px solid var(--border);}
+.stat-grid-title{font-family:var(--fh);font-weight:900;font-size:14px;background:linear-gradient(90deg,var(--teal),var(--candy));-webkit-background-clip:text;background-clip:text;color:transparent;}
+.stat-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:8px;padding:14px 17px;}
+.stat-box{padding:10px 12px;background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:10px;}
+.stat-box-num{font-family:var(--fh);font-weight:900;font-size:22px;color:var(--teal);line-height:1;}
+.stat-box-num.red{color:var(--candy);}
+.stat-box-label{font-size:10px;color:var(--muted);margin-top:4px;line-height:1.4;}
+/* DATA MODULE */
+.mod-card{width:100%;max-width:720px;background:var(--surface);border:1.5px solid var(--border2);border-radius:18px;overflow:hidden;position:relative;}
+.mod-card::before{content:'';position:absolute;top:0;left:10%;right:10%;height:1.5px;background:linear-gradient(90deg,transparent,var(--teal) 35%,var(--candy) 50%,var(--teal) 65%,transparent);box-shadow:0 0 10px var(--teal);border-radius:999px;}
+.mod-header{padding:14px 17px 11px;border-bottom:1px solid var(--border);}
+.mod-eyebrow{font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);margin-bottom:5px;}
+.mod-title{font-family:var(--fh);font-weight:900;font-size:14px;background:linear-gradient(90deg,var(--teal),var(--candy));-webkit-background-clip:text;background-clip:text;color:transparent;line-height:1.3;}
+.mod-sub{font-size:11px;color:var(--muted);margin-top:4px;line-height:1.6;}
+.mod-body{padding:14px 17px;}
+.open-label{font-size:11px;color:var(--cream);font-weight:700;margin-bottom:6px;margin-top:12px;line-height:1.5;}
+.open-label:first-child{margin-top:0;}
+.open-q{width:100%;padding:9px 13px;background:rgba(192,132,252,.04);border:1.5px solid var(--border);border-radius:11px;font-family:var(--fb);font-weight:600;font-size:12px;color:var(--cream);outline:none;transition:border-color .2s;resize:vertical;min-height:68px;}
+.open-q:focus{border-color:var(--teal);}
+.open-q::placeholder{color:var(--muted);}
+.rate-row{display:flex;gap:7px;margin-bottom:10px;flex-wrap:wrap;}
+.rate-btn{appearance:none;font-family:var(--fb);font-weight:700;font-size:11px;padding:6px 13px;border-radius:8px;cursor:pointer;border:1.5px solid var(--border);background:rgba(192,132,252,.04);color:var(--muted);transition:all .15s;}
+.rate-btn:hover{background:rgba(192,132,252,.12);border-color:var(--border2);color:var(--teal);}
+.rate-btn.active{background:rgba(192,132,252,.18);border-color:var(--teal);color:var(--cream);}
+.mod-footer{padding:10px 15px 14px;display:flex;gap:8px;align-items:center;border-top:1px solid var(--border);}
+.mod-progress{font-size:10px;color:var(--muted);font-weight:700;flex:1;}
+.mod-submit{appearance:none;font-family:var(--fh);font-weight:900;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--cream);background:linear-gradient(135deg,var(--teal),rgba(140,0,160,1));border:none;border-radius:10px;padding:9px 18px;cursor:pointer;transition:all .2s;}
+.mod-submit:disabled{opacity:.4;cursor:not-allowed;}
+.mod-submit.done{background:linear-gradient(135deg,rgba(100,200,100,.4),rgba(60,160,60,.5));cursor:default;}
+/* Q&A */
+.cb-card{width:100%;max-width:720px;background:var(--surface);border:1.5px solid var(--border2);border-radius:18px;padding:17px;position:relative;overflow:hidden;}
+.cb-card::before{content:'';position:absolute;top:0;left:10%;right:10%;height:1.5px;background:linear-gradient(90deg,transparent,var(--teal) 35%,var(--candy) 50%,var(--teal) 65%,transparent);box-shadow:0 0 10px var(--teal);border-radius:999px;}
+.cb-eyebrow{font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);margin-bottom:10px;}
+.cb-row{display:flex;gap:8px;flex-wrap:wrap;}
+.cb-input{flex:1;padding:9px 13px;background:rgba(192,132,252,.04);border:1.5px solid var(--border);border-radius:11px;font-family:var(--fb);font-weight:600;font-size:13px;color:var(--cream);outline:none;min-width:0;}
+.cb-input:focus{border-color:var(--teal);}
+.cb-input::placeholder{color:var(--muted);}
+.cb-name-in{max-width:148px;flex:0 0 148px;}
+.cb-btn{font-family:var(--fh);font-weight:900;font-size:12px;color:var(--cream);display:inline-flex;align-items:center;gap:5px;padding:9px 17px;border-radius:11px;border:1.5px solid var(--border2);cursor:pointer;transition:all .2s;white-space:nowrap;appearance:none;}
+.cb-btn.primary{background:linear-gradient(135deg,var(--teal),rgba(140,0,160,1));box-shadow:0 4px 16px rgba(192,132,252,.25);}
+.cb-btn.primary:hover{transform:translateY(-2px);}
+.cb-btn.soft{background:rgba(255,255,255,.04);color:var(--muted);border-color:var(--border);font-size:11px;}
+.cb-msgs{width:100%;max-width:720px;display:flex;flex-direction:column;gap:13px;}
+.cb-empty{text-align:center;padding:42px 18px;color:var(--muted);}
+.cb-empty h3{font-family:var(--fh);font-weight:900;font-size:16px;background:linear-gradient(90deg,var(--teal),var(--candy));-webkit-background-clip:text;background-clip:text;color:transparent;margin-bottom:7px;}
+.cb-pair{animation:slideUp .35s ease-out;}
+@keyframes slideUp{from{opacity:0;transform:translateY(13px)}to{opacity:1;transform:translateY(0)}}
+.cb-meta{font-size:11px;color:var(--muted);margin-bottom:5px;}
+.cb-qbubble{display:inline-block;background:linear-gradient(135deg,var(--teal),rgba(140,0,160,1));color:#fff;padding:9px 14px;border-radius:16px 16px 16px 3px;font-size:13px;margin-bottom:11px;max-width:88%;line-height:1.5;}
+.cb-pcard{background:rgba(10,4,14,.9);border:1.5px solid rgba(192,132,252,.3);border-radius:13px;overflow:hidden;margin-bottom:7px;}
+.cb-phead{background:linear-gradient(135deg,rgba(120,0,100,.7),rgba(80,0,80,.8));padding:8px 13px;}
+.cb-plabel{font-family:var(--fh);font-weight:900;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:#fff;}
+.cb-pbody{padding:13px;}
+.cb-ptext{font-size:13px;line-height:1.7;color:rgba(245,200,255,.85);}
+.cb-psrc{margin-top:9px;padding-top:9px;border-top:1px solid rgba(192,132,252,.1);font-size:11px;color:var(--muted);}
+.cb-psrc a{color:var(--teal);text-decoration:none;}
+.cb-mcard{background:rgba(10,4,14,.9);border:1.5px solid rgba(255,60,120,.22);border-radius:13px;overflow:hidden;}
+.cb-mhead{background:linear-gradient(135deg,rgba(180,0,80,.5),rgba(100,0,40,.6));padding:8px 13px;}
+.cb-mlabel{font-family:var(--fh);font-weight:900;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:#fff;}
+.cb-mbody{padding:13px;}
+.cb-mtext{font-family:var(--fm);font-size:11.5px;line-height:1.85;color:rgba(245,200,255,.75);white-space:pre-wrap;}
+.cb-spkrow{padding:7px 13px 11px;display:flex;gap:7px;}
+.cb-bottom{width:100%;max-width:720px;background:linear-gradient(135deg,rgba(40,0,40,.8),rgba(10,4,14,.92));border:1.5px solid var(--border2);border-radius:18px;padding:17px;text-align:center;position:relative;overflow:hidden;}
+.cb-bottom::before{content:'';position:absolute;top:0;left:10%;right:10%;height:1.5px;background:linear-gradient(90deg,transparent,var(--teal) 35%,var(--candy) 50%,var(--teal) 65%,transparent);border-radius:999px;}
+.cb-btitle{font-family:var(--fh);font-weight:900;font-size:15px;background:linear-gradient(90deg,var(--teal),var(--candy),var(--blush));-webkit-background-clip:text;background-clip:text;color:transparent;margin-bottom:11px;}
+.cb-link{display:inline-flex;align-items:center;gap:5px;font-family:var(--fh);font-weight:900;font-size:13px;color:var(--cream);background:linear-gradient(135deg,var(--teal),rgba(140,0,160,1));padding:11px 23px;border-radius:13px;text-decoration:none;box-shadow:0 4px 18px rgba(192,132,252,.25);transition:all .2s;}
+.cb-link:hover{transform:translateY(-2px);}
+.cb-modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:999;align-items:center;justify-content:center;}
+.cb-modal.open{display:flex;}
+.cb-mbox{background:rgba(10,4,14,.97);border:1.5px solid var(--border2);border-radius:18px;padding:24px 22px;max-width:340px;width:90%;position:relative;}
+.cb-mbox::before{content:'';position:absolute;top:0;left:10%;right:10%;height:1.5px;background:linear-gradient(90deg,transparent,var(--teal) 35%,var(--candy) 50%,var(--teal) 65%,transparent);border-radius:999px;}
+.cb-mtitle{font-family:var(--fh);font-weight:900;font-size:16px;color:#f3ccff;margin-bottom:9px;}
+.cb-mbodytxt{font-size:12px;color:var(--muted);line-height:1.6;margin-bottom:15px;}
+.cb-mbtns{display:flex;gap:9px;}
+.cb-err{font-size:11px;color:var(--candy);margin-top:6px;min-height:16px;}
+.cb-wmark{font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:rgba(192,132,252,.07);padding-bottom:8px;text-align:center;}
+</style>
+</head>
+<body>
+<div class="bg-layer"></div><div class="orb orb-1"></div><div class="orb orb-2"></div>
+<div class="screen">
+
+  <div class="cb-topbar">
+    <div class="cb-logo">
+      <div class="cb-icon">&#x1F5A5;&#xFE0F;</div>
+      <div>
+        <div class="cb-name">CAREBOT-39 ✦ MOTHER IN THE MACHINE</div>
+        <div class="cb-sub">Computing Etymology · Motherboard · Rope Mother · Mother of All Demos · CAREtech</div>
+      </div>
+    </div>
+    <div class="cb-badges">
+      <div class="cb-badge" id="onlineCount"><span class="cb-pip"></span>Connecting…</div>
+      <div class="cb-badge" id="sysTime">--:--</div>
+      <button class="btn-csv" onclick="downloadCSV()">⬇ Export CSV</button>
+    </div>
+  </div>
+
+  <div class="stats-bar">
+    <div class="stat-chip">Responses <strong id="st-r">—</strong></div>
+    <div class="stat-chip">Online <strong id="st-o">—</strong></div>
+  </div>
+
+  <!-- IRONY CARD -->
+  <div class="irony-card">
+    <div class="irony-eyebrow">✦ CAREBOT-39 · The Irony</div>
+    <div class="irony-title">Computing and engineering use the word "mother" to mean the most essential, generative, originating component in any system. The sector that encodes "mother" as its highest technical authority is the sector that has most aggressively excluded mothers from its workforce.</div>
+    <div class="irony-body">
+      <em>Motherboard. Mother chip. Mother die. Mother clock. Mother copy. Mother process. Mother mold. Mother gauge. Mother pipe. Mother vessel. Mother disc. Rope Mother. Mother of All Demos.</em><br><br>
+      In every case: <strong>mother = origin, source, generative authority, the controlling center from which everything derives.</strong> First attested use of "motherboard" in Electronics magazine, 1965. The first actual motherboard — the Planar Breadboard — designed by IBM engineer <strong>Patty McHugh</strong>, 1981. The "Rope Mother" who oversaw the software that landed on the moon: <strong>Margaret Hamilton</strong>, who coined the term "software engineering." The women who wove the core ropes she designed were called "little old ladies." They had previously worked at textile mills.<br><br>
+      <strong>The numbers:</strong> Women hold 22% of global AI roles. 12% of AI researchers are women. 455,000 women left the US workforce in the first 8 months of 2025. The technology that calls its central component "mother" has built no infrastructure to keep mothers employed. <em>The word is everywhere in computing. The mothers are being pushed out.</em>
+    </div>
+  </div>
+
+  <!-- TERM GRID -->
+  <div class="section-title">✦ The Full Taxonomy — "Mother" in Computing and Engineering</div>
+  <div class="section-sub">Across hardware, software, manufacturing, and systems: "mother" always means the same thing. The origin. The source. The thing that everything else depends on.</div>
+  <div class="term-grid">
+
+    <div class="term-card">
+      <div class="term-eyebrow">Hardware · 1965</div>
+      <div class="term-name">Motherboard</div>
+      <div class="term-def">// main printed circuit board; connects CPU, RAM, storage, all peripherals</div>
+      <div class="term-body">First attested in <em>Electronics</em> magazine, 1965. "The mother of all boards" — from which all other components depend. The first true motherboard (Planar Breadboard, 1981) was designed by IBM engineer <strong>Patty McHugh</strong>. Her name does not appear in the Wikipedia article. Her board became the standard for every PC since.</div>
+      <div class="term-src">Source: <a href="https://en.wikipedia.org/wiki/Motherboard" target="_blank">Wikipedia Motherboard</a> · <a href="https://www.britannica.com/technology/motherboard" target="_blank">Britannica</a></div>
+    </div>
+
+    <div class="term-card">
+      <div class="term-eyebrow">Hardware · Chip Architecture</div>
+      <div class="term-name">Mother Chip / Mother Die</div>
+      <div class="term-def">// primary chip that controls subsidiary chips; primary die interconnecting chiplets</div>
+      <div class="term-body">The <strong>mother chip</strong> is the master chip — everything else is subordinate. The <strong>mother die</strong> (Intel/AMD chiplet packaging) is the central die from which all other chiplets receive their instructions. The chip architecture that runs modern AI is organized around the concept of maternal authority — even as women hold 12% of AI research positions.</div>
+    </div>
+
+    <div class="term-card">
+      <div class="term-eyebrow">Hardware · Timing</div>
+      <div class="term-name">Mother Clock</div>
+      <div class="term-def">// master clock signal that drives and synchronizes all subsystems</div>
+      <div class="term-body">The mother clock generates the fundamental rhythm of the entire computer. Without it, nothing synchronizes. Everything else follows the mother clock's timing. <strong>The metaphor: a mother sets the pace for everything in the household.</strong> The computing use is precise: the clock that governs all others.</div>
+    </div>
+
+    <div class="term-card">
+      <div class="term-eyebrow">Software / Unix · 1969+</div>
+      <div class="term-name">Mother Process</div>
+      <div class="term-def">// parent process that spawns child processes in Unix/Linux</div>
+      <div class="term-body">In Unix/Linux (and every operating system since), processes run in a parent-child hierarchy. The <strong>mother process</strong> spawns child processes that inherit its properties and permissions. Every program running on every device uses this architecture. The mother process is the originating authority. Kill the mother process and the children die. The metaphor runs the internet.</div>
+    </div>
+
+    <div class="term-card">
+      <div class="term-eyebrow">Data / Archiving</div>
+      <div class="term-name">Mother Copy</div>
+      <div class="term-def">// original authoritative version from which all copies are made</div>
+      <div class="term-body">The <strong>mother copy</strong> (also "master copy") is the original file, disk image, or codebase from which every other version is derived. Corrupt the mother copy and all derivative copies are compromised. The mother copy is the source of truth. It is the thing that the copies try to reproduce and never fully match.</div>
+    </div>
+
+    <div class="term-card">
+      <div class="term-eyebrow">Networking</div>
+      <div class="term-name">Mother Server / Mother Node</div>
+      <div class="term-def">// origin server feeding secondary/mirror servers; parent node in tree structures</div>
+      <div class="term-body">The <strong>mother server</strong> is the primary node — it feeds data to mirror and secondary servers that replicate and distribute it. The <strong>mother node</strong> in any tree data structure is the parent relative to all children below it. The entire internet's DNS system, content delivery networks, and distributed databases run on this parent-child model.</div>
+    </div>
+
+    <div class="term-card">
+      <div class="term-eyebrow">Machining / Manufacturing</div>
+      <div class="term-name">Mother Jig · Mother Gauge · Mother Mold · Mother Tool</div>
+      <div class="term-def">// reference standards from which all working copies are derived</div>
+      <div class="term-body">The <strong>mother jig</strong> is the master jig used to produce identical daughter jigs on factory floors. The <strong>mother gauge</strong> is the reference gauge used to calibrate all others. The <strong>mother mold</strong> is the rigid outer shell that supports casting. The <strong>mother tool</strong> is the original precision tool from which all derivative tools are made. In manufacturing: mother = the calibration standard everything else must match.</div>
+    </div>
+
+    <div class="term-card">
+      <div class="term-eyebrow">Vinyl / Optical Media</div>
+      <div class="term-name">Mother Disc</div>
+      <div class="term-def">// intermediate stamper from the master recording used to press all copies</div>
+      <div class="term-body">In vinyl record production, the <strong>mother disc</strong> (or lacquer) is the intermediate stamper created from the original master recording. From the mother disc, all stampers are made. From the stampers, all copies are pressed. The mother disc is the origin of every record that ever played. It is usually destroyed in the process.</div>
+    </div>
+
+    <div class="term-card">
+      <div class="term-eyebrow">Metallurgy</div>
+      <div class="term-name">Mother Alloy · Mother Ingot · Mother Metal</div>
+      <div class="term-def">// base alloy / ingot from which all derivative metals are created</div>
+      <div class="term-body">The <strong>mother alloy</strong> is the base metal from which all working alloys are derived by dilution, combination, and heat treatment. The <strong>mother ingot</strong> is the primary cast form from which all billets and shapes are cut. In metallurgy: every object made of metal descends from a mother. Every alloy has a maternal origin.</div>
+    </div>
+
+    <div class="term-card">
+      <div class="term-eyebrow">Hydraulics / Offshore</div>
+      <div class="term-name">Mother Pipe · Mother Vessel</div>
+      <div class="term-def">// main supply pipe / primary ship from which everything branches or deploys</div>
+      <div class="term-body">The <strong>mother pipe</strong> is the main supply line from which all branch pipes are tapped in hydraulic, pneumatic, and plumbing systems. The <strong>mother vessel</strong> in offshore engineering is the primary ship that deploys smaller vessels, ROVs, and support craft. In fluid systems and maritime engineering: mother = the origin from which all flow derives.</div>
+    </div>
+
+    <div class="term-card full pink">
+      <div class="term-eyebrow" style="color:var(--candy);">✦ The Phrase · December 9, 1968</div>
+      <div class="term-name">Mother of All Demos</div>
+      <div class="term-def" style="color:var(--candy);">// Douglas Engelbart's 90-minute demonstration at Brooks Hall, San Francisco — "the mother of all demos"</div>
+      <div class="term-body">On December 9, 1968, Douglas Engelbart and his SRI team gave a 90-minute demonstration to 1,000 computer scientists at Brooks Hall, San Francisco. In 90 minutes, he introduced: <strong>the computer mouse, word processing, hypertext, shared-screen collaboration, multiple windows, video teleconferencing, and real-time collaborative editing.</strong> None of these had been publicly demonstrated before. The audience gave a standing ovation. The demo was retroactively named "the Mother of All Demos" because it generated everything that came after. Mouse. Internet. Collaboration tools. Windows. All of it was born there. <strong>The mother of modern computing.</strong></div>
+      <div class="term-src">Source: <a href="https://invention.si.edu/invention-stories/mother-all-demos" target="_blank">Smithsonian / Lemelson Center</a> · <a href="https://en.wikipedia.org/wiki/The_Mother_of_All_Demos" target="_blank">Wikipedia</a></div>
+    </div>
+
+  </div>
+
+  <!-- MARGARET HAMILTON + PATTY McHUGH -->
+  <div class="women-card">
+    <div class="irony-eyebrow" style="color:rgba(255,133,179,.5);">✦ The Women at the Origin</div>
+    <div class="hamilton-block">
+      <div style="flex:1;">
+        <div class="hamilton-label">Margaret Hamilton · Rope Mother · 1965–1972</div>
+        <div class="hamilton-name">She coined "software engineering." She went to the moon.</div>
+        <div class="hamilton-body">
+          Margaret Hamilton was lead software engineer for the Apollo missions at MIT. She coined the term <em>"software engineering"</em> and developed the foundational concepts of asynchronous software and priority-driven task execution that underpin all reliable software today. She was nicknamed the <strong>"Rope Mother"</strong> because she oversaw the core rope memory system that stored the Apollo Guidance Computer programs: copper wires threaded through magnetic cores, encoding ones and zeros. The women who wove those ropes had previously worked in <strong>textile mills</strong>. Hamilton called them "LOLs" — "little old ladies." Their manual dexterity, developed in textile labor, became the hands that wrote the code that landed on the moon.<br><br>
+          Hamilton took her daughter Lauren to work at night and on weekends — she was a working mother with no other childcare option. Her daughter once crashed the simulator by "playing astronaut." This led Hamilton to build error-detection routines that later <strong>saved the Apollo 8 mission</strong> from abort. The mother brought the child. The child broke the machine. The mother fixed the machine. The machine went to the moon.<br><br>
+          She received the Presidential Medal of Freedom in 2016. She was 80 years old.
+        </div>
+      </div>
+    </div>
+    <div style="padding-top:4px;">
+      <div class="hamilton-label">Patty McHugh · IBM Engineer · 1981</div>
+      <div class="hamilton-name">She designed the first motherboard.</div>
+      <div class="hamilton-body">Patty McHugh, an IBM engineer, designed the Planar Breadboard in 1981 — the first true motherboard, used in the IBM Personal Computer. Her design: a 4.77MHz Intel microprocessor, 16KB of memory, 8-bit ISA connectors, keyboard and cassette ports. Her blueprint became the standard for every personal computer motherboard that followed. Britannica credits her. <strong>Wikipedia's Motherboard article does not name her.</strong> The "mother of all boards" was designed by a woman whose name was not in the canonical history.</div>
+    </div>
+  </div>
+
+  <!-- STAT GRID -->
+  <div class="stat-grid-wrap">
+    <div class="stat-grid-header">
+      <div class="mod-eyebrow">✦ The Numbers</div>
+      <div class="stat-grid-title">The word is in the technology. The women are being pushed out.</div>
+    </div>
+    <div class="stat-grid">
+      <div class="stat-box"><div class="stat-box-num">20+</div><div class="stat-box-label">technical uses of the word "mother" in computing and engineering — all meaning "origin" or "authority"</div></div>
+      <div class="stat-box"><div class="stat-box-num">1965</div><div class="stat-box-label">first use of "motherboard" in Electronics magazine</div></div>
+      <div class="stat-box"><div class="stat-box-num">1981</div><div class="stat-box-label">Patty McHugh designs the first motherboard — the Planar Breadboard for IBM PC</div></div>
+      <div class="stat-box"><div class="stat-box-num">1968</div><div class="stat-box-label">Mother of All Demos — mouse, hypertext, video conferencing, collaborative editing, all at once</div></div>
+      <div class="stat-box"><div class="stat-box-num red">22%</div><div class="stat-box-label">of global AI roles held by women (Stanford AI Index 2024)</div></div>
+      <div class="stat-box"><div class="stat-box-num red">12%</div><div class="stat-box-label">of AI researchers globally are women</div></div>
+      <div class="stat-box"><div class="stat-box-num red">455K</div><div class="stat-box-label">women left the US workforce in the first 8 months of 2025 (KPMG)</div></div>
+      <div class="stat-box"><div class="stat-box-num red">$0</div><div class="stat-box-label">federal paid family leave in the US. No national childcare infrastructure. The sector that runs on "mother" built none of it.</div></div>
+    </div>
+  </div>
+
+  <!-- DATA MODULE -->
+  <div class="mod-card">
+    <div class="mod-header">
+      <div class="mod-eyebrow">✦ Data Module · Respond to the Etymology</div>
+      <div class="mod-title">Which "mother" term surprised you most? What does it mean that these words are everywhere?</div>
+      <div class="mod-sub">"Mother" in computing means: origin, source, the thing everything depends on. The sector that chose this word has built a workforce that is 78% male and no national childcare infrastructure. Respond to the naming.</div>
+    </div>
+    <div class="mod-body">
+      <div class="open-label">Which use of "mother" in technology did you find most surprising or most striking?</div>
+      <div class="rate-row" id="termRow">
+        <button class="rate-btn" onclick="selectTerm(this,'motherboard')">Motherboard</button>
+        <button class="rate-btn" onclick="selectTerm(this,'rope_mother')">Rope Mother (Hamilton)</button>
+        <button class="rate-btn" onclick="selectTerm(this,'mother_demo')">Mother of All Demos</button>
+        <button class="rate-btn" onclick="selectTerm(this,'mother_process')">Mother process (Unix)</button>
+        <button class="rate-btn" onclick="selectTerm(this,'mother_clock')">Mother clock</button>
+        <button class="rate-btn" onclick="selectTerm(this,'mother_mold')">Mother mold / jig</button>
+        <button class="rate-btn" onclick="selectTerm(this,'mother_disc')">Mother disc (vinyl)</button>
+        <button class="rate-btn" onclick="selectTerm(this,'patty_mchugh')">Patty McHugh forgotten</button>
+      </div>
+      <div class="open-label">Did you know that Patty McHugh designed the first motherboard, or that Margaret Hamilton was called the Rope Mother?</div>
+      <div class="rate-row" id="knewRow">
+        <button class="rate-btn" onclick="selectKnew(this,'both')">Knew both</button>
+        <button class="rate-btn" onclick="selectKnew(this,'hamilton_only')">Knew Hamilton, not McHugh</button>
+        <button class="rate-btn" onclick="selectKnew(this,'neither')">Neither — new to me</button>
+        <button class="rate-btn" onclick="selectKnew(this,'heard_vaguely')">Had heard it vaguely</button>
+      </div>
+      <div class="open-label">The technology industry uses "mother" to name its most essential, generative, originating components — and is simultaneously the sector with the weakest infrastructure for actual mothers. What do you make of that?</div>
+      <textarea class="open-q" id="openQ1" placeholder="Is this a coincidence? A contradiction? An irony? Something else? What does the naming choice reveal about how the industry thinks about mothers vs. mothering?"></textarea>
+      <div class="open-label">Is there a "mother" term in computing or engineering that you already knew about — that you use in your work or field? What did you think it meant before today?</div>
+      <textarea class="open-q" id="openQ2" placeholder="Optional but welcome — name the term and what it meant to you before you knew this history."></textarea>
+    </div>
+    <div class="mod-footer">
+      <div class="mod-progress" id="modProg">Select a term and respond to continue</div>
+      <button class="mod-submit" id="modSubmit" onclick="submitResponse()" disabled>✦ Submit Response</button>
+    </div>
+  </div>
+
+  <!-- Q&A -->
+  <div class="cb-card">
+    <div class="cb-eyebrow">✦ Ask a Question · Showing Last 3</div>
+    <div class="cb-row">
+      <input class="cb-input cb-name-in" type="text" id="userName" placeholder="Your name…">
+      <input class="cb-input" type="text" id="userQuestion" placeholder="Ask about motherboard, Margaret Hamilton, the Rope Mother, mother of all demos…" autocomplete="off">
+      <button class="cb-btn primary" onclick="askQuestion()">✦ Ask</button>
+      <button class="cb-btn soft" onclick="showAdminModal()">⚙</button>
+    </div>
+  </div>
+  <div class="cb-msgs" id="outputArea">
+    <div class="cb-empty"><h3>✦ Answers appear here</h3><p>Type a question above and tap Ask</p></div>
+  </div>
+
+  <div class="cb-bottom">
+    <div class="cb-btitle">✦ Thank you for being in the room.</div>
+    <a class="cb-link" href="hit.html">✦ Advance to next task</a>
+  </div>
+  <div class="cb-wmark">✦ carebot-39 · mother in the machine · the origin · the source · caretech ✦</div>
+</div>
+
+<div class="cb-modal" id="adminModal">
+  <div class="cb-mbox">
+    <div class="cb-mtitle">&#x1F512; Admin Reset</div>
+    <div class="cb-mbodytxt">Enter the admin passcode to clear Q&amp;A messages.</div>
+    <input class="cb-input" type="password" id="adminPass" placeholder="Enter passcode…" style="width:100%;margin-bottom:6px;">
+    <div class="cb-err" id="adminErr"></div>
+    <div class="cb-mbtns" style="margin-top:10px;">
+      <button class="cb-btn soft" style="flex:1" onclick="closeAdminModal()">Cancel</button>
+      <button class="cb-btn primary" style="flex:1" onclick="confirmAdminReset()">Reset</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const ADMIN='ropemother39';const MAX=3;
+function updateClock(){const n=new Date(),p=v=>String(v).padStart(2,'0');document.getElementById('sysTime').textContent=p(n.getHours())+':'+p(n.getMinutes());}
+setInterval(updateClock,1000);updateClock();
+
+let db,msgRef,respRef,onlineRef,fbReady=false;
+let currentUser=localStorage.getItem('cb39User')||'';
+let userColor=localStorage.getItem('cb39Color')||genColor();
+function genColor(){const c=['#c084fc','#ff85b3','#ff2d6b','#c4005a'];const v=c[Math.floor(Math.random()*c.length)];localStorage.setItem('cb39Color',v);return v;}
+try{
+  firebase.initializeApp({apiKey:"AIzaSyCZFDU-WlSmHqjXTs1Ox0nf9xeJU_xbaX0",authDomain:"collaborativemashup.firebaseapp.com",databaseURL:"https://collaborativemashup-default-rtdb.firebaseio.com",projectId:"collaborativemashup",storageBucket:"collaborativemashup.firebasestorage.app",messagingSenderId:"562437984610",appId:"1:562437984610:web:9f3711c26e097bc8ef9c3b"});
+  db=firebase.database();msgRef=db.ref('cb39Messages');respRef=db.ref('cb39Responses');onlineRef=db.ref('cb39Online');fbReady=true;
+  if(currentUser)trackPresence();
+  respRef.on('value',s=>{const all=[];s.forEach(c=>all.push(c.val()));document.getElementById('st-r').textContent=all.length;});
+  onlineRef.on('value',s=>{const c=Object.keys(s.val()||{}).length;document.getElementById('onlineCount').innerHTML='<span class="cb-pip"></span>'+c+' online';document.getElementById('st-o').textContent=c;});
+  let initDone=false;
+  msgRef.orderByKey().limitToLast(MAX).once('value',snap=>{
+    const area=document.getElementById('outputArea');area.innerHTML='';
+    const items=[];snap.forEach(c=>items.push({key:c.key,val:c.val()}));
+    if(!items.length)area.innerHTML='<div class="cb-empty"><h3>✦ Answers appear here</h3><p>Type a question above</p></div>';
+    else items.reverse().forEach(({key,val})=>renderPair(val,key,false));
+    initDone=true;
+    const lk=items.length?items[items.length-1].key:null;
+    const nq=lk?msgRef.orderByKey().startAfter(lk):msgRef.orderByKey().limitToLast(1);
+    nq.on('child_added',snap=>{
+      if(!initDone)return;
+      const area=document.getElementById('outputArea');area.querySelector('.cb-empty')?.remove();
+      const pairs=area.querySelectorAll('.cb-pair');if(pairs.length>=MAX)pairs[pairs.length-1].remove();
+      renderPair(snap.val(),snap.key,true);
+    });
+  });
+}catch(e){fbReady=false;document.getElementById('onlineCount').textContent='Offline';}
+function trackPresence(){if(!onlineRef||!currentUser)return;const r=onlineRef.child(currentUser.replace(/[.#$[\]]/g,'_'));r.set({name:currentUser,ts:firebase.database.ServerValue.TIMESTAMP});r.onDisconnect().remove();}
+document.getElementById('userName').addEventListener('change',function(){currentUser=this.value.trim();localStorage.setItem('cb39User',currentUser);if(currentUser&&fbReady)trackPresence();});
+
+let selTerm=null,selKnew=null;
+function selectTerm(btn,val){selTerm=val;document.querySelectorAll('#termRow .rate-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');checkSubmit();}
+function selectKnew(btn,val){selKnew=val;document.querySelectorAll('#knewRow .rate-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');checkSubmit();}
+['openQ1','openQ2'].forEach(id=>document.getElementById(id).addEventListener('input',checkSubmit));
+function checkSubmit(){const ok=selTerm&&selKnew&&document.getElementById('openQ1').value.trim().length>5;document.getElementById('modSubmit').disabled=!ok;document.getElementById('modProg').textContent=ok?'Ready to submit':'Select a term, answer the history question, and write your response';}
+
+let modDone=false;
+function submitResponse(){
+  if(modDone)return;
+  const name=document.getElementById('userName').value.trim()||'Anon';
+  const payload={type:'response',mostStrikingTerm:selTerm,knewHistory:selKnew,onNaming:document.getElementById('openQ1').value.trim(),knewTerm:document.getElementById('openQ2').value.trim(),userName:name,userColor,ts:fbReady?firebase.database.ServerValue.TIMESTAMP:Date.now()};
+  if(fbReady&&respRef)respRef.push(payload).catch(()=>{});
+  modDone=true;const btn=document.getElementById('modSubmit');btn.textContent='✓ Saved';btn.classList.add('done');btn.disabled=true;
+}
+function q(v){return'"'+(v==null?'':String(v).replace(/"/g,'""'))+'"';}
+function downloadCSV(){
+  if(!fbReady){alert('No connection.');return;}
+  Promise.all([msgRef.once('value'),respRef.once('value')]).then(([ms,rs])=>{
+    let csv='Type,Timestamp,UserName,MostStrikingTerm,KnewHistory,OnNaming,KnewTerm\n';
+    ms.forEach(d=>{const m=d.val();csv+='question,'+q(m.ts?new Date(m.ts).toISOString():'')+','+q(m.userName)+',,,,'+q(m.question)+'\n';});
+    rs.forEach(d=>{const r=d.val();csv+='response,'+q(r.ts?new Date(r.ts).toISOString():'')+','+q(r.userName)+','+q(r.mostStrikingTerm)+','+q(r.knewHistory)+','+q(r.onNaming)+','+q(r.knewTerm)+'\n';});
+    const blob=new Blob([csv],{type:'text/csv'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='carebot39-'+Date.now()+'.csv';document.body.appendChild(a);a.click();document.body.removeChild(a);URL.revokeObjectURL(url);
+  });
+}
+
+const responses=[
+  {text:"Margaret Hamilton became the lead software engineer for NASA's Apollo missions at the MIT Instrumentation Laboratory. She coined the term 'software engineering' and developed the foundational concepts of asynchronous software and priority-driven task execution that underpin all reliable software today. She was nicknamed the 'Rope Mother' because she oversaw the core rope memory system: copper wires threaded through magnetic cores, encoding ones and zeros based on whether the wire passed through or bypassed the core. The women who wove those ropes had previously worked in textile mills -- their manual dexterity developed over years of weaving fabric was considered ideal for weaving software. Hamilton called them 'LOLs' -- little old ladies. She took her daughter Lauren to work at night and on weekends. One day Lauren crashed the simulator by 'playing astronaut.' This incident led Hamilton to develop error-detection code that later saved the Apollo 8 mission from abort. She received the Presidential Medal of Freedom in 2016 from President Obama. She was 80 years old.",source:"National Air and Space Museum; DPMA Margaret Hamilton; Code Miners blog",link:"https://airandspace.si.edu/stories/editorial/rope-mother-margaret-hamilton",moves:["1. STAND in MIT lab -- software code stacked taller than you -- night, weekend -- daughter at your side","2. THREAD THE ROPE -- mime threading wire through magnetic cores -- one and zero -- one and zero","3. THE TEXTILE WORKERS -- mime the little old ladies beside you -- fabric weavers now code weavers","4. DAUGHTER CRASHES THE SIMULATOR -- freeze -- the error is real -- write the fix","5. FREEZE -- call out: 'Rope Mother. She coined the term software engineering. She took her daughter to work. The moon landing needed both.'"]},
+  {text:"The first true PC motherboard -- the Planar Breadboard -- was designed by Patty McHugh, an IBM engineer, in 1981. Her design housed the computer's CPU and RAM, provided ports for keyboard and cassette tape input, and included expansion slots that became the standard architecture for all personal computers. IBM introduced the AT motherboard in 1984, building on her design. The AT's basic structure is still familiar today. Britannica credits McHugh for the invention. The Wikipedia Motherboard article, at the time of this carebot's creation, does not name her in the main text. The word 'motherboard' was first attested in Electronics magazine in 1965. Its meaning: 'the mother of all boards' -- the board from which everything derives and depends. The board that is the mother of the computer was designed by a woman. Her name is not in the canonical record.",source:"Britannica Motherboard; Wikipedia Motherboard; Computer Hope Motherboard History",link:"https://www.britannica.com/technology/motherboard",moves:["1. DESIGN the board -- Patty McHugh -- 1981 -- place each component -- precise","2. THE STANDARD SET -- every PC since uses this architecture -- mime the lineage","3. LOOK UP THE HISTORY -- open Wikipedia -- scan the text -- her name is not there","4. OPEN BRITANNICA -- her name is here -- two accounts -- one names her, one does not","5. FREEZE -- call out: 'The mother of all boards. Designed by a woman. Her name was not in the canonical article.'"]},
+  {text:"On December 9, 1968, Douglas Engelbart and his team at SRI gave a 90-minute demonstration in Brooks Hall, San Francisco, to an audience of 1,000 computer scientists. In that single demonstration, he introduced: the computer mouse, word processing, hypertext, shared-screen collaboration, multiple windows simultaneously, video teleconferencing, and real-time collaborative editing by multiple users. None of these had been publicly demonstrated before. The audience gave a standing ovation. The presentation was retroactively named 'The Mother of All Demos' -- named 'mother' because everything that came after was generated from it. The internet. Collaborative software. The mouse. Multiple windows. Every computer you have ever used descends from what happened in that room. It was called 'mother' because it was the origin of everything. The word was chosen exactly correctly.",source:"Smithsonian Lemelson Center; Wikipedia Mother of All Demos; SRI International",link:"https://invention.si.edu/invention-stories/mother-all-demos",moves:["1. STAND in Brooks Hall -- 1968 -- the audience does not know what they are about to see","2. MOVE THE MOUSE -- slow -- deliberate -- the audience has never seen this before","3. OPEN MULTIPLE WINDOWS -- hypertext -- video call -- collaborative edit -- all at once","4. STANDING OVATION -- hold the moment -- everything after this comes from here","5. FREEZE -- call out: 'December 9, 1968. The Mother of All Demos. Mouse. Internet. Windows. Collaboration. Everything after was born here.'"]},
+  {text:"In computing and engineering, 'mother' is used to name the origin, source, or controlling standard in at least twenty distinct technical contexts. Motherboard: the board from which everything depends. Mother chip and mother die: the primary chip controlling all subsidiary chips. Mother clock: the master timing signal synchronizing all subsystems. Mother process: the parent process in Unix/Linux that spawns all children. Mother copy: the original authoritative version. Mother server and mother node: the origin node in networks and data structures. Mother jig, mother gauge, mother mold, mother tool, mother plate: the reference standards in manufacturing from which all working copies are derived. Mother disc: the vinyl record stamper from which all copies are pressed, often destroyed in the process. Mother alloy and mother ingot: the base metals from which all derivatives come. Mother pipe and mother vessel: the main supply lines. The pattern is identical in every field: mother = the origin, the generative authority, the thing that everything else comes from and depends on.",source:"Wikipedia Motherboard; various engineering references; CAREtech research",link:"https://en.wikipedia.org/wiki/Motherboard",moves:["1. LIST the terms -- one by one -- each a different field -- same meaning every time","2. HOLD UP 'origin' -- motherboard -- mother clock -- mother process -- mother copy","3. HOLD UP 'authority' -- mother jig -- mother gauge -- mother mold -- mother alloy","4. HOLD UP 'the thing everything depends on' -- all of them -- every field -- the same word","5. FREEZE -- call out: 'Twenty technical uses. Same meaning. The origin. The source. The thing everything comes from. The technology named this precisely. Then excluded the people it named.'"]},
+  {text:"The pattern in computing and engineering is: mother = the calibration standard, the reference, the thing against which all copies are measured. The mother gauge is the gauge from which all working gauges are calibrated. If the mother gauge is wrong, everything it calibrated is wrong. The mother mold is the mold from which all castings are derived -- rigid, external, containing. The mother jig produces all daughter jigs on the factory floor. The mother tool produces all derivative tools. In manufacturing: the mother is what you return to when something is off. The mother is what you compare everything else to. And then -- in the workforce that uses all these terms -- women hold 22% of AI roles, 12% of research positions, and 455,000 left the US labor force in the first 8 months of 2025. The calibration standard has been removed from the system. The system continues. The copies drift from accuracy. No one checks them against the mother.",source:"Engineering references; ILO March 2026; Stanford AI Index 2024",link:"https://www.ilo.org/resource/news/new-ilo-data-confirm-women-face-higher-workplace-risks-generative-ai-men",moves:["1. BE THE MOTHER GAUGE -- hold the standard -- everything calibrates against you","2. REMOVE THE MOTHER GAUGE -- mime the removal -- the calibration standard is gone","3. THE WORKING GAUGES DRIFT -- check one -- slightly off -- check another -- further off","4. RETURN TO THE EMPTY SPACE -- where the mother gauge was -- nothing there now","5. FREEZE -- call out: 'The mother gauge is what everything returns to. 22% of AI roles. 12% of researchers. 455,000 left. The calibration standard is being removed. The copies drift.'"]}
+];
+
+let recentlyShown=[];
+function getResponse(){let avail=responses.filter((_,i)=>!recentlyShown.includes(i));if(avail.length<2){recentlyShown=[];avail=responses;}const ri=Math.floor(Math.random()*avail.length);const sel=avail[ri];recentlyShown.push(responses.indexOf(sel));if(recentlyShown.length>4)recentlyShown.shift();return sel;}
+function generateMovement(r){return'HIP HOP SEQUENCE\n\n'+r.moves.join('\n')+'\n\nENERGY: Precise. The word "mother" is in the technology. The movement honors what the technology named and forgot.';}
+let audioCtx=null;
+function playChime(){try{if(!audioCtx)audioCtx=new(window.AudioContext||window.webkitAudioContext)();const ctx=audioCtx;[[329.63,0],[415.30,.18],[493.88,.36]].forEach(([f,d])=>{const o=ctx.createOscillator();const g=ctx.createGain();o.connect(g);g.connect(ctx.destination);o.type='sine';o.frequency.value=f;const t=ctx.currentTime+d;g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(.35,t+.04);g.gain.exponentialRampToValueAtTime(.001,t+.7);o.start(t);o.stop(t+.72);});}catch(e){}}
+function askQuestion(){
+  const q2=document.getElementById('userQuestion').value.trim();
+  const name=document.getElementById('userName').value.trim();
+  if(!name){alert('Please enter your name first!');return;}
+  if(!q2){alert('Please type a question!');return;}
+  const resp=getResponse();const mv=generateMovement(resp);
+  const payload={question:q2,answerText:resp.text,answerSource:resp.source,answerLink:resp.link,movement:mv,userName:name,userColor,ts:fbReady?firebase.database.ServerValue.TIMESTAMP:Date.now()};
+  if(fbReady&&msgRef)msgRef.push(payload).catch(()=>localDisplay(q2,resp,mv,name));
+  else localDisplay(q2,resp,mv,name);
+  document.getElementById('userQuestion').value='';
+}
+let localMessages=[];
+function localDisplay(q2,resp,mv,name){const area=document.getElementById('outputArea');localMessages.unshift({question:q2,answerText:resp.text,answerSource:resp.source,answerLink:resp.link,movement:mv,userName:name,userColor});if(localMessages.length>MAX)localMessages=localMessages.slice(0,MC);area.innerHTML='';localMessages.forEach((msg,i)=>renderPair(msg,null,i===0));}
+function renderPair(msg,key,playAudio=false){
+  const area=document.getElementById('outputArea');
+  const el=document.createElement('div');el.className='cb-pair';if(key)el.id='pair-'+key;
+  el.innerHTML='<div class="cb-meta"><strong style="color:'+escH(msg.userColor||'#c084fc')+'">'+escH(msg.userName||'Anon')+'</strong> asked:</div><div class="cb-qbubble">&#x2753; '+escH(msg.question)+'</div><div class="cb-pcard"><div class="cb-phead"><span class="cb-plabel">&#x1F5A5;&#xFE0F; From the Research Record</span></div><div class="cb-pbody"><div class="cb-ptext">'+escH(msg.answerText)+'</div><div class="cb-psrc">Source: <a href="'+escH(msg.answerLink)+'" target="_blank">'+escH(msg.answerSource)+'</a></div></div></div><div class="cb-mcard"><div class="cb-mhead"><span class="cb-mlabel">&#x1F3AD; Movement Instructions</span></div><div class="cb-mbody"><div class="cb-mtext">'+escH(msg.movement)+'</div></div><div class="cb-spkrow"><button class="cb-btn soft" style="font-size:11px;padding:7px 13px;" onclick="speakText(this)">&#x1F50A; Read Aloud</button><button class="cb-btn soft" style="font-size:11px;padding:7px 13px;" onclick="stopSpeech()">&#x23F9; Stop</button></div></div>';
+  area.insertBefore(el,area.firstChild);
+  if(playAudio){playChime();setTimeout(()=>speakMovement(msg.movement),950);}
+}
+const MAX=3;const MC=3;
+function speakMovement(text){if(!('speechSynthesis' in window))return;window.speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(text);u.rate=0.88;const trySpeak=()=>{const voices=window.speechSynthesis.getVoices();const fv=voices.find(v=>v.lang==='en-US'&&/female|woman|samantha|karen|amy|emma/i.test(v.name))||voices.find(v=>v.lang==='en-US');if(fv)u.voice=fv;window.speechSynthesis.speak(u);};if(window.speechSynthesis.getVoices().length)trySpeak();else window.speechSynthesis.onvoiceschanged=trySpeak;}
+function speakText(btn){speakMovement(btn.closest('.cb-mcard').querySelector('.cb-mtext').textContent);}
+function stopSpeech(){if('speechSynthesis' in window)window.speechSynthesis.cancel();}
+function escH(s){const d=document.createElement('div');d.textContent=s||'';return d.innerHTML;}
+document.getElementById('userQuestion').addEventListener('keypress',e=>{if(e.key==='Enter')askQuestion();});
+function showAdminModal(){document.getElementById('adminModal').classList.add('open');document.getElementById('adminErr').textContent='';document.getElementById('adminPass').value='';setTimeout(()=>document.getElementById('adminPass').focus(),100);}
+function closeAdminModal(){document.getElementById('adminModal').classList.remove('open');}
+function confirmAdminReset(){if(document.getElementById('adminPass').value!==ADMIN){document.getElementById('adminErr').textContent='Incorrect passcode.';document.getElementById('adminPass').value='';return;}document.getElementById('outputArea').innerHTML='<div class="cb-empty"><h3>&#x2756; Messages cleared</h3><p>Type a question to begin</p></div>';if(fbReady&&msgRef)msgRef.remove().catch(()=>{});localMessages=[];recentlyShown=[];closeAdminModal();}
+document.getElementById('adminPass').addEventListener('keypress',e=>{if(e.key==='Enter')confirmAdminReset();});
+window.addEventListener('beforeunload',()=>{if(onlineRef&&currentUser)onlineRef.child(currentUser.replace(/[.#$[\]]/g,'_')).remove();if('speechSynthesis' in window)window.speechSynthesis.cancel();});
+</script>
+</body>
+</html>
