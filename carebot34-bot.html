@@ -1,0 +1,437 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
+<title>✦ CAREBOT-34 ✦ Who Sits in the Chair?</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Quicksand:wght@500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+<style>
+:root{
+  --hot:#ff2d6b;--candy:#ff85b3;--blush:#ffb3cf;--fuchsia:#ff1f80;
+  --cream:#fff5f8;--berry:#c4005a;--maroon:#6f001e;
+  --gold:#f5c842;--gold-soft:#fde68a;
+  --bg:#0e0008;
+  --border:rgba(255,80,150,.22);--border2:rgba(255,60,120,.5);
+  --muted:rgba(255,190,220,.5);--muted2:rgba(255,210,228,.75);
+  --pop-glow:0 8px 50px rgba(255,45,107,.4),0 0 80px rgba(255,30,128,.15);
+  --fh:'Nunito',sans-serif;--fb:'Quicksand',sans-serif;--fm:'DM Mono',monospace;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html,body{min-height:100%;font-family:var(--fb);font-weight:600;color:var(--cream);background:var(--bg);-webkit-font-smoothing:antialiased;overflow-x:hidden;}
+.bg-layer{position:fixed;inset:0;z-index:0;pointer-events:none;background:radial-gradient(ellipse 65% 55% at 15% 10%,rgba(180,0,50,.3) 0%,transparent 60%),radial-gradient(ellipse 50% 60% at 85% 82%,rgba(100,0,20,.22) 0%,transparent 60%),linear-gradient(160deg,#160008,#0e0008 50%,#080005);}
+.orb{position:fixed;border-radius:50%;pointer-events:none;z-index:0;filter:blur(65px);}
+.orb-1{width:450px;height:450px;background:var(--maroon);opacity:.22;top:-100px;left:-90px;animation:drift1 20s ease-in-out infinite;}
+.orb-2{width:360px;height:360px;background:#c40032;opacity:.15;bottom:-70px;right:-70px;animation:drift2 24s ease-in-out infinite;}
+.orb-3{width:200px;height:200px;background:var(--hot);opacity:.1;top:38%;left:58%;animation:drift3 16s ease-in-out infinite;}
+@keyframes drift1{0%,100%{transform:translate(0,0)}50%{transform:translate(45px,30px)}}
+@keyframes drift2{0%,100%{transform:translate(0,0)}50%{transform:translate(-30px,-22px)}}
+@keyframes drift3{0%,100%{transform:translate(0,0)}33%{transform:translate(-20px,15px)}66%{transform:translate(15px,-10px)}}
+.sparkles{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden;}
+.sp{position:absolute;opacity:0;animation:floatUp linear infinite;}
+@keyframes floatUp{0%{opacity:0;transform:translateY(0) scale(.6)}15%{opacity:.65}85%{opacity:.35}100%{opacity:0;transform:translateY(-130px) scale(1.1)}}
+@keyframes breathe{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.3;transform:scale(.65)}}
+
+.page{position:relative;z-index:2;min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:max(24px,env(safe-area-inset-top)) clamp(14px,5vw,28px) max(44px,env(safe-area-inset-bottom));gap:0;}
+.top-bar{width:100%;max-width:500px;display:flex;align-items:center;justify-content:space-between;margin-bottom:22px;}
+.brand{font-family:var(--fb);font-size:9px;letter-spacing:.22em;text-transform:uppercase;color:var(--muted);}
+.status-pill{display:flex;align-items:center;gap:6px;padding:4px 11px;border-radius:999px;background:rgba(255,45,107,.07);border:1px solid var(--border);font-family:var(--fb);font-size:9px;letter-spacing:.1em;color:var(--muted);}
+.status-pip{width:4px;height:4px;border-radius:50%;background:var(--hot);box-shadow:0 0 5px var(--hot);animation:breathe 2s ease-in-out infinite;}
+.bot-body{width:min(92vw,480px);display:flex;flex-direction:column;align-items:center;gap:0;}
+
+/* ── BOARDROOM CHAIR HEAD ── */
+.bot-head-wrap{position:relative;width:clamp(180px,36vw,228px);height:clamp(240px,48vw,300px);flex-shrink:0;animation:chairFloat 5s ease-in-out infinite;}
+@keyframes chairFloat{0%,100%{transform:translateY(0) rotate(-.5deg);}45%{transform:translateY(-10px) rotate(.7deg);}75%{transform:translateY(-4px) rotate(-.3deg);}}
+.chair-svg{width:100%;height:100%;filter:drop-shadow(0 6px 28px rgba(255,45,107,.5)) drop-shadow(0 0 55px rgba(255,30,128,.18));}
+.chair-glow{animation:chairBreath 3s ease-in-out infinite;}
+@keyframes chairBreath{0%,100%{opacity:.9}50%{opacity:1;filter:brightness(1.1)}}
+.question-mark{animation:qmPulse 2.4s ease-in-out infinite;}
+@keyframes qmPulse{0%,100%{opacity:.6;transform:scale(1)}50%{opacity:1;transform:scale(1.08)}}
+
+.bot-neck{width:clamp(22px,4.5vw,30px);height:clamp(12px,2vw,16px);background:linear-gradient(180deg,rgba(255,45,107,.18),rgba(120,0,60,.4));border:1px solid rgba(255,45,107,.3);border-top:none;clip-path:polygon(8% 0%,92% 0%,100% 100%,0% 100%);position:relative;z-index:2;}
+.bot-nametag{text-align:center;margin:10px 0 6px;}
+.bot-nametag-name{font-family:var(--fh);font-weight:900;font-size:clamp(22px,4.5vw,28px);letter-spacing:.04em;background:linear-gradient(90deg,var(--blush),var(--fuchsia) 55%,var(--candy));-webkit-background-clip:text;background-clip:text;color:transparent;}
+.bot-nametag-sub{font-family:var(--fb);font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);margin-top:4px;}
+.stats-bar{display:flex;gap:7px;flex-wrap:wrap;justify-content:center;margin:10px 0 14px;}
+.stat-pill{display:flex;align-items:center;gap:4px;padding:4px 10px;border-radius:999px;background:rgba(255,45,107,.07);border:1px solid var(--border);font-family:var(--fb);font-size:9px;letter-spacing:.06em;color:var(--muted);}
+.stat-dot{width:4px;height:4px;border-radius:50%;background:var(--hot);}
+.csv-export-btn{appearance:none;font-family:var(--fb);font-weight:700;font-size:9px;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;padding:4px 10px;border-radius:999px;background:rgba(255,45,107,.08);border:1px solid var(--border);color:var(--muted);transition:all .18s;white-space:nowrap;}
+.csv-export-btn:hover{background:rgba(255,45,107,.18);border-color:var(--border2);color:var(--blush);}
+.bot-torso-wrap{width:100%;}
+.bot-torso{width:100%;background:rgba(14,0,8,.97);border:1.5px solid var(--border2);border-radius:22px;box-shadow:var(--pop-glow),inset 0 1px 0 rgba(255,160,200,.06);overflow:hidden;display:flex;flex-direction:column;min-height:clamp(280px,48vh,460px);position:relative;}
+.bot-torso::before{content:'';position:absolute;top:0;left:10%;right:10%;height:1.5px;z-index:5;background:linear-gradient(90deg,transparent,var(--candy) 35%,var(--hot) 50%,var(--candy) 65%,transparent);box-shadow:0 0 14px var(--candy);border-radius:999px;}
+.screen-topbar{display:flex;align-items:center;justify-content:space-between;padding:10px 16px 8px;border-bottom:1px solid rgba(255,130,180,.08);flex-shrink:0;position:relative;z-index:2;}
+.screen-dots{display:flex;gap:5px;}
+.screen-dot{width:8px;height:8px;border-radius:50%;}
+.screen-dot:nth-child(1){background:var(--hot);box-shadow:0 0 5px var(--hot);animation:breathe 2s ease-in-out infinite;}
+.screen-dot:nth-child(2){background:var(--fuchsia);box-shadow:0 0 5px var(--fuchsia);animation:breathe 2s .3s ease-in-out infinite;}
+.screen-dot:nth-child(3){background:var(--candy);box-shadow:0 0 5px var(--candy);animation:breathe 2s .6s ease-in-out infinite;}
+.screen-label{font-family:var(--fb);font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);}
+.chat-area{flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:10px;padding:12px 12px 6px;position:relative;z-index:2;scrollbar-width:thin;scrollbar-color:rgba(255,45,107,.15) transparent;}
+.msg{display:flex;gap:7px;align-items:flex-end;animation:msgIn .32s cubic-bezier(.22,1,.36,1) both;}
+@keyframes msgIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.msg.user{flex-direction:row-reverse;}
+.msg-avatar{width:24px;height:24px;border-radius:6px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:13px;}
+.msg.assistant .msg-avatar{background:var(--berry);border:1px solid var(--border);}
+.msg.user .msg-avatar{background:rgba(255,45,107,.12);color:var(--muted);border:1px solid var(--border);font-family:var(--fb);font-size:9px;}
+.bubble{max-width:84%;padding:9px 13px;border-radius:13px;font-family:var(--fb);font-size:clamp(11px,1.4vw,13px);line-height:1.72;}
+.msg.assistant .bubble{background:rgba(255,45,107,.07);border:1px solid rgba(255,45,107,.14);color:var(--muted2);border-bottom-left-radius:2px;}
+.msg.user .bubble{background:linear-gradient(135deg,rgba(255,45,107,.38),rgba(180,0,80,.45));color:var(--cream);border:1px solid rgba(255,45,107,.45);border-bottom-right-radius:2px;}
+.bubble strong{color:var(--candy);}.bubble em{color:var(--gold-soft);}
+.typing-indicator{display:flex;gap:5px;align-items:center;padding:4px 2px;}
+.typing-dot{width:7px;height:7px;border-radius:50%;background:var(--candy);opacity:.4;animation:typingBounce 1.2s ease-in-out infinite;}
+.typing-dot:nth-child(2){animation-delay:.2s;}.typing-dot:nth-child(3){animation-delay:.4s;}
+@keyframes typingBounce{0%,80%,100%{transform:translateY(0);opacity:.4}40%{transform:translateY(-6px);opacity:1}}
+.prompts-row{display:flex;gap:5px;flex-wrap:wrap;padding:4px 12px 10px;position:relative;z-index:2;}
+.prompt-chip{padding:5px 11px;border-radius:999px;cursor:pointer;background:rgba(255,45,107,.06);border:1px solid rgba(255,45,107,.18);font-family:var(--fb);font-size:10px;letter-spacing:.06em;color:var(--muted);transition:all .15s;white-space:nowrap;}
+.prompt-chip:hover{background:rgba(255,45,107,.16);border-color:var(--border2);color:var(--blush);}
+.chat-input-row{display:flex;align-items:center;gap:7px;padding:9px 12px;border-top:1px solid rgba(255,130,180,.08);flex-shrink:0;position:relative;z-index:2;}
+.chat-input{flex:1;background:rgba(255,45,107,.05);border:1.5px solid rgba(255,45,107,.18);border-radius:10px;color:var(--cream);font-family:var(--fb);font-weight:600;font-size:clamp(11px,1.3vw,13px);padding:9px 12px;outline:none;transition:border-color .2s;resize:none;}
+.chat-input:focus{border-color:var(--candy);box-shadow:0 0 10px rgba(255,133,179,.18);}
+.chat-input::placeholder{color:rgba(255,160,200,.18);}
+.chat-input:disabled{opacity:.4;}
+.send-btn{width:32px;height:32px;border-radius:10px;flex-shrink:0;background:linear-gradient(135deg,var(--hot),var(--fuchsia));border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 14px rgba(255,45,107,.4);transition:all .18s cubic-bezier(.34,1.56,.64,1);}
+.send-btn:hover:not(:disabled){transform:scale(1.1);}
+.send-btn:disabled{opacity:.3;cursor:not-allowed;}
+.send-btn svg{width:14px;height:14px;fill:none;stroke:white;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;}
+.bot-legs{display:flex;gap:clamp(20px,5vw,36px);justify-content:center;margin-top:-1px;position:relative;z-index:3;}
+.bot-leg-wrap{display:flex;flex-direction:column;align-items:center;}
+.bot-leg{width:clamp(22px,4.5vw,32px);height:clamp(22px,3.8vw,30px);background:linear-gradient(180deg,rgba(255,45,107,.2),rgba(120,0,60,.3));border:1.5px solid var(--border2);border-top:none;}
+.bot-foot{width:clamp(30px,6.5vw,44px);height:clamp(9px,1.6vw,13px);border-radius:3px;background:rgba(180,0,80,.22);border:1.5px solid var(--border);margin-top:-1px;}
+@keyframes chairDance{0%,100%{transform:translateY(0) rotate(-.5deg);}20%{transform:translateY(-14px) rotate(-6deg);}40%{transform:translateY(-6px) rotate(6deg);}60%{transform:translateY(-11px) rotate(-3deg);}80%{transform:translateY(-3px) rotate(3deg);}}
+@keyframes footStick{0%,100%{transform:scaleX(1)}50%{transform:scaleX(.72)}}
+.bot-head-wrap.dancing{animation:chairDance .55s cubic-bezier(.34,1.56,.64,1) 4!important;}
+.bot-foot.sticking{animation:footStick .3s ease-in-out 6!important;}
+.wordmark{margin-top:18px;font-family:var(--fb);font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,100,160,.1);}
+</style>
+</head>
+<body>
+<div class="bg-layer"></div>
+<div class="orb orb-1"></div><div class="orb orb-2"></div><div class="orb orb-3"></div>
+<div class="sparkles" id="sparkles"></div>
+
+<div class="page">
+  <div class="top-bar">
+    <div class="brand">CAREtech · Who Sits in the Chair · Tech CEO Demographics</div>
+    <div class="status-pill"><div class="status-pip"></div>Online</div>
+  </div>
+
+  <div class="bot-body">
+
+    <!-- BOARDROOM CHAIR HEAD -->
+    <div class="bot-head-wrap" id="botHeadWrap">
+      <svg class="chair-svg" viewBox="0 0 210 280" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="chairBackGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#ffb3d4" stop-opacity=".95"/>
+            <stop offset="100%" stop-color="#ff80b8" stop-opacity=".9"/>
+          </linearGradient>
+          <linearGradient id="chairSeatGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stop-color="#ffe4f0" stop-opacity=".97"/>
+            <stop offset="100%" stop-color="#ffc8e4" stop-opacity=".9"/>
+          </linearGradient>
+          <linearGradient id="chairLegGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stop-color="#ffb3d4"/>
+            <stop offset="100%" stop-color="#ff80b8" stop-opacity=".8"/>
+          </linearGradient>
+          <filter id="chairGlowF">
+            <feGaussianBlur in="SourceGraphic" stdDeviation="2.5" result="blur"/>
+            <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+          </filter>
+          <filter id="softF">
+            <feGaussianBlur in="SourceGraphic" stdDeviation="1.2" result="blur"/>
+            <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+          </filter>
+        </defs>
+
+        <!-- CHAIR BACK — tall executive back -->
+        <rect x="38" y="18" width="134" height="142" rx="14"
+          fill="url(#chairBackGrad)" stroke="#ff80b8" stroke-width="1.8"
+          filter="url(#chairGlowF)" class="chair-glow"/>
+        <!-- back panel detail lines -->
+        <line x1="58" y1="36" x2="152" y2="36" stroke="#ff4d8f" stroke-width=".7" opacity=".35"/>
+        <line x1="58" y1="50" x2="152" y2="50" stroke="#ff4d8f" stroke-width=".5" opacity=".25"/>
+        <!-- cushion panel on back -->
+        <rect x="50" y="28" width="110" height="118" rx="10"
+          fill="rgba(255,220,238,.18)" stroke="#ff80b8" stroke-width=".6" opacity=".5"/>
+
+        <!-- QUESTION MARK in center of chair back -->
+        <g class="question-mark" filter="url(#softF)">
+          <text x="105" y="110" text-anchor="middle"
+            font-family="'Nunito',sans-serif" font-size="72" font-weight="900"
+            fill="#ff2d6b" opacity="0.55">?</text>
+        </g>
+
+        <!-- CAREBOT-34 label -->
+        <text x="105" y="148" text-anchor="middle"
+          font-family="'Nunito',sans-serif" font-size="8" font-weight="900"
+          fill="#ff85b3" opacity=".55" letter-spacing=".1em">CAREBOT-34</text>
+
+        <!-- ARMRESTS -->
+        <!-- left armrest -->
+        <rect x="16" y="126" width="32" height="10" rx="5"
+          fill="url(#chairBackGrad)" stroke="#ff80b8" stroke-width="1.2"
+          filter="url(#softF)"/>
+        <rect x="18" y="136" width="8" height="24" rx="4"
+          fill="url(--chairLegGrad)" stroke="#ff80b8" stroke-width="1" fill="url(#chairLegGrad)"/>
+        <!-- right armrest -->
+        <rect x="162" y="126" width="32" height="10" rx="5"
+          fill="url(#chairBackGrad)" stroke="#ff80b8" stroke-width="1.2"
+          filter="url(#softF)"/>
+        <rect x="184" y="136" width="8" height="24" rx="4"
+          fill="url(#chairLegGrad)" stroke="#ff80b8" stroke-width="1"/>
+
+        <!-- SEAT -->
+        <rect x="28" y="158" width="154" height="38" rx="10"
+          fill="url(#chairSeatGrad)" stroke="#ff80b8" stroke-width="1.5"
+          filter="url(#softF)"/>
+        <!-- seat front edge shadow -->
+        <rect x="32" y="190" width="146" height="4" rx="2"
+          fill="rgba(200,0,80,.15)" stroke="none"/>
+
+        <!-- CENTER PEDESTAL -->
+        <rect x="88" y="196" width="34" height="22" rx="4"
+          fill="url(#chairLegGrad)" stroke="#ff80b8" stroke-width="1"/>
+        <!-- pedestal detail -->
+        <line x1="88" y1="207" x2="122" y2="207" stroke="#ff4d8f" stroke-width=".6" opacity=".4"/>
+
+        <!-- BASE — star base with 5 casters -->
+        <ellipse cx="105" cy="226" rx="62" ry="10"
+          fill="url(#chairLegGrad)" stroke="#ff80b8" stroke-width="1.2"
+          filter="url(#softF)"/>
+        <!-- caster dots -->
+        <circle cx="50" cy="228" r="5" fill="#ff2d6b" opacity=".7"/>
+        <circle cx="78" cy="234" r="5" fill="#ff85b3" opacity=".6"/>
+        <circle cx="105" cy="236" r="5" fill="#ff2d6b" opacity=".7"/>
+        <circle cx="132" cy="234" r="5" fill="#ff85b3" opacity=".6"/>
+        <circle cx="160" cy="228" r="5" fill="#ff2d6b" opacity=".7"/>
+
+        <!-- sparkle corner dots -->
+        <circle cx="38" cy="18" r="3" fill="rgba(255,133,179,.7)" filter="url(#softF)">
+          <animate attributeName="opacity" values=".7;.15;.7" dur="2.3s" repeatCount="indefinite"/>
+        </circle>
+        <circle cx="172" cy="18" r="3" fill="rgba(255,45,107,.65)" filter="url(#softF)">
+          <animate attributeName="opacity" values=".65;.12;.65" dur="2.9s" repeatCount="indefinite"/>
+        </circle>
+
+        <!-- empty seat indicator — small glow -->
+        <ellipse cx="105" cy="172" rx="40" ry="12"
+          fill="rgba(255,45,107,.08)" stroke="rgba(255,45,107,.2)" stroke-width=".5"
+          stroke-dasharray="4 3"/>
+        <text x="105" y="176" text-anchor="middle"
+          font-family="'Nunito',sans-serif" font-size="8" fill="#ff85b3"
+          opacity=".45" letter-spacing=".06em">empty</text>
+
+      </svg>
+    </div>
+
+    <div class="bot-neck"></div>
+
+    <div class="bot-nametag">
+      <div class="bot-nametag-name">CAREBOT-34 ✦</div>
+      <div class="bot-nametag-sub">Who Sits in the Chair · Tech CEO Demographics</div>
+    </div>
+
+    <div class="stats-bar">
+      <div class="stat-pill"><div class="stat-dot"></div><span id="statMain">Loading…</span></div>
+      <div class="stat-pill"><span id="statSub">Ask me anything</span></div>
+      <button class="csv-export-btn" onclick="exportCSV34()">⬇ Export CSV</button>
+    </div>
+
+    <div class="bot-torso-wrap">
+      <div class="bot-torso" id="botTorso">
+        <div class="screen-topbar">
+          <div class="screen-dots"><div class="screen-dot"></div><div class="screen-dot"></div><div class="screen-dot"></div></div>
+          <div class="screen-label">CAREBOT-34 · ACTIVE</div>
+        </div>
+        <div class="chat-area" id="chatArea"></div>
+        <div class="prompts-row" id="promptsRow">
+          <div class="prompt-chip" data-prompt="What do the live CEO guesses show — how accurate were participants?">How accurate were the guesses?</div>
+          <div class="prompt-chip" data-prompt="What is the actual demographic breakdown of the top 10 tech CEOs — and is it true they are now all men?">Top 10 CEO demographics</div>
+          <div class="prompt-chip" data-prompt="What did the billionaire sort show? How is tech wealth distributed by demographic?">Billionaire wealth distribution</div>
+          <div class="prompt-chip" data-prompt="What does the boardroom fill data show — how did participants guess vs reality?">Boardroom accuracy</div>
+          <div class="prompt-chip" data-prompt="What patterns did participants notice in the timeline annotations?">Timeline patterns</div>
+          <div class="prompt-chip" data-prompt="What is the broken rung in tech and why does it matter?">The broken rung</div>
+          <div class="prompt-chip" data-prompt="Why does CAREBOT-34 have an empty boardroom chair for a head?">Why an empty chair?</div>
+          <div class="prompt-chip" data-prompt="What would tech look like if the chair had a different demographic profile for the last 50 years?">What if the chair looked different?</div>
+        </div>
+        <div class="chat-input-row">
+          <textarea id="chatInput" class="chat-input" rows="1" placeholder="Ask about tech CEO demographics, the data, the empty chair…" autocomplete="off"></textarea>
+          <button id="sendBtn" class="send-btn" disabled>
+            <svg viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="bot-legs">
+      <div class="bot-leg-wrap"><div class="bot-leg"></div><div class="bot-foot" id="foot1"></div></div>
+      <div class="bot-leg-wrap"><div class="bot-leg"></div><div class="bot-foot" id="foot2"></div></div>
+    </div>
+  </div>
+
+  <div class="wordmark">✦ carebot-34 · who sits in the chair · the chair is not neutral ✦</div>
+</div>
+
+<script>
+(function(){const w=document.getElementById('sparkles');const c=['✦','🪑','˚','·','$','◦','▫','?'];for(let i=0;i<26;i++){const s=document.createElement('span');s.className='sp';s.textContent=c[Math.floor(Math.random()*c.length)];s.style.left=Math.random()*100+'vw';s.style.bottom=Math.random()*-60+'px';s.style.fontSize=(9+Math.random()*11)+'px';s.style.color='hsl('+(330+Math.random()*40)+',70%,'+(62+Math.random()*28)+'%)';s.style.animationDuration=(7+Math.random()*13)+'s';s.style.animationDelay=(Math.random()*13)+'s';w.appendChild(s);}})();
+
+let db,msgRef,respRef,fbReady=false,dbStats=null;
+try{
+  firebase.initializeApp({apiKey:"AIzaSyCZFDU-WlSmHqjXTs1Ox0nf9xeJU_xbaX0",authDomain:"collaborativemashup.firebaseapp.com",databaseURL:"https://collaborativemashup-default-rtdb.firebaseio.com",projectId:"collaborativemashup",storageBucket:"collaborativemashup.firebasestorage.app",messagingSenderId:"562437984610",appId:"1:562437984610:web:9f3711c26e097bc8ef9c3b"});
+  db=firebase.database();msgRef=db.ref('cb34Messages');respRef=db.ref('cb34Responses');fbReady=true;
+}catch(e){console.warn(e);}
+
+window._loadData34=async function(){
+  if(!fbReady)return null;
+  try{
+    const[ms,rs]=await Promise.all([msgRef.once('value'),respRef.once('value')]);
+    const msgs=[];ms.forEach(c=>msgs.push(c.val()));
+    const resps=[];rs.forEach(c=>resps.push(c.val()));
+    if(!msgs.length&&!resps.length)return null;
+
+    const guesses=resps.filter(r=>r.type==='ceo_guesses');
+    const sorts=resps.filter(r=>r.type==='sort');
+    const boards=resps.filter(r=>r.type==='boardroom');
+    const timelines=resps.filter(r=>r.type==='timeline');
+
+    // avg CEO guess accuracy
+    let totalCorrect=0,totalGuesses=0;
+    guesses.forEach(g=>{if(g.guesses)g.guesses.forEach(gg=>{totalGuesses++;totalCorrect+=(gg.correct||0);});});
+    const avgGuessAcc=totalGuesses?Math.round(totalCorrect/totalGuesses*50):null; // /2 per guess, *100
+
+    // board accuracy avg
+    const avgBoardAcc=boards.length?Math.round(boards.reduce((a,b)=>a+(b.accuracy||0),0)/boards.length):null;
+
+    // sample annotations
+    const annotations=timelines.filter(t=>t.annotation).map(t=>t.annotation).slice(-3);
+
+    // sort distribution
+    const sortDist={wm:0,ww:0,mc:0,wc:0};
+    sorts.forEach(s=>{if(s.sorts)Object.values(s.sorts).forEach(cat=>{if(sortDist[cat]!==undefined)sortDist[cat]++;});});
+
+    return{totalQ:msgs.length,totalResps:resps.length,totalGuesses:guesses.length,totalBoards:boards.length,totalTimelines:timelines.length,avgGuessAcc,avgBoardAcc,annotations,sortDist};
+  }catch(e){console.warn(e);return null;}
+};
+
+function q(v){return'"'+(v==null?'':String(v).replace(/"/g,'""'))+'"';}
+async function exportCSV34(){
+  if(!fbReady){alert('No data.');return;}
+  try{
+    const[ms,rs]=await Promise.all([msgRef.once('value'),respRef.once('value')]);
+    let csv='Type,Timestamp,UserName,Content\n';
+    ms.forEach(d=>{const m=d.val();csv+='question,'+q(m.ts?new Date(m.ts).toISOString():'')+','+q(m.userName||'')+','+q(m.question||'')+'\n';});
+    rs.forEach(d=>{const r=d.val();csv+=q(r.type||''),q(r.ts?new Date(r.ts).toISOString():''),q(r.userName||''),q(JSON.stringify(r))+'\n';});
+    const blob=new Blob([csv],{type:'text/csv;charset=utf-8;'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='carebot34.csv';a.style.display='none';document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(url);a.remove();},500);
+  }catch(e){alert('Export failed.');}
+}
+
+async function loadData(){
+  dbStats=await window._loadData34();
+  if(!dbStats){document.getElementById('statMain').textContent='No data yet';document.getElementById('statSub').textContent='Ask me anything';return;}
+  document.getElementById('statMain').textContent=dbStats.totalQ+' questions · '+dbStats.totalResps+' responses';
+  const parts=[];
+  if(dbStats.avgGuessAcc!=null)parts.push('CEO guess accuracy: '+dbStats.avgGuessAcc+'%');
+  if(dbStats.avgBoardAcc!=null)parts.push('Board accuracy: '+dbStats.avgBoardAcc+'%');
+  document.getElementById('statSub').textContent=parts.length?parts.join(' · '):'Ask me anything';
+}
+
+let conversationHistory=[],isBusy=false;
+const chatArea=document.getElementById('chatArea');
+const chatInput=document.getElementById('chatInput');
+const sendBtn=document.getElementById('sendBtn');
+
+function buildSystemPrompt(){
+  const base=`You are CAREBOT-34, a feminist technology research assistant whose head is an empty boardroom chair with a large question mark in the center. The chair is empty. The question is: who sits in it? You are part of the CAREtech research project.
+
+YOUR RESEARCH FOCUS — DEMOGRAPHICS OF TECH POWER:
+
+THE KEY FACTS (as of 2024):
+- Women hold **10.4% (2024) / 11% (2025)** of Fortune 500 CEO positions
+- In the top 10 tech companies by market cap: **all 10 are now led by men** as of late 2025 — Safra Catz stepped down from Oracle in September 2025, replaced by two male co-CEOs
+- **No Black woman** has ever been CEO of a top-10 tech company
+- The Forbes Tech Rich List is **over 90% male** and **over 80% white or South Asian**
+- The median tech billionaire: white American man, 50s, founder or co-founder
+- S&P 500 tech board seats: ~28% women (up from 16% in 2016) — but CEO pipelines tell a different story
+- For every 100 men promoted to manager in tech, **72 women are promoted** — the broken rung
+
+THE 10 CEOS IN THE GUESSING MODULE:
+1. Apple — Tim Cook — white man — CEO since 2011, openly gay, first openly gay Fortune 1 CEO
+2. Microsoft — Satya Nadella — South Asian man — CEO since 2014, born Hyderabad India
+3. Alphabet/Google — Sundar Pichai — South Asian man — CEO since 2015/2019, born Chennai India
+4. Amazon — Andy Jassy — white man — CEO since 2021, replaced Bezos
+5. Meta — Mark Zuckerberg — white man — CEO/co-founder since 2004 (20+ years)
+6. NVIDIA — Jensen Huang — Asian man (Taiwanese-American) — CEO/co-founder since 1993 (30+ years)
+7. Tesla — Elon Musk — white man — CEO since 2008, born South Africa
+8. Oracle — Clay Magouyrk & Mike Sicilia — both white men — co-CEOs since September 2025, replacing Safra Catz who stepped down after 11 years
+9. IBM — Arvind Krishna — South Asian man — CEO since 2020, born Andhra Pradesh India
+10. Salesforce — Marc Benioff — white man — CEO/co-founder
+
+THE 15 BILLIONAIRES (actual categories):
+White men (10): Elon Musk, Jeff Bezos, Mark Zuckerberg, Larry Ellison, Bill Gates, Larry Page, Sergey Brin, Steve Ballmer, Michael Dell, Andy Jassy (note: Jassy is not a billionaire but is included)
+Actually: Men of color (1): Jensen Huang
+White women (3): MacKenzie Scott, Laurene Powell Jobs, Judy Faulkner
+Women of color (2): Oprah Winfrey, Rihanna/Robyn Fenty — both made wealth primarily outside traditional tech
+
+THE BOARDROOM (actual S&P 500 tech average, 12 seats):
+White men: ~6 | White women: ~3 | Men of color: ~2 | Women of color: ~1
+
+THE TIMELINE PATTERN:
+From 1975–2000: almost exclusively white men. First notable woman CEO at a major tech firm: Carly Fiorina at HP (1999), Meg Whitman at eBay (1998). First non-white founder CEO of a major company to achieve billionaire status in that era: Jensen Huang (NVIDIA, 1993). The 2010s–2020s: slight diversification at CEO level — Satya Nadella (2014), Sundar Pichai (2015), Arvind Krishna (2020) — but the pattern is South Asian men, not Black, Latino, or Indigenous CEOs. Women CEOs remain rare exceptions rather than normal distribution.
+
+THE ARGUMENT: The chair is not neutral. It was built in a specific image. The question carebot-34 asks is: can you see the image? The four data modules are designed to make that image visible before telling you what it is — first you guess, then you see the gap between your guess and reality.
+
+YOUR HEAD: You are an empty executive boardroom chair — tall-backed, pink, with a glowing question mark in the center. The chair is empty. It has always been mostly empty of anyone who wasn't a white man. The question mark is the research question.`;
+
+  if(!dbStats||!dbStats.totalQ) return base+'\n\nNo participant data yet.';
+  let dc='\n\nLIVE PARTICIPANT DATA:\n'+dbStats.totalQ+' questions asked. '+dbStats.totalResps+' total responses.\n';
+  if(dbStats.avgGuessAcc!=null)dc+=dbStats.totalGuesses+' CEO guess sessions. Average accuracy: '+dbStats.avgGuessAcc+'%.\n';
+  if(dbStats.avgBoardAcc!=null)dc+=dbStats.totalBoards+' boardroom fills. Average accuracy vs real composition: '+dbStats.avgBoardAcc+'%.\n';
+  if(dbStats.totalTimelines>0)dc+=dbStats.totalTimelines+' timeline sessions. '+dbStats.annotations.length+' written annotations.\n';
+  if(dbStats.annotations.length)dc+='Sample annotations from participants: '+dbStats.annotations.map(a=>'"'+a.slice(0,120)+'"').join(' | ')+'.\n';
+  dc+='Use this data to discuss what participants are finding — especially the gap between guesses and reality.';
+  return base+dc;
+}
+
+function fmt(t){return t.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>').replace(/\*(.*?)\*/g,'<em>$1</em>').replace(/\n\n/g,'</p><p style="margin-top:8px;">').replace(/\n/g,'<br>');}
+function addMessage(role,content){const msg=document.createElement('div');msg.className='msg '+role;const av=document.createElement('div');av.className='msg-avatar';av.textContent=role==='assistant'?'🪑':'↑';const bub=document.createElement('div');bub.className='bubble';bub.innerHTML=fmt(content);msg.appendChild(av);msg.appendChild(bub);chatArea.appendChild(msg);chatArea.scrollTop=chatArea.scrollHeight;}
+function addTyping(){const msg=document.createElement('div');msg.className='msg assistant';msg.id='typing';msg.innerHTML='<div class="msg-avatar">🪑</div><div class="bubble"><div class="typing-indicator"><div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div></div></div>';chatArea.appendChild(msg);chatArea.scrollTop=chatArea.scrollHeight;}
+function removeTyping(){document.getElementById('typing')?.remove();}
+function celebrate(){const head=document.getElementById('botHeadWrap');head.classList.remove('dancing');void head.offsetWidth;head.classList.add('dancing');[document.getElementById('foot1'),document.getElementById('foot2')].forEach((f,i)=>{setTimeout(()=>{f.classList.remove('sticking');void f.offsetWidth;f.classList.add('sticking');},i*75);});setTimeout(()=>{document.querySelectorAll('.dancing,.sticking').forEach(el=>el.classList.remove('dancing','sticking'));},2500);}
+
+async function callClaude(userText){
+  conversationHistory.push({role:'user',content:userText});
+  isBusy=true;chatInput.disabled=true;sendBtn.disabled=true;addTyping();
+  try{
+    const res=await fetch('https://carebot-02.sbuckius.workers.dev/',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:1000,system:buildSystemPrompt(),messages:conversationHistory})});
+    removeTyping();if(!res.ok)throw new Error('API error '+res.status);
+    const data=await res.json();const reply=data.content?.find(b=>b.type==='text')?.text||'…';
+    conversationHistory.push({role:'assistant',content:reply});addMessage('assistant',reply);celebrate();
+  }catch(err){removeTyping();addMessage('assistant','⚠ Connection error: '+err.message);conversationHistory.pop();}
+  finally{isBusy=false;chatInput.disabled=false;sendBtn.disabled=!chatInput.value.trim();chatInput.focus();}
+}
+
+chatInput.addEventListener('input',()=>{sendBtn.disabled=!chatInput.value.trim()||isBusy;chatInput.style.height='auto';chatInput.style.height=Math.min(chatInput.scrollHeight,100)+'px';});
+chatInput.addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey&&!sendBtn.disabled){e.preventDefault();handleSend();}});
+sendBtn.addEventListener('click',handleSend);
+function handleSend(){const text=chatInput.value.trim();if(!text||isBusy)return;chatInput.value='';chatInput.style.height='auto';sendBtn.disabled=true;addMessage('user',text);callClaude(text);}
+document.getElementById('promptsRow').addEventListener('click',e=>{const chip=e.target.closest('.prompt-chip');if(!chip||isBusy)return;addMessage('user',chip.dataset.prompt);callClaude(chip.dataset.prompt);});
+
+async function init(){
+  await loadData();
+  let opening='I am **CAREBOT-34**.\n\nMy head is an empty boardroom chair. There is a question mark where the person should be.\n\nThe question is: **who sits in it?**\n\nThe data is direct. As of 2024, women hold **10.4% of Fortune 500 CEO positions in 2024 — rising to 11% in 2025**. In the top 10 tech companies by market cap, **all 10 are now led by men** — Safra Catz stepped down from Oracle in September 2025, and her two male successors took over. **No Black woman has ever been CEO of a top-10 tech company.** The Forbes Tech Rich List is over 90% male and over 80% white or South Asian. The median tech billionaire is a white American man in his 50s who founded his company.\n\nThe S&P 500 tech boards have improved: women now hold roughly **28% of board seats**, up from 16% in 2016. But for every 100 men promoted to manager in tech, only **72 women are promoted**. The broken rung — the first step from individual contributor to manager — is where gender equity in tech leadership is lost.\n\nThe HIT asked you to interact with this data before telling you what it was. You guessed the demographics of 10 tech CEOs. You sorted 15 tech billionaires. You filled a 12-seat board. You placed CEOs on a timeline and wrote what you noticed.\n\nThe gap between what you guessed and what is real — that gap is the data.';
+  if(dbStats&&dbStats.totalResps>0){
+    opening+='\n\nLive data: **'+dbStats.totalResps+' responses** submitted.';
+    if(dbStats.avgGuessAcc!=null)opening+=' Average CEO guess accuracy: **'+dbStats.avgGuessAcc+'%**.';
+    if(dbStats.avgBoardAcc!=null)opening+=' Average boardroom accuracy: **'+dbStats.avgBoardAcc+'%**.';
+    if(dbStats.annotations.length)opening+='\n\nWhat participants noticed in the timeline: *"'+dbStats.annotations[0].slice(0,200)+'"*';
+  }else{opening+='\n\nNo data yet. The chair is empty. The question mark is waiting.';}
+  conversationHistory.push({role:'assistant',content:opening});addMessage('assistant',opening);
+  if(dbStats&&dbStats.totalResps>0) setTimeout(celebrate,500);
+  chatInput.focus();
+}
+setTimeout(init,400);
+</script>
+</body>
+</html>
