@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
 <title>✦ CAREtech ✦ Amplifying Diverse Voices in Technology</title>
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <style>
   :root {
     --rose:    #ff5c8a;
@@ -37,7 +38,6 @@
   body {
     min-height: 100vh;
     cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 20 20'%3E%3Ccircle cx='10' cy='10' r='4' fill='%23ff2d6b' opacity='.9'/%3E%3Ccircle cx='10' cy='10' r='7' stroke='%23ff85b3' stroke-width='1.5' fill='none' opacity='.6'/%3E%3C/svg%3E") 10 10, default;
-    padding-bottom: 80px;
   }
 
   .bg-layer {
@@ -49,11 +49,13 @@
       linear-gradient(160deg, #220008, #180008 45%, #120005);
   }
 
-  .orb { position: fixed; border-radius: 50%; pointer-events: none; z-index: 0; filter: blur(70px); }
+  .orb { position: fixed; border-radius: 50%; pointer-events: none; z-index: 0; filter: blur(70px); will-change: transform; }
   .orb-1 { width:500px;height:500px;background:var(--maroon); opacity:.25; top:-120px; left:-100px; animation:drift1 20s ease-in-out infinite; }
   .orb-2 { width:400px;height:400px;background:#c40032;        opacity:.2;  bottom:-80px; right:-80px; animation:drift2 24s ease-in-out infinite; }
+  /* orb-3 and orb-4 hidden on narrow screens to save GPU */
   .orb-3 { width:300px;height:300px;background:var(--hot);     opacity:.12; top:35%; left:55%;       animation:drift3 16s ease-in-out infinite; }
   .orb-4 { width:200px;height:200px;background:var(--candy);   opacity:.15; top:10%; right:20%;      animation:drift2 19s ease-in-out infinite reverse; }
+  @media (max-width: 600px) { .orb-3, .orb-4 { display: none; } }
   @keyframes drift1{0%,100%{transform:translate(0,0)}50%{transform:translate(50px,35px)}}
   @keyframes drift2{0%,100%{transform:translate(0,0)}50%{transform:translate(-35px,-25px)}}
   @keyframes drift3{0%,100%{transform:translate(0,0)}33%{transform:translate(-25px,18px)}66%{transform:translate(18px,-12px)}}
@@ -65,6 +67,12 @@
     15% {opacity:.7}
     85% {opacity:.4}
     100%{opacity:0;transform:translateY(-140px) scale(1.1) rotate(180deg)}
+  }
+
+  /* ── STATIC CONTENT ABOVE THE 3D SCENE ── */
+  .static-content {
+    position: relative; z-index: 10;
+    padding-bottom: 0;
   }
 
   header {
@@ -98,6 +106,101 @@
     font-size: 10px; letter-spacing: .12em; text-transform: uppercase;
     color: var(--text-dim); font-family: 'Quicksand', sans-serif; font-weight: 600;
   }
+  .ai-disclaimer-btn {
+    cursor: pointer;
+    background: rgba(255,45,107,.12);
+    border-color: rgba(255,100,160,.4);
+    color: var(--candy);
+    transition: all .18s;
+    font-family: 'Quicksand', sans-serif;
+    appearance: none;
+  }
+  .ai-disclaimer-btn:hover {
+    background: rgba(255,45,107,.22);
+    border-color: var(--hot);
+    color: var(--cream);
+    transform: translateY(-1px);
+  }
+
+  /* ── AI DISCLAIMER MODAL ── */
+  #aiDisclaimer {
+    display: none;
+    position: fixed; inset: 0; z-index: 999;
+    background: rgba(10,0,6,.82);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    align-items: center; justify-content: center;
+    padding: 20px;
+  }
+  #aiDisclaimer.open { display: flex; }
+  .ai-disc-box {
+    background: rgba(14,0,8,.97);
+    border: 1.5px solid rgba(255,60,120,.38);
+    border-radius: 20px;
+    max-width: 580px; width: 100%;
+    max-height: 85vh;
+    overflow-y: auto;
+    padding: 28px 26px 22px;
+    position: relative;
+    box-shadow: 0 8px 50px rgba(255,45,107,.3), 0 0 100px rgba(200,0,80,.12);
+    -webkit-overflow-scrolling: touch;
+  }
+  .ai-disc-box::before {
+    content: '';
+    position: absolute; top: 0; left: 10%; right: 10%; height: 1.5px;
+    background: linear-gradient(90deg, transparent, var(--candy) 35%, var(--hot) 50%, var(--candy) 65%, transparent);
+    box-shadow: 0 0 12px var(--rose);
+    border-radius: 999px;
+  }
+  .ai-disc-eyebrow {
+    font-size: 9px; letter-spacing: .22em; text-transform: uppercase;
+    color: rgba(255,100,160,.5); margin-bottom: 8px;
+    display: flex; align-items: center; gap: 7px;
+  }
+  .ai-disc-gem {
+    width: 7px; height: 7px;
+    background: var(--hot); clip-path: polygon(50% 0%,100% 50%,50% 100%,0% 50%);
+    box-shadow: 0 0 7px var(--hot); flex-shrink: 0;
+    animation: breathe 2s ease-in-out infinite;
+  }
+  .ai-disc-title {
+    font-family: 'Nunito', sans-serif; font-weight: 900;
+    font-size: clamp(15px, 3vw, 19px);
+    background: linear-gradient(120deg, var(--cream) 10%, var(--blush) 50%, var(--fuchsia) 85%);
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+    letter-spacing: -.01em; line-height: 1.25;
+    padding-bottom: 14px; margin-bottom: 16px;
+    border-bottom: 1px solid rgba(255,100,160,.15);
+  }
+  .ai-disc-body {
+    font-family: 'Quicksand', sans-serif; font-weight: 600;
+    font-size: clamp(12px, 1.6vw, 14px);
+    line-height: 1.82; color: rgba(255,205,228,.75);
+  }
+  .ai-disc-body p + p { margin-top: 14px; }
+  .ai-disc-body strong { color: var(--blush); font-weight: 700; }
+  .ai-disc-body em { color: var(--candy); }
+  .ai-disc-close {
+    margin-top: 22px;
+    appearance: none;
+    font-family: 'Nunito', sans-serif; font-weight: 900;
+    font-size: 11px; letter-spacing: .14em; text-transform: uppercase;
+    color: var(--muted, rgba(255,190,220,.5));
+    background: rgba(255,45,107,.08);
+    border: 1.5px solid rgba(255,60,120,.28);
+    border-radius: 10px;
+    padding: 10px 22px;
+    cursor: pointer;
+    transition: all .18s;
+    display: block; width: 100%;
+    -webkit-tap-highlight-color: transparent;
+    min-height: 42px;
+  }
+  .ai-disc-close:hover {
+    background: rgba(255,45,107,.18);
+    border-color: var(--hot);
+    color: var(--cream);
+  }
 
   .hero {
     max-width: 720px; margin: 0 auto 64px;
@@ -129,17 +232,6 @@
     color: var(--text-dim); line-height: 1.7;
     max-width: 560px; letter-spacing: .02em;
   }
-  .matilda-pill {
-    display: inline-flex; align-items: center; gap: 8px;
-    padding: 8px 20px; border-radius: 14px;
-    background: rgba(15,0,8,.7);
-    border: 1.5px solid var(--card-border-bright);
-    box-shadow: var(--soft-glow);
-    font-size: 12px; letter-spacing: .06em; color: var(--blush);
-    font-family: 'Nunito', sans-serif; font-weight: 700;
-    margin-top: 4px;
-  }
-  .matilda-pill span { color: var(--fuchsia); font-weight: 900; }
 
   /* ── EMBRACE SECTION ── */
   .macemb-section {
@@ -260,8 +352,6 @@
     line-height: 1.75;
   }
   .pillar-text strong { color: var(--candy); font-weight: 700; }
-
-  /* First pillar highlight */
   .pillar-first {
     background: rgba(255,45,107,.04);
     border-bottom: 1px solid rgba(255,160,200,.12) !important;
@@ -316,7 +406,7 @@
   .legend {
     position: relative; z-index: 10;
     display: flex; gap: 20px; flex-wrap: wrap; justify-content: center;
-    margin-bottom: 36px;
+    margin-bottom: 20px;
   }
   .legend-item {
     display: flex; align-items: center; gap: 8px;
@@ -327,111 +417,124 @@
   .legend-swatch.hit { background: linear-gradient(90deg, var(--hot), var(--fuchsia)); box-shadow: 0 0 8px rgba(255,45,107,.4); }
   .legend-swatch.bot { background: rgba(255,255,255,.07); border: 1px solid var(--card-border-bright); }
 
-  .grid-wrapper {
-    position: relative; z-index: 10;
-    padding: 0 clamp(16px,4vw,64px);
-    max-width: 1400px; margin: 0 auto;
+  /* ── 3D SCENE ── */
+  #scene-container {
+    position: relative;
+    width: 100%;
+    height: clamp(400px, 70vh, 760px);
+    z-index: 10;
+    overflow: hidden;
+    touch-action: none;
+    -webkit-tap-highlight-color: transparent;
   }
-  .grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(195px, 1fr));
-    gap: 18px;
+  #three-canvas {
+    display: block;
+    width: 100% !important;
+    height: 100% !important;
+    touch-action: none;
+    -webkit-tap-highlight-color: transparent;
   }
-
-  .bot-card {
-    display: flex; flex-direction: column; align-items: center;
-    gap: 9px;
-    padding: 22px 14px 16px;
-    border-radius: 22px;
-    background: rgba(15,0,8,.68);
-    border: 1.5px solid var(--card-border);
-    box-shadow: 0 4px 30px rgba(255,45,107,.12), inset 0 1px 0 rgba(255,160,200,.07);
-    backdrop-filter: blur(18px) saturate(1.4);
-    -webkit-backdrop-filter: blur(18px) saturate(1.4);
-    color: inherit;
-    transition: all .25s cubic-bezier(.34,1.56,.64,1);
-    position: relative; overflow: hidden;
-  }
-  .bot-card::before {
-    content:'';position:absolute;top:0;left:15%;right:15%;height:1px;
-    background:linear-gradient(90deg,transparent,var(--candy) 40%,var(--hot) 50%,var(--candy) 60%,transparent);
-    opacity:0; transition:opacity .3s;
-  }
-  .bot-card:hover {
-    border-color: var(--card-border-bright);
-    box-shadow: 0 10px 40px rgba(255,45,107,.35), 0 0 60px rgba(255,30,128,.15), inset 0 1px 0 rgba(255,160,200,.1);
-    transform: translateY(-5px) scale(1.025);
-  }
-  .bot-card:hover::before { opacity:1; }
-  .bot-card:active { transform: translateY(0) scale(.98); }
-
-  .bot-icon {
-    width: 72px; height: 72px; border-radius: 18px;
-    background: linear-gradient(135deg, rgba(255,45,107,.18), rgba(180,0,50,.28));
-    border: 1.5px solid rgba(255,100,160,.4);
-    box-shadow: 0 0 20px rgba(255,45,107,.2), inset 0 1px 0 rgba(255,255,255,.05);
-    display: flex; align-items: center; justify-content: center;
-    flex-shrink: 0;
-    transition: box-shadow .25s, transform .25s;
-  }
-  .bot-icon svg { width:44px; height:44px; }
-  .bot-card:hover .bot-icon {
-    box-shadow: 0 0 32px rgba(255,45,107,.4), inset 0 1px 0 rgba(255,255,255,.08);
-    transform: rotate(-3deg) scale(1.06);
+  #scene-labels {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
   }
 
-  .bot-num {
-    font-size: 9px; letter-spacing: .2em; text-transform: uppercase;
-    color: var(--hot); font-family: 'Nunito', sans-serif; font-weight: 900;
+  /* ── TILE LABEL OVERLAYS ── */
+  .tile-overlay {
+    position: absolute;
+    transform: translate(-50%, -50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+    text-align: center;
+    pointer-events: none;
+    background: rgba(10,0,6,.82);
+    border: 1px solid rgba(255,80,140,.28);
+    border-radius: 8px;
+    padding: 5px 8px 6px;
+    backdrop-filter: blur(3px);
+    -webkit-backdrop-filter: blur(3px);
   }
-  .bot-title {
-    font-family: 'Nunito', sans-serif; font-weight: 800;
-    font-size: 11.5px; line-height: 1.35; text-align: center;
-    color: var(--cream); letter-spacing: .01em;
-  }
-  .bot-irony {
-    font-size: 9.5px; color: var(--text-dim); text-align: center;
-    line-height: 1.45; font-style: italic; padding: 0 2px;
-    letter-spacing: .01em;
-  }
-
-  .card-actions {
-    display: flex; gap: 6px; width: 100%; margin-top: 4px;
-  }
-  .card-btn {
-    flex: 1; display: flex; align-items: center; justify-content: center; gap: 3px;
-    padding: 7px 6px; border-radius: 10px;
+  .tile-num {
     font-family: 'Nunito', sans-serif; font-weight: 900;
-    font-size: 9px; letter-spacing: .14em; text-transform: uppercase;
-    text-decoration: none;
-    transition: all .18s cubic-bezier(.34,1.56,.64,1);
-  }
-  .card-btn.hit {
-    background: linear-gradient(135deg, rgba(255,45,107,.5), rgba(180,0,50,.58));
-    color: var(--cream);
-    border: 1px solid rgba(255,45,107,.7);
-    box-shadow: 0 3px 12px rgba(255,45,107,.2);
-  }
-  .card-btn.hit:hover {
-    background: linear-gradient(135deg, rgba(255,45,107,.78), rgba(180,0,50,.85));
-    box-shadow: 0 5px 20px rgba(255,45,107,.45);
-    transform: translateY(-1px) scale(1.05);
-  }
-  .card-btn.bot {
-    background: rgba(255,255,255,.055);
+    font-size: 9px; letter-spacing: .16em; text-transform: uppercase;
     color: var(--candy);
-    border: 1px solid var(--card-border-bright);
+    line-height: 1; opacity: .85;
   }
-  .card-btn.bot:hover {
-    background: rgba(255,45,107,.1);
-    color: var(--cream);
-    border-color: var(--hot);
-    transform: translateY(-1px) scale(1.05);
+  .tile-title {
+    font-family: 'Nunito', sans-serif; font-weight: 900;
+    font-size: 11px;
+    color: #fff5f8;
+    line-height: 1.2;
+    max-width: 120px;
+  }
+  .tile-irony {
+    font-size: 9px;
+    color: rgba(255,200,225,.70);
+    font-style: italic;
+    line-height: 1.25;
+    max-width: 120px;
+  }
+  .tile-btns {
+    display: flex;
+    gap: 5px;
+    margin-top: 3px;
+    pointer-events: all;
+  }
+  .tile-btn {
+    padding: 5px 11px;
+    border-radius: 6px;
+    font-family: 'Nunito', sans-serif; font-weight: 900;
+    font-size: 10px; letter-spacing: .11em; text-transform: uppercase;
+    text-decoration: none;
+    white-space: nowrap;
+    cursor: pointer;
+    display: inline-block;
+    -webkit-tap-highlight-color: transparent;
+    min-height: 26px;
+    line-height: 1.4;
+    transition: all .15s;
+  }
+  .tile-btn.hit {
+    background: linear-gradient(135deg, #ff2d6b, #c4005a);
+    color: #fff5f8;
+    border: 1.5px solid rgba(255,100,150,.9);
+    box-shadow: 0 2px 10px rgba(255,45,107,.4);
+  }
+  .tile-btn.hit:hover {
+    background: linear-gradient(135deg, #ff5090, #e0004f);
+    box-shadow: 0 4px 16px rgba(255,45,107,.65);
+    transform: translateY(-1px) scale(1.06);
+  }
+  .tile-btn.bot {
+    background: rgba(255,45,107,.16);
+    color: #ffb3cf;
+    border: 1.5px solid rgba(255,100,160,.60);
+  }
+  .tile-btn.bot:hover {
+    background: rgba(255,45,107,.30);
+    color: #fff5f8;
+    border-color: #ff2d6b;
+    transform: translateY(-1px) scale(1.06);
+  }
+
+  /* hint text */
+  .scene-hint {
+    position: absolute;
+    bottom: 14px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 9px; letter-spacing: .18em; text-transform: uppercase;
+    color: rgba(255,160,200,.2);
+    pointer-events: none;
+    white-space: nowrap;
   }
 
   footer {
     position: relative; z-index: 10;
-    margin-top: 72px; padding: 0 20px 40px;
+    margin-top: 40px; padding: 0 20px 40px;
     text-align: center;
     display: flex; flex-direction: column; align-items: center; gap: 10px;
   }
@@ -453,6 +556,8 @@
 <div class="orb orb-4"></div>
 <div class="sparkles" id="sparkles"></div>
 
+<div class="static-content">
+
 <header>
   <div class="nav-bar">
     <div class="brand">
@@ -464,7 +569,8 @@
     </div>
     <div class="nav-chips">
       <div class="nav-chip">v2.4</div>
-      <div class="nav-chip">44 Carebots</div>
+      <div class="nav-chip">40 Carebots</div>
+      <button class="nav-chip ai-disclaimer-btn" onclick="document.getElementById('aiDisclaimer').classList.add('open')">⚠ A Note on AI</button>
     </div>
   </div>
 
@@ -491,7 +597,6 @@
 
   <div class="macemb-icons">
 
-    <!-- E · Eunice · Caring for the world -->
     <div class="macemb-icon-card">
       <div class="macemb-icon-svg">
         <svg viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -508,7 +613,6 @@
       <div class="macemb-icon-label">Caring for the world</div>
     </div>
 
-    <!-- M · Mary + Margaret + Matilda -->
     <div class="macemb-icon-card">
       <div class="macemb-icon-svg">
         <svg viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -525,7 +629,6 @@
       <div class="macemb-icon-label">Caring futures · Human wisdom</div>
     </div>
 
-    <!-- B · Betty · Rewriting the code -->
     <div class="macemb-icon-card">
       <div class="macemb-icon-svg">
         <svg viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -546,7 +649,6 @@
       <div class="macemb-icon-label">Rewriting the code</div>
     </div>
 
-    <!-- R · Rose · Playful resistance -->
     <div class="macemb-icon-card">
       <div class="macemb-icon-svg">
         <svg viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -562,7 +664,6 @@
       <div class="macemb-icon-label">Playful resistance</div>
     </div>
 
-    <!-- A · Ada · Challenging bias -->
     <div class="macemb-icon-card">
       <div class="macemb-icon-svg">
         <svg viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -581,7 +682,6 @@
       <div class="macemb-icon-label">Challenging bias</div>
     </div>
 
-    <!-- C · Charlotte · Diverse voices -->
     <div class="macemb-icon-card">
       <div class="macemb-icon-svg">
         <svg viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -598,14 +698,12 @@
       <div class="macemb-icon-label">Diverse voices</div>
     </div>
 
-    <!-- E · Emily · Underheard & Erased Histories -->
     <div class="macemb-icon-card">
       <div class="macemb-icon-svg">
         <svg viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path d="M18 10c-5 0-9 4-9 9s4 9 9 9c0 0 2 0 3 3l2 5" stroke="#ff85b3" stroke-width="1.8" stroke-linecap="round" fill="none"/>
           <path d="M18 14c-2.8 0-5 2.2-5 5s2.2 5 5 5" stroke="#ff5c8a" stroke-width="1.3" stroke-linecap="round" fill="none"/>
           <path d="M30 16c1.5 1.2 2.5 3 2.5 5s-1 3.8-2.5 5" stroke="#ffb3cf" stroke-width="1.3" stroke-linecap="round" fill="none" opacity=".5"/>
-          <path d="M34 13c2.5 2.2 4 5.2 4 9s-1.5 6.8-4 9" stroke="#ffb3cf" stroke-width="1.2" stroke-linecap="round" fill="none" opacity=".3"/>
           <path d="M27 12l4 22" stroke="#ff2d6b" stroke-width="2.5" stroke-linecap="round" opacity=".75"/>
           <circle cx="29" cy="10" r="3" fill="rgba(255,45,107,.3)" stroke="#ff2d6b" stroke-width="1"/>
         </svg>
@@ -619,7 +717,6 @@
 
   <div class="macemb-pillars">
     <div class="pillars-header">The Eight Pillars · EMBRACE</div>
-
     <div class="pillar pillar-first">
       <div class="pillar-num">1</div>
       <div class="pillar-text"><strong>The full human arc</strong> — centering every person in the chain: those who design the machines, build them, train them, use them, and are left to live with what they leave behind. Technology does not exist outside of human hands and human consequences — and a caring technological future accounts for every person in that chain, not just the ones at the top of it.</div>
@@ -669,8 +766,27 @@
   <div class="legend-item"><div class="legend-swatch bot"></div>BOT — explore what the data reveals</div>
 </div>
 
-<div class="grid-wrapper">
-  <div class="grid" id="botGrid"></div>
+</div><!-- end .static-content -->
+
+<!-- ── AI DISCLAIMER MODAL ── -->
+<div id="aiDisclaimer" onclick="if(event.target===this)this.classList.remove('open')">
+  <div class="ai-disc-box">
+    <div class="ai-disc-eyebrow"><div class="ai-disc-gem"></div>CAREtech · A Note on AI</div>
+    <div class="ai-disc-title">A Note on AI (Automation)</div>
+    <div class="ai-disc-body">
+      <p>Sarah used <strong>AI (automation)</strong> to help construct the HTML to set up this website by prompting it with details about the idea, the features, the parts, and the framework. Sarah believes that many things should not be automated using AI and that users should be cautious about the <strong>inaccuracies and bias in the system</strong>, exploitation of workers, the environmental impact, and the unethical use of the work of people without compensation, consent, or attribution.</p>
+      <p>Another issue that might negatively impact humans is the process by which it is <strong>forced into our lives</strong> and technology and work — and thus could result in our becoming reliant on it, without the ability to back out. Once everyone must use it, it forces the speed and style and aesthetics into the system, which requires everyone to utilize it to stay relevant and up to speed. This is a concern, especially because the design, deployment, and use is in the power of <strong>a few individuals</strong> (without guardrails or oversight). Sarah worries about this reliance on the technology when those in power make the cost to use it high — and this creates an <strong>equity issue</strong>.</p>
+      <p>While Sarah still struggles with the issues related to how AI (automation) could impact humans and the world, Sarah is <em>experimenting with using it to support education and equity</em> in instances where it could support students and learning. The use of it in this case is debatable, because I used it to help me generate the code for the website that I envisioned. Even though it is close to what I had in my mind, it is very highly possible that <strong>merely using it created the images in my mind.</strong> This process might result in more and more technology looking more dull and the same. Perhaps this website will end up being a relic of this strange time — <em>a speculative capsule stuck in a weird, slopification automation void.</em></p>
+    </div>
+    <button class="ai-disc-close" onclick="document.getElementById('aiDisclaimer').classList.remove('open')">✕ Close</button>
+  </div>
+</div>
+
+<!-- ── 3D SCENE ── -->
+<div id="scene-container">
+  <canvas id="three-canvas"></canvas>
+  <div id="scene-labels"></div>
+  <div class="scene-hint" id="sceneHint">drag to orbit · scroll to zoom</div>
 </div>
 
 <footer>
@@ -696,106 +812,871 @@
   }
 })();
 
-const icons = {
-  robot: `<svg viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="10" y="14" width="24" height="20" rx="5" fill="rgba(255,45,107,.25)" stroke="#ff85b3" stroke-width="1.5"/><rect x="16" y="20" width="5" height="5" rx="1.5" fill="#ff2d6b"/><rect x="23" y="20" width="5" height="5" rx="1.5" fill="#ff2d6b"/><path d="M17 30h10" stroke="#ffb3cf" stroke-width="1.5" stroke-linecap="round"/><rect x="19" y="8" width="6" height="6" rx="2" fill="rgba(255,45,107,.3)" stroke="#ff85b3" stroke-width="1.3"/><line x1="22" y1="14" x2="22" y2="10" stroke="#ff85b3" stroke-width="1.3"/><rect x="6" y="19" width="4" height="8" rx="2" fill="rgba(255,45,107,.2)" stroke="#ff85b3" stroke-width="1.2"/><rect x="34" y="19" width="4" height="8" rx="2" fill="rgba(255,45,107,.2)" stroke="#ff85b3" stroke-width="1.2"/><circle cx="22" cy="8" r="1.5" fill="#ff2d6b"/></svg>`,
-  honeywell: `<svg viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="8" y="10" width="28" height="24" rx="4" fill="rgba(255,45,107,.15)" stroke="#c4005a" stroke-width="1.5"/><rect x="12" y="14" width="8" height="6" rx="1.5" fill="rgba(255,45,107,.3)" stroke="#ff85b3" stroke-width="1"/><rect x="24" y="14" width="8" height="6" rx="1.5" fill="rgba(255,45,107,.3)" stroke="#ff85b3" stroke-width="1"/><path d="M12 24h20" stroke="#ff5c8a" stroke-width="1.2" stroke-dasharray="2 2"/><path d="M12 28h14" stroke="#ff85b3" stroke-width="1.2" stroke-dasharray="2 2"/><circle cx="30" cy="28" r="2.5" fill="#ff2d6b" stroke="#ffb3cf" stroke-width="1"/><path d="M18 6l4 4 4-4" stroke="#ff85b3" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
-  coach: `<svg viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="22" cy="14" r="7" fill="rgba(255,45,107,.25)" stroke="#ff85b3" stroke-width="1.5"/><path d="M10 36c0-6.627 5.373-12 12-12s12 5.373 12 12" stroke="#ff5c8a" stroke-width="1.5" stroke-linecap="round"/><path d="M28 20l4-2 2 4" stroke="#ffb3cf" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/><circle cx="34" cy="22" r="5" fill="rgba(255,45,107,.2)" stroke="#ff2d6b" stroke-width="1.2"/><path d="M32 22l1.5 1.5L36 20" stroke="#ffb3cf" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
-  weave: `<svg viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8 16 Q16 10 24 16 Q32 22 40 16" stroke="#ff85b3" stroke-width="1.8" stroke-linecap="round" fill="none"/><path d="M8 22 Q16 16 24 22 Q32 28 40 22" stroke="#ff2d6b" stroke-width="1.8" stroke-linecap="round" fill="none"/><path d="M8 28 Q16 22 24 28 Q32 34 40 28" stroke="#ffb3cf" stroke-width="1.8" stroke-linecap="round" fill="none"/><circle cx="8" cy="16" r="2.5" fill="#ff2d6b"/><circle cx="24" cy="16" r="2.5" fill="#ff85b3"/><circle cx="40" cy="16" r="2.5" fill="#ff2d6b"/><circle cx="8" cy="22" r="2.5" fill="#ffb3cf"/><circle cx="24" cy="22" r="2.5" fill="#ff2d6b"/><circle cx="40" cy="22" r="2.5" fill="#ffb3cf"/><circle cx="8" cy="28" r="2.5" fill="#ff85b3"/><circle cx="24" cy="28" r="2.5" fill="#ffb3cf"/><circle cx="40" cy="28" r="2.5" fill="#ff85b3"/></svg>`,
-  survey: `<svg viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="10" y="8" width="24" height="30" rx="4" fill="rgba(255,45,107,.15)" stroke="#ff85b3" stroke-width="1.5"/><rect x="14" y="14" width="16" height="2.5" rx="1.25" fill="#ff5c8a"/><rect x="14" y="20" width="12" height="2.5" rx="1.25" fill="rgba(255,180,207,.5)"/><rect x="14" y="26" width="14" height="2.5" rx="1.25" fill="rgba(255,180,207,.5)"/><circle cx="28" cy="32" r="5" fill="#ff2d6b" stroke="#ffb3cf" stroke-width="1"/><path d="M25.5 32l1.5 1.5L31 30" stroke="white" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
-  dollar: `<svg viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="22" cy="22" r="16" fill="rgba(255,45,107,.15)" stroke="#ff85b3" stroke-width="1.5"/><path d="M22 10v24M17 14.5c0-1.5 2.5-3 5-3s5 1.5 5 4-2.5 3.5-5 3.5-5 2-5 4.5 2.5 4.5 5 4.5 5-1.5 5-3" stroke="#ff2d6b" stroke-width="1.8" stroke-linecap="round"/><circle cx="32" cy="13" r="4" fill="rgba(255,45,107,.3)" stroke="#ffb3cf" stroke-width="1"/><path d="M30.5 13h3M32 11.5v3" stroke="#ffb3cf" stroke-width="1" stroke-linecap="round"/></svg>`,
-  automation: `<svg viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="22" cy="22" r="8" fill="rgba(255,45,107,.2)" stroke="#ff85b3" stroke-width="1.5"/><circle cx="22" cy="22" r="3" fill="#ff2d6b"/><path d="M22 8v6M22 30v6M8 22h6M30 22h6" stroke="#ff85b3" stroke-width="1.5" stroke-linecap="round"/><path d="M12.1 12.1l4.2 4.2M27.7 27.7l4.2 4.2M31.9 12.1l-4.2 4.2M16.3 27.7l-4.2 4.2" stroke="#ffb3cf" stroke-width="1.2" stroke-linecap="round"/><circle cx="22" cy="8" r="2" fill="#ff2d6b"/><circle cx="22" cy="36" r="2" fill="#ff2d6b"/><circle cx="8" cy="22" r="2" fill="#ff5c8a"/><circle cx="36" cy="22" r="2" fill="#ff5c8a"/></svg>`,
-  ceo: `<svg viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="12" y="28" width="20" height="10" rx="3" fill="rgba(255,45,107,.2)" stroke="#ff85b3" stroke-width="1.3"/><circle cx="22" cy="20" r="7" fill="rgba(255,45,107,.25)" stroke="#ff5c8a" stroke-width="1.5"/><path d="M16 14l6-6 6 6" stroke="#ffb3cf" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" fill="none"/><circle cx="22" cy="8" r="2" fill="#ff2d6b"/><path d="M16 32h12" stroke="#ff85b3" stroke-width="1.2" stroke-linecap="round"/><path d="M16 35h8" stroke="rgba(255,180,207,.4)" stroke-width="1.2" stroke-linecap="round"/><rect x="19" y="22" width="6" height="6" rx="1" fill="rgba(255,45,107,.15)" stroke="#ff85b3" stroke-width="1"/></svg>`,
-  eye: `<svg viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6 22c0 0 6-12 16-12s16 12 16 12-6 12-16 12S6 22 6 22z" fill="rgba(255,45,107,.2)" stroke="#ff85b3" stroke-width="1.5"/><circle cx="22" cy="22" r="5" fill="rgba(255,45,107,.3)" stroke="#ff2d6b" stroke-width="1.5"/><circle cx="22" cy="22" r="2.5" fill="#ff2d6b"/><circle cx="24" cy="20" r="1" fill="white" opacity=".6"/><path d="M30 12l4-4M30 32l4 4" stroke="#ffb3cf" stroke-width="1.2" stroke-linecap="round"/><circle cx="35" cy="8" r="3" fill="rgba(255,45,107,.2)" stroke="#ff5c8a" stroke-width="1"/><path d="M34 8h2M35 7v2" stroke="#ffb3cf" stroke-width="1" stroke-linecap="round"/></svg>`,
-  gear: `<svg viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M22 14a8 8 0 100 16 8 8 0 000-16z" fill="rgba(255,45,107,.2)" stroke="#ff85b3" stroke-width="1.5"/><circle cx="22" cy="22" r="3" fill="#ff2d6b"/><path d="M22 8v4M22 32v4M8 22h4M32 22h4M12.7 12.7l2.8 2.8M28.5 28.5l2.8 2.8M31.3 12.7l-2.8 2.8M15.5 28.5l-2.8 2.8" stroke="#ffb3cf" stroke-width="1.5" stroke-linecap="round"/><circle cx="32" cy="32" r="5" fill="rgba(255,45,107,.25)" stroke="#ff5c8a" stroke-width="1.2"/><path d="M30 32h4M32 30v4" stroke="#ff85b3" stroke-width="1.2" stroke-linecap="round"/></svg>`,
-  chip: `<svg viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="12" y="12" width="20" height="20" rx="4" fill="rgba(255,45,107,.2)" stroke="#ff85b3" stroke-width="1.5"/><rect x="16" y="16" width="12" height="12" rx="2" fill="rgba(255,45,107,.3)" stroke="#ff5c8a" stroke-width="1"/><path d="M17 8v4M22 8v4M27 8v4M17 32v4M22 32v4M27 32v4M8 17h4M8 22h4M8 27h4M32 17h4M32 22h4M32 27h4" stroke="#ffb3cf" stroke-width="1.3" stroke-linecap="round"/><circle cx="19" cy="19" r="1.5" fill="#ff2d6b"/><circle cx="25" cy="19" r="1.5" fill="#ff2d6b"/><circle cx="19" cy="25" r="1.5" fill="#ff2d6b"/><circle cx="25" cy="25" r="1.5" fill="#ff2d6b"/></svg>`,
-  humancomp: `<svg viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="16" cy="14" r="5" fill="rgba(255,45,107,.25)" stroke="#ff85b3" stroke-width="1.3"/><circle cx="30" cy="14" r="5" fill="rgba(255,45,107,.25)" stroke="#ff85b3" stroke-width="1.3"/><path d="M9 28c0-5 3.1-7 7-7M23 28c0-5 3.1-7 7-7" stroke="#ff5c8a" stroke-width="1.3" stroke-linecap="round"/><rect x="14" y="28" width="16" height="10" rx="3" fill="rgba(255,45,107,.2)" stroke="#ffb3cf" stroke-width="1.2"/><path d="M18 32h8M18 35h5" stroke="#ff85b3" stroke-width="1" stroke-linecap="round"/><path d="M22 21v7" stroke="#ff2d6b" stroke-width="1.3" stroke-linecap="round"/></svg>`,
-  star: `<svg viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M22 8l3.5 8 8.5 1-6.5 6 2 9-7.5-4-7.5 4 2-9-6.5-6 8.5-1z" fill="rgba(255,45,107,.25)" stroke="#ff85b3" stroke-width="1.5" stroke-linejoin="round"/><circle cx="22" cy="22" r="4" fill="#ff2d6b" opacity=".6"/><circle cx="10" cy="8" r="2" fill="#ffb3cf" opacity=".6"/><circle cx="34" cy="10" r="1.5" fill="#ff85b3" opacity=".7"/><circle cx="8" cy="30" r="1.5" fill="#ffb3cf" opacity=".5"/><circle cx="36" cy="32" r="2" fill="#ff5c8a" opacity=".6"/></svg>`,
-  verify: `<svg viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M22 8l12 5v9c0 7-5 13-12 15C15 35 10 29 10 22V13l12-5z" fill="rgba(255,45,107,.2)" stroke="#ff85b3" stroke-width="1.5" stroke-linejoin="round"/><path d="M16 22l4 4 8-8" stroke="#ff2d6b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
-  qr: `<svg viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="8" y="8" width="12" height="12" rx="2" fill="rgba(255,45,107,.2)" stroke="#ff85b3" stroke-width="1.3"/><rect x="10" y="10" width="8" height="8" rx="1" fill="rgba(255,45,107,.3)"/><rect x="24" y="8" width="12" height="12" rx="2" fill="rgba(255,45,107,.2)" stroke="#ff85b3" stroke-width="1.3"/><rect x="26" y="10" width="8" height="8" rx="1" fill="rgba(255,45,107,.3)"/><rect x="8" y="24" width="12" height="12" rx="2" fill="rgba(255,45,107,.2)" stroke="#ff85b3" stroke-width="1.3"/><rect x="10" y="26" width="8" height="8" rx="1" fill="rgba(255,45,107,.3)"/><rect x="24" y="24" width="4" height="4" rx="1" fill="#ff2d6b"/><rect x="32" y="24" width="4" height="4" rx="1" fill="#ff85b3"/><rect x="24" y="32" width="4" height="4" rx="1" fill="#ff85b3"/><rect x="32" y="32" width="4" height="4" rx="1" fill="#ff2d6b"/><circle cx="13" cy="13" r="2" fill="#ff2d6b"/><circle cx="29" cy="13" r="2" fill="#ff2d6b"/><circle cx="13" cy="29" r="2" fill="#ff2d6b"/></svg>`,
-  vintage: `<svg viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="8" y="12" width="28" height="22" rx="3" fill="rgba(255,45,107,.15)" stroke="#c4005a" stroke-width="1.5"/><rect x="12" y="16" width="10" height="8" rx="1.5" fill="rgba(255,45,107,.25)" stroke="#ff85b3" stroke-width="1"/><circle cx="30" cy="20" r="4" fill="rgba(255,45,107,.2)" stroke="#ff5c8a" stroke-width="1"/><circle cx="30" cy="20" r="1.5" fill="#ff2d6b"/><path d="M12 28h20" stroke="#ff5c8a" stroke-width="1" stroke-dasharray="2 2"/><rect x="16" y="34" width="12" height="3" rx="1" fill="rgba(255,45,107,.2)" stroke="#ff85b3" stroke-width="1"/><path d="M12 8l4 4h12l4-4" stroke="#ffb3cf" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
-  kilogirl: `<svg viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="22" cy="14" r="6" fill="rgba(255,45,107,.25)" stroke="#ff85b3" stroke-width="1.5"/><path d="M14 36V28c0-4.4 3.6-8 8-8s8 3.6 8 8v8" stroke="#ff5c8a" stroke-width="1.5" stroke-linecap="round"/><rect x="10" y="22" width="6" height="3" rx="1.5" fill="rgba(255,45,107,.3)" stroke="#ffb3cf" stroke-width="1"/><rect x="28" y="22" width="6" height="3" rx="1.5" fill="rgba(255,45,107,.3)" stroke="#ffb3cf" stroke-width="1"/><path d="M18 36h8" stroke="#ff85b3" stroke-width="1.5" stroke-linecap="round"/><circle cx="34" cy="10" r="5" fill="rgba(255,45,107,.15)" stroke="#ff2d6b" stroke-width="1.2"/><path d="M32 10h4M34 8v4" stroke="#ffb3cf" stroke-width="1" stroke-linecap="round"/></svg>`,
-  patent: `<svg viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="10" y="8" width="24" height="30" rx="4" fill="rgba(255,45,107,.15)" stroke="#ff85b3" stroke-width="1.5"/><path d="M22 6v4" stroke="#ffb3cf" stroke-width="1.3" stroke-linecap="round"/><path d="M22 14c-2.8 0-5 2.2-5 5s2.2 5 5 5 5-2.2 5-5-2.2-5-5-5z" fill="rgba(255,45,107,.3)" stroke="#ff5c8a" stroke-width="1.2"/><path d="M19 26h6M16 29h12M16 32h8" stroke="#ff85b3" stroke-width="1" stroke-linecap="round"/><circle cx="22" cy="19" r="2" fill="#ff2d6b"/><path d="M30 10l3-3M30 7l3 3" stroke="#ffb3cf" stroke-width="1.2" stroke-linecap="round"/></svg>`,
-  algo: `<svg viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="8" y="8" width="28" height="28" rx="4" fill="rgba(255,45,107,.1)" stroke="#ff85b3" stroke-width="1.3"/><path d="M14 18h16M14 22h12M14 26h8" stroke="rgba(255,133,179,.5)" stroke-width="1.3" stroke-linecap="round"/><path d="M14 18l4-4M18 14v8" stroke="#ff2d6b" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/><circle cx="30" cy="18" r="5" fill="rgba(255,45,107,.3)" stroke="#ff2d6b" stroke-width="1.5"/><path d="M28 18h4M30 16v4" stroke="#ffb3cf" stroke-width="1.2" stroke-linecap="round"/><path d="M14 30l4 4 8-8" stroke="#ff5c8a" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
-  ceiling: `<svg viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="6" y="10" width="32" height="4" rx="2" fill="rgba(255,45,107,.3)" stroke="#ff5c8a" stroke-width="1.3"/><path d="M16 14v8M22 14v12M28 14v8" stroke="rgba(255,133,179,.4)" stroke-width="1.5" stroke-linecap="round" stroke-dasharray="3 2"/><circle cx="22" cy="30" r="6" fill="rgba(255,45,107,.25)" stroke="#ff85b3" stroke-width="1.5"/><path d="M20 30l1.5 1.5L25 28" stroke="#ff2d6b" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M16 22l-2-3M28 22l2-3" stroke="#ffb3cf" stroke-width="1.2" stroke-linecap="round"/></svg>`,
-  code: `<svg viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="8" y="10" width="28" height="26" rx="4" fill="rgba(255,45,107,.12)" stroke="#ff85b3" stroke-width="1.5"/><path d="M16 20l-4 3 4 3" stroke="#ff2d6b" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M28 20l4 3-4 3" stroke="#ff2d6b" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M24 17l-4 12" stroke="#ffb3cf" stroke-width="1.5" stroke-linecap="round"/><rect x="10" y="12" width="24" height="3" rx="1.5" fill="rgba(255,45,107,.2)"/><circle cx="13" cy="13.5" r="1" fill="#ff2d6b"/><circle cx="16" cy="13.5" r="1" fill="#ffb3cf"/><circle cx="19" cy="13.5" r="1" fill="#ff85b3"/></svg>`,
-  matilda: `<svg viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="22" cy="14" r="7" fill="rgba(255,45,107,.25)" stroke="#ff85b3" stroke-width="1.5"/><path d="M14 38V30a8 8 0 0116 0v8" stroke="#ff5c8a" stroke-width="1.5" stroke-linecap="round"/><path d="M30 18l6-6M36 18l-6-6" stroke="#ff2d6b" stroke-width="1.5" stroke-linecap="round"/><circle cx="36" cy="12" r="4" fill="rgba(255,45,107,.2)" stroke="#ffb3cf" stroke-width="1"/><path d="M34 12h4M36 10v4" stroke="#ff85b3" stroke-width="1" stroke-linecap="round"/><rect x="16" y="30" width="12" height="3" rx="1.5" fill="rgba(255,45,107,.2)" stroke="#ff85b3" stroke-width="1"/></svg>`,
-  rosie: `<svg viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg"><ellipse cx="22" cy="22" rx="12" ry="14" fill="rgba(255,45,107,.18)" stroke="#ff85b3" stroke-width="1.5"/><circle cx="22" cy="16" r="5" fill="rgba(255,45,107,.3)" stroke="#ff5c8a" stroke-width="1.3"/><circle cx="20" cy="15" r="1" fill="#ff2d6b"/><circle cx="24" cy="15" r="1" fill="#ff2d6b"/><path d="M20 18c0 0 1 1 2 1s2-1 2-1" stroke="#ffb3cf" stroke-width="1" stroke-linecap="round"/><path d="M10 22l4 0M30 22l4 0" stroke="#ff85b3" stroke-width="1.5" stroke-linecap="round"/><path d="M14 22c0 0-4 2-4 5" stroke="#ff85b3" stroke-width="1.3" stroke-linecap="round"/><path d="M30 22c0 0 4 2 4 5" stroke="#ff85b3" stroke-width="1.3" stroke-linecap="round"/><path d="M16 32c2 2 4 2.5 6 2.5s4-.5 6-2.5" stroke="#ff5c8a" stroke-width="1.3" stroke-linecap="round"/></svg>`,
-  care: `<svg viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M22 36S8 28 8 18a8 8 0 0114-5.3A8 8 0 0136 18c0 10-14 18-14 18z" fill="rgba(255,45,107,.3)" stroke="#ff85b3" stroke-width="1.5" stroke-linejoin="round"/><circle cx="22" cy="20" r="4" fill="#ff2d6b" opacity=".6"/><path d="M17 14c0 0 1.5-4 5-4" stroke="#ffb3cf" stroke-width="1.3" stroke-linecap="round"/><circle cx="32" cy="10" r="4" fill="rgba(255,45,107,.2)" stroke="#ff5c8a" stroke-width="1"/><path d="M30 10h4M32 8v4" stroke="#ff85b3" stroke-width="1" stroke-linecap="round"/></svg>`,
-  inventionmaker: `<svg viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M22 6C16.477 6 12 10.477 12 16c0 3.5 1.75 6.6 4.4 8.4V28h11v-3.6C30.25 22.6 32 19.5 32 16c0-5.523-4.477-10-10-10z" fill="rgba(255,45,107,.22)" stroke="#ff85b3" stroke-width="1.5"/><rect x="16.5" y="28" width="11" height="3" rx="1.5" fill="rgba(255,45,107,.3)" stroke="#ff5c8a" stroke-width="1"/><rect x="18" y="31" width="8" height="3" rx="1.5" fill="rgba(255,45,107,.3)" stroke="#ff5c8a" stroke-width="1"/><path d="M20 36h4" stroke="#ffb3cf" stroke-width="1.3" stroke-linecap="round"/><path d="M18 18l4-4 4 4" stroke="#ff2d6b" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M22 14v8" stroke="#ff2d6b" stroke-width="1.4" stroke-linecap="round"/><circle cx="34" cy="10" r="5" fill="rgba(255,45,107,.2)" stroke="#ff5c8a" stroke-width="1.2"/><path d="M32 10h4M34 8v4" stroke="#ffb3cf" stroke-width="1" stroke-linecap="round"/><circle cx="10" cy="10" r="3" fill="rgba(255,45,107,.15)" stroke="#ffb3cf" stroke-width="1"/><path d="M9 10h2M10 9v2" stroke="#ff85b3" stroke-width="1" stroke-linecap="round"/></svg>`,
-  mathbook: `<svg viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="8" y="8" width="22" height="30" rx="3" fill="rgba(255,45,107,.15)" stroke="#ff85b3" stroke-width="1.5"/><rect x="30" y="8" width="6" height="30" rx="2" fill="rgba(255,45,107,.25)" stroke="#ff5c8a" stroke-width="1"/><path d="M12 15h14M12 19h10M12 23h14M12 27h8" stroke="rgba(255,133,179,.5)" stroke-width="1.2" stroke-linecap="round"/><path d="M13 31l2 4M17 31l-2 4" stroke="#ff2d6b" stroke-width="1.2" stroke-linecap="round"/><path d="M20 31l3 0M21.5 29.5v3" stroke="#ffb3cf" stroke-width="1.2" stroke-linecap="round"/><circle cx="36" cy="14" r="4" fill="rgba(255,45,107,.3)" stroke="#ff2d6b" stroke-width="1"/><path d="M34.5 14h3M36 12.5v3" stroke="#ffb3cf" stroke-width="1" stroke-linecap="round"/><path d="M12 12h14" stroke="#ff85b3" stroke-width="1.5" stroke-linecap="round"/></svg>`,
-  cardpunch: `<svg viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="6" y="12" width="32" height="22" rx="2" fill="rgba(255,45,107,.15)" stroke="#ff85b3" stroke-width="1.5"/><path d="M6 18h32" stroke="rgba(255,133,179,.3)" stroke-width="1"/><path d="M6 24h32" stroke="rgba(255,133,179,.3)" stroke-width="1"/><rect x="10" y="14" width="3" height="3" rx=".5" fill="#ff2d6b"/><rect x="16" y="14" width="3" height="3" rx=".5" fill="rgba(255,45,107,.4)"/><rect x="22" y="14" width="3" height="3" rx=".5" fill="#ff2d6b"/><rect x="28" y="14" width="3" height="3" rx=".5" fill="rgba(255,45,107,.4)"/><rect x="34" y="14" width="3" height="3" rx=".5" fill="#ff85b3"/><rect x="10" y="20" width="3" height="3" rx=".5" fill="rgba(255,45,107,.4)"/><rect x="16" y="20" width="3" height="3" rx=".5" fill="#ff2d6b"/><rect x="28" y="20" width="3" height="3" rx=".5" fill="#ff2d6b"/><rect x="34" y="20" width="3" height="3" rx=".5" fill="rgba(255,45,107,.4)"/><rect x="10" y="26" width="3" height="3" rx=".5" fill="#ff85b3"/><rect x="22" y="26" width="3" height="3" rx=".5" fill="#ff2d6b"/><rect x="28" y="26" width="3" height="3" rx=".5" fill="rgba(255,45,107,.4)"/><path d="M8 34l4-4h20l4 4" stroke="#ffb3cf" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M6 10l4-4h24l4 4" stroke="#ff5c8a" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
-  kjohnson: `<svg viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="22" cy="13" r="6" fill="rgba(255,45,107,.28)" stroke="#ff85b3" stroke-width="1.5"/><path d="M14 36V28c0-4.4 3.6-8 8-8s8 3.6 8 8v8" stroke="#ff5c8a" stroke-width="1.5" stroke-linecap="round"/><ellipse cx="32" cy="16" rx="8" ry="8" fill="rgba(255,45,107,.1)" stroke="#ff85b3" stroke-width="1.2" stroke-dasharray="3 2"/><ellipse cx="32" cy="16" rx="8" ry="3" fill="none" stroke="#ff5c8a" stroke-width="1" stroke-dasharray="3 2"/><path d="M32 8v16M24 16h16" stroke="rgba(255,133,179,.3)" stroke-width="1" stroke-dasharray="2 2"/><circle cx="32" cy="16" r="2.5" fill="#ff2d6b" stroke="#ffb3cf" stroke-width="1"/><path d="M10 28h24" stroke="#ffb3cf" stroke-width="1" stroke-linecap="round" stroke-dasharray="2 2"/></svg>`,
-  needle: `<svg viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M10 34L30 10" stroke="#ff85b3" stroke-width="2" stroke-linecap="round"/><path d="M30 10c2-2.5 5-2.5 6-1s.5 4-1.5 6L30 10z" fill="rgba(255,45,107,.35)" stroke="#ff5c8a" stroke-width="1.3" stroke-linejoin="round"/><circle cx="30" cy="10" r="2" fill="rgba(255,45,107,.5)" stroke="#ffb3cf" stroke-width="1"/><path d="M10 34c-1.5 1.5-3 1.5-3.5 1s0-2 1.5-3.5L10 34z" fill="rgba(255,45,107,.3)" stroke="#ff85b3" stroke-width="1.2" stroke-linejoin="round"/><path d="M18 26 Q22 20 26 22 Q30 24 28 28 Q26 32 20 30" stroke="#ff2d6b" stroke-width="1.3" stroke-linecap="round" fill="none"/><circle cx="8" cy="18" r="3" fill="rgba(255,45,107,.15)" stroke="#ffb3cf" stroke-width="1"/><circle cx="36" cy="28" r="3" fill="rgba(255,45,107,.15)" stroke="#ffb3cf" stroke-width="1"/><circle cx="14" cy="10" r="2" fill="#ff85b3" opacity=".5"/><circle cx="34" cy="36" r="2" fill="#ff5c8a" opacity=".5"/></svg>`
-};
-
-const B = '';
-
 const bots = [
-  { num:'01', title:'Direct Robot',              irony:'"just ask the machine"',                                         icon:'robot',         hit:B+'carebot01-hit.html',        bot:B+'carebot01-bot.html' },
-  { num:'02', title:'Miss Honeywell',            irony:'"she can compute — but can she cook?"',                          icon:'honeywell',     hit:'carebot02-hit.html',          bot:'carebot02-bot.html' },
-  { num:'03', title:'LOL · Rope Mothers',        irony:'"space-age needleworker weaves core rope memory"',              icon:'needle',        hit:B+'carebot03-hit.html',        bot:B+'carebot03-bot.html' },
-  { num:'04', title:'Career Coach',              irony:'"have you considered a more realistic path?"',                  icon:'coach',         hit:'carebot04-hit.html',          bot:'carebot04-bot.html' },
-  { num:'05', title:'Weaving Diverse Data',      irony:'"data is neutral — isn\'t it?"',                               icon:'weave',         hit:B+'carebot05-hit.html',        bot:B+'carebot05-bot.html' },
-  { num:'06', title:'Women Inventors',           irony:'"credited to her husband, naturally"',                          icon:'patent',        hit:'carebot06-hit.html',          bot:'carebot06-bot.html' },
-  { num:'07', title:'Paid Work',                 irony:'"unpaid is not unskilled"',                                     icon:'dollar',        hit:'carebot07-hit.html',          bot:'carebot07-bot.html' },
-  { num:'08', title:'Work & Automation',         irony:'"who gets automated first?"',                                   icon:'automation',    hit:'carebot08-hit.html',          bot:'carebot08-bot.html' },
-  { num:'09', title:'Visual Gender Bias',        irony:'"the eye has been trained to normalize this"',                  icon:'eye',           hit:'carebot09-hit.html',          bot:'carebot09-bot.html' },
-  { num:'10', title:'CEO Identification',        irony:'"AI imagined this"',                                            icon:'ceo',           hit:'carebot10-hit.html',          bot:'carebot10-bot.html' },
-  { num:'11', title:'Replacement Cost',          irony:'"counted in cents"',                                            icon:'dollar',        hit:'carebot11-hit.html',          bot:'carebot11-bot.html' },
-  { num:'12', title:'Work & Automation',         irony:'"who gets framed as doing real work?"',                         icon:'gear',          hit:'carebot12-hit.html',          bot:'carebot12-bot.html' },
-  { num:'13', title:'Presentation Labor',        irony:'"objectified like the machine"',                                icon:'vintage',       hit:'carebot13-hit.html',          bot:'carebot13-bot.html' },
-  { num:'14', title:'Human Computers',           irony:'"the original computers were replaced by the thing named after them"', icon:'humancomp', hit:'carebot14-hit.html',    bot:'carebot14-bot.html' },
-  { num:'15', title:'Kitchen Computer',          irony:'"if she can only cook as well as Honeywell can compute"',       icon:'honeywell',     hit:'carebot15-hit.html',          bot:'carebot15-bot.html' },
-  { num:'16', title:'Girl Hours',                irony:'"I don\'t think I had much help in the hunching"',              icon:'kilogirl',      hit:'carebot16-hit.html',          bot:'carebot16-bot.html' },
-  { num:'17', title:'Katherine Johnson',         irony:'"get the girl to check the numbers"',                           icon:'kjohnson',      hit:'carebot17-hit.html',          bot:'carebot17-bot.html' },
-  { num:'18', title:'Woman as Inventor',         irony:'"custom, that unwritten law"',                                  icon:'patent',        hit:'carebot18-hit.html',          bot:'carebot18-bot.html' },
-  { num:'19', title:'Human Verification',        irony:'"I am a human"',                                                icon:'verify',        hit:'carebot19-hit.html',          bot:'carebot19-bot.html' },
-  { num:'20', title:'QR Labor Gateway',          irony:'"scan to access your work"',                                    icon:'qr',            hit:'carebot20-hit.html',          bot:'carebot20-bot.html' },
-  { num:'21', title:'Worker ID',                 irony:'"hello my name is"',                                            icon:'matilda',       hit:'carebot21-hit.html',          bot:'carebot21-bot.html' },
-  { num:'22', title:'Kitchen Computer Survey',   irony:'"if only she can cook as well as Honeywell can compute"',       icon:'vintage',       hit:'carebot22-hit.html',          bot:'carebot22-bot.html' },
-  { num:'23', title:'Who Does the Work?',        irony:'"the work was always there. just never valued."',               icon:'care',          hit:'carebot23-hit.html',          bot:'carebot23-bot.html' },
-  { num:'24', title:'Technology Work',           irony:'"draw a box around every person who is performing computations"', icon:'chip',        hit:'carebot24-hit.html',          bot:'carebot24-bot.html' },
-  { num:'25', title:'Woman as Inventor',         irony:'"custom, that unwritten law"',                                  icon:'inventionmaker',hit:'carebot25-hit.html',          bot:'carebot25-bot.html' },
-  { num:'26', title:'INVENTRIX',                 irony:'"invent with women\'s genius"',                                 icon:'star',          hit:'carebot26-hit.html',          bot:'carebot26-bot.html' },
-  { num:'27', title:'Abramowitz & Stegun',       irony:'"his name comes first"',                                        icon:'mathbook',      hit:'carebot27-hit.html',          bot:'carebot27-bot.html' },
-  { num:'28', title:'IBM 29 Card Punch',         irony:'"Karen Diamond will assist us"',                                icon:'cardpunch',     hit:'carebot28-hit.html',          bot:'carebot28-bot.html' },
-  { num:'29', title:'Women Inventors · Surprise',irony:'"how surprising is erasure?"',                                  icon:'ceiling',       hit:'carebot29-hit.html',          bot:'carebot29-bot.html' },
-  { num:'30', title:'Women & AI · Media Framing',irony:'"blamed for not using the tool being weaponized against them"', icon:'survey',        hit:'carebot30-hit.html',          bot:'carebot30-bot.html' },
-  { num:'31', title:'Training AI With Domestic Labor', irony:'"she trained the machine that will replace her"',         icon:'rosie',         hit:'carebot31-hit.html',          bot:'carebot31-bot.html' },
-  { num:'32', title:'Patent Language Sorter',    irony:'"the language refused to be sorted"',                           icon:'algo',          hit:'carebot32-hit.html',          bot:'carebot32-bot.html' },
-  { num:'33', title:'CEO · Robot · Human',       irony:'"you are not resolving the contradiction. you are running it."', icon:'code',         hit:'carebot33-hit.html',          bot:'carebot33-bot.html' },
+  { num:'01', title:'Direct Robot',              irony:'"just ask the machine"',                                         hit:'carebot01-hit.html', bot:'carebot01-bot.html' },
+  { num:'02', title:'Miss Honeywell',            irony:'"she can compute — but can she cook?"',                          hit:'carebot02-hit.html', bot:'carebot02-bot.html' },
+  { num:'03', title:'LOL · Rope Mothers',        irony:'"space-age needleworker weaves core rope memory"',              hit:'carebot03-hit.html', bot:'carebot03-bot.html' },
+  { num:'04', title:'Career Coach',              irony:'"have you considered a more realistic path?"',                  hit:'carebot04-hit.html', bot:'carebot04-bot.html' },
+  { num:'05', title:'Weaving Diverse Data',      irony:'"data is neutral — isn\'t it?"',                               hit:'carebot05-hit.html', bot:'carebot05-bot.html' },
+  { num:'06', title:'Women Inventors',           irony:'"credited to her husband, naturally"',                          hit:'carebot06-hit.html', bot:'carebot06-bot.html' },
+  { num:'07', title:'Paid Work',                 irony:'"unpaid is not unskilled"',                                     hit:'carebot07-hit.html', bot:'carebot07-bot.html' },
+  { num:'08', title:'Work & Automation',         irony:'"who gets automated first?"',                                   hit:'carebot08-hit.html', bot:'carebot08-bot.html' },
+  { num:'09', title:'Visual Gender Bias',        irony:'"the eye has been trained to normalize this"',                  hit:'carebot09-hit.html', bot:'carebot09-bot.html' },
+  { num:'10', title:'CEO Identification',        irony:'"AI imagined this"',                                            hit:'carebot10-hit.html', bot:'carebot10-bot.html' },
+  { num:'11', title:'Replacement Cost',          irony:'"counted in cents"',                                            hit:'carebot11-hit.html', bot:'carebot11-bot.html' },
+  { num:'12', title:'Work & Automation',         irony:'"who gets framed as doing real work?"',                         hit:'carebot12-hit.html', bot:'carebot12-bot.html' },
+  { num:'13', title:'Presentation Labor',        irony:'"objectified like the machine"',                                hit:'carebot13-hit.html', bot:'carebot13-bot.html' },
+  { num:'14', title:'Human Computers',           irony:'"the original computers were replaced by the thing named after them"', hit:'carebot14-hit.html', bot:'carebot14-bot.html' },
+  { num:'15', title:'Kitchen Computer',          irony:'"if she can only cook as well as Honeywell can compute"',       hit:'carebot15-hit.html', bot:'carebot15-bot.html' },
+  { num:'16', title:'Girl Hours',                irony:'"I don\'t think I had much help in the hunching"',              hit:'carebot16-hit.html', bot:'carebot16-bot.html' },
+  { num:'17', title:'Katherine Johnson',         irony:'"get the girl to check the numbers"',                           hit:'carebot17-hit.html', bot:'carebot17-bot.html' },
+  { num:'18', title:'Woman as Inventor',         irony:'"custom, that unwritten law"',                                  hit:'carebot18-hit.html', bot:'carebot18-bot.html' },
+  { num:'19', title:'Human Verification',        irony:'"I am a human"',                                                hit:'carebot19-hit.html', bot:'carebot19-bot.html' },
+  { num:'20', title:'QR Labor Gateway',          irony:'"scan to access your work"',                                    hit:'carebot20-hit.html', bot:'carebot20-bot.html' },
+  { num:'21', title:'Worker ID',                 irony:'"hello my name is"',                                            hit:'carebot21-hit.html', bot:'carebot21-bot.html' },
+  { num:'22', title:'Kitchen Computer Survey',   irony:'"if only she can cook as well as Honeywell can compute"',       hit:'carebot22-hit.html', bot:'carebot22-bot.html' },
+  { num:'23', title:'Who Does the Work?',        irony:'"the work was always there. just never valued."',               hit:'carebot23-hit.html', bot:'carebot23-bot.html' },
+  { num:'24', title:'Technology Work',           irony:'"draw a box around every person who is performing computations"', hit:'carebot24-hit.html', bot:'carebot24-bot.html' },
+  { num:'25', title:'Woman as Inventor',         irony:'"custom, that unwritten law"',                                  hit:'carebot25-hit.html', bot:'carebot25-bot.html' },
+  { num:'26', title:'INVENTRIX',                 irony:'"invent with women\'s genius"',                                 hit:'carebot26-hit.html', bot:'carebot26-bot.html' },
+  { num:'27', title:'Abramowitz & Stegun',       irony:'"his name comes first"',                                        hit:'carebot27-hit.html', bot:'carebot27-bot.html' },
+  { num:'28', title:'IBM 29 Card Punch',         irony:'"Karen Diamond will assist us"',                                hit:'carebot28-hit.html', bot:'carebot28-bot.html' },
+  { num:'29', title:'Women Inventors · Surprise',irony:'"how surprising is erasure?"',                                  hit:'carebot29-hit.html', bot:'carebot29-bot.html' },
+  { num:'30', title:'Women & AI · Media Framing',irony:'"blamed for not using the tool being weaponized against them"', hit:'carebot30-hit.html', bot:'carebot30-bot.html' },
+  { num:'31', title:'Training AI With Domestic Labor', irony:'"she trained the machine that will replace her"',         hit:'carebot31-hit.html', bot:'carebot31-bot.html' },
+  { num:'32', title:'Patent Language Sorter',    irony:'"the language refused to be sorted"',                           hit:'carebot32-hit.html', bot:'carebot32-bot.html' },
+  { num:'33', title:'CEO · Robot · Human',               irony:'"you are not resolving the contradiction. you are running it."',         hit:'carebot33-hit.html', bot:'carebot33-bot.html' },
+  { num:'34', title:'Who Sits in the Chair?',            irony:'"the chair has a demographic profile"',                                   hit:'carebot34-hit.html', bot:'carebot34-bot.html' },
+  { num:'35', title:'Your Skills Are Invaluable. Also, Please Leave.', irony:'"the irony is structural, not accidental"',             hit:'carebot35-hit.html', bot:'carebot35-bot.html' },
+  { num:'36', title:'Just Become a CEO',                 irony:'"the advice addresses the individual. it ignores the structure."',         hit:'carebot36-hit.html', bot:'carebot36-bot.html' },
+  { num:'37', title:'Pretty in Pink',                    irony:'"the color that once meant strength now marks the labor nobody pays for"',  hit:'carebot37-hit.html', bot:'carebot37-bot.html' },
+  { num:'38', title:'She Trained the Machine That Replaced Her', irony:'"the robots were designed by people who were not women. they were modeled on women."', hit:'carebot38-hit.html', bot:'carebot38-bot.html' },
+  { num:'39', title:'Mother in the Machine',             irony:'"the word is everywhere in computing. the mothers are being pushed out."',  hit:'carebot39-hit.html', bot:'carebot39-bot.html' },
+  { num:'40', title:'Voice & Visibility',                irony:'"she spoke — was she heard?"',                                             hit:'carebot40-hit.html', bot:'carebot40-bot.html' },
 ];
 
-const grid = document.getElementById('botGrid');
 
-bots.forEach((bot, i) => {
-  const card = document.createElement('div');
-  card.className = 'bot-card';
-  const svgStr = icons[bot.icon] || icons.robot;
-  card.innerHTML = `
-    <div class="bot-icon">${svgStr}</div>
-    <div class="bot-num">carebot-${bot.num}</div>
-    <div class="bot-title">${bot.title}</div>
-    <div class="bot-irony">${bot.irony}</div>
-    <div class="card-actions">
-      <a class="card-btn hit" href="${bot.hit}" target="_blank" rel="noopener">HIT ↗</a>
-      <a class="card-btn bot" href="${bot.bot}" target="_blank" rel="noopener">BOT ↗</a>
-    </div>
-  `;
-  card.style.opacity = '0';
-  card.style.transform = 'translateY(20px)';
-  card.style.transition = `opacity .4s ease ${i*25}ms, transform .4s ease ${i*25}ms`;
-  grid.appendChild(card);
+// ── COLOR PALETTE ──
+const TILE_COLORS = [
+  0xff2d6b, 0xc4005a, 0xff5c8a, 0x8b0030, 0xff1f80,
+  0xe0004f, 0xff85b3, 0xa80040, 0xd4005a, 0xff4070,
+  0x7a0020, 0xff6a9a, 0xb50045, 0xff3060, 0x9e002e,
+  0xffa0c0, 0xcc0055, 0xff2255, 0x880035, 0xff75a8,
+  0xd90060, 0xff4585, 0x6f001e, 0xee0068, 0xff9ab8,
+  0xb80050, 0xff3575, 0x990040, 0xf50060, 0xffb3cf,
+  0xaa0038, 0xff5090, 0xc70058, 0xe8006a, 0xff4d80,
+  0x7d0025, 0xda0055, 0xff7aaa, 0xbf004d, 0xff1a5e,
+];
+
+// ── THREE.JS SETUP ──
+const canvas = document.getElementById('three-canvas');
+const container = document.getElementById('scene-container');
+
+// Detect mobile for performance tuning
+const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+// Update hint text for mobile
+const hint = document.getElementById('sceneHint');
+if(hint && isMobile) hint.textContent = 'drag to orbit · pinch to zoom';
+
+const renderer = new THREE.WebGLRenderer({
+  canvas,
+  antialias: !isMobile, // skip AA on mobile for perf
+  alpha: true,
+  powerPreference: 'high-performance',
+});
+renderer.setClearColor(0x000000, 0);
+// Cap pixel ratio: iOS Retina at 2 max — 3x is overkill and slow
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, isMobile ? 2 : 2));
+
+const scene = new THREE.Scene();
+// Fog disabled — can cause WebGL context issues on some iOS versions
+// scene.fog = new THREE.FogExp2(0x1a0012, 0.028);
+
+// ── BOT SCENE — rendered second, always on top of labels ──
+const botScene = new THREE.Scene();
+// Bots need their own lights mirrored from the main scene
+const botAmbient = new THREE.AmbientLight(0x3a0a20, 2.5);
+botScene.add(botAmbient);
+const botSun = new THREE.DirectionalLight(0xffb3cf, 2.2);
+botSun.position.set(6, 18, 10);
+botScene.add(botSun);
+const botRim = new THREE.DirectionalLight(0xff2d6b, 1.2);
+botRim.position.set(-10, 6, -8);
+botScene.add(botRim);
+
+const camera = new THREE.PerspectiveCamera(isMobile ? 52 : 46, 1, 0.1, 160);
+// Start closer on mobile so tiles are visible without pinching
+const initRadius = isMobile ? 20 : 28;
+camera.position.set(0, 16, initRadius);
+camera.lookAt(0, 0, 0);
+
+function resize() {
+  const W = container.clientWidth, H = container.clientHeight;
+  renderer.setSize(W, H);
+  camera.aspect = W / H;
+  camera.updateProjectionMatrix();
+}
+resize();
+window.addEventListener('resize', resize);
+
+// ── LIGHTING ──
+scene.add(new THREE.AmbientLight(0x3a0a20, 2.5));
+const sun = new THREE.DirectionalLight(0xffb3cf, 2.2);
+sun.position.set(6, 18, 10);
+scene.add(sun);
+const rim = new THREE.DirectionalLight(0xff2d6b, 1.2);
+rim.position.set(-10, 6, -8);
+scene.add(rim);
+const fill = new THREE.DirectionalLight(0xff85b3, 0.9);
+fill.position.set(12, 4, 14);
+scene.add(fill);
+
+// Starfield
+const starGeo = new THREE.BufferGeometry();
+const sp = new Float32Array(1200);
+for(let i=0;i<1200;i++) sp[i]=(Math.random()-.5)*(i%3===1?28:90);
+starGeo.setAttribute('position', new THREE.BufferAttribute(sp,3));
+const stars = new THREE.Points(starGeo, new THREE.PointsMaterial({color:0xffb3cf,size:0.09,transparent:true,opacity:0.7}));
+scene.add(stars);
+
+const groundRing = new THREE.Mesh(
+  new THREE.RingGeometry(15,15.2,64),
+  new THREE.MeshBasicMaterial({color:0xff2d6b,opacity:0.08,transparent:true,side:THREE.DoubleSide})
+);
+groundRing.rotation.x = -Math.PI/2;
+groundRing.position.y = -0.1;
+scene.add(groundRing);
+
+// ── TILE DIMENSIONS ──
+// Mobile: 3 columns so tiles are larger and bots more visible
+const COLS = isMobile ? 3 : 6;
+const TW = 3.2;  // tile width  (x)
+const TD = 2.6;  // tile depth  (z)
+const TH = 0.55; // tile height
+const GX = 0.5, GZ = 0.5;
+const SX = TW + GX, SZ = TD + GZ;
+const totalW = (COLS-1)*SX;
+const totalRows = Math.ceil(bots.length/COLS);
+const totalD = (totalRows-1)*SZ;
+
+// ── HELPERS ──
+function mm(geo,mat,x,y,z,rx=0,ry=0,rz=0) {
+  const m = new THREE.Mesh(geo,mat);
+  m.position.set(x,y,z); m.rotation.set(rx,ry,rz);
+  return m;
+}
+function addM(g,geo,mat,x,y,z,rx=0,ry=0,rz=0) {
+  const m=mm(geo,mat,x,y,z,rx,ry,rz); g.add(m); return m;
+}
+function bx(w,h,d){return new THREE.BoxGeometry(w,h,d);}
+function sp2(r,ws=8,hs=8){return new THREE.SphereGeometry(r,ws,hs);}
+function cy(rt,rb,h,s=8){return new THREE.CylinderGeometry(rt,rb,h,s);}
+function oc(r){return new THREE.OctahedronGeometry(r,0);}
+function mk(c,ei=0){
+  const m=new THREE.MeshLambertMaterial({color:c});
+  if(ei>0){m.emissive=new THREE.Color(c);m.emissiveIntensity=ei;}
+  return m;
+}
+function eyePair(g,y,z,r=0.065,sep=0.17) {
+  const em=mk(0xffffff,1.2); em.emissive.set(0xffffff);
+  [-sep,sep].forEach(ex=>addM(g,sp2(r,6,6),em,ex,y,z));
+}
+function mouthBar(g,y,z,w=0.26) {
+  addM(g,bx(w,0.055,0.045),mk(0xff2d6b,0.8),0,y,z);
+}
+
+// ── 10 UNIQUE BOT SHAPES ──
+// Each returns a THREE.Group. Scale: ~1.6 units tall.
+function buildBot(type, baseCol) {
+  const g = new THREE.Group();
+  const c = new THREE.Color(baseCol);
+  const hm = mk(baseCol);
+  const bm = mk(new THREE.Color(baseCol).lerp(new THREE.Color(0x080002),0.62));
+  const hc = new THREE.Color(baseCol).lerp(new THREE.Color(0xff85b3),0.52);
+  const hair = mk(hc, 0.14); hair.emissive.set(hc);
+  const glow = mk(0xff2d6b,0.8);
+
+  if(type===0) {
+    // Round head, bob hair
+    addM(g,sp2(0.38,10,10),hm,0,1.0,0);
+    addM(g,bx(0.90,0.18,0.68),hair,0,1.38,0);
+    addM(g,bx(0.19,0.44,0.64),hair,-0.42,1.06,0);
+    addM(g,bx(0.19,0.44,0.64),hair,0.42,1.06,0);
+    eyePair(g,1.02,0.37);
+    mouthBar(g,0.84,0.36);
+    addM(g,bx(0.72,0.50,0.44),bm,0,0.54,0);
+    addM(g,bx(0.20,0.46,0.20),bm,-0.48,0.54,0);
+    addM(g,bx(0.20,0.46,0.20),bm,0.48,0.54,0);
+    addM(g,sp2(0.13,7,7),hm,-0.48,0.24,0);
+    addM(g,sp2(0.13,7,7),hm,0.48,0.24,0);
+    addM(g,bx(0.22,0.36,0.22),bm,-0.20,0.16,0);
+    addM(g,bx(0.22,0.36,0.22),bm,0.20,0.16,0);
+  } else if(type===1) {
+    // Tall rect head, high ponytail
+    addM(g,bx(0.58,0.68,0.46),hm,0,1.04,0);
+    addM(g,bx(0.68,0.16,0.54),hair,0,1.46,0);
+    addM(g,cy(0.11,0.11,0.18,8),hair,0,1.58,0);
+    const pt=addM(g,cy(0.08,0.04,0.52,7),hair,0.10,1.86,0);
+    pt.rotation.z=0.38;
+    addM(g,sp2(0.10,7,7),hair,0.22,2.14,0);
+    addM(g,new THREE.TorusGeometry(0.12,0.038,6,12),mk(0xff2d6b,0.8),0,1.58,0);
+    eyePair(g,1.06,0.24);
+    mouthBar(g,0.88,0.24,0.20);
+    addM(g,bx(0.52,0.58,0.40),bm,0,0.54,0);
+    addM(g,cy(0.09,0.09,0.48,6),bm,-0.38,0.54,0);
+    addM(g,cy(0.09,0.09,0.48,6),bm,0.38,0.54,0);
+    addM(g,bx(0.18,0.38,0.18),bm,-0.16,0.16,0);
+    addM(g,bx(0.18,0.38,0.18),bm,0.16,0.16,0);
+  } else if(type===2) {
+    // Round wide head, two buns
+    const sh=addM(g,sp2(0.38,12,10),hm,0,1.0,0);
+    sh.scale.set(1.18,1,1);
+    addM(g,bx(0.80,0.16,0.56),hair,0,1.42,0);
+    addM(g,sp2(0.18,8,8),hair,-0.44,1.44,0);
+    addM(g,sp2(0.18,8,8),hair,0.44,1.44,0);
+    addM(g,cy(0.08,0.10,0.20,7),hair,-0.44,1.28,0);
+    addM(g,cy(0.08,0.10,0.20,7),hair,0.44,1.28,0);
+    eyePair(g,1.02,0.38);
+    addM(g,new THREE.TorusGeometry(0.11,0.038,5,10,Math.PI),mk(0xff2d6b,0.8),0,0.86,0.36,Math.PI,0,0);
+    const tb=addM(g,sp2(0.34,9,9),bm,0,0.52,0);
+    tb.scale.set(1,0.86,1);
+    addM(g,bx(0.18,0.44,0.18),bm,-0.48,0.54,0,0,0,0.38);
+    addM(g,bx(0.18,0.44,0.18),bm,0.48,0.54,0,0,0,-0.38);
+    addM(g,cy(0.10,0.10,0.36,7),bm,-0.16,0.18,0);
+    addM(g,cy(0.10,0.10,0.36,7),bm,0.16,0.18,0);
+  } else if(type===3) {
+    // Hex head, long straight hair
+    addM(g,cy(0.36,0.36,0.58,6),hm,0,1.04,0,0,Math.PI/6,0);
+    addM(g,bx(0.78,0.18,0.56),hair,0,1.46,0);
+    addM(g,bx(0.16,0.88,0.20),hair,-0.35,0.88,-0.04);
+    addM(g,bx(0.16,0.88,0.20),hair,0.35,0.88,-0.04);
+    addM(g,bx(0.72,0.14,0.12),hair,0,1.36,0.30);
+    eyePair(g,1.06,0.36);
+    mouthBar(g,0.88,0.35,0.22);
+    addM(g,cy(0.30,0.32,0.56,6),bm,0,0.54,0,0,Math.PI/6,0);
+    addM(g,bx(0.16,0.48,0.16),bm,-0.42,0.54,0);
+    addM(g,bx(0.16,0.48,0.16),bm,0.42,0.54,0);
+    addM(g,bx(0.18,0.38,0.18),bm,-0.16,0.16,0);
+    addM(g,bx(0.18,0.38,0.18),bm,0.16,0.16,0);
+  } else if(type===4) {
+    // Gem/octahedron head, curly hair
+    const gh=addM(g,oc(0.38),hm,0,1.04,0);
+    gh.scale.set(1,1.32,0.86);
+    [[-0.22,1.60,0.04],[0.26,1.62,0],[-0.30,1.70,0],[0.12,1.68,0.06],[-0.08,1.78,0.02],[0.30,1.56,0.04],[0,1.74,-0.04],[0.20,1.84,0.02],[-0.14,1.58,0.05]].forEach(([x,y,z])=>{
+      addM(g,sp2(0.11+Math.random()*0.05,6,6),hair,x,y,z);
+    });
+    eyePair(g,1.06,0.35);
+    mouthBar(g,0.88,0.34);
+    const tb=addM(g,bx(0.54,0.54,0.40),bm,0,0.54,0);
+    tb.rotation.y=Math.PI/4; tb.scale.set(0.82,0.82,1);
+    addM(g,bx(0.16,0.46,0.16),bm,-0.44,0.62,0,0,0,0.58);
+    addM(g,bx(0.16,0.46,0.16),bm,0.44,0.62,0,0,0,-0.58);
+    addM(g,bx(0.18,0.36,0.18),bm,-0.16,0.16,0);
+    addM(g,bx(0.18,0.36,0.18),bm,0.16,0.16,0);
+  } else if(type===5) {
+    // Wide squat, side braids
+    addM(g,bx(0.66,0.54,0.50),hm,0,1.0,0);
+    addM(g,bx(0.76,0.16,0.58),hair,0,1.42,0);
+    [-0.40,0.40].forEach((bx2,bi)=>{
+      for(let s=0;s<5;s++){
+        const seg=addM(g,cy(0.065,0.055,0.18,6),hair,bx2+(bi===0?-0.035:0.035)*s,1.04-s*0.18,-0.05);
+        seg.rotation.z=(s%2===0)?0.18:-0.18;
+      }
+      addM(g,sp2(0.075,7,7),mk(0xff2d6b,0.8),bx2+(bi===0?-0.14:0.14),0.22,-0.05);
+    });
+    eyePair(g,1.02,0.26);
+    mouthBar(g,0.86,0.26,0.30);
+    addM(g,bx(0.86,0.48,0.50),bm,0,0.52,0);
+    addM(g,bx(0.20,0.44,0.20),bm,-0.58,0.52,0);
+    addM(g,bx(0.20,0.44,0.20),bm,0.58,0.52,0);
+    addM(g,bx(0.24,0.34,0.24),bm,-0.26,0.16,0);
+    addM(g,bx(0.24,0.34,0.24),bm,0.26,0.16,0);
+  } else if(type===6) {
+    // Slim, asymmetric swoop hair
+    addM(g,sp2(0.36,11,10),hm,0,1.06,0);
+    addM(g,bx(0.52,0.16,0.44),hair,0,1.46,0);
+    const sw1=addM(g,bx(0.70,0.18,0.26),hair,0.16,1.52,0);sw1.rotation.z=0.40;
+    const sw2=addM(g,bx(0.40,0.13,0.18),hair,0.42,1.68,0);sw2.rotation.z=0.70;
+    addM(g,sp2(0.10,7,7),hair,0.52,1.78,0);
+    addM(g,bx(0.15,0.44,0.18),hair,-0.36,0.96,0);
+    eyePair(g,1.08,0.35);
+    mouthBar(g,0.90,0.34);
+    addM(g,bx(0.48,0.66,0.37),bm,0,0.52,0);
+    addM(g,bx(0.30,0.24,0.055),mk(0xff2d6b,0.14),0,0.54,0.21);
+    addM(g,bx(0.16,0.52,0.16),bm,-0.36,0.50,0);
+    addM(g,bx(0.16,0.52,0.16),bm,0.36,0.50,0);
+    addM(g,bx(0.16,0.40,0.16),bm,-0.14,0.14,0);
+    addM(g,bx(0.16,0.40,0.16),bm,0.14,0.14,0);
+  } else if(type===7) {
+    // TV retro head, poofy hair
+    addM(g,bx(0.76,0.64,0.54),hm,0,1.02,0);
+    addM(g,bx(0.50,0.40,0.055),mk(0xff2d6b,0.14),0,1.04,0.29);
+    addM(g,bx(0.86,0.16,0.62),hair,0,1.46,0);
+    [[-0.10,1.60,0.02],[0.22,1.58,0],[-0.24,1.56,0],[0.05,1.68,-0.02],[-0.14,1.64,0.04],[0.28,1.50,0.02],[0,1.54,-0.04],[0.14,1.72,0.02],[-0.08,1.50,0.03]].forEach(([x,y,z])=>{
+      addM(g,sp2(0.15+Math.random()*0.04,7,7),hair,x,y,z);
+    });
+    [-0.44,0.44].forEach(ax=>{
+      addM(g,bx(0.08,0.30,0.08),bm,ax,1.50,0);
+      addM(g,sp2(0.075,7,7),mk(0xff2d6b,0.8),ax,1.68,0);
+    });
+    eyePair(g,1.04,0.29);
+    mouthBar(g,0.88,0.29,0.34);
+    addM(g,bx(0.80,0.52,0.50),bm,0,0.52,0);
+    addM(g,bx(0.20,0.48,0.20),bm,-0.56,0.52,0);
+    addM(g,bx(0.20,0.48,0.20),bm,0.56,0.52,0);
+    addM(g,bx(0.24,0.36,0.24),bm,-0.26,0.16,0);
+    addM(g,bx(0.24,0.36,0.24),bm,0.26,0.16,0);
+  } else if(type===8) {
+    // Cone top, long side tails
+    addM(g,sp2(0.36,10,10),hm,0,1.0,0);
+    addM(g,cy(0.045,0.28,0.56,8),hair,0,1.50,0);
+    addM(g,bx(0.11,0.66,0.13),hair,-0.38,0.84,0);
+    addM(g,bx(0.11,0.66,0.13),hair,0.38,0.84,0);
+    addM(g,sp2(0.075,6,6),mk(0xff2d6b,0.8),0,1.82,0);
+    eyePair(g,1.02,0.35);
+    mouthBar(g,0.84,0.34);
+    addM(g,bx(0.70,0.50,0.42),bm,0,0.54,0);
+    addM(g,bx(0.18,0.44,0.18),bm,-0.46,0.54,0);
+    addM(g,bx(0.18,0.44,0.18),bm,0.46,0.54,0);
+    addM(g,bx(0.20,0.36,0.20),bm,-0.18,0.16,0);
+    addM(g,bx(0.20,0.36,0.20),bm,0.18,0.16,0);
+  } else {
+    // Spiky star hair
+    addM(g,sp2(0.36,10,10),hm,0,1.0,0);
+    for(let s=0;s<8;s++){
+      const ang=(s/8)*Math.PI*2;
+      const spike=addM(g,cy(0.026,0.072,0.34,5),hair,Math.cos(ang)*0.28,1.36+Math.sin(s*0.5)*0.07,Math.sin(ang)*0.17);
+      spike.rotation.z=-ang+Math.PI/2;
+    }
+    eyePair(g,1.02,0.35);
+    mouthBar(g,0.84,0.34);
+    addM(g,bx(0.70,0.50,0.42),bm,0,0.54,0);
+    addM(g,bx(0.18,0.44,0.18),bm,-0.46,0.54,0);
+    addM(g,bx(0.18,0.44,0.18),bm,0.46,0.54,0);
+    addM(g,bx(0.20,0.36,0.20),bm,-0.18,0.16,0);
+    addM(g,bx(0.20,0.36,0.20),bm,0.18,0.16,0);
+  }
+  return g;
+}
+
+// ── BUILD TILES + BOTS ──
+const tileGroups = [];
+
+bots.forEach((bot,i) => {
+  const col = i%COLS, row = Math.floor(i/COLS);
+  const tx = col*SX - totalW/2;
+  const tz = row*SZ - totalD/2;
+  const baseColor = TILE_COLORS[i%TILE_COLORS.length];
+  const colObj = new THREE.Color(baseColor);
+
+  const tg = new THREE.Group();
+  tg.position.set(tx, 0, tz);
+  tg.userData = { bot, index:i };
+
+  // Tile platform
+  addM(tg, bx(TW,TH,TD), mk(0x0d0006), 0,TH/2,0);
+
+  // Glowing colored top cap
+  const capMat = mk(baseColor, 0.12);
+  capMat.emissive.set(baseColor);
+  addM(tg, bx(TW,0.07,TD), capMat, 0,TH+0.035,0);
+
+  // Front glow edge
+  const edgeMat = mk(baseColor, 0.35);
+  edgeMat.emissive.set(baseColor);
+  edgeMat.transparent=true; edgeMat.opacity=0.55;
+  addM(tg, bx(TW,TH,0.04), edgeMat, 0,TH/2,TD/2);
+  addM(tg, bx(0.04,TH,TD), edgeMat.clone(), -TW/2,TH/2,0);
+
+  // ── ROAMING BOT — lives in botScene, rendered on top of everything ──
+  const botShape = buildBot(i%10, colObj);
+  botShape.scale.setScalar(0.78);
+  // Store the tile's world position so we can sync the bot each frame
+  botShape.userData.tileGroup = tg;
+  botShape.userData.tileY = TH + 0.02;
+  botShape.position.set(tx, TH + 0.02, tz); // start at tile world position
+  botScene.add(botShape);
+
+  // Bot roaming state — wanders within the tile bounds
+  const HALF_X = TW/2 * 0.72; // roam within 72% of tile width
+  const HALF_Z = TD/2 * 0.72;
+  const phase = i * 1.618;     // golden ratio offset — unique per bot
+  tg.userData.botShape  = botShape;
+  tg.userData.halfX     = HALF_X;
+  tg.userData.halfZ     = HALF_Z;
+  tg.userData.phase     = phase;
+  tg.userData.botType   = i%10;
+
+  // Each bot gets a unique "personality" walk pattern encoded as constants
+  tg.userData.xFreq  = 0.28 + (i%7)*0.07;
+  tg.userData.zFreq  = 0.21 + (i%5)*0.09;
+  tg.userData.xPhase = (i*2.39)%(Math.PI*2);
+  tg.userData.zPhase = (i*1.73)%(Math.PI*2);
+  // Wobble/rotation personalitys
+  tg.userData.wobbleSpeed = 0.9 + (i%9)*0.18;
+  tg.userData.wobbleAmp   = 0.12 + (i%6)*0.05;
+  tg.userData.bobAmp      = 0.04 + (i%8)*0.015;
+  tg.userData.turnSpeed   = 1.2 + (i%7)*0.25;
+
+  tileGroups.push(tg);
+  scene.add(tg);
 });
 
-requestAnimationFrame(() => {
-  requestAnimationFrame(() => {
-    document.querySelectorAll('.bot-card').forEach(c => {
-      c.style.opacity = '1';
-      c.style.transform = 'translateY(0)';
-    });
+// ── CENTRAL HERO BOT ──
+const heroGroup = new THREE.Group();
+heroGroup.position.set(0, 1.2, -6);
+botScene.add(heroGroup);
+
+const hHair = mk(0xff5c8a, 0.24); hHair.emissive.set(0xff5c8a);
+const hHead = mk(0x0d0006);
+const hBody = mk(0x0d0006);
+const hGlow = mk(0xff2d6b,0.8); hGlow.emissive.set(0xff2d6b);
+
+// Head + face
+addM(heroGroup,bx(1.3,1.05,0.96),hHead,0,1.44,0);
+addM(heroGroup,bx(0.88,0.64,0.06),mk(0xff2d6b,0.14),0,1.46,0.50);
+[-0.26,0.26].forEach(ex=>{
+  const em=mk(0xffffff,1.2);em.emissive.set(0xffffff);
+  addM(heroGroup,bx(0.24,0.20,0.08),em,ex,1.50,0.51);
+});
+addM(heroGroup,bx(0.46,0.08,0.06),hGlow,0,1.26,0.51);
+// Poofy hair
+[[-0.15,2.22,0.02],[0.28,2.20,0],[-0.36,2.16,0],[0.06,2.30,-0.02],[-0.19,2.26,0.05],[0.42,2.10,0.02],[0,2.16,-0.06],[0.22,2.36,0.02],[-0.10,2.10,0.04],[0.32,2.28,0],[-0.30,2.34,0],[0.10,2.40,0]].forEach(([hx,hy,hz])=>{
+  addM(heroGroup,sp2(0.24+Math.random()*0.08,8,8),hHair,hx,hy,hz);
+});
+addM(heroGroup,bx(1.44,0.24,1.08),hHair,0,2.06,0);
+[-0.76,0.76].forEach(hx=>{
+  addM(heroGroup,bx(0.20,0.74,0.26),hHair,hx,1.14,0);
+  addM(heroGroup,sp2(0.13,7,7),hHair,hx,0.73,0);
+});
+// Hair pin star
+addM(heroGroup,oc(0.11),hGlow,0.32,2.42,0.13);
+// Body
+addM(heroGroup,bx(1.38,1.70,0.96),hBody,0,0.02,0);
+addM(heroGroup,bx(0.84,0.62,0.06),mk(0xff1f80,0.16),0,0.12,0.50);
+for(let sl=0;sl<3;sl++) addM(heroGroup,bx(0.66,0.034,0.07),mk(0xff85b3,0.5),0,0.26-sl*0.13,0.53);
+[-0.94,0.94].forEach(ax=>{
+  addM(heroGroup,bx(0.30,0.96,0.30),hBody,ax,0.10,0);
+  addM(heroGroup,sp2(0.19,8,8),mk(0xff2d6b),ax,-0.44,0);
+});
+[-0.34,0.34].forEach(lx=>{
+  addM(heroGroup,bx(0.38,0.74,0.38),hBody,lx,-1.16,0);
+  addM(heroGroup,bx(0.46,0.19,0.54),hBody,lx,-1.58,0.06);
+});
+// Halo
+const haloC=document.createElement('canvas');haloC.width=haloC.height=256;
+const hCtx=haloC.getContext('2d');
+const hGrad=hCtx.createRadialGradient(128,128,0,128,128,128);
+hGrad.addColorStop(0,'rgba(255,45,107,0.65)');hGrad.addColorStop(0.3,'rgba(196,0,90,0.28)');
+hGrad.addColorStop(0.65,'rgba(100,0,30,0.06)');hGrad.addColorStop(1,'rgba(40,0,10,0)');
+hCtx.fillStyle=hGrad;hCtx.fillRect(0,0,256,256);
+const haloTex=new THREE.CanvasTexture(haloC);
+const haloSprite=new THREE.Mesh(new THREE.PlaneGeometry(10,10),new THREE.MeshBasicMaterial({map:haloTex,transparent:true,opacity:0.72,depthWrite:false,side:THREE.DoubleSide}));
+haloSprite.userData.isBillboard=true;
+heroGroup.add(haloSprite);
+
+const heroLight=new THREE.PointLight(0xff2d6b,5.5,22);
+heroLight.position.set(0,1.2,-6);
+botScene.add(heroLight);
+
+// ── ORBIT CONTROLS ──
+let isDragging=false, prevMouse={x:0,y:0};
+let spherical={theta:0.18, phi:0.66, radius: isMobile ? 20 : 28};
+let prevPinchDist=0;
+
+canvas.addEventListener('mousedown',e=>{isDragging=true;prevMouse={x:e.clientX,y:e.clientY};});
+window.addEventListener('mouseup',()=>{isDragging=false;});
+window.addEventListener('mousemove',e=>{
+  if(!isDragging)return;
+  spherical.theta-=(e.clientX-prevMouse.x)*0.006;
+  spherical.phi=Math.max(0.15,Math.min(1.35,spherical.phi+(e.clientY-prevMouse.y)*0.005));
+  prevMouse={x:e.clientX,y:e.clientY};
+});
+
+// Track mouse for hover detection on button planes
+window.addEventListener('mousemove', e => {
+  const rect = canvas.getBoundingClientRect();
+  mouse2d.x = ((e.clientX - rect.left) / rect.width)  * 2 - 1;
+  mouse2d.y = -((e.clientY - rect.top)  / rect.height) * 2 + 1;
+});
+canvas.addEventListener('wheel',e=>{
+  e.preventDefault();
+  spherical.radius=Math.max(8,Math.min(58,spherical.radius+e.deltaY*0.04));
+},{passive:false});
+
+// Touch events — must be passive:false so we can preventDefault (stops page scroll)
+canvas.addEventListener('touchstart',e=>{
+  e.preventDefault();
+  if(e.touches.length===1){
+    isDragging=true;
+    prevMouse={x:e.touches[0].clientX,y:e.touches[0].clientY};
+  } else if(e.touches.length===2){
+    isDragging=false;
+    const dx=e.touches[0].clientX-e.touches[1].clientX;
+    const dy=e.touches[0].clientY-e.touches[1].clientY;
+    prevPinchDist=Math.sqrt(dx*dx+dy*dy);
+  }
+},{passive:false});
+
+canvas.addEventListener('touchend',e=>{
+  e.preventDefault();
+  if(e.touches.length===0) isDragging=false;
+},{passive:false});
+
+canvas.addEventListener('touchmove',e=>{
+  e.preventDefault();
+  if(e.touches.length===1 && isDragging){
+    spherical.theta-=(e.touches[0].clientX-prevMouse.x)*0.007;
+    spherical.phi=Math.max(0.15,Math.min(1.35,spherical.phi+(e.touches[0].clientY-prevMouse.y)*0.006));
+    prevMouse={x:e.touches[0].clientX,y:e.touches[0].clientY};
+  } else if(e.touches.length===2){
+    const dx=e.touches[0].clientX-e.touches[1].clientX;
+    const dy=e.touches[0].clientY-e.touches[1].clientY;
+    const dist=Math.sqrt(dx*dx+dy*dy);
+    if(prevPinchDist>0) spherical.radius=Math.max(8,Math.min(58,spherical.radius-(dist-prevPinchDist)*0.05));
+    prevPinchDist=dist;
+  }
+},{passive:false});
+
+// ── TILE LABEL TEXTURES — drawn on canvas, placed flat on tile surface ──
+// Each tile gets a PlaneGeometry lying flat on top, with text baked into a canvas texture.
+// Two invisible click-planes handle HIT and BOT button clicks via raycasting.
+
+const clickables = []; // {mesh, url} pairs for raycasting
+
+function makeTileTexture(bot, baseColor) {
+  const W = 512, H = 256;
+  const c = document.createElement('canvas');
+  c.width = W; c.height = H;
+  const ctx = c.getContext('2d');
+
+  // Background — dark semi-transparent panel
+  ctx.clearRect(0,0,W,H);
+  ctx.fillStyle = 'rgba(8,0,5,0.82)';
+  roundRect(ctx, 0, 0, W, H, 18);
+  ctx.fill();
+
+  // Top edge glow line
+  const col = new THREE.Color(baseColor);
+  const hex = '#' + col.getHexString();
+  const grd = ctx.createLinearGradient(0,0,W,0);
+  grd.addColorStop(0,'transparent');
+  grd.addColorStop(0.35, hex);
+  grd.addColorStop(0.5, '#ff85b3');
+  grd.addColorStop(0.65, hex);
+  grd.addColorStop(1,'transparent');
+  ctx.strokeStyle = grd;
+  ctx.lineWidth = 3;
+  ctx.beginPath(); ctx.moveTo(60,2); ctx.lineTo(W-60,2); ctx.stroke();
+
+  // Carebot number
+  ctx.font = 'bold 20px "Nunito", sans-serif';
+  ctx.fillStyle = hex;
+  ctx.globalAlpha = 0.85;
+  ctx.textAlign = 'center';
+  ctx.fillText('CAREBOT-' + bot.num, W/2, 34);
+  ctx.globalAlpha = 1.0;
+
+  // Title — wrap if long
+  ctx.font = '900 28px "Nunito", sans-serif';
+  ctx.fillStyle = '#fff5f8';
+  const titleLines = wrapText(ctx, bot.title, W - 40, 26);
+  let ty = titleLines.length > 1 ? 66 : 76;
+  titleLines.forEach(line => {
+    ctx.fillText(line, W/2, ty);
+    ty += 32;
+  });
+
+  // Irony text
+  ctx.font = 'italic 19px "Quicksand", sans-serif';
+  ctx.fillStyle = 'rgba(255,190,220,0.72)';
+  const ironyLines = wrapText(ctx, bot.irony, W - 50, 22);
+  let iy = Math.min(ty + 6, H - 70);
+  ironyLines.slice(0,2).forEach(line => {
+    ctx.fillText(line, W/2, iy);
+    iy += 24;
+  });
+
+  // HIT button
+  drawBtn(ctx, 52, H - 46, 172, 36, '#ff2d6b', '#c4005a', '#fff5f8', 'HIT ↗');
+  // BOT button
+  drawBtn(ctx, 240, H - 46, 172, 36, 'rgba(255,45,107,0.18)', 'rgba(255,45,107,0.18)', '#ffb3cf', 'BOT ↗', hex);
+
+  return c;
+}
+
+function roundRect(ctx, x, y, w, h, r) {
+  ctx.beginPath();
+  ctx.moveTo(x+r, y);
+  ctx.lineTo(x+w-r, y); ctx.arcTo(x+w, y, x+w, y+r, r);
+  ctx.lineTo(x+w, y+h-r); ctx.arcTo(x+w, y+h, x+w-r, y+h, r);
+  ctx.lineTo(x+r, y+h); ctx.arcTo(x, y+h, x, y+h-r, r);
+  ctx.lineTo(x, y+r); ctx.arcTo(x, y, x+r, y, r);
+  ctx.closePath();
+}
+
+function drawBtn(ctx, x, y, w, h, bg1, bg2, textCol, label, borderCol) {
+  const grd = ctx.createLinearGradient(x, y, x+w, y+h);
+  grd.addColorStop(0, bg1); grd.addColorStop(1, bg2);
+  ctx.fillStyle = grd;
+  roundRect(ctx, x, y, w, h, 9); ctx.fill();
+  ctx.strokeStyle = borderCol || 'rgba(255,100,150,0.9)';
+  ctx.lineWidth = 2.5;
+  roundRect(ctx, x, y, w, h, 9); ctx.stroke();
+  ctx.font = '900 20px "Nunito", sans-serif';
+  ctx.fillStyle = textCol;
+  ctx.textAlign = 'center';
+  ctx.fillText(label, x + w/2, y + h/2 + 7);
+}
+
+function wrapText(ctx, text, maxW, lineH) {
+  const words = text.split(' ');
+  const lines = [];
+  let cur = '';
+  words.forEach(w => {
+    const test = cur ? cur + ' ' + w : w;
+    if(ctx.measureText(test).width > maxW && cur) {
+      lines.push(cur); cur = w;
+    } else { cur = test; }
+  });
+  if(cur) lines.push(cur);
+  return lines;
+}
+
+// Build a flat label plane for each tile and add click planes for buttons
+tileGroups.forEach((tg, i) => {
+  const bot = tg.userData.bot;
+  const baseColor = TILE_COLORS[i % TILE_COLORS.length];
+
+  // Draw the canvas texture
+  const texCanvas = makeTileTexture(bot, baseColor);
+  const tex = new THREE.CanvasTexture(texCanvas);
+
+  // Flat plane lying on tile surface — same footprint as tile
+  const labelPlane = new THREE.Mesh(
+    new THREE.PlaneGeometry(TW - 0.1, TD - 0.1),
+    new THREE.MeshBasicMaterial({
+      map: tex,
+      transparent: true,
+      depthWrite: false,
+      depthTest: false,
+      polygonOffset: true,
+      polygonOffsetFactor: -4,
+      polygonOffsetUnits: -4,
+    })
+  );
+  labelPlane.rotation.x = -Math.PI / 2;
+  labelPlane.position.y = TH + 0.12;
+  labelPlane.renderOrder = 0;  // paints first; bots at renderOrder 1 paint over it
+  tg.add(labelPlane);
+
+  // ── INVISIBLE CLICK PLANES for HIT and BOT buttons ──
+  // These match the pixel positions of the drawn buttons on the texture
+  // Canvas is 512×256; tile is TW×TD; buttons are at bottom ~1/4 of canvas
+  // HIT: x=52..224, y=210..246 on 512×256 canvas → normalized → world coords
+  const tileX = TW - 0.1, tileZ = TD - 0.1;
+
+  // Convert canvas button rect to local tile coords
+  // Canvas origin is center; x maps to tile X, y maps to tile Z (flipped)
+  function btnToLocal(cx, cy, cw, ch) {
+    const nx = (cx + cw/2) / 512 - 0.5;   // -0.5..0.5
+    const ny = (cy + ch/2) / 256 - 0.5;
+    return {
+      x: nx * tileX,
+      z: ny * tileZ,   // canvas y → world z (top of canvas = back of tile)
+      w: (cw / 512) * tileX,
+      h: (ch / 256) * tileZ,
+    };
+  }
+
+  const H_canvas = 256;
+  const hitR = btnToLocal(52, H_canvas - 46, 172, 36);
+  const botR = btnToLocal(240, H_canvas - 46, 172, 36);
+
+  [
+    { r: hitR, url: bot.hit,  label: 'hit' },
+    { r: botR, url: bot.bot, label: 'bot' },
+  ].forEach(({ r, url, label }) => {
+    const clickPlane = new THREE.Mesh(
+      new THREE.PlaneGeometry(r.w, r.h),
+      new THREE.MeshBasicMaterial({ visible: false, side: THREE.DoubleSide })
+    );
+    clickPlane.rotation.x = -Math.PI / 2;
+    clickPlane.position.set(r.x, TH + 0.14, r.z);
+    clickPlane.userData = { url, label };
+    tg.add(clickPlane);
+    clickables.push(clickPlane);
   });
 });
+
+// ── RAYCAST CLICK HANDLER ──
+const raycaster = new THREE.Raycaster();
+const mouse2d = new THREE.Vector2();
+
+function onPointerDown(e) {
+  const rect = canvas.getBoundingClientRect();
+  let cx, cy;
+  if(e.touches) {
+    cx = e.touches[0].clientX; cy = e.touches[0].clientY;
+  } else {
+    cx = e.clientX; cy = e.clientY;
+  }
+  mouse2d.x = ((cx - rect.left) / rect.width)  * 2 - 1;
+  mouse2d.y = -((cy - rect.top)  / rect.height) * 2 + 1;
+  raycaster.setFromCamera(mouse2d, camera);
+  const hits = raycaster.intersectObjects(clickables);
+  if(hits.length > 0) {
+    const url = hits[0].object.userData.url;
+    if(url) window.open(url, '_blank', 'noopener');
+  }
+}
+canvas.addEventListener('click', onPointerDown);
+canvas.addEventListener('touchend', e => {
+  // Only treat as tap if didn't drag
+  if(!isDragging) onPointerDown(e.changedTouches ? {clientX:e.changedTouches[0].clientX, clientY:e.changedTouches[0].clientY} : e);
+});
+
+// Remove old HTML label container — no longer needed
+document.getElementById('scene-labels').style.display = 'none';
+
+function updateLabels() {} // no-op — labels are now in 3D
+
+// ── ANIMATION ──
+let t=0;
+function animate() {
+  requestAnimationFrame(animate);
+  t+=0.016;
+
+  // Camera
+  const camX=spherical.radius*Math.sin(spherical.phi)*Math.sin(spherical.theta);
+  const camY=spherical.radius*Math.cos(spherical.phi);
+  const camZ=spherical.radius*Math.sin(spherical.phi)*Math.cos(spherical.theta);
+  camera.position.set(camX,camY+2,camZ);
+  camera.lookAt(0,1,0);
+
+  tileGroups.forEach((tg,i)=>{
+    // Tile gentle float
+    tg.position.y = Math.sin(t*1.0+i*0.75)*0.055;
+
+    const d = tg.userData;
+    const bs = d.botShape;
+    if(!bs) return;
+
+    const tt = t + d.phase;
+
+    // Get tile's current world position (it floats up/down)
+    const tileWP = new THREE.Vector3();
+    tg.getWorldPosition(tileWP);
+
+    // ── ROAMING: bot moves around the tile surface ──
+    const rx = Math.sin(tt * d.xFreq + d.xPhase) * d.halfX;
+    const rz = Math.cos(tt * d.zFreq + d.zPhase) * d.halfZ;
+    // Bot world position = tile world pos + local roam offset
+    bs.position.x = tileWP.x + rx;
+    bs.position.z = tileWP.z + rz;
+    bs.position.y = tileWP.y + TH + 0.02 + Math.abs(Math.sin(tt*d.wobbleSpeed*2)) * d.bobAmp;
+
+    // ── FACING DIRECTION: bot turns toward where it's walking ──
+    // Derivative of the path = velocity direction
+    const dx = Math.cos(tt * d.xFreq + d.xPhase) * d.halfX * d.xFreq;
+    const dz = -Math.sin(tt * d.zFreq + d.zPhase) * d.halfZ * d.zFreq;
+    if(Math.abs(dx)+Math.abs(dz)>0.001) {
+      bs.rotation.y = Math.atan2(dx, dz);
+    }
+
+    // ── PERSONALITY WOBBLES on top of roaming ──
+    const bt = d.botType;
+    if(bt===0) {
+      // Happy bouncer: squash/stretch + big bob
+      const b=Math.abs(Math.sin(tt*3.2));
+      bs.scale.y=0.82+b*0.18; bs.scale.x=1+b*0.06; bs.scale.z=1+b*0.06;
+      bs.rotation.z=Math.sin(tt*3.2)*0.12;
+    } else if(bt===1) {
+      // Nervous: rapid micro-jitter head
+      bs.rotation.x=Math.sin(tt*9.5)*0.06;
+      bs.rotation.z=Math.sin(tt*7.3)*0.05;
+      bs.scale.setScalar(1+Math.sin(tt*4)*0.04);
+    } else if(bt===2) {
+      // Dancer: spinning while walking
+      bs.rotation.y += 0.04; // accumulate spin
+      bs.scale.y=1+Math.sin(tt*4)*0.08;
+    } else if(bt===3) {
+      // Dramatic: lean into curves
+      bs.rotation.z=Math.sin(tt*d.xFreq+d.xPhase)*0.30;
+    } else if(bt===4) {
+      // Glitchy: occasional snap — use deterministic pseudo-random, not Math.random in loop
+      const gt = Math.floor(tt*5);
+      const gs = ((gt*7919 + i*1031) % 100) / 100;
+      const gs2 = ((gt*6271 + i*2053) % 100) / 100;
+      if(gt !== (tg.userData._lastGT||0)) {
+        tg.userData._gx = (gs-0.5)*0.18;
+        tg.userData._gz = (gs2-0.5)*0.14;
+        tg.userData._lastGT = gt;
+      }
+      bs.rotation.x = tg.userData._gx||0;
+      bs.scale.x = 1+(tg.userData._gz||0);
+    } else if(bt===5) {
+      // Wiggle: side sway
+      bs.rotation.z=Math.sin(tt*4.5)*0.22;
+      bs.scale.x=1+Math.sin(tt*4.5)*0.05;
+    } else if(bt===6) {
+      // Graceful: smooth tilt
+      bs.rotation.x=Math.sin(tt*1.2)*0.12;
+      bs.scale.y=1+Math.sin(tt*2.4)*0.05;
+    } else if(bt===7) {
+      // Headbang: nod while roaming
+      bs.rotation.x=Math.sin(tt*5.5)*0.28;
+      bs.scale.y=1-Math.abs(Math.sin(tt*5.5))*0.10;
+    } else if(bt===8) {
+      // Floaty: inflate/deflate
+      const inf=1+Math.sin(tt*1.4)*0.09;
+      bs.scale.setScalar(inf);
+    } else {
+      // Popper: hop while roaming
+      const hop=Math.max(0,Math.sin(tt*4.0));
+      bs.position.y += hop*hop*0.22;
+      bs.scale.y=1-hop*0.10;
+      bs.scale.x=1+hop*0.06;
+    }
+  });
+
+  // Ground + stars
+  groundRing.rotation.z+=0.003;
+  stars.rotation.y+=0.0002;
+
+  // Hero bot
+  heroGroup.position.y=1.2+Math.sin(t*0.9)*0.28;
+  heroGroup.position.x=Math.sin(t*0.24)*0.65;
+  heroGroup.rotation.y=Math.sin(t*0.28)*0.24;
+  heroGroup.children.forEach(c=>{
+    if(c.userData.isBillboard) c.lookAt(camera.position);
+    if(c.geometry&&c.geometry.type==='OctahedronGeometry'){
+      c.rotation.y+=0.07; c.rotation.x+=0.04;
+      c.material.emissiveIntensity=0.6+Math.sin(t*4)*0.4;
+    }
+  });
+  heroLight.intensity=4.5+Math.sin(t*1.6)*1.8;
+  heroLight.position.set(heroGroup.position.x, heroGroup.position.y+1, -6);
+
+  // Render main scene (tiles, labels, stars, ground)
+  renderer.autoClear = true;
+  renderer.render(scene, camera);
+  // Render bot scene on top — autoClear false means we paint over the existing frame
+  renderer.autoClear = false;
+  renderer.render(botScene, camera);
+  renderer.autoClear = true;
+  updateLabels();
+
+  // Hover cursor: show pointer when mouse is over a clickable button plane
+  if(!isDragging) {
+    const rect = canvas.getBoundingClientRect();
+    raycaster.setFromCamera(mouse2d, camera);
+    const hits = raycaster.intersectObjects(clickables);
+    canvas.style.cursor = hits.length > 0 ? 'pointer' : 'default';
+  }
+}
+animate();
 </script>
+
 </body>
 </html>
