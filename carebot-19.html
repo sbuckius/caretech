@@ -1,0 +1,340 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
+<title>✦ CAREtech · Carebot 19 · Human Verification</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<style>
+:root{
+  --hot:#ff2d6b;--candy:#ff85b3;--blush:#ffb3cf;--cream:#fff5f8;
+  --maroon:#6f001e;--bg:#1a0012;--color:#880035;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{background:var(--bg);color:var(--cream);font-family:'Quicksand',sans-serif;font-weight:600;-webkit-font-smoothing:antialiased;}
+body{min-height:100vh;overflow:hidden;}
+.bg-layer{position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:radial-gradient(ellipse 80% 60% at 10% 15%,rgba(180,0,50,.4) 0%,transparent 55%),
+  radial-gradient(ellipse 60% 70% at 90% 85%,rgba(120,0,30,.35) 0%,transparent 55%),
+  linear-gradient(160deg,#220008,#180008 45%,#120005);}
+.orb{position:fixed;border-radius:50%;pointer-events:none;z-index:0;filter:blur(70px);will-change:transform;}
+.o1{width:500px;height:500px;background:var(--maroon);opacity:.25;top:-120px;left:-100px;animation:d1 20s ease-in-out infinite;}
+.o2{width:400px;height:400px;background:#c40032;opacity:.2;bottom:-80px;right:-80px;animation:d2 24s ease-in-out infinite;}
+.o3{width:300px;height:300px;background:var(--hot);opacity:.12;top:35%;left:55%;animation:d3 16s ease-in-out infinite;}
+@keyframes d1{0%,100%{transform:translate(0,0)}50%{transform:translate(50px,35px)}}
+@keyframes d2{0%,100%{transform:translate(0,0)}50%{transform:translate(-35px,-25px)}}
+@keyframes d3{0%,100%{transform:translate(0,0)}33%{transform:translate(-25px,18px)}66%{transform:translate(18px,-12px)}}
+#scene-container{position:fixed;inset:0;z-index:10;touch-action:none;-webkit-tap-highlight-color:transparent;}
+#three-canvas{display:block;width:100%!important;height:100%!important;touch-action:none;}
+/* Back link */
+.back-link{position:fixed;top:14px;left:18px;z-index:100;font-family:'Nunito',sans-serif;font-weight:900;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,180,210,.5);text-decoration:none;padding:6px 14px;border-radius:999px;background:rgba(10,0,6,.6);border:1px solid rgba(255,60,120,.2);transition:all .2s;}
+.back-link:hover{color:var(--cream);border-color:var(--hot);background:rgba(255,45,107,.15);}
+/* Nav chips */
+.nav-chips{position:fixed;top:14px;right:18px;z-index:100;display:flex;gap:8px;}
+.chip{padding:6px 14px;border-radius:999px;background:rgba(255,45,107,.08);border:1px solid rgba(255,130,180,.2);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,200,224,.55);font-family:'Quicksand',sans-serif;font-weight:600;}
+.chip-color{background:rgba(255,45,107,.12);border-color:var(--color);color:var(--color);}
+/* Scene hint */
+.hint{position:fixed;bottom:14px;left:50%;transform:translateX(-50%);font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,160,200,.2);pointer-events:none;white-space:nowrap;z-index:20;}
+/* HIT / BOT buttons overlay */
+.action-bar{position:fixed;bottom:40px;left:50%;transform:translateX(-50%);z-index:100;display:flex;gap:10px;align-items:center;}
+.btn{font-family:'Nunito',sans-serif;font-weight:900;font-size:13px;letter-spacing:.10em;text-transform:uppercase;text-decoration:none;padding:10px 28px;border-radius:999px;white-space:nowrap;cursor:pointer;transition:all .18s;-webkit-tap-highlight-color:transparent;}
+.btn-hit{background:linear-gradient(135deg,#ff2d6b,#c4005a);color:#fff5f8;border:1.5px solid rgba(255,100,150,.9);box-shadow:0 4px 20px rgba(255,45,107,.5);}
+.btn-hit:hover{box-shadow:0 6px 28px rgba(255,45,107,.75);transform:translateY(-2px) scale(1.04);}
+.btn-bot{background:rgba(255,45,107,.14);color:#ffb3cf;border:1.5px solid rgba(255,100,160,.55);}
+.btn-bot:hover{background:rgba(255,45,107,.28);color:#fff5f8;border-color:#ff2d6b;transform:translateY(-2px) scale(1.04);}
+</style>
+</head>
+<body>
+<div class="bg-layer"></div>
+<div class="orb o1"></div><div class="orb o2"></div><div class="orb o3"></div>
+
+<a class="back-link" href="caretech-bots-only.html">← All Carebots</a>
+<div class="nav-chips">
+  <div class="chip">carebot-19</div>
+  <div class="chip chip-color">Human Verification</div>
+</div>
+
+<div id="scene-container">
+  <canvas id="three-canvas"></canvas>
+</div>
+
+<div class="action-bar">
+  <a class="btn btn-hit" href="carebot19-hit.html" target="_blank" rel="noopener">✦ HIT →</a>
+  <a class="btn btn-bot" href="carebot19-bot.html" target="_blank" rel="noopener">◎ BOT →</a>
+</div>
+<div class="hint" id="hint">drag to orbit · scroll to zoom</div>
+
+<script>
+const BOT_NUM   = '19';
+const BOT_TITLE = 'Human Verification';
+const BOT_IRONY = '"I am a human"';
+const BOT_HIT   = 'carebot19-hit.html';
+const BOT_BOT   = 'carebot19-bot.html';
+const BOT_IDX   = 18;
+const TILE_COLOR = 0x880035;
+const BOT_TYPE   = 8;
+
+const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+if(isMobile) document.getElementById('hint').textContent = 'drag to orbit · pinch to zoom';
+
+const canvas = document.getElementById('three-canvas');
+const container = document.getElementById('scene-container');
+const renderer = new THREE.WebGLRenderer({canvas, antialias:!isMobile, alpha:true, powerPreference:'high-performance'});
+renderer.setClearColor(0x000000,0);
+renderer.setPixelRatio(Math.min(window.devicePixelRatio,2));
+
+const scene = new THREE.Scene();
+const botScene = new THREE.Scene();
+botScene.add(new THREE.AmbientLight(0x3a0a20,2.5));
+const bSun=new THREE.DirectionalLight(0xffb3cf,2.2);bSun.position.set(6,18,10);botScene.add(bSun);
+const bRim=new THREE.DirectionalLight(0xff2d6b,1.2);bRim.position.set(-10,6,-8);botScene.add(bRim);
+
+const camera = new THREE.PerspectiveCamera(44,1,0.1,100);
+camera.position.set(0,4,9);
+camera.lookAt(0,1,0);
+
+function resize(){
+  const W=container.clientWidth,H=container.clientHeight;
+  renderer.setSize(W,H);camera.aspect=W/H;camera.updateProjectionMatrix();
+}
+resize(); window.addEventListener('resize',resize);
+
+scene.add(new THREE.AmbientLight(0x3a0a20,2.5));
+const sun=new THREE.DirectionalLight(0xffb3cf,2.2);sun.position.set(6,18,10);scene.add(sun);
+const rim=new THREE.DirectionalLight(0xff2d6b,1.2);rim.position.set(-10,6,-8);scene.add(rim);
+scene.add(new THREE.DirectionalLight(0xff85b3,0.9)).position.set(12,4,14);
+
+// Stars
+const sGeo=new THREE.BufferGeometry();
+const sPos=new Float32Array(900);
+for(let i=0;i<900;i++) sPos[i]=(Math.random()-.5)*(i%3===1?20:60);
+sGeo.setAttribute('position',new THREE.BufferAttribute(sPos,3));
+scene.add(new THREE.Points(sGeo,new THREE.PointsMaterial({color:0xffb3cf,size:0.10,transparent:true,opacity:0.7})));
+
+// Ground ring
+const gr=new THREE.Mesh(new THREE.RingGeometry(6,6.15,64),new THREE.MeshBasicMaterial({color:0xff2d6b,opacity:0.10,transparent:true,side:THREE.DoubleSide}));
+gr.rotation.x=-Math.PI/2;gr.position.y=-0.1;scene.add(gr);
+
+const TW=3.4,TD=2.8,TH=0.55;
+
+function addM(g,geo,mat,x,y,z,rx=0,ry=0,rz=0){const m=new THREE.Mesh(geo,mat);m.position.set(x,y,z);m.rotation.set(rx,ry,rz);g.add(m);return m;}
+function bx(w,h,d){return new THREE.BoxGeometry(w,h,d);}
+function sp2(r,ws=8,hs=8){return new THREE.SphereGeometry(r,ws,hs);}
+function cy(rt,rb,h,s=8){return new THREE.CylinderGeometry(rt,rb,h,s);}
+function oc(r){return new THREE.OctahedronGeometry(r,0);}
+function mk(c,ei=0){const m=new THREE.MeshLambertMaterial({color:c});if(ei>0){m.emissive=new THREE.Color(c);m.emissiveIntensity=ei;}return m;}
+function eyePair(g,y,z){const em=mk(0xffffff,1.2);em.emissive.set(0xffffff);[-0.17,0.17].forEach(ex=>addM(g,sp2(0.065,6,6),em,ex,y,z));}
+function mouthBar(g,y,z,w=0.26){addM(g,bx(w,0.055,0.045),mk(0xff2d6b,0.8),0,y,z);}
+
+function buildBot(type,baseCol){
+  const g=new THREE.Group();
+  const hm=mk(baseCol);
+  const bm=mk(new THREE.Color(baseCol).lerp(new THREE.Color(0x080002),0.62));
+  const hc=new THREE.Color(baseCol).lerp(new THREE.Color(0xff85b3),0.52);
+  const hair=mk(hc,0.14);hair.emissive.set(hc);
+  if(type===0){
+    addM(g,sp2(0.38,10,10),hm,0,1.0,0);addM(g,bx(0.90,0.18,0.68),hair,0,1.38,0);
+    addM(g,bx(0.19,0.44,0.64),hair,-0.42,1.06,0);addM(g,bx(0.19,0.44,0.64),hair,0.42,1.06,0);
+    eyePair(g,1.02,0.37);mouthBar(g,0.84,0.36);addM(g,bx(0.72,0.50,0.44),bm,0,0.54,0);
+    addM(g,bx(0.20,0.46,0.20),bm,-0.48,0.54,0);addM(g,bx(0.20,0.46,0.20),bm,0.48,0.54,0);
+    addM(g,sp2(0.13,7,7),hm,-0.48,0.24,0);addM(g,sp2(0.13,7,7),hm,0.48,0.24,0);
+    addM(g,bx(0.22,0.36,0.22),bm,-0.20,0.16,0);addM(g,bx(0.22,0.36,0.22),bm,0.20,0.16,0);
+  }else if(type===1){
+    addM(g,bx(0.58,0.68,0.46),hm,0,1.04,0);addM(g,bx(0.68,0.16,0.54),hair,0,1.46,0);
+    addM(g,cy(0.11,0.11,0.18,8),hair,0,1.58,0);
+    const pt=addM(g,cy(0.08,0.04,0.52,7),hair,0.10,1.86,0);pt.rotation.z=0.38;
+    addM(g,sp2(0.10,7,7),hair,0.22,2.14,0);
+    addM(g,new THREE.TorusGeometry(0.12,0.038,6,12),mk(0xff2d6b,0.8),0,1.58,0);
+    eyePair(g,1.06,0.24);mouthBar(g,0.88,0.24,0.20);addM(g,bx(0.52,0.58,0.40),bm,0,0.54,0);
+    addM(g,cy(0.09,0.09,0.48,6),bm,-0.38,0.54,0);addM(g,cy(0.09,0.09,0.48,6),bm,0.38,0.54,0);
+    addM(g,bx(0.18,0.38,0.18),bm,-0.16,0.16,0);addM(g,bx(0.18,0.38,0.18),bm,0.16,0.16,0);
+  }else if(type===2){
+    const sh=addM(g,sp2(0.38,12,10),hm,0,1.0,0);sh.scale.set(1.18,1,1);
+    addM(g,bx(0.80,0.16,0.56),hair,0,1.42,0);addM(g,sp2(0.18,8,8),hair,-0.44,1.44,0);addM(g,sp2(0.18,8,8),hair,0.44,1.44,0);
+    addM(g,cy(0.08,0.10,0.20,7),hair,-0.44,1.28,0);addM(g,cy(0.08,0.10,0.20,7),hair,0.44,1.28,0);
+    eyePair(g,1.02,0.38);addM(g,new THREE.TorusGeometry(0.11,0.038,5,10,Math.PI),mk(0xff2d6b,0.8),0,0.86,0.36,Math.PI,0,0);
+    const tb=addM(g,sp2(0.34,9,9),bm,0,0.52,0);tb.scale.set(1,0.86,1);
+    addM(g,bx(0.18,0.44,0.18),bm,-0.48,0.54,0,0,0,0.38);addM(g,bx(0.18,0.44,0.18),bm,0.48,0.54,0,0,0,-0.38);
+    addM(g,cy(0.10,0.10,0.36,7),bm,-0.16,0.18,0);addM(g,cy(0.10,0.10,0.36,7),bm,0.16,0.18,0);
+  }else if(type===3){
+    addM(g,cy(0.36,0.36,0.58,6),hm,0,1.04,0,0,Math.PI/6,0);addM(g,bx(0.78,0.18,0.56),hair,0,1.46,0);
+    addM(g,bx(0.16,0.88,0.20),hair,-0.35,0.88,-0.04);addM(g,bx(0.16,0.88,0.20),hair,0.35,0.88,-0.04);
+    addM(g,bx(0.72,0.14,0.12),hair,0,1.36,0.30);eyePair(g,1.06,0.36);mouthBar(g,0.88,0.35,0.22);
+    addM(g,cy(0.30,0.32,0.56,6),bm,0,0.54,0,0,Math.PI/6,0);
+    addM(g,bx(0.16,0.48,0.16),bm,-0.42,0.54,0);addM(g,bx(0.16,0.48,0.16),bm,0.42,0.54,0);
+    addM(g,bx(0.18,0.38,0.18),bm,-0.16,0.16,0);addM(g,bx(0.18,0.38,0.18),bm,0.16,0.16,0);
+  }else if(type===4){
+    const gh=addM(g,oc(0.38),hm,0,1.04,0);gh.scale.set(1,1.32,0.86);
+    [[-0.22,1.60,0.04],[0.26,1.62,0],[-0.30,1.70,0],[0.12,1.68,0.06],[-0.08,1.78,0.02],[0.30,1.56,0.04],[0,1.74,-0.04],[0.20,1.84,0.02],[-0.14,1.58,0.05]].forEach(([x,y,z])=>addM(g,sp2(0.11+Math.random()*0.05,6,6),hair,x,y,z));
+    eyePair(g,1.06,0.35);mouthBar(g,0.88,0.34);
+    const tb=addM(g,bx(0.54,0.54,0.40),bm,0,0.54,0);tb.rotation.y=Math.PI/4;tb.scale.set(0.82,0.82,1);
+    addM(g,bx(0.16,0.46,0.16),bm,-0.44,0.62,0,0,0,0.58);addM(g,bx(0.16,0.46,0.16),bm,0.44,0.62,0,0,0,-0.58);
+    addM(g,bx(0.18,0.36,0.18),bm,-0.16,0.16,0);addM(g,bx(0.18,0.36,0.18),bm,0.16,0.16,0);
+  }else if(type===5){
+    addM(g,bx(0.66,0.54,0.50),hm,0,1.0,0);addM(g,bx(0.76,0.16,0.58),hair,0,1.42,0);
+    [-0.40,0.40].forEach((bx2,bi)=>{
+      for(let s=0;s<5;s++){const seg=addM(g,cy(0.065,0.055,0.18,6),hair,bx2+(bi===0?-0.035:0.035)*s,1.04-s*0.18,-0.05);seg.rotation.z=(s%2===0)?0.18:-0.18;}
+      addM(g,sp2(0.075,7,7),mk(0xff2d6b,0.8),bx2+(bi===0?-0.14:0.14),0.22,-0.05);});
+    eyePair(g,1.02,0.26);mouthBar(g,0.86,0.26,0.30);addM(g,bx(0.86,0.48,0.50),bm,0,0.52,0);
+    addM(g,bx(0.20,0.44,0.20),bm,-0.58,0.52,0);addM(g,bx(0.20,0.44,0.20),bm,0.58,0.52,0);
+    addM(g,bx(0.24,0.34,0.24),bm,-0.26,0.16,0);addM(g,bx(0.24,0.34,0.24),bm,0.26,0.16,0);
+  }else if(type===6){
+    addM(g,sp2(0.36,11,10),hm,0,1.06,0);addM(g,bx(0.52,0.16,0.44),hair,0,1.46,0);
+    const sw1=addM(g,bx(0.70,0.18,0.26),hair,0.16,1.52,0);sw1.rotation.z=0.40;
+    const sw2=addM(g,bx(0.40,0.13,0.18),hair,0.42,1.68,0);sw2.rotation.z=0.70;
+    addM(g,sp2(0.10,7,7),hair,0.52,1.78,0);addM(g,bx(0.15,0.44,0.18),hair,-0.36,0.96,0);
+    eyePair(g,1.08,0.35);mouthBar(g,0.90,0.34);addM(g,bx(0.48,0.66,0.37),bm,0,0.52,0);
+    addM(g,bx(0.30,0.24,0.055),mk(0xff2d6b,0.14),0,0.54,0.21);
+    addM(g,bx(0.16,0.52,0.16),bm,-0.36,0.50,0);addM(g,bx(0.16,0.52,0.16),bm,0.36,0.50,0);
+    addM(g,bx(0.16,0.40,0.16),bm,-0.14,0.14,0);addM(g,bx(0.16,0.40,0.16),bm,0.14,0.14,0);
+  }else if(type===7){
+    addM(g,bx(0.76,0.64,0.54),hm,0,1.02,0);addM(g,bx(0.50,0.40,0.055),mk(0xff2d6b,0.14),0,1.04,0.29);
+    addM(g,bx(0.86,0.16,0.62),hair,0,1.46,0);
+    [[-0.10,1.60,0.02],[0.22,1.58,0],[-0.24,1.56,0],[0.05,1.68,-0.02],[-0.14,1.64,0.04],[0.28,1.50,0.02],[0,1.54,-0.04],[0.14,1.72,0.02],[-0.08,1.50,0.03]].forEach(([x,y,z])=>addM(g,sp2(0.15+Math.random()*0.04,7,7),hair,x,y,z));
+    [-0.44,0.44].forEach(ax=>{addM(g,bx(0.08,0.30,0.08),bm,ax,1.50,0);addM(g,sp2(0.075,7,7),mk(0xff2d6b,0.8),ax,1.68,0);});
+    eyePair(g,1.04,0.29);mouthBar(g,0.88,0.29,0.34);addM(g,bx(0.80,0.52,0.50),bm,0,0.52,0);
+    addM(g,bx(0.20,0.48,0.20),bm,-0.56,0.52,0);addM(g,bx(0.20,0.48,0.20),bm,0.56,0.52,0);
+    addM(g,bx(0.24,0.36,0.24),bm,-0.26,0.16,0);addM(g,bx(0.24,0.36,0.24),bm,0.26,0.16,0);
+  }else if(type===8){
+    addM(g,sp2(0.36,10,10),hm,0,1.0,0);addM(g,cy(0.045,0.28,0.56,8),hair,0,1.50,0);
+    addM(g,bx(0.11,0.66,0.13),hair,-0.38,0.84,0);addM(g,bx(0.11,0.66,0.13),hair,0.38,0.84,0);
+    addM(g,sp2(0.075,6,6),mk(0xff2d6b,0.8),0,1.82,0);eyePair(g,1.02,0.35);mouthBar(g,0.84,0.34);
+    addM(g,bx(0.70,0.50,0.42),bm,0,0.54,0);addM(g,bx(0.18,0.44,0.18),bm,-0.46,0.54,0);addM(g,bx(0.18,0.44,0.18),bm,0.46,0.54,0);
+    addM(g,bx(0.20,0.36,0.20),bm,-0.18,0.16,0);addM(g,bx(0.20,0.36,0.20),bm,0.18,0.16,0);
+  }else{
+    addM(g,sp2(0.36,10,10),hm,0,1.0,0);
+    for(let s=0;s<8;s++){const ang=(s/8)*Math.PI*2;const spike=addM(g,cy(0.026,0.072,0.34,5),hair,Math.cos(ang)*0.28,1.36+Math.sin(s*0.5)*0.07,Math.sin(ang)*0.17);spike.rotation.z=-ang+Math.PI/2;}
+    eyePair(g,1.02,0.35);mouthBar(g,0.84,0.34);addM(g,bx(0.70,0.50,0.42),bm,0,0.54,0);
+    addM(g,bx(0.18,0.44,0.18),bm,-0.46,0.54,0);addM(g,bx(0.18,0.44,0.18),bm,0.46,0.54,0);
+    addM(g,bx(0.20,0.36,0.20),bm,-0.18,0.16,0);addM(g,bx(0.20,0.36,0.20),bm,0.18,0.16,0);
+  }
+  return g;
+}
+
+// ── TILE ──
+const tileGroup = new THREE.Group();
+scene.add(tileGroup);
+
+// Platform
+addM(tileGroup,bx(TW,TH,TD),mk(0x0d0006),0,TH/2,0);
+const capMat=mk(TILE_COLOR,0.12);capMat.emissive.set(TILE_COLOR);
+addM(tileGroup,bx(TW,0.07,TD),capMat,0,TH+0.035,0);
+const edgeMat=mk(TILE_COLOR,0.35);edgeMat.emissive.set(TILE_COLOR);edgeMat.transparent=true;edgeMat.opacity=0.55;
+addM(tileGroup,bx(TW,TH,0.04),edgeMat,0,TH/2,TD/2);
+addM(tileGroup,bx(0.04,TH,TD),edgeMat.clone(),-TW/2,TH/2,0);
+
+// Canvas label texture
+function roundRect(ctx,x,y,w,h,r){ctx.beginPath();ctx.moveTo(x+r,y);ctx.lineTo(x+w-r,y);ctx.arcTo(x+w,y,x+w,y+r,r);ctx.lineTo(x+w,y+h-r);ctx.arcTo(x+w,y+h,x+w-r,y+h,r);ctx.lineTo(x+r,y+h);ctx.arcTo(x,y+h,x,y+h-r,r);ctx.lineTo(x,y+r);ctx.arcTo(x,y,x+r,y,r);ctx.closePath();}
+function wrapText(ctx,text,maxW){const words=text.split(' ');const lines=[];let cur='';words.forEach(w=>{const test=cur?cur+' '+w:w;if(ctx.measureText(test).width>maxW&&cur){lines.push(cur);cur=w;}else{cur=test;}});if(cur)lines.push(cur);return lines;}
+
+const cw=512,ch=256,cv=document.createElement('canvas');cv.width=cw;cv.height=ch;
+const ctx=cv.getContext('2d');
+ctx.clearRect(0,0,cw,ch);ctx.fillStyle='rgba(8,0,5,0.82)';roundRect(ctx,0,0,cw,ch,18);ctx.fill();
+const col=new THREE.Color(TILE_COLOR),hex='#'+col.getHexString();
+const grd=ctx.createLinearGradient(0,0,cw,0);
+grd.addColorStop(0,'transparent');grd.addColorStop(0.35,hex);grd.addColorStop(0.5,'#ff85b3');grd.addColorStop(0.65,hex);grd.addColorStop(1,'transparent');
+ctx.strokeStyle=grd;ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(60,2);ctx.lineTo(cw-60,2);ctx.stroke();
+ctx.font='bold 20px "Nunito",sans-serif';ctx.fillStyle=hex;ctx.globalAlpha=0.85;ctx.textAlign='center';
+ctx.fillText('CAREBOT-'+BOT_NUM,cw/2,34);ctx.globalAlpha=1.0;
+ctx.font='900 28px "Nunito",sans-serif';ctx.fillStyle='#fff5f8';
+const tLines=wrapText(ctx,BOT_TITLE,cw-40);let ty=tLines.length>1?66:76;
+tLines.forEach(l=>{ctx.fillText(l,cw/2,ty);ty+=32;});
+ctx.font='italic 19px "Quicksand",sans-serif';ctx.fillStyle='rgba(255,190,220,0.72)';
+const iLines=wrapText(ctx,BOT_IRONY,cw-50);let iy=Math.min(ty+6,ch-70);
+iLines.slice(0,2).forEach(l=>{ctx.fillText(l,cw/2,iy);iy+=24;});
+// Buttons drawn on canvas (decorative — real buttons are in HTML)
+function drawBtn(ctx,x,y,w,h,bg1,bg2,tc,lbl,bc){
+  const g=ctx.createLinearGradient(x,y,x+w,y+h);g.addColorStop(0,bg1);g.addColorStop(1,bg2);
+  ctx.fillStyle=g;roundRect(ctx,x,y,w,h,9);ctx.fill();
+  ctx.strokeStyle=bc||'rgba(255,100,150,0.9)';ctx.lineWidth=2.5;roundRect(ctx,x,y,w,h,9);ctx.stroke();
+  ctx.font='900 20px "Nunito",sans-serif';ctx.fillStyle=tc;ctx.textAlign='center';ctx.fillText(lbl,x+w/2,y+h/2+7);
+}
+drawBtn(ctx,52,ch-46,172,36,'#ff2d6b','#c4005a','#fff5f8','HIT ↗');
+drawBtn(ctx,240,ch-46,172,36,'rgba(255,45,107,0.18)','rgba(255,45,107,0.18)','#ffb3cf','BOT ↗',hex);
+
+const labelPlane=new THREE.Mesh(
+  new THREE.PlaneGeometry(TW-0.1,TD-0.1),
+  new THREE.MeshBasicMaterial({map:new THREE.CanvasTexture(cv),transparent:true,depthWrite:false,depthTest:false})
+);
+labelPlane.rotation.x=-Math.PI/2;labelPlane.position.y=TH+0.12;labelPlane.renderOrder=0;
+tileGroup.add(labelPlane);
+
+// ── BOT ──
+const botShape=buildBot(BOT_TYPE,col);
+botShape.scale.setScalar(0.82);
+botShape.position.set(0,TH+0.02,0);
+botScene.add(botShape);
+
+const botLight=new THREE.PointLight(0xff2d6b,4.0,15);
+botLight.position.set(0,2,-3);
+botScene.add(botLight);
+
+// ── ORBIT ──
+let isDragging=false,prevMouse={x:0,y:0};
+let spherical={theta:0.20,phi:0.72,radius:isMobile?7:8};
+let prevPinchDist=0;
+
+canvas.addEventListener('mousedown',e=>{isDragging=true;prevMouse={x:e.clientX,y:e.clientY};});
+window.addEventListener('mouseup',()=>{isDragging=false;});
+window.addEventListener('mousemove',e=>{
+  if(!isDragging)return;
+  spherical.theta-=(e.clientX-prevMouse.x)*0.007;
+  spherical.phi=Math.max(0.18,Math.min(1.3,spherical.phi+(e.clientY-prevMouse.y)*0.006));
+  prevMouse={x:e.clientX,y:e.clientY};
+});
+canvas.addEventListener('wheel',e=>{e.preventDefault();spherical.radius=Math.max(4,Math.min(20,spherical.radius+e.deltaY*0.03));},{passive:false});
+canvas.addEventListener('touchstart',e=>{e.preventDefault();if(e.touches.length===1){isDragging=true;prevMouse={x:e.touches[0].clientX,y:e.touches[0].clientY};}else if(e.touches.length===2){isDragging=false;const dx=e.touches[0].clientX-e.touches[1].clientX,dy=e.touches[0].clientY-e.touches[1].clientY;prevPinchDist=Math.sqrt(dx*dx+dy*dy);}},{passive:false});
+canvas.addEventListener('touchend',e=>{e.preventDefault();if(e.touches.length===0)isDragging=false;},{passive:false});
+canvas.addEventListener('touchmove',e=>{
+  e.preventDefault();
+  if(e.touches.length===1&&isDragging){spherical.theta-=(e.touches[0].clientX-prevMouse.x)*0.007;spherical.phi=Math.max(0.18,Math.min(1.3,spherical.phi+(e.touches[0].clientY-prevMouse.y)*0.006));prevMouse={x:e.touches[0].clientX,y:e.touches[0].clientY};}
+  else if(e.touches.length===2){const dx=e.touches[0].clientX-e.touches[1].clientX,dy=e.touches[0].clientY-e.touches[1].clientY,dist=Math.sqrt(dx*dx+dy*dy);if(prevPinchDist>0)spherical.radius=Math.max(4,Math.min(20,spherical.radius-(dist-prevPinchDist)*0.04));prevPinchDist=dist;}
+},{passive:false});
+
+// ── ANIMATE ──
+let t=0;
+const xFreq=0.28+(BOT_IDX%7)*0.07, zFreq=0.21+(BOT_IDX%5)*0.09;
+const xPh=(BOT_IDX*2.39)%(Math.PI*2), zPh=(BOT_IDX*1.73)%(Math.PI*2);
+const halfX=TW/2*0.68, halfZ=TD/2*0.68;
+const wobSpd=0.9+(BOT_IDX%9)*0.18, bobAmp=0.04+(BOT_IDX%8)*0.015;
+
+function animate(){
+  requestAnimationFrame(animate); t+=0.016;
+  const cx=spherical.radius*Math.sin(spherical.phi)*Math.sin(spherical.theta);
+  const cy=spherical.radius*Math.cos(spherical.phi);
+  const cz=spherical.radius*Math.sin(spherical.phi)*Math.cos(spherical.theta);
+  camera.position.set(cx,cy+1.2,cz); camera.lookAt(0,1,0);
+
+  // Tile float
+  tileGroup.position.y=Math.sin(t*1.1)*0.06;
+
+  // Bot roam
+  const rx=Math.sin(t*xFreq+xPh)*halfX, rz=Math.cos(t*zFreq+zPh)*halfZ;
+  botShape.position.x=rx; botShape.position.z=rz;
+  botShape.position.y=tileGroup.position.y+TH+0.02+Math.abs(Math.sin(t*wobSpd*2))*bobAmp;
+  const dx=Math.cos(t*xFreq+xPh)*halfX*xFreq, dz=-Math.sin(t*zFreq+zPh)*halfZ*zFreq;
+  if(Math.abs(dx)+Math.abs(dz)>0.001) botShape.rotation.y=Math.atan2(dx,dz);
+
+  // Personality wobble
+  const bt=BOT_TYPE;
+  if(bt===0){const b=Math.abs(Math.sin(t*3.2));botShape.scale.y=0.82+b*0.18;botShape.scale.x=1+b*0.06;botShape.scale.z=1+b*0.06;botShape.rotation.z=Math.sin(t*3.2)*0.12;}
+  else if(bt===1){botShape.rotation.x=Math.sin(t*9.5)*0.06;botShape.rotation.z=Math.sin(t*7.3)*0.05;botShape.scale.setScalar(1+Math.sin(t*4)*0.04);}
+  else if(bt===2){botShape.rotation.y+=0.04;botShape.scale.y=1+Math.sin(t*4)*0.08;}
+  else if(bt===3){botShape.rotation.z=Math.sin(t*xFreq+xPh)*0.30;}
+  else if(bt===5){botShape.rotation.z=Math.sin(t*4.5)*0.22;botShape.scale.x=1+Math.sin(t*4.5)*0.05;}
+  else if(bt===6){botShape.rotation.x=Math.sin(t*1.2)*0.12;botShape.scale.y=1+Math.sin(t*2.4)*0.05;}
+  else if(bt===7){botShape.rotation.x=Math.sin(t*5.5)*0.28;botShape.scale.y=1-Math.abs(Math.sin(t*5.5))*0.10;}
+  else if(bt===8){botShape.scale.setScalar(1+Math.sin(t*1.4)*0.09);}
+  else if(bt===9){const hop=Math.max(0,Math.sin(t*4.0));botShape.position.y+=hop*hop*0.22;botShape.scale.y=1-hop*0.10;botShape.scale.x=1+hop*0.06;}
+
+  // Bot light follows bot
+  botLight.position.set(botShape.position.x,botShape.position.y+1.5,-2);
+
+  renderer.autoClear=true; renderer.render(scene,camera);
+  renderer.autoClear=false; renderer.render(botScene,camera); renderer.autoClear=true;
+}
+animate();
+</script>
+</body>
+</html>
