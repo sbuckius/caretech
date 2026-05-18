@@ -121,6 +121,42 @@
     color: var(--cream);
     transform: translateY(-1px);
   }
+  .sound-btn {
+    cursor: pointer;
+    background: rgba(255,45,107,.08);
+    border: 1px solid rgba(255,130,180,.2);
+    border-radius: 999px;
+    padding: 6px 14px;
+    font-size: 10px; letter-spacing: .12em; text-transform: uppercase;
+    color: var(--text-dim);
+    font-family: 'Quicksand', sans-serif; font-weight: 600;
+    transition: all .18s;
+    appearance: none;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .sound-btn:hover {
+    background: rgba(255,45,107,.16);
+    border-color: rgba(255,100,160,.4);
+    color: var(--candy);
+    transform: translateY(-1px);
+  }
+  .sound-btn .pip {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--hot);
+    box-shadow: 0 0 6px var(--hot);
+    flex-shrink: 0;
+    animation: breathe 2s ease-in-out infinite;
+    transition: all .18s;
+  }
+  .sound-btn.muted .pip {
+    background: rgba(255,160,200,.3);
+    box-shadow: none;
+    animation: none;
+  }
+  .sound-btn.muted {
+    color: rgba(255,160,200,.3);
+    border-color: rgba(255,130,180,.1);
+  }
 
   /* ── AI DISCLAIMER MODAL ── */
   #aiDisclaimer {
@@ -571,6 +607,7 @@
       <div class="nav-chip">v2.4</div>
       <div class="nav-chip">40 Carebots</div>
       <button class="nav-chip ai-disclaimer-btn" onclick="document.getElementById('aiDisclaimer').classList.add('open')">⚠ A Note on AI</button>
+      <button class="sound-btn" id="soundBtn" onclick="toggleSound()"><div class="pip"></div><span id="soundLabel">♫ Sound</span></button>
     </div>
   </div>
 
@@ -813,46 +850,46 @@
 })();
 
 const bots = [
-  { num:'01', title:'Direct Robot',              irony:'"just ask the machine"',                                         hit:'carebot01-hit.html', bot:'carebot01-bot.html' },
-  { num:'02', title:'Miss Honeywell',            irony:'"she can compute — but can she cook?"',                          hit:'carebot02-hit.html', bot:'carebot02-bot.html' },
-  { num:'03', title:'LOL · Rope Mothers',        irony:'"space-age needleworker weaves core rope memory"',              hit:'carebot03-hit.html', bot:'carebot03-bot.html' },
-  { num:'04', title:'Career Coach',              irony:'"have you considered a more realistic path?"',                  hit:'carebot04-hit.html', bot:'carebot04-bot.html' },
-  { num:'05', title:'Weaving Diverse Data',      irony:'"data is neutral — isn\'t it?"',                               hit:'carebot05-hit.html', bot:'carebot05-bot.html' },
-  { num:'06', title:'Women Inventors',           irony:'"credited to her husband, naturally"',                          hit:'carebot06-hit.html', bot:'carebot06-bot.html' },
-  { num:'07', title:'Paid Work',                 irony:'"unpaid is not unskilled"',                                     hit:'carebot07-hit.html', bot:'carebot07-bot.html' },
-  { num:'08', title:'Work & Automation',         irony:'"who gets automated first?"',                                   hit:'carebot08-hit.html', bot:'carebot08-bot.html' },
-  { num:'09', title:'Visual Gender Bias',        irony:'"the eye has been trained to normalize this"',                  hit:'carebot09-hit.html', bot:'carebot09-bot.html' },
-  { num:'10', title:'CEO Identification',        irony:'"AI imagined this"',                                            hit:'carebot10-hit.html', bot:'carebot10-bot.html' },
-  { num:'11', title:'Replacement Cost',          irony:'"counted in cents"',                                            hit:'carebot11-hit.html', bot:'carebot11-bot.html' },
-  { num:'12', title:'Work & Automation',         irony:'"who gets framed as doing real work?"',                         hit:'carebot12-hit.html', bot:'carebot12-bot.html' },
-  { num:'13', title:'Presentation Labor',        irony:'"objectified like the machine"',                                hit:'carebot13-hit.html', bot:'carebot13-bot.html' },
-  { num:'14', title:'Human Computers',           irony:'"the original computers were replaced by the thing named after them"', hit:'carebot14-hit.html', bot:'carebot14-bot.html' },
-  { num:'15', title:'Kitchen Computer',          irony:'"if she can only cook as well as Honeywell can compute"',       hit:'carebot15-hit.html', bot:'carebot15-bot.html' },
-  { num:'16', title:'Girl Hours',                irony:'"I don\'t think I had much help in the hunching"',              hit:'carebot16-hit.html', bot:'carebot16-bot.html' },
-  { num:'17', title:'Katherine Johnson',         irony:'"get the girl to check the numbers"',                           hit:'carebot17-hit.html', bot:'carebot17-bot.html' },
-  { num:'18', title:'Woman as Inventor',         irony:'"custom, that unwritten law"',                                  hit:'carebot18-hit.html', bot:'carebot18-bot.html' },
-  { num:'19', title:'Human Verification',        irony:'"I am a human"',                                                hit:'carebot19-hit.html', bot:'carebot19-bot.html' },
-  { num:'20', title:'QR Labor Gateway',          irony:'"scan to access your work"',                                    hit:'carebot20-hit.html', bot:'carebot20-bot.html' },
-  { num:'21', title:'Worker ID',                 irony:'"hello my name is"',                                            hit:'carebot21-hit.html', bot:'carebot21-bot.html' },
-  { num:'22', title:'Kitchen Computer Survey',   irony:'"if only she can cook as well as Honeywell can compute"',       hit:'carebot22-hit.html', bot:'carebot22-bot.html' },
-  { num:'23', title:'Who Does the Work?',        irony:'"the work was always there. just never valued."',               hit:'carebot23-hit.html', bot:'carebot23-bot.html' },
-  { num:'24', title:'Technology Work',           irony:'"draw a box around every person who is performing computations"', hit:'carebot24-hit.html', bot:'carebot24-bot.html' },
-  { num:'25', title:'Woman as Inventor',         irony:'"custom, that unwritten law"',                                  hit:'carebot25-hit.html', bot:'carebot25-bot.html' },
-  { num:'26', title:'INVENTRIX',                 irony:'"invent with women\'s genius"',                                 hit:'carebot26-hit.html', bot:'carebot26-bot.html' },
-  { num:'27', title:'Abramowitz & Stegun',       irony:'"his name comes first"',                                        hit:'carebot27-hit.html', bot:'carebot27-bot.html' },
-  { num:'28', title:'IBM 29 Card Punch',         irony:'"Karen Diamond will assist us"',                                hit:'carebot28-hit.html', bot:'carebot28-bot.html' },
-  { num:'29', title:'Women Inventors · Surprise',irony:'"how surprising is erasure?"',                                  hit:'carebot29-hit.html', bot:'carebot29-bot.html' },
-  { num:'30', title:'Women & AI · Media Framing',irony:'"blamed for not using the tool being weaponized against them"', hit:'carebot30-hit.html', bot:'carebot30-bot.html' },
-  { num:'31', title:'Training AI With Domestic Labor', irony:'"she trained the machine that will replace her"',         hit:'carebot31-hit.html', bot:'carebot31-bot.html' },
-  { num:'32', title:'Patent Language Sorter',    irony:'"the language refused to be sorted"',                           hit:'carebot32-hit.html', bot:'carebot32-bot.html' },
-  { num:'33', title:'CEO · Robot · Human',               irony:'"you are not resolving the contradiction. you are running it."',         hit:'carebot33-hit.html', bot:'carebot33-bot.html' },
-  { num:'34', title:'Who Sits in the Chair?',            irony:'"the chair has a demographic profile"',                                   hit:'carebot34-hit.html', bot:'carebot34-bot.html' },
-  { num:'35', title:'Your Skills Are Invaluable. Also, Please Leave.', irony:'"the irony is structural, not accidental"',             hit:'carebot35-hit.html', bot:'carebot35-bot.html' },
-  { num:'36', title:'Just Become a CEO',                 irony:'"the advice addresses the individual. it ignores the structure."',         hit:'carebot36-hit.html', bot:'carebot36-bot.html' },
-  { num:'37', title:'Pretty in Pink',                    irony:'"the color that once meant strength now marks the labor nobody pays for"',  hit:'carebot37-hit.html', bot:'carebot37-bot.html' },
-  { num:'38', title:'She Trained the Machine That Replaced Her', irony:'"the robots were designed by people who were not women. they were modeled on women."', hit:'carebot38-hit.html', bot:'carebot38-bot.html' },
-  { num:'39', title:'Mother in the Machine',             irony:'"the word is everywhere in computing. the mothers are being pushed out."',  hit:'carebot39-hit.html', bot:'carebot39-bot.html' },
-  { num:'40', title:'Voice & Visibility',                irony:'"she spoke — was she heard?"',                                             hit:'carebot40-hit.html', bot:'carebot40-bot.html' },
+  { num:'01', obj:'vacuum', title:'Direct Robot',              irony:'"just ask the machine"',                                         hit:'carebot01-hit.html', bot:'carebot01-bot.html' },
+  { num:'02', obj:'sewing_machine', title:'Miss Honeywell',            irony:'"she can compute — but can she cook?"',                          hit:'carebot02-hit.html', bot:'carebot02-bot.html' },
+  { num:'03', obj:'typewriter', title:'LOL · Rope Mothers',        irony:'"space-age needleworker weaves core rope memory"',              hit:'carebot03-hit.html', bot:'carebot03-bot.html' },
+  { num:'04', obj:'chair', title:'Career Coach',              irony:'"have you considered a more realistic path?"',                  hit:'carebot04-hit.html', bot:'carebot04-bot.html' },
+  { num:'05', obj:'broom', title:'Weaving Diverse Data',      irony:'"data is neutral — isn\'t it?"',                               hit:'carebot05-hit.html', bot:'carebot05-bot.html' },
+  { num:'06', obj:'iron', title:'Women Inventors',           irony:'"credited to her husband, naturally"',                          hit:'carebot06-hit.html', bot:'carebot06-bot.html' },
+  { num:'07', obj:'laundry_basket', title:'Paid Work',                 irony:'"unpaid is not unskilled"',                                     hit:'carebot07-hit.html', bot:'carebot07-bot.html' },
+  { num:'08', obj:'ironing_board', title:'Work & Automation',         irony:'"who gets automated first?"',                                   hit:'carebot08-hit.html', bot:'carebot08-bot.html' },
+  { num:'09', obj:'lamp', title:'Visual Gender Bias',        irony:'"the eye has been trained to normalize this"',                  hit:'carebot09-hit.html', bot:'carebot09-bot.html' },
+  { num:'10', obj:'desk', title:'CEO Identification',        irony:'"AI imagined this"',                                            hit:'carebot10-hit.html', bot:'carebot10-bot.html' },
+  { num:'11', obj:'trash_can', title:'Replacement Cost',          irony:'"counted in cents"',                                            hit:'carebot11-hit.html', bot:'carebot11-bot.html' },
+  { num:'12', obj:'rolling_hanger', title:'Work & Automation',         irony:'"who gets framed as doing real work?"',                         hit:'carebot12-hit.html', bot:'carebot12-bot.html' },
+  { num:'13', obj:'table', title:'Presentation Labor',        irony:'"objectified like the machine"',                                hit:'carebot13-hit.html', bot:'carebot13-bot.html' },
+  { num:'14', obj:'typewriter', title:'Human Computers',           irony:'"the original computers were replaced by the thing named after them"', hit:'carebot14-hit.html', bot:'carebot14-bot.html' },
+  { num:'15', obj:'refrigerator', title:'Kitchen Computer',          irony:'"if she can only cook as well as Honeywell can compute"',       hit:'carebot15-hit.html', bot:'carebot15-bot.html' },
+  { num:'16', obj:'sewing_machine', title:'Girl Hours',                irony:'"I don\'t think I had much help in the hunching"',              hit:'carebot16-hit.html', bot:'carebot16-bot.html' },
+  { num:'17', obj:'desk', title:'Katherine Johnson',         irony:'"get the girl to check the numbers"',                           hit:'carebot17-hit.html', bot:'carebot17-bot.html' },
+  { num:'18', obj:'watering_can', title:'Woman as Inventor',         irony:'"custom, that unwritten law"',                                  hit:'carebot18-hit.html', bot:'carebot18-bot.html' },
+  { num:'19', obj:'broom', title:'Human Verification',        irony:'"I am a human"',                                                hit:'carebot19-hit.html', bot:'carebot19-bot.html' },
+  { num:'20', obj:'tea_kettle', title:'QR Labor Gateway',          irony:'"scan to access your work"',                                    hit:'carebot20-hit.html', bot:'carebot20-bot.html' },
+  { num:'21', obj:'wardrobe', title:'Worker ID',                 irony:'"hello my name is"',                                            hit:'carebot21-hit.html', bot:'carebot21-bot.html' },
+  { num:'22', obj:'refrigerator', title:'Kitchen Computer Survey',   irony:'"if only she can cook as well as Honeywell can compute"',       hit:'carebot22-hit.html', bot:'carebot22-bot.html' },
+  { num:'23', obj:'couch', title:'Who Does the Work?',        irony:'"the work was always there. just never valued."',               hit:'carebot23-hit.html', bot:'carebot23-bot.html' },
+  { num:'24', obj:'desk', title:'Technology Work',           irony:'"draw a box around every person who is performing computations"', hit:'carebot24-hit.html', bot:'carebot24-bot.html' },
+  { num:'25', obj:'iron', title:'Woman as Inventor',         irony:'"custom, that unwritten law"',                                  hit:'carebot25-hit.html', bot:'carebot25-bot.html' },
+  { num:'26', obj:'sewing_machine', title:'INVENTRIX',                 irony:'"invent with women\'s genius"',                                 hit:'carebot26-hit.html', bot:'carebot26-bot.html' },
+  { num:'27', obj:'typewriter', title:'Abramowitz & Stegun',       irony:'"his name comes first"',                                        hit:'carebot27-hit.html', bot:'carebot27-bot.html' },
+  { num:'28', obj:'typewriter', title:'IBM 29 Card Punch',         irony:'"Karen Diamond will assist us"',                                hit:'carebot28-hit.html', bot:'carebot28-bot.html' },
+  { num:'29', obj:'watering_can', title:'Women Inventors · Surprise',irony:'"how surprising is erasure?"',                                  hit:'carebot29-hit.html', bot:'carebot29-bot.html' },
+  { num:'30', obj:'lamp', title:'Women & AI · Media Framing',irony:'"blamed for not using the tool being weaponized against them"', hit:'carebot30-hit.html', bot:'carebot30-bot.html' },
+  { num:'31', obj:'vacuum', title:'Training AI With Domestic Labor', irony:'"she trained the machine that will replace her"',         hit:'carebot31-hit.html', bot:'carebot31-bot.html' },
+  { num:'32', obj:'filing_cabinet', title:'Patent Language Sorter',    irony:'"the language refused to be sorted"',                           hit:'carebot32-hit.html', bot:'carebot32-bot.html' },
+  { num:'33', obj:'chair', title:'CEO · Robot · Human',               irony:'"you are not resolving the contradiction. you are running it."',         hit:'carebot33-hit.html', bot:'carebot33-bot.html' },
+  { num:'34', obj:'chair', title:'Who Sits in the Chair?',            irony:'"the chair has a demographic profile"',                                   hit:'carebot34-hit.html', bot:'carebot34-bot.html' },
+  { num:'35', obj:'rolling_hanger', title:'Your Skills Are Invaluable. Also, Please Leave.', irony:'"the irony is structural, not accidental"',             hit:'carebot35-hit.html', bot:'carebot35-bot.html' },
+  { num:'36', obj:'desk', title:'Just Become a CEO',                 irony:'"the advice addresses the individual. it ignores the structure."',         hit:'carebot36-hit.html', bot:'carebot36-bot.html' },
+  { num:'37', obj:'ironing_board', title:'Pretty in Pink',                    irony:'"the color that once meant strength now marks the labor nobody pays for"',  hit:'carebot37-hit.html', bot:'carebot37-bot.html' },
+  { num:'38', obj:'laundry_basket', title:'She Trained the Machine That Replaced Her', irony:'"the robots were designed by people who were not women. they were modeled on women."', hit:'carebot38-hit.html', bot:'carebot38-bot.html' },
+  { num:'39', obj:'crib', title:'Mother in the Machine',             irony:'"the word is everywhere in computing. the mothers are being pushed out."',  hit:'carebot39-hit.html', bot:'carebot39-bot.html' },
+  { num:'40', obj:'tea_kettle', title:'Voice & Visibility',                irony:'"she spoke — was she heard?"',                                             hit:'carebot40-hit.html', bot:'carebot40-bot.html' },
 ];
 
 
@@ -1159,6 +1196,193 @@ function buildBot(type, baseCol) {
   return g;
 }
 
+// ── DOMESTIC OBJECT BUILDERS ──
+function buildDomesticObject(objKey, baseColor) {
+  const g = new THREE.Group();
+  const c = new THREE.Color(baseColor);
+  const cm = mk(baseColor, 0.10); cm.emissive.set(baseColor);
+  const dc = mk(new THREE.Color(baseColor).lerp(new THREE.Color(0x080002), 0.55));
+  const gm = mk(baseColor, 0.35); gm.emissive.set(baseColor);
+
+  if(objKey==='vacuum'){
+    addM(g,cy(0.18,0.14,1.1,10),cm,0,0.55,0);
+    addM(g,cy(0.24,0.24,0.10,12),gm,0,0.04,0);
+    addM(g,bx(0.42,0.10,0.24),cm,0,0.04,0.15);
+    addM(g,bx(0.10,0.08,0.32),gm,0,0.04,0.04);
+    addM(g,cy(0.055,0.055,0.50,8),dc,0.20,0.76,-0.08,0,0,0.45);
+    addM(g,sp2(0.09,7,7),gm,0,1.13,0);
+  } else if(objKey==='sewing_machine'){
+    addM(g,bx(0.72,0.44,0.36),dc,0,0.22,0);
+    addM(g,bx(0.68,0.40,0.32),cm,0,0.22,0.01);
+    addM(g,bx(0.58,0.13,0.26),dc,0.05,0.50,0);
+    addM(g,bx(0.11,0.24,0.17),gm,0.29,0.42,0);
+    addM(g,cy(0.018,0.018,0.26,6),gm,0.29,0.28,0);
+    addM(g,cy(0.07,0.07,0.17,8),gm,-0.17,0.62,0,Math.PI/2,0,0);
+    addM(g,bx(0.86,0.07,0.44),cm,0,0.04,0);
+    addM(g,cy(0.09,0.09,0.05,12),cm,-0.32,0.34,-0.17,Math.PI/2,0,0);
+  } else if(objKey==='typewriter'){
+    addM(g,bx(0.86,0.19,0.56),dc,0,0.095,0);
+    addM(g,bx(0.82,0.15,0.52),cm,0,0.095,0.01);
+    addM(g,cy(0.075,0.075,0.70,10),gm,0,0.31,0,0,0,Math.PI/2);
+    addM(g,bx(0.76,0.05,0.04),cm,0,0.31,-0.25);
+    const kR=[-0.06,0.04,0.14];
+    kR.forEach((zr,ri)=>{for(let k=0;k<7;k++)addM(g,cy(0.038,0.036,0.055,6),ri===0?gm:dc,-0.22+k*0.075,0.21,zr-0.05);});
+    addM(g,cy(0.024,0.024,0.30,6),gm,0.46,0.26,0,0,0,0.3);
+    addM(g,sp2(0.042,6,6),gm,0.56,0.36,0);
+  } else if(objKey==='chair'){
+    addM(g,bx(0.56,0.06,0.50),gm,0,0.52,0);
+    addM(g,bx(0.52,0.04,0.46),cm,0,0.545,0);
+    addM(g,cy(0.033,0.033,0.60,7),dc,-0.21,0.81,0.23);
+    addM(g,cy(0.033,0.033,0.60,7),dc, 0.21,0.81,0.23);
+    addM(g,bx(0.50,0.05,0.044),gm,0,0.90,0.23);
+    addM(g,bx(0.50,0.05,0.044),cm,0,1.04,0.23);
+    addM(g,bx(0.50,0.05,0.044),cm,0,1.16,0.23);
+    [[-0.21,0.25,-0.21],[0.21,0.25,-0.21],[-0.21,0.25,0.21],[0.21,0.25,0.21]].forEach(p=>addM(g,cy(0.030,0.030,0.50,7),dc,p[0],p[1],p[2]));
+    addM(g,cy(0.023,0.023,0.46,6),gm,0,0.22,0,0,0,Math.PI/2);
+  } else if(objKey==='broom'){
+    addM(g,cy(0.038,0.038,1.52,7),dc,0,0.76,0);
+    addM(g,sp2(0.052,6,6),gm,0,1.54,0);
+    addM(g,bx(0.52,0.06,0.17),gm,0,0.04,0);
+    for(let b=0;b<7;b++){const bx2=-0.22+b*0.075;addM(g,cy(0.020,0.009,0.20,5),dc,bx2,-0.082,0,0.18,0,0);}
+    addM(g,bx(0.55,0.038,0.19),cm,0,0.01,0);
+  } else if(objKey==='iron'){
+    addM(g,bx(0.52,0.17,0.30),cm,0,0.085,0);
+    addM(g,bx(0.47,0.055,0.26),gm,0,0.175,0);
+    addM(g,bx(0.13,0.16,0.13),cm,0.21,0.08,0);
+    addM(g,cy(0.042,0.042,0.36,7),dc,-0.09,0.34,0,0,0,0.54);
+    addM(g,cy(0.042,0.042,0.36,7),dc, 0.09,0.34,0,0,0,-0.54);
+    addM(g,bx(0.26,0.048,0.076),dc,0,0.50,0);
+    for(let h=0;h<4;h++)addM(g,cy(0.023,0.023,0.038,6),gm,-0.09+h*0.065,0.18,0.12);
+  } else if(objKey==='laundry_basket'){
+    addM(g,cy(0.40,0.34,0.55,12),dc,0,0.275,0);
+    addM(g,cy(0.38,0.32,0.53,12),cm,0,0.275,0.005);
+    addM(g,new THREE.TorusGeometry(0.40,0.033,6,16),gm,0,0.555,0);
+    for(let s=0;s<5;s++)addM(g,new THREE.TorusGeometry(0.39,0.013,5,14),cm,0,0.11+s*0.085,0);
+    addM(g,new THREE.TorusGeometry(0.11,0.028,6,10,Math.PI),gm,-0.40,0.42,0,0,0,Math.PI/2);
+    addM(g,new THREE.TorusGeometry(0.11,0.028,6,10,Math.PI),gm, 0.40,0.42,0,0,0,-Math.PI/2);
+    addM(g,sp2(0.15,7,7),gm,0.13,0.68,-0.07);
+  } else if(objKey==='ironing_board'){
+    addM(g,bx(1.05,0.048,0.34),gm,0,0.70,0);
+    addM(g,bx(1.01,0.028,0.30),cm,0,0.724,0);
+    addM(g,bx(0.17,0.048,0.21),cm,0.58,0.70,0);
+    addM(g,cy(0.028,0.028,0.72,6),dc,-0.26,0.33,0,0,0,0.50);
+    addM(g,cy(0.028,0.028,0.72,6),dc,-0.26,0.33,0,0,0,-0.50);
+    addM(g,cy(0.028,0.028,0.72,6),dc, 0.26,0.33,0,0,0,0.50);
+    addM(g,cy(0.028,0.028,0.72,6),dc, 0.26,0.33,0,0,0,-0.50);
+    addM(g,bx(0.44,0.038,0.095),cm,-0.26,0.04,0);
+    addM(g,bx(0.44,0.038,0.095),cm, 0.26,0.04,0);
+  } else if(objKey==='lamp'){
+    addM(g,cy(0.21,0.17,0.055,12),gm,0,0.028,0);
+    addM(g,cy(0.055,0.038,1.05,8),dc,0,0.555,0);
+    addM(g,cy(0.26,0.13,0.30,12),cm,0,1.20,0);
+    addM(g,cy(0.24,0.11,0.28,12),gm,0,1.20,0);
+    addM(g,sp2(0.065,8,8),gm,0,1.06,0);
+    addM(g,new THREE.TorusGeometry(0.26,0.020,6,16),cm,0,1.04,0);
+    addM(g,cy(0.013,0.013,0.28,5),dc,0.09,0.42,0,0,0,0.40);
+  } else if(objKey==='desk'){
+    addM(g,bx(1.05,0.065,0.52),gm,0,0.70,0);
+    addM(g,bx(1.01,0.038,0.48),cm,0,0.723,0);
+    [[-0.46,0.33,-0.21],[0.46,0.33,-0.21],[-0.46,0.33,0.21],[0.46,0.33,0.21]].forEach(p=>addM(g,cy(0.038,0.038,0.66,6),dc,p[0],p[1],p[2]));
+    addM(g,bx(0.36,0.15,0.48),dc,0.31,0.48,0);
+    addM(g,bx(0.34,0.13,0.46),cm,0.31,0.48,0.01);
+    addM(g,sp2(0.038,6,6),gm,0.31,0.48,0.25);
+  } else if(objKey==='trash_can'){
+    addM(g,cy(0.26,0.22,0.65,12),dc,0,0.325,0);
+    addM(g,cy(0.24,0.20,0.63,12),cm,0,0.325,0.005);
+    addM(g,cy(0.28,0.26,0.075,12),gm,0,0.688,0);
+    addM(g,cy(0.075,0.055,0.09,8),gm,0,0.762,0);
+    addM(g,bx(0.20,0.038,0.095),gm,0.17,0.038,0.27);
+    addM(g,cy(0.023,0.023,0.18,6),dc,0.17,0.13,0.21,0.40,0,0);
+  } else if(objKey==='rolling_hanger'){
+    [[-0.38,0],[0.38,0],[-0.38,0.46],[0.38,0.46]].forEach(p=>addM(g,cy(0.065,0.065,0.055,10),gm,p[0],0.065,p[1],Math.PI/2,0,0));
+    addM(g,cy(0.028,0.028,0.88,7),dc,0,0.065,0,0,0,Math.PI/2);
+    addM(g,cy(0.028,0.028,0.53,7),dc,0,0.065,0.23,0,0,Math.PI/2);
+    addM(g,cy(0.028,0.028,0.84,7),dc,-0.38,0.49,0.23);
+    addM(g,cy(0.028,0.028,0.84,7),dc, 0.38,0.49,0.23);
+    addM(g,cy(0.023,0.023,0.84,7),gm,0,0.92,0.23,0,0,Math.PI/2);
+    [-0.21,0,0.21].forEach(hx=>addM(g,new THREE.TorusGeometry(0.085,0.017,6,10,Math.PI*1.6),gm,hx,0.88,0.23,0,Math.PI/2,0.3));
+  } else if(objKey==='table'){
+    addM(g,bx(0.96,0.065,0.52),gm,0,0.70,0);
+    addM(g,bx(0.92,0.038,0.48),cm,0,0.723,0);
+    addM(g,bx(0.86,0.075,0.038),dc,0,0.65,-0.23);
+    addM(g,bx(0.86,0.075,0.038),dc,0,0.65, 0.23);
+    addM(g,bx(0.038,0.075,0.47),dc,-0.44,0.65,0);
+    addM(g,bx(0.038,0.075,0.47),dc, 0.44,0.65,0);
+    [[-0.42,0.33,-0.21],[0.42,0.33,-0.21],[-0.42,0.33,0.21],[0.42,0.33,0.21]].forEach(p=>addM(g,cy(0.038,0.038,0.65,7),dc,p[0],p[1],p[2]));
+  } else if(objKey==='refrigerator'){
+    addM(g,bx(0.68,1.18,0.42),dc,0,0.59,0);
+    addM(g,bx(0.64,1.14,0.38),cm,0,0.59,0.01);
+    addM(g,bx(0.70,0.028,0.44),gm,0,0.80,0);
+    addM(g,bx(0.63,0.34,0.038),cm,0,0.62,0.21);
+    addM(g,bx(0.63,0.30,0.038),cm,0,0.98,0.21);
+    addM(g,bx(0.038,0.26,0.065),gm,0.26,0.62,0.23);
+    addM(g,bx(0.038,0.20,0.065),gm,0.26,0.98,0.23);
+    addM(g,bx(0.63,0.055,0.077),cm,0,1.17,0.17);
+  } else if(objKey==='watering_can'){
+    addM(g,cy(0.28,0.24,0.42,12),dc,0,0.21,0);
+    addM(g,cy(0.26,0.22,0.40,12),cm,0,0.21,0.005);
+    addM(g,cy(0.095,0.095,0.095,8),gm,0,0.455,0.11);
+    addM(g,new THREE.TorusGeometry(0.21,0.033,6,12,Math.PI),gm,0.22,0.28,0.26,Math.PI/2,0,0);
+    addM(g,cy(0.060,0.046,0.55,8),dc,-0.20,0.19,-0.19,-0.3,0,0.15);
+    addM(g,cy(0.095,0.095,0.055,10),gm,-0.42,0.077,-0.40);
+    for(let h=0;h<5;h++){const a=h/5*Math.PI*2;addM(g,cy(0.011,0.011,0.048,5),gm,-0.42+Math.cos(a)*0.06,0.058,-0.40+Math.sin(a)*0.06);}
+  } else if(objKey==='tea_kettle'){
+    addM(g,sp2(0.30,12,10),dc,0,0.30,0);
+    addM(g,sp2(0.28,12,10),cm,0,0.30,0.005);
+    addM(g,cy(0.26,0.26,0.055,12),gm,0,0.038,0);
+    addM(g,cy(0.15,0.13,0.055,10),gm,0,0.62,0);
+    addM(g,sp2(0.055,7,7),gm,0,0.695,0);
+    addM(g,cy(0.050,0.042,0.34,8),dc,-0.18,0.36,-0.21,-0.5,0,-0.3);
+    addM(g,new THREE.TorusGeometry(0.19,0.036,6,12,Math.PI),gm,0.22,0.30,0,Math.PI/2,0,0);
+    addM(g,sp2(0.038,6,6),gm,-0.33,0.51,-0.30);
+  } else if(objKey==='wardrobe'){
+    addM(g,bx(0.84,1.14,0.38),dc,0,0.57,0);
+    addM(g,bx(0.80,1.10,0.34),cm,0,0.57,0.01);
+    addM(g,bx(0.038,1.06,0.40),gm,0,0.57,0);
+    addM(g,bx(0.34,0.42,0.038),cm,-0.23,0.74,0.19);
+    addM(g,bx(0.34,0.42,0.038),cm, 0.23,0.74,0.19);
+    addM(g,bx(0.038,0.11,0.055),gm,-0.055,0.53,0.20);
+    addM(g,bx(0.038,0.11,0.055),gm, 0.055,0.53,0.20);
+    addM(g,bx(0.89,0.075,0.44),gm,0,1.175,0);
+    addM(g,bx(0.76,0.075,0.34),cm,0,0.038,0);
+  } else if(objKey==='couch'){
+    addM(g,bx(1.05,0.19,0.50),dc,0,0.195,0);
+    addM(g,bx(1.01,0.17,0.46),cm,0,0.195,0.01);
+    [-0.30,0,0.30].forEach(cx=>{addM(g,bx(0.31,0.13,0.44),cm,cx,0.36,0);addM(g,bx(0.29,0.11,0.42),gm,cx,0.36,0.01);});
+    addM(g,bx(1.05,0.44,0.13),dc,0,0.54,-0.21);
+    addM(g,bx(1.01,0.40,0.095),cm,0,0.54,-0.20);
+    addM(g,bx(0.17,0.34,0.50),dc,-0.53,0.36,0);
+    addM(g,bx(0.17,0.34,0.50),dc, 0.53,0.36,0);
+    addM(g,bx(0.15,0.075,0.48),gm,-0.53,0.56,0);
+    addM(g,bx(0.15,0.075,0.48),gm, 0.53,0.56,0);
+  } else if(objKey==='crib'){
+    addM(g,bx(0.68,0.075,0.50),gm,0,0.34,0);
+    addM(g,bx(0.64,0.048,0.46),cm,0,0.363,0);
+    [[-0.34,0.58,-0.25],[0.34,0.58,-0.25],[-0.34,0.58,0.25],[0.34,0.58,0.25]].forEach(p=>{
+      addM(g,cy(0.038,0.038,1.16,7),dc,p[0],p[1],p[2]);
+      addM(g,sp2(0.052,6,6),gm,p[0],1.20,p[2]);
+    });
+    for(let s=0;s<5;s++)addM(g,cy(0.020,0.020,0.46,5),gm,-0.26+s*0.13,0.63,-0.25,Math.PI/2,0,0);
+    for(let s=0;s<5;s++)addM(g,cy(0.020,0.020,0.46,5),cm,-0.26+s*0.13,0.63, 0.25,Math.PI/2,0,0);
+    addM(g,bx(0.038,0.46,0.53),cm, 0.34,0.63,0);
+    addM(g,bx(0.038,0.46,0.53),cm,-0.34,0.63,0);
+  } else if(objKey==='filing_cabinet'){
+    addM(g,bx(0.55,0.92,0.44),dc,0,0.46,0);
+    addM(g,bx(0.51,0.88,0.40),cm,0,0.46,0.01);
+    [0.69,0.40,0.13].forEach(dy=>{
+      addM(g,bx(0.47,0.21,0.038),cm,0,dy,0.22);
+      addM(g,bx(0.26,0.048,0.055),gm,0,dy,0.25);
+      addM(g,bx(0.52,0.019,0.44),gm,0,dy+0.105,0);
+    });
+    addM(g,bx(0.59,0.048,0.48),gm,0,0.934,0);
+    addM(g,bx(0.51,0.055,0.40),cm,0,0.028,0);
+  } else {
+    // fallback: simple glowing cube
+    addM(g,bx(0.4,0.4,0.4),gm,0,0.2,0);
+  }
+  return g;
+}
+
 // ── BUILD TILES + BOTS ──
 const tileGroups = [];
 
@@ -1194,12 +1418,21 @@ bots.forEach((bot,i) => {
   // Store the tile's world position so we can sync the bot each frame
   botShape.userData.tileGroup = tg;
   botShape.userData.tileY = TH + 0.02;
-  botShape.position.set(tx, TH + 0.02, tz); // start at tile world position
+  botShape.position.set(tx - TW*0.22, TH + 0.02, tz); // start left of centre
   botScene.add(botShape);
 
+  // ── DOMESTIC OBJECT — lives in botScene beside the bot ──
+  const objShape = buildDomesticObject(bot.obj || 'lamp', baseColor);
+  objShape.scale.setScalar(0.70);
+  // Sits right half of tile
+  objShape.position.set(tx + TW*0.28, TH + 0.02, tz);
+  objShape.userData = { tileGroup: tg, tileY: TH + 0.02 };
+  botScene.add(objShape);
+  tg.userData.objShape = objShape;
+
   // Bot roaming state — wanders within the tile bounds
-  const HALF_X = TW/2 * 0.72; // roam within 72% of tile width
-  const HALF_Z = TD/2 * 0.72;
+  const HALF_X = TW/2 * 0.36; // roam within left ~40% of tile — object on right
+  const HALF_Z = TD/2 * 0.62;
   const phase = i * 1.618;     // golden ratio offset — unique per bot
   tg.userData.botShape  = botShape;
   tg.userData.halfX     = HALF_X;
@@ -1572,7 +1805,7 @@ function animate() {
     const rx = Math.sin(tt * d.xFreq + d.xPhase) * d.halfX;
     const rz = Math.cos(tt * d.zFreq + d.zPhase) * d.halfZ;
     // Bot world position = tile world pos + local roam offset
-    bs.position.x = tileWP.x + rx;
+    bs.position.x = tileWP.x + rx - TW*0.22;
     bs.position.z = tileWP.z + rz;
     bs.position.y = tileWP.y + TH + 0.02 + Math.abs(Math.sin(tt*d.wobbleSpeed*2)) * d.bobAmp;
 
@@ -1638,6 +1871,15 @@ function animate() {
       bs.scale.y=1-hop*0.10;
       bs.scale.x=1+hop*0.06;
     }
+
+    // ── DOMESTIC OBJECT animation: gentle bob + slow drift ──
+    const os = d.objShape;
+    if(os) {
+      os.position.x = tileWP.x + TW*0.28;
+      os.position.z = tileWP.z + Math.sin(tt*0.3)*0.08;
+      os.position.y = tileWP.y + TH + 0.02 + Math.sin(tt*0.7+1.2)*0.04;
+      os.rotation.y = Math.sin(tt*0.35)*0.18;
+    }
   });
 
   // Ground + stars
@@ -1676,6 +1918,61 @@ function animate() {
   }
 }
 animate();
+</script>
+
+<!-- ── AMBIENT AUDIO ── -->
+<audio id="ambientAudio" src="caretech-ambient.mp3" loop preload="auto"></audio>
+
+<script>
+// Audio auto-starts on the first user interaction (browser requirement).
+// After that it plays continuously until muted.
+let soundEnabled = true;
+let audioStarted = false;
+const audio = document.getElementById('ambientAudio');
+const soundBtn = document.getElementById('soundBtn');
+const soundLabel = document.getElementById('soundLabel');
+
+audio.volume = 0;
+
+function fadeIn() {
+  let v = 0;
+  const fade = setInterval(() => {
+    v = Math.min(0.45, v + 0.015);
+    audio.volume = v;
+    if(v >= 0.45) clearInterval(fade);
+  }, 40);
+}
+
+function startOnInteraction() {
+  if(audioStarted) return;
+  audioStarted = true;
+  audio.play().then(() => {
+    fadeIn();
+  }).catch(() => {});
+}
+
+// Start on first touch, click, scroll, or keypress
+['click','touchstart','scroll','keydown','mousemove'].forEach(evt =>
+  document.addEventListener(evt, startOnInteraction, { once: true, passive: true })
+);
+
+function toggleSound() {
+  soundEnabled = !soundEnabled;
+  if(soundEnabled) {
+    soundBtn.classList.remove('muted');
+    soundLabel.textContent = '♫ Sound';
+    audio.play().then(fadeIn).catch(() => {});
+  } else {
+    soundBtn.classList.add('muted');
+    soundLabel.textContent = '♪ Muted';
+    let v = audio.volume;
+    const fade = setInterval(() => {
+      v = Math.max(0, v - 0.02);
+      audio.volume = v;
+      if(v <= 0) { clearInterval(fade); audio.pause(); }
+    }, 40);
+  }
+}
 </script>
 
 </body>
