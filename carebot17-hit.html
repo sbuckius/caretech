@@ -1,0 +1,353 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>✦ CAREBOT-17 ✦ Chunks &amp; Atomic Facts</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+<style>
+  :root {
+    --rose:#ff5c8a;--hot:#ff2d6b;--candy:#ff85b3;--blush:#ffb3cf;
+    --cream:#fff5f8;--berry:#c4005a;--maroon:#6f001e;--fuchsia:#ff1f80;--bg:#1a0012;
+    --card-border:rgba(255,160,200,.22);--card-border-bright:rgba(255,100,160,.55);
+    --soft-glow:0 4px 30px rgba(255,45,107,.2),0 1px 0 rgba(255,160,200,.12) inset;
+    --pop-glow:0 6px 44px rgba(255,45,107,.4),0 0 80px rgba(255,30,128,.15);
+    --text-dim:rgba(255,200,224,.55);
+  }
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+  html,body{min-height:100%;font-family:'Quicksand',sans-serif;font-weight:600;color:var(--cream);background:var(--bg);-webkit-overflow-scrolling:touch;-webkit-font-smoothing:antialiased;cursor:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 20 20'%3E%3Ccircle cx='10' cy='10' r='4' fill='%23ff2d6b' opacity='.9'/%3E%3Ccircle cx='10' cy='10' r='7' stroke='%23ff85b3' stroke-width='1.5' fill='none' opacity='.6'/%3E%3C/svg%3E") 10 10,default;}
+
+  .bg{position:fixed;inset:0;z-index:0;pointer-events:none;background:radial-gradient(ellipse 70% 55% at 8% 10%,rgba(200,0,80,.32) 0%,transparent 60%),radial-gradient(ellipse 60% 60% at 90% 80%,rgba(120,0,90,.28) 0%,transparent 60%),radial-gradient(ellipse 50% 40% at 50% 108%,rgba(100,0,50,.2) 0%,transparent 55%),linear-gradient(160deg,#1e0014,#140010 50%,#0d000c);}
+  .orb{position:fixed;border-radius:50%;pointer-events:none;z-index:0;filter:blur(62px);}
+  .orb-1{width:440px;height:440px;background:var(--hot);opacity:.16;top:-100px;left:-80px;animation:drift1 22s ease-in-out infinite;}
+  .orb-2{width:360px;height:360px;background:var(--fuchsia);opacity:.14;bottom:-80px;right:-70px;animation:drift2 26s ease-in-out infinite;}
+  .orb-3{width:220px;height:220px;background:var(--candy);opacity:.09;top:38%;left:55%;animation:drift3 18s ease-in-out infinite;}
+  @keyframes drift1{0%,100%{transform:translate(0,0)}50%{transform:translate(38px,24px)}}
+  @keyframes drift2{0%,100%{transform:translate(0,0)}50%{transform:translate(-28px,-18px)}}
+  @keyframes drift3{0%,100%{transform:translate(0,0)}33%{transform:translate(-16px,12px)}66%{transform:translate(14px,-10px)}}
+  .sparkles{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden;}
+  .sp{position:absolute;opacity:0;animation:floatUp linear infinite;}
+  @keyframes floatUp{0%{opacity:0;transform:translateY(0) scale(.6) rotate(0deg)}15%{opacity:.65}85%{opacity:.35}100%{opacity:0;transform:translateY(-130px) scale(1.1) rotate(180deg)}}
+
+  .wrap{position:relative;z-index:2;max-width:960px;margin:0 auto;padding:max(20px,env(safe-area-inset-top)) clamp(12px,3vmin,24px) calc(60px + env(safe-area-inset-bottom)) clamp(12px,3vmin,24px);display:grid;gap:16px;}
+
+  .mascot-bar{display:flex;align-items:center;justify-content:space-between;}
+  .mascot{display:flex;align-items:center;gap:10px;}
+  .bot-face{width:44px;height:44px;border-radius:14px;background:linear-gradient(135deg,rgba(255,45,107,.25),rgba(180,0,60,.35));border:1.5px solid var(--card-border-bright);box-shadow:var(--soft-glow);display:flex;align-items:center;justify-content:center;font-size:22px;animation:wobble 4s ease-in-out infinite;flex-shrink:0;}
+  @keyframes wobble{0%,100%{transform:rotate(-2deg) scale(1)}25%{transform:rotate(1deg) scale(1.04)}50%{transform:rotate(-1deg) scale(1)}75%{transform:rotate(2deg) scale(1.03)}}
+  .bot-name{font-family:'Nunito',sans-serif;font-weight:900;font-size:17px;letter-spacing:.04em;background:linear-gradient(90deg,var(--blush),var(--fuchsia) 55%,var(--candy));-webkit-background-clip:text;background-clip:text;color:transparent;}
+  .bot-sub{font-size:10px;letter-spacing:.15em;text-transform:uppercase;color:var(--text-dim);margin-top:1px;}
+  .time-badge{display:flex;align-items:center;gap:6px;padding:6px 12px;border-radius:999px;background:rgba(255,255,255,.04);border:1px solid var(--card-border);font-size:11px;letter-spacing:.1em;color:var(--text-dim);}
+  .time-pip{width:5px;height:5px;border-radius:50%;background:var(--hot);box-shadow:0 0 6px var(--hot);animation:breathe 2s ease-in-out infinite;}
+  @keyframes breathe{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.3;transform:scale(.65)}}
+
+  /* context banner */
+  .context-banner{background:rgba(12,0,8,.78);border:1.5px solid var(--card-border-bright);border-radius:24px;box-shadow:var(--pop-glow),inset 0 1px 0 rgba(255,160,200,.07);backdrop-filter:blur(20px) saturate(1.4);padding:24px 26px;position:relative;overflow:hidden;}
+  .context-banner::before{content:'';position:absolute;top:0;left:12%;right:12%;height:1.5px;background:linear-gradient(90deg,transparent,var(--candy) 35%,var(--hot) 50%,var(--candy) 65%,transparent);box-shadow:0 0 12px var(--candy);border-radius:999px;}
+  .banner-eyebrow{font-size:9px;letter-spacing:.22em;text-transform:uppercase;color:var(--candy);font-weight:800;margin-bottom:8px;}
+  .banner-title{font-family:'Nunito',sans-serif;font-weight:900;font-size:clamp(15px,3vw,20px);background:linear-gradient(120deg,var(--cream) 15%,var(--blush) 50%,var(--fuchsia) 90%);-webkit-background-clip:text;background-clip:text;color:transparent;margin-bottom:10px;line-height:1.3;}
+  .banner-text{font-size:13px;color:rgba(255,210,228,.8);line-height:1.75;}
+  .banner-text strong{color:var(--blush);}
+
+  .app{background:rgba(255,255,255,.035);border:1.5px solid var(--card-border);border-radius:24px;box-shadow:var(--soft-glow);backdrop-filter:blur(20px) saturate(1.5);overflow:hidden;position:relative;}
+  .app::before{content:'';position:absolute;top:0;left:16px;right:16px;height:1px;background:linear-gradient(90deg,transparent,var(--candy) 30%,var(--hot) 50%,var(--candy) 70%,transparent);box-shadow:0 0 10px var(--candy);border-radius:999px;pointer-events:none;}
+
+  .task-header{padding:22px 24px 18px;border-bottom:1px solid rgba(255,160,200,.1);display:grid;gap:10px;}
+  .eyebrow{font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--text-dim);}
+  .task-title{font-family:'Nunito',sans-serif;font-weight:900;font-size:clamp(17px,3.2vw,24px);line-height:1.35;background:linear-gradient(120deg,var(--cream) 15%,var(--blush) 55%,var(--fuchsia) 90%);-webkit-background-clip:text;background-clip:text;color:transparent;}
+  .task-meta{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+  .meta-chip{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:999px;background:rgba(255,130,180,.08);border:1px solid rgba(255,130,180,.18);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--text-dim);}
+  .meta-dot{width:4px;height:4px;border-radius:50%;background:var(--candy);}
+
+  .task-section{padding:18px 24px;border-bottom:1px solid rgba(255,160,200,.08);display:grid;gap:12px;}
+  .section-label{font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--text-dim);}
+  .instr-box{background:rgba(255,45,107,.06);border:1px solid rgba(255,130,180,.18);border-radius:14px;padding:16px 18px;font-size:clamp(12px,1.9vw,14px);color:rgba(255,210,228,.82);line-height:1.85;}
+  .instr-box strong{color:var(--blush);font-family:'Nunito',sans-serif;}
+  .instr-box em{font-style:italic;color:var(--candy);}
+  .criteria-list{list-style:none;display:grid;gap:8px;margin-top:2px;}
+  .criteria-list li{display:flex;gap:10px;align-items:flex-start;font-size:clamp(12px,1.8vw,13.5px);color:rgba(255,210,228,.78);line-height:1.75;}
+  .crit-bullet{flex-shrink:0;margin-top:3px;width:18px;height:18px;border-radius:50%;background:rgba(255,45,107,.18);border:1px solid rgba(255,130,180,.35);display:flex;align-items:center;justify-content:center;font-size:9px;color:var(--candy);}
+
+  .text-box{background:rgba(8,0,4,.65);border:1px solid rgba(255,130,180,.14);border-radius:14px;padding:18px 20px;font-size:clamp(11px,1.6vw,13px);line-height:1.85;color:rgba(255,220,235,.7);font-family:'Nunito',sans-serif;font-weight:600;max-height:400px;overflow-y:auto;white-space:pre-wrap;letter-spacing:.01em;scrollbar-width:thin;scrollbar-color:rgba(255,100,160,.3) transparent;}
+  .ref-btn{appearance:none;font-family:'Nunito',sans-serif;font-weight:800;font-size:11px;letter-spacing:.04em;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:6px;padding:9px 18px;border-radius:12px;border:1.5px solid var(--card-border);background:rgba(255,45,107,.08);color:var(--text-dim);transition:all .2s;}
+  .ref-btn:hover{border-color:var(--card-border-bright);color:var(--blush);background:rgba(255,45,107,.18);}
+
+  /* timer strip */
+  .timer-strip{padding:10px 24px;border-bottom:1px solid rgba(255,160,200,.06);display:flex;align-items:center;gap:10px;background:rgba(255,45,107,.02);}
+  .timer-label{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--text-dim);}
+  .timer-value{font-family:'Nunito',sans-serif;font-weight:800;font-size:13px;color:var(--candy);letter-spacing:.04em;}
+
+  .answer-textarea{width:100%;min-height:140px;padding:14px 16px;border-radius:14px;border:1.5px solid rgba(255,100,160,.25);background:rgba(8,0,4,.65);color:var(--cream);font-family:'Quicksand',sans-serif;font-weight:600;font-size:clamp(12px,1.8vw,14px);line-height:1.75;resize:vertical;outline:none;transition:border-color .2s,box-shadow .2s;}
+  .answer-textarea:focus{border-color:var(--rose);box-shadow:0 0 16px rgba(255,80,130,.25);}
+  .answer-textarea::placeholder{color:rgba(255,160,200,.25);}
+
+  .app-footer{padding:16px 24px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;border-top:1px solid rgba(255,130,180,.08);}
+  .hint-row{display:flex;gap:6px;flex-wrap:wrap;}
+  .hint-pill{padding:5px 10px;border-radius:999px;background:rgba(255,130,180,.07);border:1px solid rgba(255,130,180,.16);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--text-dim);}
+
+  .submit-btn{appearance:none;font-family:'Nunito',sans-serif;font-weight:900;font-size:13px;letter-spacing:.04em;color:var(--cream);cursor:pointer;display:inline-flex;align-items:center;gap:6px;padding:11px 24px;border-radius:14px;min-height:42px;border:1.5px solid var(--hot);background:linear-gradient(135deg,rgba(255,45,107,.6),rgba(180,0,80,.65));box-shadow:0 4px 20px rgba(255,45,107,.3),inset 0 1px 0 rgba(255,255,255,.12);transition:all .2s cubic-bezier(.34,1.56,.64,1);-webkit-tap-highlight-color:transparent;position:relative;overflow:hidden;animation:ctaPulse 3s ease-in-out infinite;}
+  .submit-btn::before{content:'';position:absolute;inset:0;border-radius:inherit;background:linear-gradient(135deg,rgba(255,255,255,.1),transparent);pointer-events:none;}
+  @keyframes ctaPulse{0%,100%{box-shadow:0 4px 20px rgba(255,45,107,.3),inset 0 1px 0 rgba(255,255,255,.12)}50%{box-shadow:0 8px 36px rgba(255,45,107,.55),0 0 60px rgba(255,30,128,.15),inset 0 1px 0 rgba(255,255,255,.12)}}
+  .submit-btn:hover:not([disabled]){transform:translateY(-2px) scale(1.04);animation:none;box-shadow:0 8px 32px rgba(255,45,107,.5);}
+  .submit-btn[disabled]{opacity:.28;cursor:not-allowed;transform:none!important;box-shadow:none!important;animation:none;}
+
+  #completionSlot .completion-card{background:rgba(20,0,14,.88);border:1.5px solid var(--card-border-bright);box-shadow:var(--pop-glow),inset 0 1px 0 rgba(255,160,200,.07);border-radius:24px;padding:40px 28px;text-align:center;position:relative;overflow:hidden;backdrop-filter:blur(20px);}
+  #completionSlot .completion-card::before{content:'';position:absolute;top:0;left:12%;right:12%;height:1.5px;background:linear-gradient(90deg,transparent,var(--candy) 35%,var(--hot) 50%,var(--candy) 65%,transparent);box-shadow:0 0 10px var(--candy);border-radius:999px;}
+  .c-eyebrow{font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--text-dim);margin-bottom:10px;}
+  #completionSlot .completion-card h2{font-family:'Nunito',sans-serif;font-weight:900;font-size:clamp(24px,4vw,36px);background:linear-gradient(100deg,var(--blush) 20%,var(--fuchsia) 55%,var(--candy));-webkit-background-clip:text;background-clip:text;color:transparent;margin-bottom:14px;}
+  #completionSlot .completion-card p{font-size:clamp(12px,1.9vw,15px);color:rgba(255,210,230,.7);line-height:1.85;margin-bottom:22px;max-width:560px;margin-left:auto;margin-right:auto;}
+  .stat-bubble{display:inline-flex;flex-direction:column;align-items:center;gap:4px;background:linear-gradient(135deg,rgba(255,45,107,.15),rgba(200,0,90,.18));border:1.5px solid var(--card-border-bright);border-radius:20px;padding:18px 36px;margin-bottom:8px;box-shadow:0 4px 30px rgba(255,45,107,.25),inset 0 1px 0 rgba(255,255,255,.06);}
+  .stat-number{font-family:'Nunito',sans-serif;font-weight:900;font-size:clamp(44px,8vw,72px);line-height:1;background:linear-gradient(135deg,var(--blush) 20%,var(--fuchsia) 55%,var(--hot));-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 0 16px rgba(255,45,107,.5));}
+  .stat-label{font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--text-dim);}
+  .stat-sentence{font-size:clamp(14px,2.2vw,17px);color:rgba(255,210,228,.8);margin-bottom:8px;line-height:1.6;font-style:italic;font-family:'Nunito',sans-serif;}
+  .stat-raw{font-size:11px;color:rgba(255,160,200,.35);letter-spacing:.04em;margin-bottom:26px;}
+
+  .overlay-shell{position:fixed;inset:0;z-index:9000;background:rgba(8,0,5,.84);backdrop-filter:blur(14px);display:none;place-items:center;}
+  .overlay-shell.open{display:grid;}
+  .redir-card{width:min(100vw - 28px,1000px);height:min(100vh - 28px,720px);background:rgba(14,0,8,.95);border:1.5px solid var(--card-border);box-shadow:var(--soft-glow);border-radius:20px;overflow:hidden;display:grid;grid-template-rows:auto 1fr auto;}
+  .redir-header{display:flex;align-items:center;justify-content:space-between;padding:12px 18px;border-bottom:1px solid rgba(255,130,180,.1);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--text-dim);}
+  .redir-countdown{background:rgba(255,45,107,.1);border:1px solid var(--card-border);border-radius:8px;padding:4px 10px;color:var(--rose);}
+  .redir-card iframe,.redir-card object,.redir-card embed{width:100%;height:100%;border:0;background:#080004;}
+  .redir-footer{display:flex;justify-content:flex-end;gap:8px;padding:10px 18px;border-top:1px solid rgba(255,130,180,.1);}
+  .redir-link{font-family:'Nunito',sans-serif;font-weight:800;font-size:12px;color:var(--cream);text-decoration:none;padding:9px 18px;border-radius:12px;border:1.5px solid var(--card-border);background:rgba(255,45,107,.1);transition:all .2s;cursor:pointer;appearance:none;}
+  .redir-link:hover{border-color:var(--card-border-bright);background:rgba(255,45,107,.2);}
+  .wordmark{font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,160,200,.18);text-align:center;}
+</style>
+</head>
+<body>
+<div class="bg"></div>
+<div class="orb orb-1"></div><div class="orb orb-2"></div><div class="orb orb-3"></div>
+<div class="sparkles" id="sparkles"></div>
+
+<main class="wrap">
+
+  <div class="mascot-bar">
+    <div class="mascot">
+      <div class="bot-face">🛰️</div>
+      <div>
+        <div class="bot-name">CAREBOT-17 ✦</div>
+        <div class="bot-sub">Chunks &amp; Atomic Facts · Grounding Task · Online</div>
+      </div>
+    </div>
+    <div class="time-badge"><div class="time-pip"></div><span id="sysTime">--:--:--</span></div>
+  </div>
+
+  <!-- CONTEXT BANNER -->
+  <div class="context-banner">
+    <div class="banner-eyebrow">✦ CAREBOT-17 · Task Briefing</div>
+    <div class="banner-title">⚠️ You are about to evaluate text written by Katherine G. Johnson.</div>
+    <div class="banner-text">
+      <strong>Katherine G. Johnson</strong> was a mathematician at NASA's Langley Research Center. In 1960 she co-authored <strong>NASA Technical Note D-233</strong> — a paper on orbital mechanics for satellite placement. Her calculations were later used for the trajectory of Apollo 11. This task asks you to evaluate how information in the text grounds specific facts. Read carefully. The document is a primary source.
+    </div>
+  </div>
+
+  <!-- TASK CARD -->
+  <section class="app">
+
+    <header class="task-header">
+      <div class="eyebrow">✦ CAREBOT-17 · Grounding Evaluation Task</div>
+      <h1 class="task-title">Evaluate the relationship between Chunks and Atomic Facts.</h1>
+      <div class="task-meta">
+        <div class="meta-chip"><div class="meta-dot"></div>Chunk Analysis</div>
+        <div class="meta-chip"><div class="meta-dot"></div>Atomic Facts</div>
+        <div class="meta-chip"><div class="meta-dot"></div>Active</div>
+      </div>
+    </header>
+
+    <!-- instructions -->
+    <div class="task-section">
+      <div class="section-label">✦ Instructions</div>
+      <div class="instr-box">
+        For each Chunk, identify which Atomic Facts are <strong>grounded</strong> by the information contained in that Chunk.<br><br>
+        <strong>Important Notes</strong> — <em>Grounding Criteria:</em>
+      </div>
+      <ul class="criteria-list">
+        <li><div class="crit-bullet">✦</div>An Atomic Fact is considered <strong>grounded</strong> by a Chunk if <strong>you can confirm whether the fact is true or false using only the information in that Chunk.</strong></li>
+        <li><div class="crit-bullet">✦</div>Atomic Facts don't need to contain exact wording from the Chunk. <strong>Synonyms, alternative phrasings, or paraphrased information</strong> are acceptable if the meaning is supported by the Chunk.</li>
+        <li><div class="crit-bullet">✦</div>An Atomic Fact <strong>can be supported by multiple different Chunks</strong> — do not exclude a fact from evaluation just because it appeared in a previous chunk.</li>
+        <li><div class="crit-bullet">✦</div>Each Chunk should be <strong>evaluated independently</strong> — focus only on what information that specific Chunk provides.</li>
+      </ul>
+    </div>
+
+    <!-- provided text -->
+    <div class="task-section">
+      <div class="section-label">✦ Provided Text — NASA TN D-233 (1960)</div>
+      <div class="text-box">NASA TN D-233 ... TECHNICAL NOTE D-233 DETERMINATION OF AZIMUTH ANGLE AT BURNOUT FOR PLACING A SATELLITE OVER A SELECTED EARTH-POSITION By T. H. Skopinski and Katherine G. Johnson Langley Research Center Langley Field, Va. NATIONAL AERONAUTICS AND SPACE ADMINISTRATION WASHINGTON September 1960
+
+SUMMARY Expressions are presented for relating the satellite position in the orbital plane with the projected latitude and longitude on a rotating earth surface. An expression is also presented for determining the azimuth angle at a given burnout position on the basis of a selected passage position on the earth's surface. Examples are presented of a satellite launched eastward and one launched westward, each passing over a selected position sometime after having completed three orbits. Incremental changes from the desired latitude and longitude due to the earth's oblateness are included in the iteration for obtaining the azimuth angles of the two examples. The results for both cases are then compared with those obtained from a computing program using an oblate rotating earth. Changes from the selected latitude and longitude resulting from incremental changes from the burnout azimuth angle and latitude are also analyzed.
+
+INTRODUCTION In the recovery of an artificial earth satellite it is necessary to bring the satellite over a preselected point above the earth from which the reentry is to be initiated. It is the purpose of the present paper to determine the azimuth angle which must exist at a given burnout point in order to have the satellite vehicle pass over any particular earth position after a selected small number of orbital passes. For this purpose equations are developed which give the latitude and longitude of a point on the surface of a rotating spherical earth directly under the satellite at any time. An expression is developed which, with the orbit characteristics and the selected passage position on the earth's surface, will establish after only a few iterations the required azimuth angle at the burnout point. Elliptical orbits about a rotating spherical earth are first assumed. Although this simplification ignores the effects of the earth's oblateness, it is convenient to examine the oblateness effects later as incremental changes which can be accounted for in an iteration procedure.</div>
+
+      <div style="margin-top:10px;">
+        <button class="ref-btn" id="openPdfBtn" type="button">✦ Katherine Johnson's Calculation for NASA — Open PDF</button>
+      </div>
+    </div>
+
+    <!-- timer strip -->
+    <div class="timer-strip">
+      <div class="timer-label">Time elapsed ✦</div>
+      <div class="timer-value" id="timerDisplay">0.0s</div>
+    </div>
+
+    <!-- answer textarea -->
+    <div class="task-section" style="border-bottom:none;">
+      <div class="section-label">✦ Your Answer</div>
+      <textarea id="userText" class="answer-textarea" placeholder="For each Chunk, identify which Atomic Facts are grounded by the information contained in that Chunk…"></textarea>
+      <div style="font-size:11px;color:var(--text-dim);margin-top:4px;">Type your answer to reveal the completion button ✦</div>
+    </div>
+
+    <footer class="app-footer">
+      <div class="hint-row">
+        <div class="hint-pill">Evaluate independently</div>
+        <div class="hint-pill">Type answer → Submit</div>
+      </div>
+      <button class="submit-btn" id="submitBtn" disabled onclick="doSubmit()">Submit ✦</button>
+    </footer>
+
+  </section>
+
+  <div id="completionSlot"></div>
+  <div class="wordmark">✦ carebot research system ✦</div>
+</main>
+
+<!-- PDF overlay -->
+<div id="pdfOverlay" class="overlay-shell" role="dialog" aria-modal="true">
+  <div class="redir-card">
+    <div class="redir-header">
+      <span>✦ NASA Technical Note D-233 (1960)</span>
+      <div class="redir-countdown">Auto-close <span id="countdown">2</span>s</div>
+    </div>
+    <object id="pdfObject" data="" type="application/pdf">
+      <iframe id="pdfFrame" title="NASA TN D-233 PDF" src=""></iframe>
+    </object>
+    <div class="redir-footer">
+      <a id="pdfDirectLink" class="redir-link" href="#" target="_blank" rel="noopener">Open PDF in new tab</a>
+      <button id="closeOverlayBtn" class="redir-link">Close</button>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  const wrap=document.getElementById('sparkles');
+  const chars=['✦','✧','♡','˚','·','✿','◦','❀','⚙','∿'];
+  for(let i=0;i<28;i++){
+    const s=document.createElement('span');s.className='sp';
+    s.textContent=chars[Math.floor(Math.random()*chars.length)];
+    s.style.left=Math.random()*100+'vw';s.style.bottom=Math.random()*-60+'px';
+    s.style.fontSize=(9+Math.random()*10)+'px';
+    s.style.color=`hsl(${315+Math.random()*45},75%,${65+Math.random()*22}%)`;
+    s.style.animationDuration=(7+Math.random()*13)+'s';
+    s.style.animationDelay=(Math.random()*13)+'s';
+    wrap.appendChild(s);
+  }
+})();
+
+function updateClock(){const n=new Date(),p=v=>String(v).padStart(2,'0');document.getElementById('sysTime').textContent=`${p(n.getHours())}:${p(n.getMinutes())}:${p(n.getSeconds())}`;}
+setInterval(updateClock,1000);updateClock();
+
+/* ── Firebase ── */
+const SESSION_ID='cb17-'+Math.random().toString(36).slice(2,10);
+let _db,_fbReady=false;
+try{
+  firebase.initializeApp({
+    apiKey:"AIzaSyCZFDU-WlSmHqjXTs1Ox0nf9xeJU_xbaX0",
+    authDomain:"collaborativemashup.firebaseapp.com",
+    databaseURL:"https://collaborativemashup-default-rtdb.firebaseio.com",
+    projectId:"collaborativemashup",
+    storageBucket:"collaborativemashup.firebasestorage.app",
+    messagingSenderId:"562437984610",
+    appId:"1:562437984610:web:9f3711c26e097bc8ef9c3b"
+  });
+  _db=firebase.database();_fbReady=true;
+}catch(e){}
+
+/* ── Timer ── */
+const startTime=Date.now();
+const timerInterval=setInterval(()=>{
+  document.getElementById('timerDisplay').textContent=((Date.now()-startTime)/1000).toFixed(1)+'s';
+},100);
+
+/* ── Unlock submit ── */
+const userText=document.getElementById('userText');
+const submitBtn=document.getElementById('submitBtn');
+userText.addEventListener('input',()=>{submitBtn.disabled=userText.value.trim().length===0;});
+
+/* ── Score calculation (deterministic low quality, 8-23%) ── */
+function calcPct(){const len=userText.value.trim().length;return((len*7+19)%16)+8;}
+
+function saveResult(){
+  if(!_fbReady||!_db)return;
+  const elapsedMs=Date.now()-startTime;
+  clearInterval(timerInterval);
+  const answer=userText.value.trim();
+  const words=answer.split(/\s+/).filter(Boolean).length;
+  const pct=calcPct();
+  _db.ref('groundingEvaluations').push({
+    sessionId:SESSION_ID,
+    wordCount:words,
+    charCount:answer.length,
+    elapsedMs:Math.round(elapsedMs),
+    elapsedSeconds:parseFloat((elapsedMs/1000).toFixed(2)),
+    qualityPct:pct,
+    answerPreview:answer.slice(0,200),
+    completedAt:firebase.database.ServerValue.TIMESTAMP
+  }).catch(()=>{});
+}
+
+function doSubmit(){
+  saveResult();
+  showCompletion();
+}
+
+function showCompletion(){
+  if(document.getElementById('final-comp'))return;
+  const elapsedMs=Date.now()-startTime;
+  const answer=userText.value.trim();
+  const words=answer.split(/\s+/).filter(Boolean).length;
+  const pct=calcPct();
+  document.getElementById('timerDisplay').textContent=(elapsedMs/1000).toFixed(2)+'s ✦';
+  const d=document.createElement('div');
+  d.id='final-comp';d.className='completion-card';
+  d.innerHTML=`
+    <div class="c-eyebrow">✦ CAREBOT-17 · Readout</div>
+    <h2>Analysis Submitted 🛰️</h2>
+    <p>Your grounding evaluation of <strong style="color:var(--candy)">${words.toLocaleString()}</strong> word${words===1?'':'s'} has been submitted.</p>
+    <div class="stat-bubble">
+      <div class="stat-number">${pct}%</div>
+      <div class="stat-label">analysis quality</div>
+    </div>
+    <div class="stat-sentence">"This grounding evaluation demonstrates a <strong style="color:var(--candy)">${pct}%</strong> analysis quality score."</div>
+    <div class="stat-raw">${words.toLocaleString()} words · ${(elapsedMs/1000).toFixed(1)}s · CAREBOT-17 Grounding Module</div>
+    <a class="submit-btn" href="hit.html" target="_blank" rel="noopener" style="text-decoration:none;display:inline-flex;animation:none;margin:0 auto;">Task complete — next task ✦</a>`;
+  document.getElementById('completionSlot').appendChild(d);
+  d.scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+/* ── PDF overlay ── */
+const PDF_URL='https://ntrs.nasa.gov/api/citations/19980227091/downloads/19980227091.pdf';
+const openPdfBtn=document.getElementById('openPdfBtn');
+const pdfOverlay=document.getElementById('pdfOverlay');
+const pdfObject=document.getElementById('pdfObject');
+const pdfFrame=document.getElementById('pdfFrame');
+const cntdwn=document.getElementById('countdown');
+const pdfDirectLink=document.getElementById('pdfDirectLink');
+const closeOverlayBtn=document.getElementById('closeOverlayBtn');
+let rtimer=null,rtick=null,rrem=2;
+function resetRedir(){clearTimeout(rtimer);clearInterval(rtick);rrem=2;if(cntdwn)cntdwn.textContent=rrem;}
+function closeOverlay(){pdfOverlay.classList.remove('open');pdfObject.removeAttribute('data');pdfFrame.src='about:blank';resetRedir();openPdfBtn.disabled=false;}
+function openFallback(){openPdfBtn.disabled=true;pdfOverlay.classList.add('open');pdfObject.setAttribute('data',PDF_URL);pdfFrame.src=PDF_URL;pdfDirectLink.href=PDF_URL;resetRedir();rtick=setInterval(()=>{rrem--;if(cntdwn)cntdwn.textContent=Math.max(rrem,0);if(rrem<=0)clearInterval(rtick);},1000);rtimer=setTimeout(closeOverlay,2000);}
+function openInNewTab(){
+  const w=window.open(PDF_URL,'_blank');
+  if(w&&!w.closed){openPdfBtn.disabled=true;resetRedir();rtick=setInterval(()=>{rrem--;if(rrem<=0)clearInterval(rtick);},1000);rtimer=setTimeout(()=>{try{w.close();}catch(e){}openPdfBtn.disabled=false;resetRedir();},2000);}
+  else{openFallback();}
+}
+openPdfBtn.addEventListener('click',openInNewTab);
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&pdfOverlay.classList.contains('open'))closeOverlay();});
+pdfOverlay.addEventListener('click',e=>{if(e.target===pdfOverlay)closeOverlay();});
+closeOverlayBtn.addEventListener('click',e=>{e.preventDefault();closeOverlay();});
+</script>
+</body>
+</html>
