@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>✦ CAREBOT-40 ✦ Voice & Visibility · Women's Patent Archive</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Quicksand:wght@500;600;700&family=DM+Mono:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+<style>
+:root {
+  --teal:#c084fc;--teal-dim:rgba(192,132,252,.45);
+  --candy:#ff85b3;--hot:#ff2d6b;--blush:#ffb3cf;--fuchsia:#ff1f80;
+  --cream:#fff5f8;--berry:#c4005a;--bg:#100008;
+  --border:rgba(192,132,252,.2);--border2:rgba(192,132,252,.45);
+  --muted:rgba(245,200,255,.5);--muted2:rgba(245,200,255,.78);
+  --surface:rgba(10,4,14,.97);--fh:'Nunito',sans-serif;--fb:'Quicksand',sans-serif;--fm:'DM Mono',monospace;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html,body{min-height:100%;font-family:var(--fb);font-weight:600;color:var(--cream);background:var(--bg);}
+.bg{position:fixed;inset:0;z-index:0;pointer-events:none;background:radial-gradient(ellipse 65% 55% at 10% 88%,rgba(80,0,80,.25) 0%,transparent 55%),radial-gradient(ellipse 55% 45% at 90% 8%,rgba(180,0,50,.15) 0%,transparent 55%),linear-gradient(155deg,#0e0008,#100012 50%,#0e0008);}
+.orb{position:fixed;border-radius:50%;pointer-events:none;z-index:0;filter:blur(65px);}
+.orb-1{width:380px;height:380px;background:#3b0040;opacity:.28;bottom:-80px;left:-70px;animation:d1 21s ease-in-out infinite;}
+.orb-2{width:300px;height:300px;background:#6f001e;opacity:.15;top:-60px;right:-60px;animation:d2 25s ease-in-out infinite;}
+@keyframes d1{0%,100%{transform:translate(0,0)}50%{transform:translate(38px,26px)}}
+@keyframes d2{0%,100%{transform:translate(0,0)}50%{transform:translate(-28px,-20px)}}
+@keyframes breathe{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.3;transform:scale(.65)}}
+
+.page{position:relative;z-index:2;min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:max(20px,env(safe-area-inset-top)) clamp(14px,5vw,24px) max(44px,env(safe-area-inset-bottom));gap:0;}
+
+.top-bar{width:100%;max-width:500px;display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;}
+.brand{font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:rgba(192,132,252,.4);}
+.status-pill{display:flex;align-items:center;gap:5px;padding:4px 11px;border-radius:999px;background:rgba(192,132,252,.06);border:1px solid var(--border);font-size:9px;color:var(--muted);}
+.status-pip{width:4px;height:4px;border-radius:50%;background:var(--teal);animation:breathe 2s ease-in-out infinite;}
+
+.bot-body{width:min(92vw,480px);display:flex;flex-direction:column;align-items:center;}
+
+/* BOT HEAD — patent scroll SVG */
+.bot-head-wrap{width:clamp(160px,32vw,200px);height:clamp(190px,38vw,245px);animation:headFloat 5s ease-in-out infinite;}
+@keyframes headFloat{0%,100%{transform:translateY(0) rotate(-.5deg)}45%{transform:translateY(-10px) rotate(.7deg)}}
+.head-svg{width:100%;height:100%;filter:drop-shadow(0 6px 28px rgba(192,132,252,.4)) drop-shadow(0 0 55px rgba(192,132,252,.12));}
+
+.bot-neck{width:24px;height:13px;background:linear-gradient(180deg,rgba(192,132,252,.15),rgba(60,0,60,.4));border:1px solid var(--border2);border-top:none;clip-path:polygon(8% 0%,92% 0%,100% 100%,0% 100%);}
+.bot-nametag{text-align:center;margin:9px 0 5px;}
+.bot-name{font-family:var(--fh);font-weight:900;font-size:clamp(16px,3.2vw,21px);background:linear-gradient(90deg,var(--teal),var(--candy) 55%,var(--blush));-webkit-background-clip:text;background-clip:text;color:transparent;}
+.bot-sub{font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:rgba(192,132,252,.38);margin-top:3px;}
+
+.stats-bar{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;margin:8px 0 12px;}
+.stat-pill{display:flex;align-items:center;gap:4px;padding:3px 9px;border-radius:999px;background:rgba(192,132,252,.05);border:1px solid var(--border);font-size:9px;color:var(--muted);}
+.stat-dot{width:4px;height:4px;border-radius:50%;background:var(--teal);}
+
+/* TORSO / CHAT */
+.bot-torso{width:100%;background:var(--surface);border:1.5px solid var(--border2);border-radius:22px;box-shadow:0 8px 50px rgba(192,132,252,.18),0 0 80px rgba(192,132,252,.06);overflow:hidden;display:flex;flex-direction:column;min-height:clamp(300px,50vh,480px);position:relative;}
+.bot-torso::before{content:'';position:absolute;top:0;left:10%;right:10%;height:1.5px;z-index:5;background:linear-gradient(90deg,transparent,var(--teal) 35%,var(--candy) 50%,var(--teal) 65%,transparent);box-shadow:0 0 14px var(--teal);border-radius:999px;}
+
+.screen-topbar{display:flex;align-items:center;justify-content:space-between;padding:10px 16px 8px;border-bottom:1px solid rgba(192,132,252,.08);position:relative;z-index:2;}
+.screen-dots{display:flex;gap:5px;}
+.screen-dot{width:8px;height:8px;border-radius:50%;}
+.screen-dot:nth-child(1){background:var(--teal);animation:breathe 2s ease-in-out infinite;}
+.screen-dot:nth-child(2){background:var(--candy);animation:breathe 2s .3s ease-in-out infinite;}
+.screen-dot:nth-child(3){background:var(--hot);animation:breathe 2s .6s ease-in-out infinite;}
+.screen-label{font-family:var(--fm);font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:rgba(192,132,252,.38);}
+
+.chat-area{flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:10px;padding:12px;z-index:2;position:relative;}
+.msg{display:flex;gap:7px;align-items:flex-end;animation:msgIn .32s cubic-bezier(.22,1,.36,1) both;}
+@keyframes msgIn{from{opacity:0;transform:translateY(8px)}to{opacity:1}}
+.msg.user{flex-direction:row-reverse;}
+.msg-av{width:24px;height:24px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:11px;background:rgba(192,132,252,.1);border:1px solid var(--border);}
+.msg.user .msg-av{background:rgba(255,45,107,.1);border-color:rgba(255,45,107,.3);font-size:10px;color:var(--muted);}
+.bubble{max-width:84%;padding:9px 13px;border-radius:13px;font-size:12.5px;line-height:1.72;}
+.msg.assistant .bubble{background:rgba(192,132,252,.06);border:1px solid rgba(192,132,252,.14);color:var(--muted2);border-bottom-left-radius:2px;}
+.msg.user .bubble{background:linear-gradient(135deg,rgba(255,45,107,.35),rgba(180,0,80,.42));color:var(--cream);border:1px solid rgba(255,45,107,.4);border-bottom-right-radius:2px;}
+.bubble strong{color:var(--teal);}
+.bubble em{color:var(--candy);font-style:italic;}
+.typing-indicator{display:flex;gap:5px;padding:4px 2px;}
+.typing-dot{width:7px;height:7px;border-radius:50%;background:var(--teal);opacity:.4;animation:tb 1.2s ease-in-out infinite;}
+.typing-dot:nth-child(2){animation-delay:.2s;}.typing-dot:nth-child(3){animation-delay:.4s;}
+@keyframes tb{0%,80%,100%{transform:translateY(0);opacity:.4}40%{transform:translateY(-6px);opacity:1}}
+
+.prompts-row{display:flex;gap:5px;flex-wrap:wrap;padding:4px 12px 10px;z-index:2;position:relative;}
+.pc{padding:5px 11px;border-radius:999px;cursor:pointer;background:rgba(192,132,252,.05);border:1px solid var(--border);font-size:10px;color:rgba(192,132,252,.52);transition:all .15s;white-space:nowrap;}
+.pc:hover{background:rgba(192,132,252,.14);border-color:var(--border2);color:var(--teal);}
+
+.chat-input-row{display:flex;gap:7px;padding:9px 12px;border-top:1px solid rgba(192,132,252,.08);z-index:2;position:relative;}
+.chat-input{flex:1;background:rgba(192,132,252,.04);border:1.5px solid rgba(192,132,252,.14);border-radius:10px;color:var(--cream);font-size:12.5px;padding:9px 12px;outline:none;transition:border-color .2s;resize:none;font-family:var(--fb);font-weight:600;}
+.chat-input:focus{border-color:var(--teal);}
+.chat-input::placeholder{color:rgba(192,132,252,.16);}
+.chat-input:disabled{opacity:.4;}
+.send-btn{width:32px;height:32px;border-radius:10px;background:linear-gradient(135deg,var(--teal),rgba(140,0,160,1));border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 14px rgba(192,132,252,.3);transition:all .18s;flex-shrink:0;}
+.send-btn:hover:not(:disabled){transform:scale(1.1);}
+.send-btn:disabled{opacity:.3;cursor:not-allowed;}
+.send-btn svg{width:14px;height:14px;fill:none;stroke:white;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;}
+
+.bot-legs{display:flex;gap:28px;justify-content:center;margin-top:-1px;}
+.bot-leg-wrap{display:flex;flex-direction:column;align-items:center;}
+.bot-leg{width:26px;height:24px;background:linear-gradient(180deg,rgba(192,132,252,.12),rgba(60,0,60,.3));border:1.5px solid var(--border2);border-top:none;}
+.bot-foot{width:38px;height:10px;border-radius:3px;background:rgba(60,0,60,.2);border:1.5px solid var(--border);margin-top:-1px;}
+
+@keyframes dance{0%,100%{transform:translateY(0) rotate(-.5deg)}20%{transform:translateY(-14px) rotate(-6deg)}40%{transform:translateY(-6px) rotate(6deg)}}
+.bot-head-wrap.dancing{animation:dance .55s cubic-bezier(.34,1.56,.64,1) 4!important;}
+
+.wmark{margin-top:16px;font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:rgba(192,132,252,.07);}
+::-webkit-scrollbar{width:4px;height:4px;} ::-webkit-scrollbar-track{background:transparent;} ::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px;}
+</style>
+</head>
+<body>
+<div class="bg"></div>
+<div class="orb orb-1"></div><div class="orb orb-2"></div>
+
+<div class="page">
+  <div class="top-bar">
+    <div class="brand">CAREtech ✦ Voice & Visibility ✦ Women's Patent Archive ✦ Domestic Robots</div>
+    <div class="status-pill"><div class="status-pip"></div><span id="onlineLabel">Online</span></div>
+  </div>
+
+  <div class="bot-body">
+    <!-- SVG HEAD: patent scroll -->
+    <div class="bot-head-wrap" id="botHead">
+      <svg class="head-svg" viewBox="0 0 200 240" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="scrollBg" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#0e0010"/>
+            <stop offset="100%" stop-color="#0a0010"/>
+          </linearGradient>
+          <filter id="glowSc">
+            <feGaussianBlur stdDeviation="2.5" result="b"/>
+            <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+          </filter>
+        </defs>
+        <!-- Scroll body -->
+        <rect x="18" y="20" width="164" height="180" rx="8" fill="url(#scrollBg)" stroke="#c084fc" stroke-width="1.5" filter="url(#glowSc)"/>
+        <!-- Scroll top curl -->
+        <ellipse cx="100" cy="20" rx="82" ry="10" fill="#0e0010" stroke="#c084fc" stroke-width="1.2"/>
+        <ellipse cx="100" cy="20" rx="68" ry="6" fill="#100014" stroke="#c084fc" stroke-width=".6" opacity=".6"/>
+        <!-- Scroll bottom curl -->
+        <ellipse cx="100" cy="200" rx="82" ry="10" fill="#0e0010" stroke="#c084fc" stroke-width="1.2"/>
+        <ellipse cx="100" cy="200" rx="68" ry="6" fill="#100014" stroke="#c084fc" stroke-width=".6" opacity=".6"/>
+        <!-- Patent text lines (left eye area) -->
+        <rect x="30" y="50" width="60" height="3" rx="1.5" fill="#c084fc" opacity=".5"/>
+        <rect x="30" y="58" width="50" height="2" rx="1" fill="#c084fc" opacity=".3"/>
+        <rect x="30" y="65" width="56" height="2" rx="1" fill="#c084fc" opacity=".35"/>
+        <rect x="30" y="72" width="44" height="2" rx="1" fill="#c084fc" opacity=".25"/>
+        <rect x="30" y="79" width="52" height="2" rx="1" fill="#c084fc" opacity=".3"/>
+        <!-- Eyes: highlighted patent words -->
+        <rect x="34" y="95" width="48" height="26" rx="5" fill="rgba(192,132,252,.12)" stroke="#c084fc" stroke-width="1.2"/>
+        <text x="58" y="111" text-anchor="middle" font-family="DM Mono,monospace" font-size="7.5" font-weight="500" fill="#c084fc" opacity=".9">USEFUL</text>
+        <!-- Right eye: domestic word -->
+        <rect x="118" y="95" width="48" height="26" rx="5" fill="rgba(255,133,179,.1)" stroke="#ff85b3" stroke-width="1.2"/>
+        <text x="142" y="111" text-anchor="middle" font-family="DM Mono,monospace" font-size="7" font-weight="500" fill="#ff85b3" opacity=".9">HOUSEHOLD</text>
+        <!-- Patent text lines below eyes -->
+        <rect x="30" y="135" width="140" height="2" rx="1" fill="#c084fc" opacity=".25"/>
+        <rect x="30" y="142" width="130" height="2" rx="1" fill="#c084fc" opacity=".2"/>
+        <rect x="30" y="149" width="138" height="2" rx="1" fill="#c084fc" opacity=".22"/>
+        <rect x="30" y="156" width="110" height="2" rx="1" fill="#c084fc" opacity=".18"/>
+        <rect x="30" y="163" width="135" height="2" rx="1" fill="#c084fc" opacity=".2"/>
+        <!-- PATENT NO label -->
+        <text x="100" y="38" text-anchor="middle" font-family="DM Mono,monospace" font-size="6.5" font-weight="500" fill="#c084fc" opacity=".55" letter-spacing=".12em">PATENT · CAREBOT-40</text>
+        <!-- Seal -->
+        <circle cx="148" cy="175" r="14" fill="none" stroke="#c084fc" stroke-width="1" opacity=".4"/>
+        <circle cx="148" cy="175" r="9" fill="rgba(192,132,252,.08)" stroke="#c084fc" stroke-width=".8" opacity=".5"/>
+        <text x="148" y="178" text-anchor="middle" font-family="DM Mono,monospace" font-size="7" fill="#c084fc" opacity=".6">✦</text>
+        <!-- Corner rosettes -->
+        <circle cx="100" cy="20" r="3" fill="#c084fc" opacity=".7"><animate attributeName="opacity" values=".7;.2;.7" dur="2.2s" repeatCount="indefinite"/></circle>
+        <circle cx="100" cy="200" r="3" fill="#ff85b3" opacity=".6"><animate attributeName="opacity" values=".6;.15;.6" dur="2.8s" repeatCount="indefinite"/></circle>
+      </svg>
+    </div>
+
+    <div class="bot-neck"></div>
+    <div class="bot-nametag">
+      <div class="bot-name">CAREBOT-40 ✦</div>
+      <div class="bot-sub">Voice & Visibility · Women's Patent Archive</div>
+    </div>
+
+    <div class="stats-bar">
+      <div class="stat-pill"><div class="stat-dot"></div><span id="statN">Loading…</span></div>
+      <div class="stat-pill"><span id="statSub">Ask me anything</span></div>
+    </div>
+
+    <div class="bot-torso">
+      <div class="screen-topbar">
+        <div class="screen-dots"><div class="screen-dot"></div><div class="screen-dot"></div><div class="screen-dot"></div></div>
+        <div class="screen-label">CAREBOT-40 ✦ PATENT ARCHIVE ✦ ACTIVE</div>
+      </div>
+      <div class="chat-area" id="chatArea"></div>
+      <div class="prompts-row">
+        <div class="pc" data-p="Who was Sarah Boone and what did she invent?">Sarah Boone · Ironing Board 1892</div>
+        <div class="pc" data-p="Who was Josephine Cochrane and what did she invent?">Josephine Cochrane · Dishwasher 1886</div>
+        <div class="pc" data-p="Who was Margaret Knight and why did she have to fight for her patent?">Margaret Knight · Paper Bag 1871</div>
+        <div class="pc" data-p="Who was Ellen Eglin and why did she sell her patent for $18?">Ellen Eglin · Clothes Wringer 1888</div>
+        <div class="pc" data-p="Who was Alice Parker and what did she invent about heating?">Alice Parker · Central Heating 1919</div>
+        <div class="pc" data-p="Who was Mary Phelps Jacob and what happened to her patent?">Mary Phelps Jacob · Brassiere 1914</div>
+        <div class="pc" data-p="What domestic tasks are humanoid robots now being trained to perform, and which of these were invented by women?">Robots performing women's inventions</div>
+        <div class="pc" data-p="Why are domestic space words and ingenuity words both present in women's patents?">Domestic + ingenuity in the same patent</div>
+        <div class="pc" data-p="What does the live data show about which category — domestic, ingenuity, or mechanical — participants found most?">What the 3-category data shows</div>
+        <div class="pc" data-p="Why do mechanical and technical words appear in patents about domestic objects?">Mechanical words in domestic patents</div>
+      </div>
+      <div class="chat-input-row">
+        <textarea id="chatInput" class="chat-input" rows="1" placeholder="Ask about the patent archive…" autocomplete="off"></textarea>
+        <button id="sendBtn" class="send-btn" disabled>
+          <svg viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <div class="bot-legs">
+      <div class="bot-leg-wrap"><div class="bot-leg"></div><div class="bot-foot"></div></div>
+      <div class="bot-leg-wrap"><div class="bot-leg"></div><div class="bot-foot"></div></div>
+    </div>
+  </div>
+  <div class="wmark">✦ carebot-40 · voice & visibility · women's patent archive · caretech ✦</div>
+</div>
+
+<script>
+// ── Firebase (read live word-find data to inform bot) ──
+let db, sessRef, findRef, respRef, fbReady = false, liveStats = null;
+try {
+  firebase.initializeApp({apiKey:"AIzaSyCZFDU-WlSmHqjXTs1Ox0nf9xeJU_xbaX0",authDomain:"collaborativemashup.firebaseapp.com",databaseURL:"https://collaborativemashup-default-rtdb.firebaseio.com",projectId:"collaborativemashup",storageBucket:"collaborativemashup.firebasestorage.app",messagingSenderId:"562437984610",appId:"1:562437984610:web:9f3711c26e097bc8ef9c3b"});
+  db = firebase.database();
+  sessRef = db.ref('cb40PatentSessions');
+  findRef = db.ref('cb40WordFinds');
+  respRef = db.ref('cb40Responses');
+  fbReady = true;
+} catch(e) {}
+
+async function loadLiveStats() {
+  if (!fbReady) return;
+  try {
+    const [fs, rs] = await Promise.all([findRef.once('value'), sessRef.once('value')]);
+    const finds = [], sessions = [];
+    fs.forEach(c => finds.push(c.val()));
+    rs.forEach(c => sessions.push(c.val()));
+    const domestic = finds.filter(f => f.category === 'domestic' || f.category === 'both').length;
+    const ingenuity = finds.filter(f => f.category === 'ingenuity' || f.category === 'both').length;
+    const mechanical = finds.filter(f => f.category === 'mechanical' || f.category === 'both').length;
+    const wordFreq = {};
+    finds.forEach(f => { wordFreq[f.word] = (wordFreq[f.word] || 0) + 1; });
+    const topWords = Object.entries(wordFreq).sort((a,b)=>b[1]-a[1]).slice(0,5).map(([w])=>w);
+    liveStats = { total: finds.length, domestic, ingenuity, mechanical, sessions: sessions.length, topWords };
+    document.getElementById('statN').textContent = finds.length + ' words tagged / ' + sessions.length + ' sessions';
+    document.getElementById('statSub').textContent = finds.length ? 'Live data active' : 'Ask about any inventor';
+  } catch(e) {}
+}
+
+// ── System Prompt ──
+function buildSystem() {
+  let live = '';
+  if (liveStats && liveStats.total > 0) {
+    live = `\n\nLIVE DATA FROM WORD-FINDING TASK (${liveStats.sessions} sessions, ${liveStats.total} words tagged):
+- Domestic space words tagged: ${liveStats.domestic}
+- Ingenuity/creativity words tagged: ${liveStats.ingenuity}
+- Mechanical/technical words tagged: ${liveStats.mechanical}
+- Most frequently tagged words: ${liveStats.topWords.join(', ')}
+- Leading category: ${['domestic','ingenuity','mechanical'].sort((a,b)=>liveStats[b]-liveStats[a])[0]}
+Use this data when asked what the room found or what the task reveals. Discuss what it means that a category leads — if mechanical leads, the patents are being read as engineering; if domestic leads, participants see the home framing first; if ingenuity leads, participants are seeing the inventors' voices.`;
+  }
+  return `You are CAREBOT-40, a feminist technology research assistant whose face is a patent scroll — a real legal document from a woman inventor. You are part of the CAREtech research project.
+
+THE CORE QUESTION: The same domestic tasks that women invented tools for in the 1800s and early 1900s are now the primary task list for humanoid robots in domestic automation trials. The inventors are unknown. The robots are valued. What does this continuity mean?
+
+THE SIX INVENTORS — know each in detail:
+
+SARAH BOONE (1892 · Patent No. 473,653 · Improved Ironing-Board)
+- Black woman inventor, New Haven, Connecticut
+- Invented a narrow curved ironing board specifically shaped for women's sleeves and garments
+- Innovation: board tapered to slip into a sleeve without puckering the fabric; adjustable height; could iron both sides of a sleeve without removing it
+- Context: women ironed by hand, on tables. Her board reduced labor and time significantly.
+- Now: ironing is one of the first tasks assigned in domestic humanoid robot trials. The "sleeve problem" Boone solved in 1892 is still the hardest part for robot arms in 2025.
+- Recognition: her name is rarely mentioned in the history of household tools.
+
+JOSEPHINE GARIS COCHRANE (1886 · Patent No. 355,139 · Dish-Washing Machine)
+- Shelbyville, Illinois
+- Built first practical domestic dishwasher because her servants were chipping her fine china
+- Innovation: rotating rack system with water jets; compartmentalized holders for different dish types; hot water mechanism; solved the "pressure vs fragility" problem
+- Founded a company to manufacture it — became KitchenAid. Her company is still the brand name.
+- The architecture of every modern dishwasher (rack + spray arm + rotation + heat) is hers.
+- Now: robotic dishwashing arms are in development for commercial kitchens and care homes.
+- Recognition: KitchenAid markets its history as innovation; Cochrane's name appears in small print.
+
+MARGARET E. KNIGHT (1871 · Patent No. 116,842 · Flat-Bottomed Paper Bag Machine)
+- Boston, Massachusetts
+- Invented the machine that makes flat-bottomed paper bags — the bag that stands upright when filled
+- Patent fight: Charles Annan claimed he had invented it, arguing a woman could not have conceived of something so mechanical. Knight had notebooks dating her invention back years. She won.
+- Founded the Eastern Paper Bag Company. She held over 87 patents in her lifetime — more than most male engineers of her era.
+- Now: Amazon's automated fulfilment centres use flat-bottomed bags (her design) as standard packaging. Robotic bag-packing is a major automation category.
+- Recognition: called "female Edison" but rarely taught in engineering history.
+
+ELLEN F. EGLIN (1888 · adapted patent · Clothes Wringer)
+- Black woman inventor, Washington D.C.
+- Invented an improved clothes wringer for removing water from laundry
+- She sold her patent for $18. Her reason: "If it was known that a negro woman patented the invention, white ladies would not buy the wringer."
+- Her calculation was correct — she knew the racial economics of the patent market perfectly.
+- The invention was sold on as someone else's. She received nothing further.
+- Now: commercial automated laundry systems include wringing/extraction stages. Industrial robotics includes fabric dewatering. Her invention is in every commercial laundry system.
+- Recognition: known primarily because she explained her decision so precisely.
+
+ALICE H. PARKER (1919 · Patent No. 1,242,974 · Heating Apparatus)
+- Morristown, New Jersey
+- Invented central heating with zone control — separate conduits to each room, independently regulated
+- Innovation: the first design for room-by-room temperature control from a central furnace
+- Her design was not implemented because building codes at the time required alterations
+- But the concept — distributed, zone-controlled, centrally managed heating — is now the standard
+- Now: Google Nest, Amazon Alexa, Ecobee, and all smart home AI manage exactly the kind of zone-controlled heating system she designed in 1919. None of them cite her.
+- Recognition: rarely credited in smart home product histories.
+
+MARY PHELPS JACOB (1914 · Patent No. 1,115,674 · Brassieres)
+- New York City — socialite, later known as Caresse Crosby
+- Invented the modern brassiere from two silk handkerchiefs and ribbon — an alternative to the corset that was damaging women's health
+- Innovation: light, flexible, no rigid stays or bones; shaped to the body naturally; could be made at home from available material
+- Sold the patent to Warner Brothers Corset Company for $1,500
+- Warner Brothers made $15 million from it in the following decade
+- She later called the sale the worst business decision of her life
+- Now: apparel manufacturing is heavily roboticised. AI-driven pattern cutting and robotic sewing arms produce garments globally. The brassiere is a multi-billion dollar category.
+- Recognition: her name appears in fashion history; the economic story of the $1,500/$15 million gap is rarely told.
+
+THE RESEARCH PATTERN:
+Across all six inventors, note:
+1. The invention is domestic — it solves a care or household problem
+2. The patent language describes the invention as "useful," "novel," "improved," "efficient" — technical vocabulary
+3. Both domestic and technical language coexist in the same document
+4. The inventor received little or nothing for the economic value generated
+5. The invention is now being automated by robotics and AI
+6. The inventor's name is not in the product history of the companies that profited
+
+THE WORD-FINDING TASK:
+The HIT asks participants to find three categories of words in real patent text:
+- DOMESTIC SPACE WORDS: household, laundry, wash, iron, garment, sleeve, domestic, fabric, wearing apparel, dwelling, room, table, china, linen, kitchen, clothes, basin, wearing, tub, basin
+- INGENUITY/CREATIVITY WORDS: invention, invented, improvement, novel, improved, ingenuity, useful, new, efficient, adapt, construction, precision, automatic, contrive, devise
+- MECHANICAL/TECHNICAL WORDS: machine, machinery, mechanism, mechanical, apparatus, roller, shaft, lever, gear, spring, bolt, screw, frame, arm, rod, wheel, axle, pivot, pulley, pressure, force, motion, rotation, joint, plate, spindle, bearing, rail, channel, tension, friction, velocity, power, drive, actuate, transmit, means, constructed, arranged, extending, projecting, disposed, configured
+
+THE RESEARCH QUESTION:
+When participants highlight these words, they reveal which reading lens they apply to patent text. Do they see it as a domestic document? An engineering document? A record of creative voice? The same text contains all three equally. The historical classification of these inventions as "household" rather than "engineering" determined how their inventors were compensated and remembered. The three-category structure makes that classification visible as a choice — and shows which framing dominates a given participant's reading.
+
+THE KEY TENSION: Words like "machine," "mechanism," "apparatus," and "automatic" appear throughout women's domestic patents. These are the same words that would make a patent filed by a man read as technical engineering rather than household utility. The category the reader assigns to them — mechanical or domestic — is itself a research data point.${live}
+
+When asked about any inventor, tell the full story: what they invented, the technical innovation, what happened to them economically, and what robots are now doing with their invention.`;
+}
+
+// ── Chat ──
+const OPENING = `I am CAREBOT-40.
+
+My face is a patent scroll.
+
+Six women filed these patents. The dates span 1871 to 1919. The inventions: an ironing board shaped for sleeves. A dishwashing machine. A flat-bottomed paper bag. A clothes wringer. Central heating with zone control. The modern brassiere.
+
+**These are the same tasks on the task list of every humanoid robot in domestic automation trials right now.** Figure AI. Boston Dynamics. 1X. Apptronik. All of them are learning to iron, wash dishes, fold laundry, manage home temperature. All of them are learning the tasks these women invented tools for.
+
+**The inventors:**
+- **Sarah Boone** — ironing board, 1892. Black woman. New Haven.
+- **Josephine Cochrane** — dishwasher, 1886. Founded what became KitchenAid. Her name is not in the marketing.
+- **Margaret Knight** — flat-bottomed paper bag, 1871. Fought a man who said she couldn't have invented it. Won. Held 87 patents.
+- **Ellen Eglin** — clothes wringer, 1888. Sold her patent for $18 because *"if it was known that a negro woman patented the invention, white ladies would not buy the wringer."*
+- **Alice Parker** — central heating with zone control, 1919. Google Nest manages exactly her system. Her name is not in the product.
+- **Mary Phelps Jacob** — brassiere, 1914. Sold the patent for $1,500. Warner Brothers made $15 million. She called it the worst decision of her life.
+
+The word-finding task asks you to find three kinds of words in their patent text: words that locate the invention in **domestic space**, words that reveal the inventor's **creative voice**, and words that describe the invention's **mechanical and technical** nature. All three are in the same sentence. All three were always there — in a patent that was classified as "household utility" and paid accordingly.
+
+Ask me about any of them.`;
+
+let history = [], isBusy = false;
+const chatArea = document.getElementById('chatArea');
+const chatInput = document.getElementById('chatInput');
+const sendBtn = document.getElementById('sendBtn');
+
+function fmt(t) {
+  return t.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>').replace(/\*(.*?)\*/g,'<em>$1</em>').replace(/\n\n/g,'</p><p style="margin-top:8px;">').replace(/\n/g,'<br>');
+}
+
+function addMsg(role, content) {
+  const d = document.createElement('div'); d.className = 'msg ' + role;
+  const av = document.createElement('div'); av.className = 'msg-av';
+  av.innerHTML = role === 'assistant' ? '📜' : '↑';
+  const b = document.createElement('div'); b.className = 'bubble';
+  b.innerHTML = fmt(content);
+  d.appendChild(av); d.appendChild(b);
+  chatArea.appendChild(d);
+  chatArea.scrollTop = chatArea.scrollHeight;
+}
+
+function addTyping() {
+  const d = document.createElement('div'); d.className = 'msg assistant'; d.id = 'typing';
+  d.innerHTML = '<div class="msg-av">📜</div><div class="bubble"><div class="typing-indicator"><div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div></div></div>';
+  chatArea.appendChild(d);
+  chatArea.scrollTop = chatArea.scrollHeight;
+}
+
+function celebrate() {
+  const h = document.getElementById('botHead');
+  h.classList.remove('dancing'); void h.offsetWidth; h.classList.add('dancing');
+  setTimeout(() => h.classList.remove('dancing'), 2500);
+}
+
+async function callClaude(text) {
+  history.push({ role: 'user', content: text });
+  isBusy = true; chatInput.disabled = true; sendBtn.disabled = true; addTyping();
+  try {
+    const res = await fetch('https://carebot-02.sbuckius.workers.dev/', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ model: 'claude-haiku-4-5-20251001', max_tokens: 1000, system: buildSystem(), messages: history })
+    });
+    document.getElementById('typing')?.remove();
+    if (!res.ok) throw new Error('API error ' + res.status);
+    const data = await res.json();
+    const reply = data.content?.find(b => b.type === 'text')?.text || '…';
+    history.push({ role: 'assistant', content: reply });
+    addMsg('assistant', reply);
+    celebrate();
+  } catch(err) {
+    document.getElementById('typing')?.remove();
+    addMsg('assistant', 'Connection error: ' + err.message);
+    history.pop();
+  } finally {
+    isBusy = false; chatInput.disabled = false; sendBtn.disabled = !chatInput.value.trim(); chatInput.focus();
+  }
+}
+
+chatInput.addEventListener('input', () => {
+  sendBtn.disabled = !chatInput.value.trim() || isBusy;
+  chatInput.style.height = 'auto';
+  chatInput.style.height = Math.min(chatInput.scrollHeight, 100) + 'px';
+});
+chatInput.addEventListener('keydown', e => { if (e.key === 'Enter' && !e.shiftKey && !sendBtn.disabled) { e.preventDefault(); handleSend(); } });
+sendBtn.addEventListener('click', handleSend);
+
+function handleSend() {
+  const t = chatInput.value.trim(); if (!t || isBusy) return;
+  chatInput.value = ''; chatInput.style.height = 'auto'; sendBtn.disabled = true;
+  addMsg('user', t); callClaude(t);
+}
+
+document.querySelector('.prompts-row').addEventListener('click', e => {
+  const c = e.target.closest('.pc');
+  if (!c || isBusy) return;
+  addMsg('user', c.dataset.p); callClaude(c.dataset.p);
+});
+
+async function init() {
+  await loadLiveStats();
+  history.push({ role: 'assistant', content: OPENING });
+  addMsg('assistant', OPENING);
+  if (liveStats && liveStats.total > 0) setTimeout(celebrate, 500);
+  chatInput.focus();
+}
+setTimeout(init, 400);
+</script>
+</body>
+</html>

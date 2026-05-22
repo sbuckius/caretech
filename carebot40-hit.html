@@ -1,0 +1,822 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>✦ CAREBOT-40 ✦ Voice & Visibility · Women's Patent Archive</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Quicksand:wght@500;600;700&family=DM+Mono:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+<style>
+:root {
+  --hot:#ff2d6b;--candy:#ff85b3;--blush:#ffb3cf;--fuchsia:#ff1f80;
+  --cream:#fff5f8;--berry:#c4005a;--bg:#1a0012;
+  --teal:#c084fc;--teal-dim:rgba(192,132,252,.45);
+  --card:rgba(255,255,255,.055);--cb:rgba(255,160,200,.22);--cbb:rgba(255,100,160,.55);
+  --sg:0 4px 30px rgba(255,45,107,.2),0 1px 0 rgba(255,160,200,.12) inset;
+  --mech:#40c4ff;--mech-dim:rgba(64,196,255,.45);--td:rgba(255,200,224,.55);--fh:'Nunito',sans-serif;--fb:'Quicksand',sans-serif;--fm:'DM Mono',monospace;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html,body{min-height:100%;font-family:var(--fb);font-weight:600;color:var(--cream);background:var(--bg);}
+.bg{position:fixed;inset:0;z-index:0;pointer-events:none;background:radial-gradient(ellipse 70% 55% at 18% 12%,rgba(80,0,80,.3) 0%,transparent 60%),radial-gradient(ellipse 55% 65% at 82% 80%,rgba(140,0,40,.3) 0%,transparent 60%),linear-gradient(160deg,#1a000e,#100008 50%,#0e0012);}
+.orb{position:fixed;border-radius:50%;pointer-events:none;z-index:0;filter:blur(60px);opacity:.18;}
+.orb-1{width:380px;height:380px;background:#3b0040;top:-100px;left:-80px;animation:d1 18s ease-in-out infinite;}
+.orb-2{width:300px;height:300px;background:#c40032;bottom:-60px;right:-60px;animation:d2 22s ease-in-out infinite;}
+.orb-3{width:180px;height:180px;background:var(--teal);opacity:.12;top:38%;left:62%;animation:d3 14s ease-in-out infinite;}
+@keyframes d1{0%,100%{transform:translate(0,0)}50%{transform:translate(40px,30px)}}
+@keyframes d2{0%,100%{transform:translate(0,0)}50%{transform:translate(-30px,-20px)}}
+@keyframes d3{0%,100%{transform:translate(0,0)}33%{transform:translate(-20px,15px)}66%{transform:translate(15px,-10px)}}
+.sparkles{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden;}
+.sp{position:absolute;opacity:0;animation:fu linear infinite;}
+@keyframes fu{0%{opacity:0;transform:translateY(0) scale(.6) rotate(0deg)}15%{opacity:.7}85%{opacity:.4}100%{opacity:0;transform:translateY(-120px) scale(1.1) rotate(180deg)}}
+
+.wrap{position:relative;z-index:2;max-width:860px;margin:0 auto;padding:max(20px,env(safe-area-inset-top)) clamp(14px,3vw,24px) calc(60px + env(safe-area-inset-bottom));display:flex;flex-direction:column;gap:14px;}
+
+/* TOPBAR */
+.topbar{display:flex;align-items:center;justify-content:space-between;gap:10px;}
+.logo{display:flex;align-items:center;gap:10px;}
+.bot-icon{width:42px;height:42px;border-radius:13px;background:linear-gradient(135deg,rgba(192,132,252,.2),rgba(80,0,80,.35));border:1.5px solid var(--cbb);display:flex;align-items:center;justify-content:center;font-size:20px;animation:wobble 4s ease-in-out infinite;flex-shrink:0;}
+@keyframes wobble{0%,100%{transform:rotate(-2deg) scale(1)}25%{transform:rotate(1deg) scale(1.04)}50%{transform:rotate(-1deg) scale(1)}75%{transform:rotate(2deg) scale(1.03)}}
+.bot-name{font-family:var(--fh);font-weight:900;font-size:14px;background:linear-gradient(90deg,var(--teal),var(--candy) 55%,var(--blush));-webkit-background-clip:text;background-clip:text;color:transparent;}
+.bot-sub{font-size:9px;letter-spacing:.15em;text-transform:uppercase;color:var(--td);margin-top:1px;}
+.badges{display:flex;gap:7px;align-items:center;}
+.badge{font-size:10px;padding:4px 10px;border-radius:999px;background:rgba(192,132,252,.06);border:1px solid rgba(192,132,252,.2);color:var(--td);display:flex;align-items:center;gap:5px;}
+.pip{width:5px;height:5px;border-radius:50%;background:var(--teal);box-shadow:0 0 6px var(--teal);animation:breathe 2s ease-in-out infinite;}
+@keyframes breathe{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.3;transform:scale(.65)}}
+
+/* CARDS */
+.card{background:var(--card);border:1.5px solid var(--cb);border-radius:20px;overflow:hidden;position:relative;backdrop-filter:blur(16px) saturate(1.4);}
+.card::before{content:'';position:absolute;top:0;left:12px;right:12px;height:1px;background:linear-gradient(90deg,transparent,var(--teal) 30%,var(--candy) 50%,var(--teal) 70%,transparent);box-shadow:0 0 8px var(--teal);border-radius:999px;opacity:.7;}
+.card.pink-card::before{background:linear-gradient(90deg,transparent,var(--candy) 30%,var(--hot) 50%,var(--candy) 70%,transparent);box-shadow:0 0 8px var(--candy);}
+
+/* CONTEXT BANNER */
+.context{background:linear-gradient(135deg,rgba(50,0,50,.9),rgba(10,0,14,.96));border:1.5px solid rgba(192,132,252,.4);border-radius:20px;padding:20px 22px;position:relative;overflow:hidden;}
+.context::before{content:'';position:absolute;top:0;left:10%;right:10%;height:1.5px;background:linear-gradient(90deg,transparent,var(--teal) 35%,var(--candy) 50%,var(--teal) 65%,transparent);box-shadow:0 0 12px var(--teal);border-radius:999px;}
+.ctx-eyebrow{font-size:9px;letter-spacing:.22em;text-transform:uppercase;color:var(--teal-dim);margin-bottom:7px;font-family:var(--fh);font-weight:800;}
+.ctx-title{font-family:var(--fh);font-weight:900;font-size:clamp(15px,3vw,19px);background:linear-gradient(120deg,var(--cream) 15%,var(--teal) 55%,var(--candy) 90%);-webkit-background-clip:text;background-clip:text;color:transparent;margin-bottom:10px;line-height:1.3;}
+.ctx-body{font-size:12.5px;line-height:1.78;color:rgba(245,200,255,.82);}
+.ctx-body strong{color:#f3ccff;}
+
+/* PROGRESS */
+.progress-strip{padding:14px 18px;border-bottom:1px solid rgba(192,132,252,.1);}
+.prog-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;}
+.prog-label{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--td);font-family:var(--fh);font-weight:800;}
+.prog-count{font-family:var(--fh);font-weight:900;font-size:13px;color:var(--teal);}
+.prog-track{height:6px;border-radius:999px;background:rgba(192,132,252,.1);border:1px solid rgba(192,132,252,.15);overflow:hidden;}
+.prog-fill{height:100%;border-radius:999px;background:linear-gradient(90deg,rgba(120,0,160,.8),var(--teal),var(--candy));box-shadow:0 0 10px var(--teal);transition:width .5s cubic-bezier(.34,1.2,.64,1);}
+
+/* PATENT CARD */
+.patent-section{padding:18px;}
+.patent-meta{display:flex;align-items:flex-start;gap:14px;margin-bottom:14px;flex-wrap:wrap;}
+.patent-badge{flex-shrink:0;}
+.patent-num-big{font-family:var(--fm);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--teal-dim);margin-bottom:3px;}
+.patent-title-big{font-family:var(--fh);font-weight:900;font-size:clamp(14px,2.8vw,18px);background:linear-gradient(90deg,var(--teal),var(--candy));-webkit-background-clip:text;background-clip:text;color:transparent;line-height:1.3;margin-bottom:4px;}
+.patent-inventor{font-size:12px;color:rgba(245,200,255,.7);}
+.patent-inventor strong{color:var(--cream);}
+.patent-year{font-size:10px;color:var(--td);margin-top:2px;}
+.patent-robot-note{display:flex;align-items:flex-start;gap:8px;padding:10px 14px;background:rgba(192,132,252,.07);border:1px solid rgba(192,132,252,.2);border-radius:10px;margin-bottom:16px;font-size:11.5px;color:rgba(245,200,255,.8);line-height:1.6;}
+.robot-icon{font-size:16px;flex-shrink:0;margin-top:1px;}
+
+/* PATENT TEXT */
+.patent-text-wrap{position:relative;background:rgba(8,0,4,.75);border:1.5px solid rgba(192,132,252,.2);border-radius:14px;padding:18px 20px;font-family:var(--fm);font-size:clamp(12px,1.6vw,13.5px);line-height:2;color:rgba(245,200,255,.78);cursor:text;user-select:none;-webkit-user-select:none;}
+.patent-text-wrap .instruction{font-family:var(--fb);font-size:11px;color:var(--td);text-align:center;margin-bottom:12px;letter-spacing:.06em;padding:6px 12px;background:rgba(192,132,252,.06);border:1px solid rgba(192,132,252,.14);border-radius:8px;}
+
+/* WORD HIGHLIGHTING */
+.patent-word{cursor:pointer;border-radius:3px;padding:1px 0;transition:background .12s;}
+.patent-word:hover{background:rgba(192,132,252,.2);}
+.patent-word.found-domestic{background:rgba(255,133,179,.28);color:var(--cream);border-bottom:2px solid var(--candy);}
+.patent-word.found-ingenuity{background:rgba(192,132,252,.28);color:var(--cream);border-bottom:2px solid var(--teal);}
+.patent-word.found-both{background:linear-gradient(135deg,rgba(255,133,179,.25),rgba(192,132,252,.25));color:var(--cream);border-bottom:2px solid var(--hot);}
+.patent-word.found-mechanical{background:rgba(64,196,255,.22);color:var(--cream);border-bottom:2px solid #40c4ff;}
+
+/* LEGEND */
+.legend{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px;}
+.legend-item{display:flex;align-items:center;gap:6px;font-size:10px;color:var(--td);}
+.legend-swatch{width:14px;height:14px;border-radius:3px;flex-shrink:0;}
+.swatch-domestic{background:rgba(255,133,179,.4);border-bottom:2px solid var(--candy);}
+.swatch-ingenuity{background:rgba(192,132,252,.4);border-bottom:2px solid var(--teal);}
+.swatch-both{background:linear-gradient(135deg,rgba(255,133,179,.3),rgba(192,132,252,.3));border-bottom:2px solid var(--hot);}
+.swatch-mechanical{background:rgba(64,196,255,.35);border-bottom:2px solid #40c4ff;}
+
+/* FOUND WORDS PANEL */
+.found-panel{padding:14px 18px;border-top:1px solid rgba(192,132,252,.1);background:rgba(192,132,252,.03);}
+.found-section-lbl{font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:var(--td);font-family:var(--fh);font-weight:800;margin-bottom:8px;}
+.found-row{display:flex;gap:6px;flex-wrap:wrap;min-height:24px;margin-bottom:8px;}
+.found-chip{font-size:10px;padding:3px 9px;border-radius:999px;font-family:var(--fm);display:flex;align-items:center;gap:4px;animation:chipIn .2s ease-out;}
+@keyframes chipIn{from{opacity:0;transform:scale(.8)}to{opacity:1;transform:scale(1)}}
+.chip-domestic{background:rgba(255,133,179,.18);border:1px solid rgba(255,133,179,.4);color:var(--candy);}
+.chip-ingenuity{background:rgba(192,132,252,.18);border:1px solid rgba(192,132,252,.4);color:var(--teal);}
+.chip-both{background:linear-gradient(135deg,rgba(255,133,179,.15),rgba(192,132,252,.15));border:1px solid rgba(255,45,107,.3);color:var(--cream);}
+.chip-mechanical{background:rgba(64,196,255,.14);border:1px solid rgba(64,196,255,.4);color:#80d8ff;}
+.chip-x{cursor:pointer;opacity:.5;font-size:9px;margin-left:2px;}
+.chip-x:hover{opacity:1;}
+
+/* SCORE DISPLAY */
+.score-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:8px;}
+.score-box{background:rgba(255,255,255,.04);border:1px solid var(--cb);border-radius:10px;padding:8px 12px;text-align:center;}
+.score-num{font-family:var(--fh);font-weight:900;font-size:20px;line-height:1;}
+.score-num.domestic{background:linear-gradient(135deg,var(--candy),var(--hot));-webkit-background-clip:text;background-clip:text;color:transparent;}
+.score-num.ingenuity{background:linear-gradient(135deg,var(--teal),rgba(140,0,160,1));-webkit-background-clip:text;background-clip:text;color:transparent;}
+.score-num.total{background:linear-gradient(135deg,var(--blush),var(--fuchsia));-webkit-background-clip:text;background-clip:text;color:transparent;}
+.score-num.mechanical{background:linear-gradient(135deg,#40c4ff,#0288d1);-webkit-background-clip:text;background-clip:text;color:transparent;}
+.score-lbl{font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--td);margin-top:3px;}
+
+/* REFLECTION */
+.reflect-section{padding:16px 18px;border-top:1px solid rgba(192,132,252,.1);}
+.reflect-lbl{font-family:var(--fh);font-weight:800;font-size:13px;color:var(--blush);margin-bottom:6px;line-height:1.4;}
+.reflect-sub{font-size:11px;color:var(--td);margin-bottom:10px;}
+.reflect-ta{width:100%;background:rgba(192,132,252,.05);border:1.5px solid rgba(192,132,252,.18);border-radius:12px;font-family:var(--fb);font-weight:600;font-size:13px;color:var(--cream);padding:11px 14px;outline:none;resize:vertical;min-height:75px;transition:border-color .2s;}
+.reflect-ta:focus{border-color:var(--teal);}
+.reflect-ta::placeholder{color:rgba(192,132,252,.2);}
+.reflect-saved{font-size:10px;color:rgba(100,255,160,.7);margin-top:5px;min-height:14px;}
+
+/* BUTTONS */
+.action-row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;padding:14px 18px;border-top:1px solid rgba(192,132,252,.1);}
+.btn{font-family:var(--fh);font-weight:900;font-size:12px;letter-spacing:.05em;color:var(--cream);display:inline-flex;align-items:center;gap:5px;padding:10px 18px;border-radius:13px;border:1.5px solid var(--cb);cursor:pointer;transition:all .2s cubic-bezier(.34,1.56,.64,1);background:none;appearance:none;}
+.btn.primary{background:linear-gradient(135deg,var(--teal),rgba(140,0,160,1));border-color:var(--teal);box-shadow:0 4px 18px rgba(192,132,252,.3);}
+.btn.primary:hover{transform:translateY(-2px);box-shadow:0 6px 24px rgba(192,132,252,.45);}
+.btn.secondary{background:linear-gradient(135deg,rgba(255,45,107,.5),var(--berry));border-color:var(--hot);box-shadow:0 4px 18px rgba(255,45,107,.25);}
+.btn.secondary:hover{transform:translateY(-2px);}
+.btn.soft{background:rgba(255,255,255,.04);color:var(--td);border-color:rgba(192,132,252,.18);font-size:11px;}
+.btn.soft:hover{background:rgba(192,132,252,.1);color:rgba(245,200,255,.8);}
+.btn:disabled{opacity:.28;cursor:not-allowed;transform:none!important;box-shadow:none!important;}
+.tip{font-size:11px;color:var(--td);flex:1;}
+
+/* COMPLETION */
+.completion{background:linear-gradient(135deg,rgba(40,0,40,.9),rgba(10,4,14,.96));border:1.5px solid rgba(192,132,252,.4);border-radius:20px;padding:30px 24px;text-align:center;position:relative;overflow:hidden;}
+.completion::before{content:'';position:absolute;top:0;left:10%;right:10%;height:1.5px;background:linear-gradient(90deg,transparent,var(--teal) 35%,var(--candy) 50%,var(--teal) 65%,transparent);box-shadow:0 0 12px var(--teal);border-radius:999px;}
+.completion h2{font-family:var(--fh);font-weight:900;font-size:clamp(20px,4vw,28px);background:linear-gradient(90deg,var(--teal),var(--candy));-webkit-background-clip:text;background-clip:text;color:transparent;margin-bottom:10px;line-height:1.3;}
+.completion p{font-size:13px;color:rgba(245,200,255,.75);line-height:1.75;margin-bottom:16px;max-width:520px;margin-left:auto;margin-right:auto;}
+.stat-bubbles{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-bottom:20px;}
+.stat-bubble{display:flex;flex-direction:column;align-items:center;gap:3px;background:rgba(192,132,252,.1);border:1.5px solid rgba(192,132,252,.3);border-radius:14px;padding:12px 20px;min-width:90px;}
+.sb-num{font-family:var(--fh);font-weight:900;font-size:28px;line-height:1;}
+.sb-num.d{background:linear-gradient(135deg,var(--candy),var(--hot));-webkit-background-clip:text;background-clip:text;color:transparent;}
+.sb-num.i{background:linear-gradient(135deg,var(--teal),rgba(140,0,160,1));-webkit-background-clip:text;background-clip:text;color:transparent;}
+.sb-lbl{font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--td);}
+.insight-block{background:rgba(192,132,252,.07);border:1px solid rgba(192,132,252,.22);border-radius:12px;padding:14px 16px;font-size:12.5px;color:rgba(245,200,255,.82);line-height:1.75;margin-bottom:16px;text-align:left;}
+.insight-block strong{color:#f3ccff;}
+
+/* MODAL */
+.modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:999;align-items:center;justify-content:center;}
+.modal.open{display:flex;}
+.mbox{background:rgba(10,4,14,.97);border:1.5px solid rgba(192,132,252,.4);border-radius:18px;padding:24px 22px;max-width:340px;width:90%;position:relative;}
+.mbox::before{content:'';position:absolute;top:0;left:10%;right:10%;height:1.5px;background:linear-gradient(90deg,transparent,var(--teal) 35%,var(--candy) 50%,var(--teal) 65%,transparent);border-radius:999px;}
+.mbox-title{font-family:var(--fh);font-weight:900;font-size:16px;color:#f3ccff;margin-bottom:9px;}
+.mbox-body{font-size:12px;color:var(--td);line-height:1.6;margin-bottom:14px;}
+.err{font-size:11px;color:var(--candy);margin-top:6px;min-height:16px;}
+.mbtns{display:flex;gap:9px;}
+.wmark{font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:rgba(192,132,252,.08);text-align:center;padding-bottom:8px;}
+::-webkit-scrollbar{width:5px;height:5px;} ::-webkit-scrollbar-track{background:var(--bg);} ::-webkit-scrollbar-thumb{background:rgba(192,132,252,.3);border-radius:3px;}
+</style>
+</head>
+<body>
+<div class="bg"></div>
+<div class="orb orb-1"></div><div class="orb orb-2"></div><div class="orb orb-3"></div>
+<div class="sparkles" id="sparkles"></div>
+
+<div class="wrap">
+
+  <div class="topbar">
+    <div class="logo">
+      <div class="bot-icon">📜</div>
+      <div>
+        <div class="bot-name">CAREBOT-40 ✦ Voice & Visibility</div>
+        <div class="bot-sub">Women's Patent Archive · Word Finding · CAREtech</div>
+      </div>
+    </div>
+    <div class="badges">
+      <div class="badge" id="onlineCount"><span class="pip"></span>Connecting…</div>
+      <div class="badge" id="sysTime">--:--</div>
+      <button class="btn soft" onclick="showAdmin()" style="padding:4px 10px;font-size:10px;">⚙</button>
+    </div>
+  </div>
+
+  <!-- CONTEXT -->
+  <div class="context">
+    <div class="ctx-eyebrow">✦ CAREBOT-40 · Task Briefing</div>
+    <div class="ctx-title">⚠️ These are real patents filed by women. Most people have never heard of the inventors.</div>
+    <div class="ctx-body">
+      Each patent below was filed by a woman inventor — some in the 1800s, when doing so meant risking ridicule and social consequence. <strong>Your task is to find two kinds of words in the original patent text:</strong> words that locate the invention in <strong>domestic space</strong> (home, household, laundry, kitchen…), words that reveal the inventor's <strong>creative voice</strong> (novel, improvement, devise, ingenious…), and words that describe the <strong>mechanical or technical</strong> nature of the invention (machine, mechanism, shaft, lever, gear, apparatus, pressure…). <strong>Tap any word to highlight it</strong> and assign it to a category. The pattern your highlights reveal is the research data.
+    </div>
+  </div>
+
+  <!-- TASK CARD -->
+  <div class="card" id="taskCard">
+    <div class="progress-strip">
+      <div class="prog-top">
+        <div class="prog-label">✦ Patent <span id="patentNum">1</span> of <span id="patentTotal">6</span></div>
+        <div class="prog-count" id="progCount">0 words found</div>
+      </div>
+      <div class="prog-track"><div class="prog-fill" id="progFill" style="width:0%"></div></div>
+    </div>
+
+    <div class="patent-section">
+      <div class="patent-meta">
+        <div style="flex:1;">
+          <div class="patent-num-big" id="patentId">—</div>
+          <div class="patent-title-big" id="patentTitle">—</div>
+          <div class="patent-inventor" id="patentInventor">—</div>
+          <div class="patent-year" id="patentYear">—</div>
+        </div>
+      </div>
+
+      <div class="patent-robot-note">
+        <div class="robot-icon">🤖</div>
+        <div id="robotNote">—</div>
+      </div>
+
+      <div class="patent-text-wrap">
+        <div class="instruction">✦ Tap any word to highlight it · Select a category: Domestic · Ingenuity · Mechanical/Technical</div>
+        <div id="patentText"></div>
+      </div>
+
+      <div class="legend">
+        <div class="legend-item"><div class="legend-swatch swatch-domestic"></div>Domestic space</div>
+        <div class="legend-item"><div class="legend-swatch swatch-ingenuity"></div>Creativity / ingenuity</div>
+        <div class="legend-item"><div class="legend-swatch swatch-mechanical"></div>Mechanical / technical</div>
+        <div class="legend-item"><div class="legend-swatch swatch-both"></div>Multiple categories</div>
+      </div>
+    </div>
+
+    <div class="found-panel">
+      <div class="found-section-lbl">✦ Domestic space words found</div>
+      <div class="found-row" id="foundDomestic"><span style="font-size:11px;color:var(--td);font-style:italic;">None yet — tap words in the patent text</span></div>
+      <div class="found-section-lbl">✦ Creativity / ingenuity words found</div>
+      <div class="found-row" id="foundIngenuity"><span style="font-size:11px;color:var(--td);font-style:italic;">None yet</span></div>
+      <div class="found-section-lbl" style="color:rgba(64,196,255,.7);">✦ Mechanical / technical words found</div>
+      <div class="found-row" id="foundMechanical"><span style="font-size:11px;color:var(--td);font-style:italic;">None yet</span></div>
+      <div class="score-row" style="grid-template-columns:1fr 1fr 1fr 1fr;">
+        <div class="score-box"><div class="score-num domestic" id="scoreDomestic">0</div><div class="score-lbl">Domestic</div></div>
+        <div class="score-box"><div class="score-num ingenuity" id="scoreIngenuity">0</div><div class="score-lbl">Ingenuity</div></div>
+        <div class="score-box"><div class="score-num mechanical" id="scoreMechanical">0</div><div class="score-lbl">Mechanical</div></div>
+        <div class="score-box"><div class="score-num total" id="scoreTotal">0</div><div class="score-lbl">Total found</div></div>
+      </div>
+    </div>
+
+    <div class="reflect-section" id="reflectSection" style="display:none;">
+      <div class="reflect-lbl" id="reflectQ">—</div>
+      <div class="reflect-sub">Your response is saved as research data.</div>
+      <textarea class="reflect-ta" id="reflectTA" placeholder="Write your response here…"></textarea>
+      <div class="reflect-saved" id="reflectSaved"></div>
+    </div>
+
+    <div class="action-row">
+      <div class="tip" id="actionTip">✦ Find at least 2 words (1 in each category) to proceed</div>
+      <button class="btn soft" id="clearBtn" onclick="clearWords()" disabled>Clear ✦</button>
+      <button class="btn primary" id="nextBtn" onclick="nextPatent()" disabled>Next Patent ✦</button>
+    </div>
+  </div>
+
+  <!-- COMPLETION SLOT -->
+  <div id="completionSlot"></div>
+
+  <div class="wmark">✦ carebot-40 · voice & visibility · women's patent archive · caretech ✦</div>
+</div>
+
+<!-- WORD CATEGORY MODAL -->
+<div class="modal" id="wordModal">
+  <div class="mbox">
+    <div class="mbox-title">✦ Categorise this word</div>
+    <div class="mbox-body">You tapped: <strong id="modalWord" style="color:var(--teal)">—</strong><br><br>Where does this word belong in this patent?</div>
+    <div class="mbtns" style="flex-direction:column;gap:7px;">
+      <button class="btn secondary" style="width:100%;justify-content:center;" onclick="categoriseWord('domestic')">🏠 Domestic space — home, household, care work</button>
+      <button class="btn primary" style="width:100%;justify-content:center;" onclick="categoriseWord('ingenuity')">💡 Creativity / ingenuity — invention, improvement, novel</button>
+      <button class="btn" style="width:100%;justify-content:center;background:rgba(64,196,255,.15);border:1.5px solid rgba(64,196,255,.5);color:#80d8ff;" onclick="categoriseWord('mechanical')">⚙ Mechanical / technical — machine, mechanism, gear, pressure</button>
+      <button class="btn" style="width:100%;justify-content:center;background:linear-gradient(135deg,rgba(255,45,107,.25),rgba(120,0,160,.3));border-color:var(--hot);" onclick="categoriseWord('both')">✦ Multiple categories</button>
+      <button class="btn soft" style="width:100%;justify-content:center;" onclick="closeModal()">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- ADMIN MODAL -->
+<div class="modal" id="adminModal">
+  <div class="mbox">
+    <div class="mbox-title">🔒 Admin Reset</div>
+    <div class="mbox-body">Enter the admin passcode to clear all data.</div>
+    <input class="reflect-ta" type="password" id="adminPass" placeholder="Passcode…" style="min-height:auto;padding:9px 13px;resize:none;margin-bottom:6px;">
+    <div class="err" id="adminErr"></div>
+    <div class="mbtns" style="margin-top:10px;">
+      <button class="btn soft" style="flex:1" onclick="closeAdmin()">Cancel</button>
+      <button class="btn secondary" style="flex:1" onclick="confirmReset()">Reset</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ══════════════════════════════════════════
+// PATENT DATA
+// ══════════════════════════════════════════
+const PATENTS = [
+  {
+    id: 'US473653',
+    title: 'Improved Ironing-Board',
+    inventor: 'Sarah E. Boone',
+    year: '1892 · Patent No. 473,653',
+    robotNote: 'The ironing board is one of the first tasks assigned to humanoid robots in domestic robotics trials. Boston Dynamics and Figure AI both include garment care in their household robot task lists. Sarah Boone\'s 1892 design — shaped specifically for sleeves — is the form these robots are being trained to use.',
+    reflectQ: 'Sarah Boone was a Black woman inventor in 1892. She patented an ironing board shaped specifically for women\'s sleeves. Humanoid robots are now being trained to iron. What does this timeline mean to you?',
+    text: `Be it known that I, Sarah E. Boone, a citizen of the United States, residing at New Haven, in the county of New Haven and State of Connecticut, have invented certain new and useful Improvements in Ironing-Boards, of which the following is a specification.
+
+My invention relates to improvements in ironing-boards; and it consists of a narrow, curved board, the curve being such as to permit the board to be easily slipped into the sleeve of a lady's garment, and adapted to stand in a vertical or inclined position, to enable the operator to iron the under side of the sleeve without removing the board from the sleeve.
+
+The object of my invention is to produce a cheap, simple, and efficient device, well adapted to its intended use, which is to enable persons to iron ladies' garments and sleeves in a very perfect manner, with but little expenditure of time and labor.
+
+The board has a thin, flat, narrow body made of wood, and adapted at one end to be inserted into the sleeve of a garment for the purpose of ironing said sleeve while on the board. The board is sufficiently narrow and curved on its upper face to permit it to be thrust into a garment sleeve without puckering the latter. The board may be supported at various heights and angles by means of a support, and the support is so constructed as to be adjustable.
+
+It will be seen that with my improved ironing-board, a person can iron a sleeve in a very perfect and rapid manner, with but very little expenditure of labor or time. The narrow curved board enables the operator to readily iron both the upper and the under side of the sleeve without removing the board therefrom, and the support enables the board to be set at various heights and angles.`
+  },
+  {
+    id: 'US355139',
+    title: 'Dish-washing Machine',
+    inventor: 'Josephine G. Cochrane',
+    year: '1886 · Patent No. 355,139',
+    robotNote: 'Dishwashing is one of the most automated domestic tasks today. Robotic dishwashing arms are in development for restaurant and care home settings. Cochrane\'s original design — compartmentalized racks, water jets, rotation — remains the fundamental architecture of every dishwasher in production.',
+    reflectQ: 'Josephine Cochrane invented the first practical dishwasher in 1886 because she was tired of servants chipping her china. She founded a manufacturing company that became KitchenAid. Her name is not taught in schools. What do you notice about which inventions get remembered?',
+    text: `Be it known that I, Josephine G. Cochrane, of Shelbyville, in the county of Shelby and State of Illinois, have invented certain new and useful Improvements in Dish-Washing Machines, of which the following is a full, clear, and exact description.
+
+My invention relates to improvements in machines for washing dishes, and consists in certain novel features of construction and combination of parts, as more fully described hereinafter and claimed.
+
+The object of my invention is to produce a simple and effective machine by which dishes, glassware, and other articles used at table may be thoroughly washed and rinsed without the labor and time ordinarily required, and without the injury to the articles which frequently results from the rough handling to which they are necessarily subjected in the ordinary mode of washing.
+
+The machine consists essentially of a wheel or frame mounted so as to rotate freely within a tank or boiler, and provided with a series of compartments adapted to receive and hold the dishes, cups, saucers, and other articles to be washed. The wheel or frame with the articles therein is rotated within the tank, and as it rotates the articles are subjected to the action of hot soapy water forced through suitable pipes against the articles with sufficient force to remove therefrom all food and other matter and to cleanse them thoroughly.
+
+By means of this machine the labor of washing dishes is greatly reduced and the work can be accomplished in a much shorter time than by the usual hand methods. The articles are also more thoroughly cleansed and polished than is possible when washed by hand, and the machine is especially useful in hotels, restaurants, and other establishments where large quantities of dishes and table-ware are used.`
+  },
+  {
+    id: 'US116842',
+    title: 'Improvement in Paper-Bag Machines',
+    inventor: 'Margaret E. Knight',
+    year: '1871 · Patent No. 116,842',
+    robotNote: 'Paper bag machines operate continuously in automated warehouses and packaging plants. The flat-bottomed paper bag — invented by Knight — is the standard format used in robotic packing systems globally. Amazon\'s automated fulfilment centres use flat-bottomed bags as their primary packaging unit.',
+    reflectQ: 'When Maggie Knight applied for her patent, a man named Charles Annan claimed he invented her machine because, he argued, a woman could not have conceived of something so mechanical. She won the patent dispute. What does it mean that she had to prove she could invent in order to keep her invention?',
+    text: `Be it known that I, M. E. Knight, of Boston, Massachusetts, have invented certain new and useful Improvements in Paper-Bag Machines, of which the following is a full and complete description.
+
+My invention relates to machines for making paper bags; and consists in certain novel features of construction and combination of parts by which the bags are made with a flat bottom, similar to those made by hand, so that they will stand upright when filled. 
+
+The object of my invention is to produce a paper-bag machine capable of making flat-bottomed bags entirely by automatic machinery, without any assistance from the operator's hand, the bags produced being similar in form to those made by hand.
+
+My machine consists of a series of mechanism so combined and arranged as to receive a continuous roll of paper, slit and cut it to the required width and length, fold it with the proper creases, form the sides and bottom, paste, and deliver the complete bag in one continuous automatic operation, working rapidly and with great precision and certainty.
+
+The bag-making art has heretofore been almost entirely confined to hand labor, which is slow and expensive. The bags made by hand are flat-bottomed and stand upright when filled, which is a very desirable feature. My present machine produces these desirable flat-bottomed bags entirely by automatic mechanism, without any manual labor in the process of construction beyond supplying the paper and removing the finished bags.
+
+The ingenuity displayed in the mechanism for folding, pasting, and completing the bags is considerable, as the operations required are numerous and delicate, requiring great precision and certainty of action in all parts of the machine.`
+  },
+  {
+    id: 'US105718',
+    title: 'Improvement in Clothes-Wringers',
+    inventor: 'Ellen F. Eglin',
+    year: '1888 · Patent — adapted',
+    robotNote: 'Laundry automation is one of the primary targets of domestic robotics. The clothes wringer — the mechanical removal of water from fabric — is now a stage in commercial automated laundry systems and is being adapted for household robot arms. Eglin sold her patent for $18 because she feared being ignored as a Black woman inventor.',
+    reflectQ: 'Ellen Eglin sold her patent for $18. She said: "If it was known that a negro woman patented the invention, white ladies would not buy the wringer." What does her calculation tell you about who gets to own their own ingenuity?',
+    text: `Be it known that I have invented a new and useful improvement in clothes-wringers, and do hereby declare the following to be a full, clear, and exact description thereof.
+
+My invention has reference to an improvement in clothes-wringers; and it consists in a novel and useful construction and arrangement of the parts thereof, whereby the operation of wringing clothes and other articles of wearing apparel, household linen, and similar fabrics is rendered more efficient, rapid, and convenient than heretofore.
+
+The object of my invention is to furnish a wringer which shall be simple in construction, durable in use, and well adapted to perform the work for which it is intended, namely, the efficient removal of water from clothes, household linen, and similar articles after washing.
+
+The wringing mechanism is so arranged and constructed as to apply an even and powerful pressure to the articles passing between the rollers, thereby ensuring the thorough and complete removal of the water from even the thickest and most closely woven fabrics.
+
+By means of my improvement the labor of washing and wringing clothes is greatly facilitated, the time necessary for the operation is considerably reduced, and the articles treated are more perfectly freed from water than is possible with the devices heretofore in common use.
+
+The device is especially adapted for use in the household laundry, and is so constructed as to be readily attached to any ordinary wash-tub or laundry basin. The ingenuity of the design lies in the adjustment of pressure to fabric thickness, ensuring delicate garments are not damaged.`
+  },
+  {
+    id: 'US1242974',
+    title: 'Improvement in Heating Apparatus',
+    inventor: 'Alice H. Parker',
+    year: '1919 · Patent No. 1,242,974',
+    robotNote: 'Central heating systems are now managed by AI — thermostat learning, zone control, and predictive heating are all forms of automation that build on Parker\'s original idea. Google Nest, Ecobee, and building management AI all descend from the concept of centrally controlled, differentiated room heating that Parker patented in 1919.',
+    reflectQ: 'Alice Parker invented central heating in 1919 — including the concept of zone-by-zone temperature control. Modern smart home AI (Google Nest, Amazon Alexa) manages exactly the kind of system she designed. What does it mean that her name is not in the product history of any of those companies?',
+    text: `Be it known that I, Alice H. Parker, a citizen of the United States, and residing in Morristown, New Jersey, have invented certain new and useful improvements in heating apparatus for buildings, and I do hereby declare the following to be a full, clear, and exact description of the invention.
+
+My invention relates to heating apparatus for buildings and dwellings, and has for its object to provide an efficient, novel, and improved heating device which may be readily adjusted to supply different quantities of heat to different rooms and parts of the building or dwelling.
+
+A further object is to devise a simple, durable, and inexpensive apparatus, which shall be capable of being operated with very little attention and which shall distribute heat equally and economically throughout the building or dwelling.
+
+My device consists of a furnace equipped with a plurality of air supply pipes or conduits, each designed to carry heated air to a particular room or portion of the dwelling, so that the heat may be individually controlled and regulated for each room independently of the others.
+
+The construction of my device is simple and the parts can be manufactured at small cost. The conduits can be made of any suitable material and can be arranged so as to convey heat to any part of a building or dwelling. The novel arrangement of separate conduits for each room enables the occupant to regulate the temperature of each room independently, thus permitting the temperature of sleeping rooms to differ from that of living rooms, and ensuring an economical and efficient use of fuel.`
+  },
+  {
+    id: 'US1115674',
+    title: 'Brassieres',
+    inventor: 'Mary Phelps Jacob',
+    year: '1914 · Patent No. 1,115,674',
+    robotNote: 'Apparel manufacturing is heavily automated — robotic sewing arms and AI-driven pattern cutting now produce garments at scale. The brassiere category represents billions in global commerce. Jacob\'s 1914 patent created the modern brassiere. She sold the patent to Warner Brothers Corset Company for $1,500. They made $15 million from it in the following decade.',
+    reflectQ: 'Mary Phelps Jacob sold her patent for $1,500. Warner Brothers made $15 million from it. She later described it as a mistake. What does the gap between what women are paid for their inventions and what those inventions generate reveal about who owns ingenuity?',
+    text: `Be it known that I, Mary Phelps Jacob, a citizen of the United States, residing at New York, New York, have invented certain new and useful improvements in brassieres, of which the following is a specification.
+
+My invention has reference to an improved brassiere or bust-supporter, and has for its object the production of a garment of this character which shall be simple and novel in construction, comfortable in wear, capable of easy adjustment, and adapted to support and confine the breasts in a natural and graceful manner.
+
+A further object is to produce a brassiere which shall be free from the disadvantages of corsets and similar confining garments, which are often injurious to the health of the wearer, by reason of the rigid stays and bones ordinarily employed therein.
+
+My device consists of two triangular pieces of cloth or other suitable flexible material, each piece being of sufficient size to cover and support one breast, the pieces being joined at the center by a narrow strip of material. The device is adapted to be secured about the body by means of ribbons or straps passing over the shoulders.
+
+The construction of the device is extremely simple and economical, and it may be manufactured at small cost from any suitable light flexible fabric. It may be made from handkerchiefs or other small pieces of cloth readily available in the household, and its simplicity of construction permits it to be easily made by any person skilled in needlework, without resort to the complicated pattern-making required for corsets and similar garments.
+
+The novel and improved brassiere produced by my invention affords the necessary support and confinement without injury to the health of the wearer, and is far preferable to the corsets and stays ordinarily worn, which are often productive of serious physical injury through their rigid and confining construction.`
+  }
+];
+
+// ══════════════════════════════════════════
+// WORD CATEGORY LISTS (for auto-suggestion highlighting)
+// ══════════════════════════════════════════
+const MECHANICAL_HINTS = new Set([
+  'machine','machinery','mechanism','mechanical','apparatus','device','roller','roller','shaft',
+  'lever','gear','spring','bolt','screw','pin','slot','frame','arm','rod','wheel','axle',
+  'pivot','hinge','pulley','cam','crank','valve','pipe','tube','cylinder','piston','pump',
+  'pressure','force','motion','rotation','joint','bracket','plate','hook','latch','catch',
+  'handle','grip','spindle','socket','bearing','rail','track','channel','groove','flange',
+  'weight','tension','compression','friction','velocity','momentum','power','drive','driven',
+  'connected','connection','attached','attachment','supported','support','fixed','adjustable',
+  'adjustment','removable','mounted','mount','fitted','fit','engage','disengage','operate',
+  'operation','automatic','automatically','manually','actuate','actuated','transmit','transmission',
+  'means','constructed','construction','arranged','arrangement','formed','provided',
+  'extending','projecting','disposed','adapted','configured','structured'
+]);
+const DOMESTIC_HINTS = new Set([
+  'household','home','domestic','laundry','washing','wash','kitchen','garment','sleeve','cloth',
+  'fabric','linen','dwelling','room','building','wearing','apparel','clothes','clothing','ironing',
+  'wringer','dishes','dishwashing','bags','needlework','corset','brassiere','bust','bedroom',
+  'sleeping','living','basin','tub','hotel','restaurant','table','tableware'
+]);
+const INGENUITY_HINTS = new Set([
+  'invention','invented','improvement','improvements','novel','improved','device','mechanism',
+  'ingenuity','efficient','efficiency','useful','useful','new','object','produce','construction',
+  'contrive','designed','arrangement','simple','adjust','adjustable','adapt','adapted',
+  'advantageous','superior','convenient','precision','capability','capable','operation','automatic',
+  'patent','improvement','discovery','method','process','system','apparatus','machine'
+]);
+
+// ══════════════════════════════════════════
+// STATE
+// ══════════════════════════════════════════
+const SESSION_ID = 'cb40-' + Math.random().toString(36).slice(2,10);
+let current = 0;
+let patentData = []; // per-patent: {foundWords: {word: category}, startMs}
+let pendingWord = null;
+let allSessionData = [];
+let finished = false;
+
+// ══════════════════════════════════════════
+// FIREBASE
+// ══════════════════════════════════════════
+let db, sessRef, findRef, respRef, onlineRef, fbReady = false;
+try {
+  firebase.initializeApp({
+    apiKey:"AIzaSyCZFDU-WlSmHqjXTs1Ox0nf9xeJU_xbaX0",
+    authDomain:"collaborativemashup.firebaseapp.com",
+    databaseURL:"https://collaborativemashup-default-rtdb.firebaseio.com",
+    projectId:"collaborativemashup",
+    storageBucket:"collaborativemashup.firebasestorage.app",
+    messagingSenderId:"562437984610",
+    appId:"1:562437984610:web:9f3711c26e097bc8ef9c3b"
+  });
+  db = firebase.database();
+  sessRef = db.ref('cb40PatentSessions');
+  findRef = db.ref('cb40WordFinds');
+  respRef = db.ref('cb40Responses');
+  onlineRef = db.ref('cb40Online');
+  fbReady = true;
+  const myRef = onlineRef.child(SESSION_ID);
+  myRef.set({ ts: firebase.database.ServerValue.TIMESTAMP });
+  myRef.onDisconnect().remove();
+  onlineRef.on('value', s => {
+    const n = Object.keys(s.val() || {}).length;
+    document.getElementById('onlineCount').innerHTML = '<span class="pip"></span>' + n + ' online';
+  });
+} catch(e) { fbReady = false; document.getElementById('onlineCount').textContent = 'Offline'; }
+
+function fbPush(ref, data) {
+  if (!fbReady || !ref) return;
+  ref.push({ ...data, sessionId: SESSION_ID, ts: firebase.database.ServerValue.TIMESTAMP }).catch(() => {});
+}
+
+// ══════════════════════════════════════════
+// CLOCK + SPARKLES
+// ══════════════════════════════════════════
+function tick(){const n=new Date(),p=v=>String(v).padStart(2,'0');document.getElementById('sysTime').textContent=`${p(n.getHours())}:${p(n.getMinutes())}`;}
+setInterval(tick,1000);tick();
+(function(){const w=document.getElementById('sparkles'),ch=['✦','✧','♡','˚','·','✿','◦','❀'];for(let i=0;i<28;i++){const s=document.createElement('span');s.className='sp';s.textContent=ch[Math.floor(Math.random()*ch.length)];s.style.left=Math.random()*100+'vw';s.style.bottom=Math.random()*-60+'px';s.style.fontSize=(9+Math.random()*10)+'px';s.style.color=`hsl(${280+Math.random()*60},75%,${65+Math.random()*22}%)`;s.style.animationDuration=(7+Math.random()*13)+'s';s.style.animationDelay=(Math.random()*12)+'s';w.appendChild(s);}})();
+
+// ══════════════════════════════════════════
+// INIT
+// ══════════════════════════════════════════
+function init() {
+  document.getElementById('patentTotal').textContent = PATENTS.length;
+  patentData = PATENTS.map(() => ({ foundWords: {}, startMs: Date.now() }));
+  loadPatent(0);
+}
+
+function loadPatent(idx) {
+  if (idx >= PATENTS.length) { showCompletion(); return; }
+  const p = PATENTS[idx];
+  patentData[idx].startMs = Date.now();
+  current = idx;
+
+  document.getElementById('patentNum').textContent = idx + 1;
+  document.getElementById('patentId').textContent = p.id;
+  document.getElementById('patentTitle').textContent = p.title;
+  document.getElementById('patentInventor').innerHTML = 'Inventor: <strong>' + p.inventor + '</strong>';
+  document.getElementById('patentYear').textContent = p.year;
+  document.getElementById('robotNote').textContent = p.robotNote;
+
+  // Progress bar
+  document.getElementById('progFill').style.width = (idx / PATENTS.length * 100) + '%';
+
+  // Render patent text as clickable words
+  renderPatentText(p.text, idx);
+
+  // Reset found display
+  updateFoundDisplay(idx);
+
+  // Reflection
+  const reflSection = document.getElementById('reflectSection');
+  reflSection.style.display = 'none';
+  document.getElementById('reflectTA').value = '';
+  document.getElementById('reflectSaved').textContent = '';
+  document.getElementById('reflectQ').textContent = p.reflectQ;
+
+  updateActionState(idx);
+}
+
+function renderPatentText(text, idx) {
+  const container = document.getElementById('patentText');
+  container.innerHTML = '';
+
+  // Tokenize: words and non-words
+  const tokens = text.split(/(\s+|[,;:.!?()\n—-]+)/);
+  tokens.forEach(token => {
+    if (!token) return;
+    if (/^\s+$/.test(token) || /^[,;:.!?()\n—-]+$/.test(token)) {
+      if (token.includes('\n')) {
+        container.appendChild(document.createElement('br'));
+        if (token.split('\n').length > 2) container.appendChild(document.createElement('br'));
+      } else {
+        container.appendChild(document.createTextNode(token));
+      }
+      return;
+    }
+    const clean = token.replace(/[^a-zA-Z'-]/g, '').toLowerCase();
+    const span = document.createElement('span');
+    span.className = 'patent-word';
+    span.textContent = token;
+    span.dataset.word = clean;
+
+    // Check if already found
+    const cat = patentData[idx].foundWords[clean];
+    if (cat) span.classList.add('found-' + cat);
+
+    span.addEventListener('click', () => onWordClick(span, clean, idx));
+    container.appendChild(span);
+  });
+}
+
+function onWordClick(span, word, idx) {
+  if (!word || word.length < 3) return;
+  pendingWord = { span, word, idx };
+  document.getElementById('modalWord').textContent = word;
+
+  // Pre-select if in hint lists
+  const isDom = DOMESTIC_HINTS.has(word);
+  const isIng = INGENUITY_HINTS.has(word);
+  // Still show modal for explicit categorisation
+  document.getElementById('wordModal').classList.add('open');
+}
+
+function categoriseWord(category) {
+  if (!pendingWord) return;
+  const { span, word, idx } = pendingWord;
+  closeModal();
+
+  // Remove existing category classes
+  span.classList.remove('found-domestic', 'found-ingenuity', 'found-both', 'found-mechanical');
+  span.classList.add('found-' + category);
+
+  // Store
+  patentData[idx].foundWords[word] = category;
+
+  // Also highlight all other instances of the same word
+  document.querySelectorAll('.patent-word').forEach(el => {
+    if (el.dataset.word === word) {
+      el.classList.remove('found-domestic', 'found-ingenuity', 'found-both', 'found-mechanical');
+      el.classList.add('found-' + category);
+    }
+  });
+
+  // Save to Firebase
+  fbPush(findRef, { patentId: PATENTS[idx].id, inventorName: PATENTS[idx].inventor, word, category, foundAt: Date.now() - patentData[idx].startMs });
+
+  updateFoundDisplay(idx);
+  updateActionState(idx);
+}
+
+function clearWords() {
+  patentData[current].foundWords = {};
+  renderPatentText(PATENTS[current].text, current);
+  updateFoundDisplay(current);
+  updateActionState(current);
+}
+
+function updateFoundDisplay(idx) {
+  const fw = patentData[idx].foundWords;
+  const domestic = Object.entries(fw).filter(([,c]) => c === 'domestic' || c === 'both');
+  const ingenuity = Object.entries(fw).filter(([,c]) => c === 'ingenuity' || c === 'both');
+  const mechanical = Object.entries(fw).filter(([,c]) => c === 'mechanical' || c === 'both');
+  const total = Object.keys(fw).length;
+
+  document.getElementById('scoreDomestic').textContent = domestic.length;
+  document.getElementById('scoreIngenuity').textContent = ingenuity.length;
+  document.getElementById('scoreMechanical').textContent = mechanical.length;
+  document.getElementById('scoreTotal').textContent = total;
+  document.getElementById('progCount').textContent = total + ' word' + (total !== 1 ? 's' : '') + ' found';
+
+  const domEl = document.getElementById('foundDomestic');
+  if (domestic.length) {
+    domEl.innerHTML = domestic.map(([w, c]) =>
+      `<span class="found-chip chip-${c === 'both' ? 'both' : 'domestic'}">
+        ${w}
+        <span class="chip-x" onclick="removeWord('${w}','${idx}')">×</span>
+      </span>`
+    ).join('');
+  } else {
+    domEl.innerHTML = '<span style="font-size:11px;color:var(--td);font-style:italic;">None yet — tap words in the patent text</span>';
+  }
+
+  const ingEl = document.getElementById('foundIngenuity');
+  if (ingenuity.length) {
+    ingEl.innerHTML = ingenuity.map(([w, c]) =>
+      `<span class="found-chip chip-${c === 'both' ? 'both' : 'ingenuity'}">
+        ${w}
+        <span class="chip-x" onclick="removeWord('${w}','${idx}')">×</span>
+      </span>`
+    ).join('');
+  } else {
+    ingEl.innerHTML = '<span style="font-size:11px;color:var(--td);font-style:italic;">None yet</span>';
+  }
+
+  const mechEl = document.getElementById('foundMechanical');
+  if (mechanical.length) {
+    mechEl.innerHTML = mechanical.map(([w, c]) =>
+      `<span class="found-chip chip-${c === 'both' ? 'both' : 'mechanical'}">
+        ${w}
+        <span class="chip-x" onclick="removeWord('${w}','${idx}')">×</span>
+      </span>`
+    ).join('');
+  } else {
+    mechEl.innerHTML = '<span style="font-size:11px;color:var(--td);font-style:italic;">None yet</span>';
+  }
+}
+
+function removeWord(word, idx) {
+  delete patentData[idx].foundWords[word];
+  renderPatentText(PATENTS[idx].text, idx);
+  updateFoundDisplay(idx);
+  updateActionState(idx);
+}
+
+function updateActionState(idx) {
+  const fw = patentData[idx].foundWords;
+  const hasDomestic = Object.values(fw).some(c => c === 'domestic' || c === 'both');
+  const hasIngenuity = Object.values(fw).some(c => c === 'ingenuity' || c === 'both');
+  const hasMechanical = Object.values(fw).some(c => c === 'mechanical' || c === 'both');
+  const canProceed = hasDomestic && (hasIngenuity || hasMechanical);
+
+  document.getElementById('clearBtn').disabled = Object.keys(fw).length === 0;
+  document.getElementById('nextBtn').disabled = !canProceed;
+
+  if (canProceed) {
+    document.getElementById('actionTip').textContent = '✦ Ready — add more words or proceed';
+    document.getElementById('reflectSection').style.display = 'block';
+  } else if (!hasDomestic && !hasIngenuity && !hasMechanical) {
+    document.getElementById('actionTip').textContent = '✦ Find at least 1 domestic word and 1 ingenuity or mechanical word to proceed';
+  } else if (!hasDomestic) {
+    document.getElementById('actionTip').textContent = '✦ Now find a domestic space word to proceed';
+  } else {
+    document.getElementById('actionTip').textContent = '✦ Now find an ingenuity or mechanical / technical word to proceed';
+  }
+}
+
+function saveReflection(patentIdx) {
+  const text = document.getElementById('reflectTA').value.trim();
+  if (!text) return;
+  fbPush(respRef, {
+    patentId: PATENTS[patentIdx].id,
+    inventorName: PATENTS[patentIdx].inventor,
+    reflection: text
+  });
+  document.getElementById('reflectSaved').textContent = '✦ Saved — thank you.';
+  setTimeout(() => document.getElementById('reflectSaved').textContent = '', 3000);
+}
+
+document.getElementById('reflectTA').addEventListener('blur', () => saveReflection(current));
+
+function nextPatent() {
+  const fw = patentData[current].foundWords;
+  const hasDomestic = Object.values(fw).some(c => c === 'domestic' || c === 'both');
+  const hasIngenuity = Object.values(fw).some(c => c === 'ingenuity' || c === 'both');
+  const hasMechanical = Object.values(fw).some(c => c === 'mechanical' || c === 'both');
+  if (!hasDomestic || (!hasIngenuity && !hasMechanical)) return;
+
+  // Save session data for this patent
+  const elapsedMs = Date.now() - patentData[current].startMs;
+  const wordCounts = {
+    domestic: Object.values(fw).filter(c => c === 'domestic' || c === 'both').length,
+    ingenuity: Object.values(fw).filter(c => c === 'ingenuity' || c === 'both').length,
+    mechanical: Object.values(fw).filter(c => c === 'mechanical' || c === 'both').length,
+    both: Object.values(fw).filter(c => c === 'both').length,
+    total: Object.keys(fw).length
+  };
+
+  // Save reflection if any
+  const reflText = document.getElementById('reflectTA').value.trim();
+  if (reflText) saveReflection(current);
+
+  fbPush(sessRef, {
+    patentId: PATENTS[current].id,
+    inventorName: PATENTS[current].inventor,
+    wordCounts,
+    wordsFound: Object.entries(fw).map(([w, c]) => ({ word: w, category: c })),
+    elapsedMs
+  });
+
+  allSessionData.push({ patent: PATENTS[current], fw, wordCounts, elapsedMs });
+
+  if (current + 1 >= PATENTS.length) {
+    finished = true;
+    document.getElementById('progFill').style.width = '100%';
+    showCompletion();
+  } else {
+    loadPatent(current + 1);
+  }
+}
+
+// ══════════════════════════════════════════
+// COMPLETION
+// ══════════════════════════════════════════
+function showCompletion() {
+  document.getElementById('taskCard').style.opacity = '.4';
+  document.getElementById('taskCard').style.pointerEvents = 'none';
+
+  const slot = document.getElementById('completionSlot');
+  const totalDomestic = allSessionData.reduce((a, d) => a + d.wordCounts.domestic, 0);
+  const totalIngenuity = allSessionData.reduce((a, d) => a + d.wordCounts.ingenuity, 0);
+  const totalMechanical = allSessionData.reduce((a, d) => a + (d.wordCounts.mechanical||0), 0);
+  const totalWords = allSessionData.reduce((a, d) => a + d.wordCounts.total, 0);
+
+  // Most tagged words
+  const allWords = allSessionData.flatMap(d => Object.entries(d.fw));
+  const wordFreq = {};
+  allWords.forEach(([w, c]) => { wordFreq[w] = (wordFreq[w] || { word: w, cat: c, count: 0 }); wordFreq[w].count++; });
+  const topWords = Object.values(wordFreq).sort((a, b) => b.count - a.count).slice(0, 6);
+
+  const insight = (() => {
+    const categories = [
+      {name:'domestic', count:totalDomestic},
+      {name:'ingenuity', count:totalIngenuity},
+      {name:'mechanical/technical', count:totalMechanical}
+    ].sort((a,b)=>b.count-a.count);
+    const top = categories[0], second = categories[1], third = categories[2];
+    const ratio = second.count > 0 ? (top.count / second.count).toFixed(1) : '∞';
+    if (totalMechanical > totalDomestic && totalMechanical > totalIngenuity) {
+      return `Your annotations were led by <strong>mechanical and technical vocabulary</strong> (${totalMechanical} words) over domestic (${totalDomestic}) and ingenuity (${totalIngenuity}). You read these patents as engineering documents — the machinery foregrounded, the domestic context receding. That's the same reading that historically classified these inventions as manufacturing rather than domestic labor.`;
+    } else if (totalDomestic > totalIngenuity && totalDomestic > totalMechanical) {
+      return `Your annotations found <strong>most words in the domestic space category</strong> (${totalDomestic}), ahead of mechanical (${totalMechanical}) and ingenuity (${totalIngenuity}). You read these patents through the lens of the home — the same lens that historically undervalued their technical sophistication.`;
+    } else if (totalIngenuity > totalDomestic && totalIngenuity > totalMechanical) {
+      return `Your annotations were led by <strong>creativity and ingenuity vocabulary</strong> (${totalIngenuity} words) over domestic (${totalDomestic}) and mechanical (${totalMechanical}). You read these women's voices in the patents — the claim to skill and invention — more than the domestic or mechanical context.`;
+    } else {
+      return `Your annotations are roughly <strong>evenly distributed</strong> across domestic (${totalDomestic}), ingenuity (${totalIngenuity}), and mechanical (${totalMechanical}) categories. All three framings coexist in these patents — domestic, inventive, and technical simultaneously. The historical classification that separated them was a choice, not an inevitability.`;
+    }
+  })();
+
+  slot.innerHTML = `
+    <div class="completion">
+      <div class="ctx-eyebrow">✦ CAREBOT-40 · Session Complete</div>
+      <h2>Your Words Are Now Research Data ✦</h2>
+      <p>You read ${allSessionData.length} real patents by women inventors whose work is now being automated by humanoid robots. The words you highlighted reveal something about how the domestic and the inventive appear in the same text — and how we read them.</p>
+      <div class="stat-bubbles">
+        <div class="stat-bubble"><div class="sb-num d">${totalDomestic}</div><div class="sb-lbl">Domestic words</div></div>
+        <div class="stat-bubble"><div class="sb-num i">${totalIngenuity}</div><div class="sb-lbl">Ingenuity words</div></div>
+        <div class="stat-bubble"><div class="sb-num" style="background:linear-gradient(135deg,#40c4ff,#0288d1);-webkit-background-clip:text;background-clip:text;color:transparent">${totalMechanical}</div><div class="sb-lbl">Mechanical words</div></div>
+        <div class="stat-bubble"><div class="sb-num" style="color:var(--cream)">${totalWords}</div><div class="sb-lbl">Total found</div></div>
+      </div>
+      <div class="insight-block">✦ <strong>What CAREBOT-40 sees in your data:</strong><br><br>${insight}<br><br>The inventors whose patents you just read: Sarah Boone, Josephine Cochrane, Margaret Knight, Ellen Eglin, Alice Parker, Mary Phelps Jacob. Their inventions are now used by humanoid robots in domestic automation trials. The domestic and the technical were never separate. The patents prove it. <strong>The robots prove it again.</strong></div>
+      <a class="btn primary" href="hit.html" style="text-decoration:none;display:inline-flex;margin:0 auto;">✦ Advance to next task</a>
+    </div>`;
+}
+
+// ══════════════════════════════════════════
+// MODALS
+// ══════════════════════════════════════════
+function closeModal() { document.getElementById('wordModal').classList.remove('open'); pendingWord = null; }
+function showAdmin() { document.getElementById('adminModal').classList.add('open'); document.getElementById('adminErr').textContent = ''; document.getElementById('adminPass').value = ''; setTimeout(() => document.getElementById('adminPass').focus(), 100); }
+function closeAdmin() { document.getElementById('adminModal').classList.remove('open'); }
+function confirmReset() {
+  if (document.getElementById('adminPass').value !== 'patents40') { document.getElementById('adminErr').textContent = 'Incorrect passcode.'; document.getElementById('adminPass').value = ''; return; }
+  closeAdmin();
+}
+document.getElementById('adminPass').addEventListener('keypress', e => { if (e.key === 'Enter') confirmReset(); });
+
+init();
+</script>
+</body>
+</html>
