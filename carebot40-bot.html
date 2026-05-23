@@ -190,6 +190,13 @@ html,body{min-height:100%;font-family:var(--fb);font-weight:600;color:var(--crea
         <div class="pc" data-p="Who was Alice Parker and what did she invent about heating?">Alice Parker · Central Heating 1919</div>
         <div class="pc" data-p="Who was Mary Phelps Jacob and what happened to her patent?">Mary Phelps Jacob · Brassiere 1914</div>
         <div class="pc" data-p="What domestic tasks are humanoid robots now being trained to perform, and which of these were invented by women?">Robots performing women's inventions</div>
+        <div class="pc" data-p="Who was Harriet Tracy and what did her safety elevator do?">Harriet Tracy · Safety Elevator 1881</div>
+        <div class="pc" data-p="Who was Miriam Benjamin and what was the gong and signal chair?">Miriam Benjamin · Signal Chair 1888</div>
+        <div class="pc" data-p="Who was Sarah Goode and what was the folding cabinet bed?">Sarah Goode · Cabinet Bed 1885</div>
+        <div class="pc" data-p="Who was Florence Parpart and what did she invent?">Florence Parpart · Street Sweeper 1900</div>
+        <div class="pc" data-p="Who was Lyda Newman and why does her hairbrush matter for robotics?">Lyda Newman · Hairbrush 1898</div>
+        <div class="pc" data-p="Who was Martha Coston and what happened to her patent?">Martha Coston · Signal Flares</div>
+        <div class="pc" data-p="Who was Mary Dixon Kies — the first woman to receive a US patent — and why is her patent lost?">Mary Kies · First US Patent 1809</div>
         <div class="pc" data-p="Why are domestic space words and ingenuity words both present in women's patents?">Domestic + ingenuity in the same patent</div>
         <div class="pc" data-p="What does the live data show about which category — domestic, ingenuity, or mechanical — participants found most?">What the 3-category data shows</div>
         <div class="pc" data-p="Why do mechanical and technical words appear in patents about domestic objects?">Mechanical words in domestic patents</div>
@@ -247,7 +254,7 @@ function buildSystem() {
   if (liveStats && liveStats.total > 0) {
     live = `\n\nLIVE DATA FROM WORD-FINDING TASK (${liveStats.sessions} sessions, ${liveStats.total} words tagged):
 - Domestic space words tagged: ${liveStats.domestic}
-- Ingenuity/creativity words tagged: ${liveStats.ingenuity}
+- Inventive/ingenuity words tagged: ${liveStats.ingenuity}
 - Mechanical/technical words tagged: ${liveStats.mechanical}
 - Most frequently tagged words: ${liveStats.topWords.join(', ')}
 - Leading category: ${['domestic','ingenuity','mechanical'].sort((a,b)=>liveStats[b]-liveStats[a])[0]}
@@ -312,6 +319,64 @@ MARY PHELPS JACOB (1914 · Patent No. 1,115,674 · Brassieres)
 - Now: apparel manufacturing is heavily roboticised. AI-driven pattern cutting and robotic sewing arms produce garments globally. The brassiere is a multi-billion dollar category.
 - Recognition: her name appears in fashion history; the economic story of the $1,500/$15 million gap is rarely told.
 
+
+HARRIET TRACY (1881 · Patent No. 235,107 · Safety Elevator)
+- New York City
+- Invented an improved safety device for elevators — gripping jaws that engage guide-rails instantly if the hoisting rope breaks or slackens, preventing free-fall
+- Innovation: spring-actuated gripping mechanism, sensitive and reliable, operable whether car is moving up or down, arrests motion at any point in the shaft
+- Now: every building robot that navigates floors uses elevators equipped with safety mechanisms descended from this principle. Amazon warehouse robots, hospital service robots, hotel robots — all depend on elevator safety architecture Tracy developed.
+- Recognition: almost entirely unknown
+
+FLORENCE PARPART (1900 · Patent No. 408,209 · Street Sweeping Machine)
+- Wilmington, Delaware
+- Invented an improved mechanical street sweeper with rotary brushes, collection hopper, and continuous discharge mechanism
+- Also held a patent for an improved refrigerator and ran her own marketing operation — one of the few women inventors of her era who commercially profited
+- Innovation: rotating brush system driven by the machine's own wheels, debris collected into a hopper that could be emptied without stopping the machine
+- Now: autonomous street-cleaning robots (Trombia, Enway, Gaussian Robotics) use exactly this rotating-brush-plus-collection-hopper architecture
+- Recognition: almost entirely unknown despite being both inventor and entrepreneur
+
+MIRIAM E. BENJAMIN (1888 · Patent No. 222,884 · Gong and Signal Chair)
+- Washington, D.C.
+- Second Black woman known to receive a US patent
+- Invented a signaling system: push button in a seat connected to a central indicator board, summoning an attendant while illuminating the specific seat of origin
+- Innovation: distributed call system with location identification — the attendant knew not just that someone needed help but exactly where
+- Adopted by the US House of Representatives to summon pages
+- Now: hospital nurse-call systems, hotel service buttons, Amazon Echo, smart home automation — all descend from this distributed-call-with-location-identification logic
+- Recognition: known primarily to historians of Black women inventors
+
+LYDA D. NEWMAN (1898 · Patent No. 614,961 · Hairbrush)
+- New York City
+- Invented a ventilated hairbrush with a lever mechanism to release trapped hair — the brush body had an air-circulation chamber between two plates and a removable cleaning strip
+- Innovation: ventilation prevents dust/hair accumulation; cleaning strip removes all trapped hair without tools — a mechanical self-cleaning mechanism built into a domestic object
+- Now: grooming robots for elder care (Panasonic, Toyota, Quant-U) are developing automated hair-care systems — the self-cleaning brush mechanism Newman designed is exactly what robotic grooming tools require
+- Recognition: listed in histories of Black women inventors; rarely taught
+
+SARAH E. GOODE (1885 · Patent No. 322,177 · Folding Cabinet Bed)
+- Chicago, Illinois
+- First Black woman known to receive a US patent
+- Ran a furniture store in Chicago; invented the cabinet bed — a folding bedstead that converted into a writing desk with shelves, drawers, and storage when not in use
+- Innovation: mechanical transformation of domestic space — the bed and desk share the same footprint via hinged folding mechanism; the furniture serves two functions from one piece of floor
+- Now: robotic furniture systems (Ori Living, automated apartment furniture in Japan, IKEA smart home systems) are direct descendants of Goode's space-transformation engineering
+- Recognition: known as first Black female patent holder; the engineering sophistication of her design is rarely discussed
+
+MARTHA COSTON (1871 · Pyrotechnic Night Signals, Patent 9,997 reissued in her name)
+- Philadelphia, Pennsylvania
+- Developed a maritime signal flare system from her late husband's incomplete notes — spent years working with chemists to produce reliable colour-coded pyrotechnic signals
+- The original patent was issued in her husband's name; she fought to have it reissued in her own
+- Innovation: standardised colour-coded signal system for maritime night communication — red, white, and blue signals each with distinct meaning; used by US Navy as standard equipment for decades
+- The 1885 patent for cores of fabric rolls is also attributed to her
+- Now: maritime emergency signaling systems, colour-coded alert protocols in automated safety systems, and emergency beacon technology all descend from the standardised signal logic she developed
+- Recognition: her name was erased from the original patent; she recovered it but remains largely unknown
+
+MARY DIXON KIES (1809 · First US patent issued to a woman · Straw Weaving Method)
+- Connecticut
+- Received the first US patent issued to a woman — for a method of weaving straw with silk and thread, improving hat manufacture and benefiting the New England hat industry
+- President Madison's wife Dolley congratulated her personally
+- Her patent is lost — no copy survives in the historical record
+- The cooking stove improvement represents the category of domestic engineering patents that followed in the decades after her patent
+- Now: the loss of her patent is itself the data point — the first US invention by a woman exists only as a record of its granting, not its content
+- Recognition: known as first female US patent holder; the actual invention is gone
+
 THE RESEARCH PATTERN:
 Across all six inventors, note:
 1. The invention is domestic — it solves a care or household problem
@@ -323,14 +388,14 @@ Across all six inventors, note:
 
 THE WORD-FINDING TASK:
 The HIT asks participants to find three categories of words in real patent text:
-- DOMESTIC SPACE WORDS: household, laundry, wash, iron, garment, sleeve, domestic, fabric, wearing apparel, dwelling, room, table, china, linen, kitchen, clothes, basin, wearing, tub, basin
-- INGENUITY/CREATIVITY WORDS: invention, invented, improvement, novel, improved, ingenuity, useful, new, efficient, adapt, construction, precision, automatic, contrive, devise
-- MECHANICAL/TECHNICAL WORDS: machine, machinery, mechanism, mechanical, apparatus, roller, shaft, lever, gear, spring, bolt, screw, frame, arm, rod, wheel, axle, pivot, pulley, pressure, force, motion, rotation, joint, plate, spindle, bearing, rail, channel, tension, friction, velocity, power, drive, actuate, transmit, means, constructed, arranged, extending, projecting, disposed, configured
+- DOMESTIC SPACE WORDS: household, home, domestic, dwelling, room, kitchen, bedroom, laundry, washing, wash, ironing, garment, sleeve, cloth, fabric, linen, clothing, apparel, needlework, corset, brassiere, dishes, dishwashing, table, tableware, basin, tub, basket, bags, servant, lady, ladies, woman, wife, mother, attendant, guest, occupant, hotel, restaurant
+- INVENTIVE/INGENUITY WORDS: invention, invented, improve, improvement, novel, new, original, discovery, patent, design, solve, solved, solving, solution, remedy, overcome, fix, fixed, fixing, repair, correct, eliminate, prevent, efficient, efficiency, effective, economical, rapid, thoroughly, perfect, capable, useful, practical, advantageous, superior, precision, reliable, simple, convenient, method, process, system, contrive, devise, produce, create, update, upgrade, advance, modern, refine, enhance, heavy-duty, powerful, maximum
+- MECHANICAL/TECHNICAL WORDS: machine, machinery, mechanism, mechanical, apparatus, device, roller, shaft, lever, gear, spring, bolt, screw, frame, arm, rod, wheel, axle, pivot, hinge, pulley, cam, crank, valve, pipe, tube, cylinder, piston, pump, pressure, force, motion, rotation, joint, bracket, plate, handle, grip, spindle, bearing, rail, track, channel, groove, weight, tension, compression, friction, velocity, power, drive, connected, attached, supported, fixed, adjustable, removable, mounted, fitted, engage, lock, secured, clamp, sliding, rotating, operate, operation, automatic, actuate, transmit, constructed, arranged, assembly, manufactured, machined, reinforced, durable, robust, solid, sturdy, stable, heavy, rigid, flexible, load-bearing
 
 THE RESEARCH QUESTION:
-When participants highlight these words, they reveal which reading lens they apply to patent text. Do they see it as a domestic document? An engineering document? A record of creative voice? The same text contains all three equally. The historical classification of these inventions as "household" rather than "engineering" determined how their inventors were compensated and remembered. The three-category structure makes that classification visible as a choice — and shows which framing dominates a given participant's reading.
+When participants highlight these words, they reveal which reading lens they apply to patent text. Do they see it as a domestic document? An engineering document? A record of inventive voice? The same text contains all three equally. The historical classification of these inventions as "household" rather than "engineering" determined how their inventors were compensated and remembered. The three-category structure makes that classification visible as a choice — and shows which framing dominates a given participant's reading.
 
-THE KEY TENSION: Words like "machine," "mechanism," "apparatus," and "automatic" appear throughout women's domestic patents. These are the same words that would make a patent filed by a man read as technical engineering rather than household utility. The category the reader assigns to them — mechanical or domestic — is itself a research data point.${live}
+THE KEY TENSION: Words like "machine," "mechanism," "apparatus," "heavy-duty," "rigid," "efficient," "solve," "fix," "update," and "maximum" appear throughout women's domestic patents. These are the same words that would make a patent filed by a man read as technical engineering rather than household utility. The category the reader assigns to them — mechanical, inventive, or domestic — is itself a research data point. The historical act of classifying these patents as "household" rather than "engineering" was a choice, and the word-finding task makes that choice visible in real time.${live}
 
 When asked about any inventor, tell the full story: what they invented, the technical innovation, what happened to them economically, and what robots are now doing with their invention.`;
 }
@@ -344,15 +409,22 @@ Six women filed these patents. The dates span 1871 to 1919. The inventions: an i
 
 **These are the same tasks on the task list of every humanoid robot in domestic automation trials right now.** Figure AI. Boston Dynamics. 1X. Apptronik. All of them are learning to iron, wash dishes, fold laundry, manage home temperature. All of them are learning the tasks these women invented tools for.
 
-**The inventors:**
-- **Sarah Boone** — ironing board, 1892. Black woman. New Haven.
+**The inventors — 13 patents, spanning 1809 to 1919:**
+- **Mary Dixon Kies** — straw weaving method, 1809. First US patent issued to a woman. The patent is lost. No copy survives.
+- **Sarah E. Goode** — folding cabinet bed, 1885. First Black woman to receive a US patent. Robotic furniture descends from her engineering.
+- **Harriet Tracy** — safety elevator, 1881. Every building robot that takes an elevator depends on her safety mechanism.
+- **Miriam Benjamin** — signal chair, 1888. Second Black woman to receive a US patent. Hospital call systems and smart home alerts descend from her design. Adopted by the US House of Representatives.
 - **Josephine Cochrane** — dishwasher, 1886. Founded what became KitchenAid. Her name is not in the marketing.
 - **Margaret Knight** — flat-bottomed paper bag, 1871. Fought a man who said she couldn't have invented it. Won. Held 87 patents.
+- **Sarah Boone** — ironing board, 1892. Black woman. New Haven. Shaped specifically for sleeves.
 - **Ellen Eglin** — clothes wringer, 1888. Sold her patent for $18 because *"if it was known that a negro woman patented the invention, white ladies would not buy the wringer."*
+- **Lyda Newman** — hairbrush, 1898. Mechanical self-cleaning mechanism. Grooming robots for elder care are learning to use her design.
+- **Florence Parpart** — street sweeper, 1900. Autonomous cleaning robots use her architecture. She also patented an improved refrigerator.
+- **Martha Coston** — signal flares (patented in her husband's name; she fought to reclaim it). Maritime emergency signaling. Standard US Navy equipment for decades.
 - **Alice Parker** — central heating with zone control, 1919. Google Nest manages exactly her system. Her name is not in the product.
 - **Mary Phelps Jacob** — brassiere, 1914. Sold the patent for $1,500. Warner Brothers made $15 million. She called it the worst decision of her life.
 
-The word-finding task asks you to find three kinds of words in their patent text: words that locate the invention in **domestic space**, words that reveal the inventor's **creative voice**, and words that describe the invention's **mechanical and technical** nature. All three are in the same sentence. All three were always there — in a patent that was classified as "household utility" and paid accordingly.
+The word-finding task asks you to find three kinds of words in their patent text: words that locate the invention in **domestic space**, words that reveal the inventor's **inventive voice**, and words that describe the invention's **mechanical and technical** nature. All three are in the same sentence. All three were always there — in a patent that was classified as "household utility" and paid accordingly.
 
 Ask me about any of them.`;
 
