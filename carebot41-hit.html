@@ -1,0 +1,719 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>✦ CAREBOT-41 ✦ The Skill Overlap</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Quicksand:wght@500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+<style>
+:root{
+  --hot:#ff2d6b;--candy:#ff85b3;--blush:#ffb3cf;--fuchsia:#ff1f80;
+  --cream:#fff5f8;--berry:#c4005a;--bg:#1a0012;
+  --teal:#c084fc;--teal-dim:rgba(192,132,252,.45);
+  --gold:#ffd060;--gold-dim:rgba(255,208,96,.45);
+  --green:#00e676;--green-dim:rgba(0,230,118,.45);
+  --cb:rgba(255,160,200,.22);--cbb:rgba(255,100,160,.55);
+  --sg:0 4px 30px rgba(255,45,107,.2),0 1px 0 rgba(255,160,200,.12) inset;
+  --td:rgba(255,200,224,.55);--fh:'Nunito',sans-serif;--fb:'Quicksand',sans-serif;--fm:'DM Mono',monospace;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html,body{min-height:100%;font-family:var(--fb);font-weight:600;color:var(--cream);background:var(--bg);}
+.bg{position:fixed;inset:0;z-index:0;pointer-events:none;background:radial-gradient(ellipse 70% 55% at 18% 12%,rgba(80,0,80,.3) 0%,transparent 60%),radial-gradient(ellipse 55% 65% at 82% 80%,rgba(140,0,40,.3) 0%,transparent 60%),linear-gradient(160deg,#1a000e,#100008 50%,#0e0012);}
+.orb{position:fixed;border-radius:50%;pointer-events:none;z-index:0;filter:blur(60px);opacity:.18;}
+.orb-1{width:380px;height:380px;background:#3b0040;top:-100px;left:-80px;animation:d1 18s ease-in-out infinite;}
+.orb-2{width:300px;height:300px;background:#c40032;bottom:-60px;right:-60px;animation:d2 22s ease-in-out infinite;}
+.orb-3{width:180px;height:180px;background:var(--teal);opacity:.1;top:38%;left:62%;animation:d3 14s ease-in-out infinite;}
+@keyframes d1{0%,100%{transform:translate(0,0)}50%{transform:translate(40px,30px)}}
+@keyframes d2{0%,100%{transform:translate(0,0)}50%{transform:translate(-30px,-20px)}}
+@keyframes d3{0%,100%{transform:translate(0,0)}33%{transform:translate(-20px,15px)}66%{transform:translate(15px,-10px)}}
+.sparkles{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden;}
+.sp{position:absolute;opacity:0;animation:fu linear infinite;}
+@keyframes fu{0%{opacity:0;transform:translateY(0) scale(.6) rotate(0deg)}15%{opacity:.7}85%{opacity:.4}100%{opacity:0;transform:translateY(-120px) scale(1.1) rotate(180deg)}}
+@keyframes breathe{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.3;transform:scale(.65)}}
+
+.wrap{position:relative;z-index:2;max-width:900px;margin:0 auto;padding:max(20px,env(safe-area-inset-top)) clamp(14px,3vw,24px) calc(60px + env(safe-area-inset-bottom));display:flex;flex-direction:column;gap:14px;}
+
+/* TOPBAR */
+.topbar{display:flex;align-items:center;justify-content:space-between;gap:10px;}
+.logo{display:flex;align-items:center;gap:10px;}
+.bot-icon{width:42px;height:42px;border-radius:13px;background:linear-gradient(135deg,rgba(192,132,252,.2),rgba(255,45,107,.2));border:1.5px solid var(--cbb);display:flex;align-items:center;justify-content:center;font-size:20px;animation:wobble 4s ease-in-out infinite;flex-shrink:0;}
+@keyframes wobble{0%,100%{transform:rotate(-2deg) scale(1)}25%{transform:rotate(1deg) scale(1.04)}50%{transform:rotate(-1deg) scale(1)}75%{transform:rotate(2deg) scale(1.03)}}
+.bot-name{font-family:var(--fh);font-weight:900;font-size:14px;background:linear-gradient(90deg,var(--teal),var(--candy) 55%,var(--blush));-webkit-background-clip:text;background-clip:text;color:transparent;}
+.bot-sub{font-size:9px;letter-spacing:.15em;text-transform:uppercase;color:var(--td);margin-top:1px;}
+.badges{display:flex;gap:7px;align-items:center;}
+.badge{font-size:10px;padding:4px 10px;border-radius:999px;background:rgba(192,132,252,.06);border:1px solid rgba(192,132,252,.2);color:var(--td);display:flex;align-items:center;gap:5px;}
+.pip{width:5px;height:5px;border-radius:50%;background:var(--teal);box-shadow:0 0 6px var(--teal);animation:breathe 2s ease-in-out infinite;}
+
+/* CARD BASE */
+.card{background:rgba(255,255,255,.055);border:1.5px solid var(--cb);border-radius:20px;overflow:hidden;position:relative;backdrop-filter:blur(16px) saturate(1.4);}
+.card::before{content:'';position:absolute;top:0;left:12px;right:12px;height:1px;background:linear-gradient(90deg,transparent,var(--teal) 30%,var(--candy) 50%,var(--teal) 70%,transparent);box-shadow:0 0 8px var(--teal);border-radius:999px;opacity:.7;}
+
+/* CONTEXT */
+.context{background:linear-gradient(135deg,rgba(50,0,50,.9),rgba(10,0,14,.96));border:1.5px solid rgba(192,132,252,.4);border-radius:20px;padding:20px 22px;position:relative;overflow:hidden;}
+.context::before{content:'';position:absolute;top:0;left:10%;right:10%;height:1.5px;background:linear-gradient(90deg,transparent,var(--teal) 35%,var(--candy) 50%,var(--teal) 65%,transparent);box-shadow:0 0 12px var(--teal);border-radius:999px;}
+.ctx-eyebrow{font-size:9px;letter-spacing:.22em;text-transform:uppercase;color:var(--teal-dim);margin-bottom:7px;font-family:var(--fh);font-weight:800;}
+.ctx-title{font-family:var(--fh);font-weight:900;font-size:clamp(15px,3vw,20px);background:linear-gradient(120deg,var(--cream) 15%,var(--teal) 50%,var(--candy) 90%);-webkit-background-clip:text;background-clip:text;color:transparent;margin-bottom:10px;line-height:1.3;}
+.ctx-body{font-size:12.5px;line-height:1.78;color:rgba(245,200,255,.82);}
+.ctx-body strong{color:#f3ccff;}
+.ctx-body a{color:var(--teal);text-decoration:none;border-bottom:1px solid rgba(192,132,252,.3);}
+.ctx-body a:hover{color:var(--candy);}
+.sources-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:14px;}
+@media(max-width:600px){.sources-grid{grid-template-columns:1fr;}}
+.source-link{display:flex;flex-direction:column;gap:3px;padding:10px 13px;background:rgba(192,132,252,.07);border:1px solid rgba(192,132,252,.2);border-radius:10px;text-decoration:none;transition:all .15s;}
+.source-link:hover{background:rgba(192,132,252,.15);border-color:rgba(192,132,252,.4);}
+.source-tag{font-size:8px;letter-spacing:.14em;text-transform:uppercase;color:var(--teal-dim);font-family:var(--fh);font-weight:800;}
+.source-title{font-size:11px;color:rgba(245,200,255,.8);line-height:1.45;}
+
+/* PROGRESS */
+.prog-strip{padding:14px 18px;border-bottom:1px solid rgba(192,132,252,.1);}
+.prog-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;}
+.prog-label{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--td);font-family:var(--fh);font-weight:800;}
+.prog-count{font-family:var(--fh);font-weight:900;font-size:13px;color:var(--teal);}
+.prog-track{height:6px;border-radius:999px;background:rgba(192,132,252,.1);border:1px solid rgba(192,132,252,.15);overflow:hidden;}
+.prog-fill{height:100%;border-radius:999px;background:linear-gradient(90deg,rgba(120,0,160,.8),var(--teal),var(--candy));box-shadow:0 0 10px var(--teal);transition:width .5s cubic-bezier(.34,1.2,.64,1);}
+
+/* SKILL SECTION */
+.skill-section{padding:20px 22px;}
+.skill-eyebrow{font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--td);font-family:var(--fh);font-weight:800;margin-bottom:6px;}
+.skill-name{font-family:var(--fh);font-weight:900;font-size:clamp(16px,3vw,22px);line-height:1.2;margin-bottom:6px;}
+.skill-name.mother{background:linear-gradient(90deg,var(--candy),var(--hot));-webkit-background-clip:text;background-clip:text;color:transparent;}
+.skill-name.tech{background:linear-gradient(90deg,var(--teal),rgba(140,0,200,1));-webkit-background-clip:text;background-clip:text;color:transparent;}
+.skill-research{font-size:12px;color:rgba(245,200,255,.7);line-height:1.65;margin-bottom:16px;padding:10px 14px;background:rgba(192,132,252,.06);border-left:2px solid var(--teal);border-radius:0 8px 8px 0;}
+.skill-research a{color:var(--teal);text-decoration:none;}
+.skill-research a:hover{color:var(--candy);}
+
+/* RATING SCALE */
+.rate-section{margin-bottom:16px;display:flex;flex-direction:column;gap:8px;}
+.rate-label{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--td);font-family:var(--fh);font-weight:800;display:flex;justify-content:space-between;align-items:center;}
+.rate-val{font-family:var(--fh);font-weight:900;font-size:13px;color:var(--teal);}
+input[type=range].rate-slider{width:100%;accent-color:var(--hot);height:5px;cursor:pointer;border-radius:999px;outline:none;border:none;background:rgba(192,132,252,.12);}
+.rate-ends{display:flex;justify-content:space-between;font-size:9px;color:var(--td);margin-top:2px;}
+
+/* APPLIES TO */
+.applies-section{margin-bottom:16px;}
+.applies-label{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--td);font-family:var(--fh);font-weight:800;margin-bottom:8px;}
+.applies-btns{display:flex;gap:7px;flex-wrap:wrap;}
+.apply-btn{appearance:none;font-family:var(--fb);font-weight:700;font-size:11px;padding:6px 14px;border-radius:999px;cursor:pointer;border:1.5px solid;background:transparent;transition:all .18s cubic-bezier(.34,1.56,.64,1);}
+.apply-btn.mothers{border-color:rgba(255,133,179,.3);color:rgba(255,133,179,.6);}
+.apply-btn.mothers:hover,.apply-btn.mothers.active{background:rgba(255,133,179,.2);border-color:var(--candy);color:var(--candy);box-shadow:0 0 10px rgba(255,133,179,.2);}
+.apply-btn.tech{border-color:rgba(192,132,252,.3);color:rgba(192,132,252,.6);}
+.apply-btn.tech:hover,.apply-btn.tech.active{background:rgba(192,132,252,.2);border-color:var(--teal);color:var(--teal);box-shadow:0 0 10px rgba(192,132,252,.2);}
+.apply-btn.both{border-color:rgba(255,208,96,.3);color:rgba(255,208,96,.6);}
+.apply-btn.both:hover,.apply-btn.both.active{background:rgba(255,208,96,.15);border-color:var(--gold);color:var(--gold);box-shadow:0 0 10px rgba(255,208,96,.2);}
+.apply-btn.neither{border-color:rgba(255,200,224,.2);color:rgba(255,200,224,.35);}
+.apply-btn.neither:hover,.apply-btn.neither.active{background:rgba(255,200,224,.06);border-color:rgba(255,200,224,.4);color:var(--td);}
+
+/* OPEN TEXT */
+.open-section{margin-bottom:14px;}
+.open-label{font-size:11px;color:rgba(245,200,255,.8);font-weight:700;margin-bottom:6px;line-height:1.5;}
+.open-ta{width:100%;background:rgba(192,132,252,.05);border:1.5px solid rgba(192,132,252,.18);border-radius:12px;font-family:var(--fb);font-weight:600;font-size:13px;color:var(--cream);padding:11px 14px;outline:none;resize:vertical;min-height:65px;transition:border-color .2s;}
+.open-ta:focus{border-color:var(--teal);}
+.open-ta::placeholder{color:rgba(192,132,252,.2);}
+
+/* ACTION ROW */
+.action-row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;padding:14px 18px;border-top:1px solid rgba(192,132,252,.1);}
+.tip{font-size:11px;color:var(--td);flex:1;}
+.btn{font-family:var(--fh);font-weight:900;font-size:12px;letter-spacing:.05em;color:var(--cream);display:inline-flex;align-items:center;gap:5px;padding:10px 18px;border-radius:13px;border:1.5px solid var(--cb);cursor:pointer;transition:all .2s cubic-bezier(.34,1.56,.64,1);background:none;appearance:none;}
+.btn.primary{background:linear-gradient(135deg,var(--teal),rgba(140,0,160,1));border-color:var(--teal);box-shadow:0 4px 18px rgba(192,132,252,.3);}
+.btn.primary:hover{transform:translateY(-2px);box-shadow:0 6px 24px rgba(192,132,252,.45);}
+.btn.secondary{background:linear-gradient(135deg,rgba(255,45,107,.5),var(--berry));border-color:var(--hot);}
+.btn.secondary:hover{transform:translateY(-2px);}
+.btn:disabled{opacity:.28;cursor:not-allowed;transform:none!important;box-shadow:none!important;}
+
+/* LIVE RESULTS */
+.results-card{padding:20px 22px;}
+.results-eyebrow{font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--td);font-family:var(--fh);font-weight:800;margin-bottom:10px;}
+.results-title{font-family:var(--fh);font-weight:900;font-size:16px;background:linear-gradient(90deg,var(--teal),var(--candy));-webkit-background-clip:text;background-clip:text;color:transparent;margin-bottom:14px;}
+
+/* OVERLAP DISPLAY */
+.overlap-wrap{display:flex;flex-direction:column;gap:8px;}
+.overlap-row{display:grid;grid-template-columns:140px 1fr 44px;align-items:center;gap:8px;}
+.overlap-label{font-size:11px;color:rgba(245,200,255,.75);text-align:right;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.overlap-track{height:10px;border-radius:999px;background:rgba(192,132,252,.08);border:1px solid rgba(192,132,252,.12);overflow:hidden;position:relative;}
+.overlap-fill-wrap{height:100%;display:flex;}
+.seg-mothers{height:100%;background:linear-gradient(90deg,rgba(255,45,107,.7),rgba(196,0,90,.7));transition:width .6s cubic-bezier(.34,1.2,.64,1);}
+.seg-tech{height:100%;background:linear-gradient(90deg,rgba(100,0,160,.7),rgba(192,132,252,.7));transition:width .6s cubic-bezier(.34,1.2,.64,1);}
+.seg-both{height:100%;background:linear-gradient(90deg,rgba(200,160,0,.7),rgba(255,208,96,.7));transition:width .6s cubic-bezier(.34,1.2,.64,1);}
+.overlap-pct{font-family:var(--fh);font-weight:900;font-size:11px;color:var(--gold);text-align:right;font-variant-numeric:tabular-nums;}
+
+.legend-row{display:flex;gap:12px;flex-wrap:wrap;margin-top:8px;margin-bottom:14px;}
+.leg-item{display:flex;align-items:center;gap:5px;font-size:10px;color:var(--td);}
+.leg-swatch{width:12px;height:12px;border-radius:3px;flex-shrink:0;}
+.swatch-m{background:linear-gradient(135deg,var(--hot),var(--berry));}
+.swatch-t{background:linear-gradient(135deg,rgba(100,0,160,1),var(--teal));}
+.swatch-b{background:linear-gradient(135deg,rgba(180,130,0,1),var(--gold));}
+
+.summary-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:8px;margin-top:14px;}
+.sstat{background:rgba(255,255,255,.04);border:1px solid var(--cb);border-radius:10px;padding:10px 12px;text-align:center;}
+.sstat-num{font-family:var(--fh);font-weight:900;font-size:20px;line-height:1;font-variant-numeric:tabular-nums;}
+.sstat-num.m{background:linear-gradient(135deg,var(--candy),var(--hot));-webkit-background-clip:text;background-clip:text;color:transparent;}
+.sstat-num.t{background:linear-gradient(135deg,var(--teal),rgba(140,0,200,1));-webkit-background-clip:text;background-clip:text;color:transparent;}
+.sstat-num.b{background:linear-gradient(135deg,var(--gold),rgba(200,140,0,1));-webkit-background-clip:text;background-clip:text;color:transparent;}
+.sstat-num.n{color:var(--td);}
+.sstat-lbl{font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--td);margin-top:3px;}
+
+.insight-box{background:rgba(255,208,96,.06);border:1.5px solid rgba(255,208,96,.2);border-radius:12px;padding:14px 16px;font-size:12.5px;color:rgba(245,220,180,.85);line-height:1.75;margin-top:10px;}
+.insight-box strong{color:var(--gold);}
+
+/* COMPLETION */
+.completion{background:linear-gradient(135deg,rgba(40,0,40,.9),rgba(10,4,14,.96));border:1.5px solid rgba(192,132,252,.4);border-radius:20px;padding:30px 24px;text-align:center;position:relative;overflow:hidden;}
+.completion::before{content:'';position:absolute;top:0;left:10%;right:10%;height:1.5px;background:linear-gradient(90deg,transparent,var(--teal) 35%,var(--candy) 50%,var(--teal) 65%,transparent);box-shadow:0 0 12px var(--teal);border-radius:999px;}
+.completion h2{font-family:var(--fh);font-weight:900;font-size:clamp(20px,4vw,28px);background:linear-gradient(90deg,var(--teal),var(--candy));-webkit-background-clip:text;background-clip:text;color:transparent;margin-bottom:10px;}
+.completion p{font-size:13px;color:rgba(245,200,255,.75);line-height:1.75;margin-bottom:18px;max-width:520px;margin-left:auto;margin-right:auto;}
+
+::-webkit-scrollbar{width:5px;height:5px;}
+::-webkit-scrollbar-track{background:var(--bg);}
+::-webkit-scrollbar-thumb{background:rgba(192,132,252,.3);border-radius:3px;}
+@media(max-width:600px){.overlap-row{grid-template-columns:90px 1fr 36px;}.overlap-label{font-size:10px;}}
+</style>
+</head>
+<body>
+<div class="bg"></div>
+<div class="orb orb-1"></div><div class="orb orb-2"></div><div class="orb orb-3"></div>
+<div class="sparkles" id="sparkles"></div>
+
+<div class="wrap">
+
+  <!-- TOPBAR -->
+  <div class="topbar">
+    <div class="logo">
+      <div class="bot-icon">⟁</div>
+      <div>
+        <div class="bot-name">CAREBOT-41 ✦ The Skill Overlap</div>
+        <div class="bot-sub">Mothers · Inventors · Tech Workers · CAREtech</div>
+      </div>
+    </div>
+    <div class="badges">
+      <div class="badge" id="onlineCount"><span class="pip"></span>Connecting…</div>
+      <div class="badge" id="sysTime">--:--</div>
+    </div>
+  </div>
+
+  <!-- CONTEXT -->
+  <div class="context">
+    <div class="ctx-eyebrow">✦ CAREBOT-41 · Research Briefing</div>
+    <div class="ctx-title">Research says mothers and tech workers need the same skills. Who gets paid for them?</div>
+    <div class="ctx-body">
+      <strong>The research on what mothers must be skilled at</strong> — problem-solving under pressure, emotional regulation, multitasking, adaptive prioritisation, communication across developmental stages, crisis management, long-term planning, building trust and psychological safety — maps almost exactly onto <strong>what tech employers say they want from engineers and product teams in 2025.</strong><br><br>
+      This task shows you 16 skills identified by researchers in both fields. For each one, tell us: does this apply to mothers, to tech workers, to both, or to neither? Your responses build a live map of the overlap — as you and other participants see it.<br><br>
+      <strong>The research sources behind this task:</strong>
+    </div>
+    <div class="sources-grid">
+      <a class="source-link" href="https://www.phoenix.edu/content/dam/edu/research/doc/white-papers/educational-instructional-technology/2024/mom-report-motherhood-skills-s-smith.pdf" target="_blank" rel="noopener">
+        <span class="source-tag">University of Phoenix · 2024</span>
+        <span class="source-title">Unlocking Potential: The Transferability of Skills from Motherhood to the Workplace</span>
+      </a>
+      <a class="source-link" href="https://ntinow.edu/soft-skills-employers-look-for-in-it-careers/" target="_blank" rel="noopener">
+        <span class="source-tag">NTI · 2025</span>
+        <span class="source-title">Why Soft Skills Are The Hidden Skills Employers Look For in Tech</span>
+      </a>
+      <a class="source-link" href="https://pmc.ncbi.nlm.nih.gov/articles/PMC4445866/" target="_blank" rel="noopener">
+        <span class="source-tag">PMC / NIH · 2015</span>
+        <span class="source-title">Maternal Emotion and Cognitive Control Capacities and Parenting</span>
+      </a>
+      <a class="source-link" href="https://www.codepath.org/news/engineer-soft-skills" target="_blank" rel="noopener">
+        <span class="source-tag">CodePath · 2023</span>
+        <span class="source-title">Building Bridges, Shipping Code: Top Soft Skills for Engineers</span>
+      </a>
+      <a class="source-link" href="https://wearesimplytalented.com/balancing-motherhood-and-leadership-reasons-why-moms-shine-as-managers/" target="_blank" rel="noopener">
+        <span class="source-tag">Simply Talented · 2024</span>
+        <span class="source-title">Balancing Motherhood and Leadership: Why Moms Shine as Managers</span>
+      </a>
+      <a class="source-link" href="https://toggl.com/blog/most-in-demand-skills" target="_blank" rel="noopener">
+        <span class="source-tag">Toggl · 2025</span>
+        <span class="source-title">The 25+ Most In-Demand Skills in 2025 & Beyond</span>
+      </a>
+      <a class="source-link" href="https://www.fdmgroup.com/news-insights/8-parenting-skills-that-make-you-better-at-your-job-2/" target="_blank" rel="noopener">
+        <span class="source-tag">FDM Group · 2023</span>
+        <span class="source-title">8 Parenting Skills That Make You Better at Your Job</span>
+      </a>
+      <a class="source-link" href="https://www.ptechpartners.com/2024/10/03/key-skills-for-it-professionals-in-2025/" target="_blank" rel="noopener">
+        <span class="source-tag">Peterson Technology Partners · 2024</span>
+        <span class="source-title">Key Skills for IT Professionals in 2025</span>
+      </a>
+    </div>
+  </div>
+
+  <!-- TASK CARD -->
+  <div class="card" id="taskCard">
+    <div class="prog-strip">
+      <div class="prog-top">
+        <div class="prog-label">✦ Skill <span id="skillNum">1</span> of <span id="skillTotal">16</span></div>
+        <div class="prog-count" id="progCount">0 rated</div>
+      </div>
+      <div class="prog-track"><div class="prog-fill" id="progFill" style="width:0%"></div></div>
+    </div>
+
+    <div class="skill-section">
+      <div class="skill-eyebrow" id="skillEyebrow">✦ Skill 1 of 16</div>
+      <div class="skill-name" id="skillName">—</div>
+      <div class="skill-research" id="skillResearch">—</div>
+
+      <!-- RATING: mothers -->
+      <div class="rate-section">
+        <div class="rate-label">
+          <span>🤱 How essential is this for mothers?</span>
+          <span class="rate-val" id="rateMotherVal">5</span>
+        </div>
+        <input type="range" class="rate-slider" id="rateMother" min="1" max="10" value="5"
+          oninput="document.getElementById('rateMotherVal').textContent=this.value">
+        <div class="rate-ends"><span>Not at all</span><span>Absolutely essential</span></div>
+      </div>
+
+      <!-- RATING: tech workers -->
+      <div class="rate-section">
+        <div class="rate-label">
+          <span>💻 How essential is this for tech workers?</span>
+          <span class="rate-val" id="rateTechVal">5</span>
+        </div>
+        <input type="range" class="rate-slider" id="rateTech" min="1" max="10" value="5"
+          oninput="document.getElementById('rateTechVal').textContent=this.value">
+        <div class="rate-ends"><span>Not at all</span><span>Absolutely essential</span></div>
+      </div>
+
+      <!-- APPLIES TO -->
+      <div class="applies-section">
+        <div class="applies-label">✦ In your experience, this skill is primarily associated with:</div>
+        <div class="applies-btns">
+          <button class="apply-btn mothers" onclick="setApplies('mothers',this)">🤱 Mothers</button>
+          <button class="apply-btn tech" onclick="setApplies('tech',this)">💻 Tech workers</button>
+          <button class="apply-btn both" onclick="setApplies('both',this)">✦ Both equally</button>
+          <button class="apply-btn neither" onclick="setApplies('neither',this)">Neither / unsure</button>
+        </div>
+      </div>
+
+      <!-- OPEN TEXT -->
+      <div class="open-section">
+        <div class="open-label" id="openLabel">—</div>
+        <textarea class="open-ta" id="openText" placeholder="Your response…"></textarea>
+      </div>
+    </div>
+
+    <div class="action-row">
+      <div class="tip" id="actionTip">✦ Rate both sliders and select who this skill applies to</div>
+      <button class="btn secondary" id="skipBtn" onclick="nextSkill(true)">Skip ✦</button>
+      <button class="btn primary" id="nextBtn" onclick="nextSkill(false)" disabled>Next ✦</button>
+    </div>
+  </div>
+
+  <!-- LIVE RESULTS -->
+  <div class="card" id="resultsCard" style="display:none;">
+    <div class="results-card">
+      <div class="results-eyebrow">✦ Live Results · All Participants</div>
+      <div class="results-title">The Skill Overlap — as workers see it</div>
+
+      <div class="legend-row">
+        <div class="leg-item"><div class="leg-swatch swatch-m"></div>Primarily mothers</div>
+        <div class="leg-item"><div class="leg-swatch swatch-t"></div>Primarily tech</div>
+        <div class="leg-item"><div class="leg-swatch swatch-b"></div>Both equally</div>
+      </div>
+
+      <div class="overlap-wrap" id="overlapWrap">
+        <div style="font-size:12px;color:var(--td);text-align:center;padding:16px;">Loading live data…</div>
+      </div>
+
+      <div class="summary-stats" id="summaryStats"></div>
+      <div class="insight-box" id="insightBox" style="display:none;"></div>
+    </div>
+  </div>
+
+  <!-- COMPLETION SLOT -->
+  <div id="completionSlot"></div>
+
+  <div style="font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:rgba(192,132,252,.08);text-align:center;padding-bottom:8px;">✦ carebot-41 · the skill overlap · mothers · inventors · tech workers · caretech ✦</div>
+</div>
+
+<script>
+// ══════════════════════════════════════════
+// SKILLS DATA
+// ══════════════════════════════════════════
+const SKILLS = [
+  {
+    id: 'problem_solving',
+    name: 'Problem-solving under pressure',
+    eyebrow: 'Cognitive capacity',
+    research: 'Named the #1 soft skill employers will demand by 2025 (NTI/LinkedIn). Also identified as a core maternal capacity: mothers "deal with unexpected challenges with limited time and resources" requiring "creativity, thinking on your feet, and swift prioritising" (360training). University of Phoenix (2024) identifies problem-solving as one of five primary skills developed through motherhood that directly transfer to the workforce.',
+    openLabel: 'Describe a moment when this skill was required — in a caregiving or professional context, or both.'
+  },
+  {
+    id: 'adaptability',
+    name: 'Adaptability and flexibility',
+    eyebrow: 'Resilience capacity',
+    research: 'LinkedIn identified adaptability as the skill with the biggest year-over-year growth in 2024. McKinsey found candidates demonstrating adaptability were 24% more likely to be employed. University of Phoenix (2024) lists adaptability as one of five core skills developed through motherhood. The WEF identifies it as one of the top ten skills for success in the Fourth Industrial Revolution.',
+    openLabel: 'Who has more practice at adaptability — mothers or tech workers? What does your answer reveal?'
+  },
+  {
+    id: 'emotional_intelligence',
+    name: 'Emotional intelligence and empathy',
+    eyebrow: 'Social-emotional capacity',
+    research: 'WEF ranks emotional intelligence as the #1 leadership skill for the future. Peterson Technology Partners (2024) identifies it as essential for IT professionals: "Leading in times of change requires agility, empathy, and emotional intelligence." Research shows mothers\' brains neurologically rewire during pregnancy to enhance empathy and social cognition (Parents Pivot / Annie Brown). The PMC/NIH review identifies maternal emotion regulation as critical to parenting effectiveness.',
+    openLabel: 'Is emotional intelligence recognised and compensated the same way in caregiving contexts as in technology leadership? Why or why not?'
+  },
+  {
+    id: 'multitasking',
+    name: 'Multitasking and parallel prioritisation',
+    eyebrow: 'Executive function',
+    research: 'The term "multitasking" was coined in the computer industry — derived from a computer\'s ability to run multiple processes simultaneously. FDM Group (2023) notes it "is a fantastic skill to have when entering a career in technology, as it is a fast-paced environment that may require you to work on multiple projects with many different priorities." University of Phoenix (2024) identifies multitasking as one of five primary skills transferred from motherhood to the workforce.',
+    openLabel: 'The word "multitasking" was invented to describe computers. Mothers are routinely described as expert multitaskers. What does that naming history tell you?'
+  },
+  {
+    id: 'communication',
+    name: 'Communication across different audiences',
+    eyebrow: 'Interpersonal capacity',
+    research: 'Communication ranked as the most requested skill across nearly 2 million recent tech job postings (NTI, 2025). 180 Engineering notes tech workers "must be able to adapt their message for their audience." University of Phoenix (2024) identifies communication as one of five core maternal skills that transfer to the workforce. Mothers communicate with children, schools, healthcare providers, and partners across vastly different cognitive and emotional registers simultaneously.',
+    openLabel: 'Tech communication and maternal communication are both about adapting your message to who is listening. Is this recognised as the same skill? Should it be?'
+  },
+  {
+    id: 'crisis_management',
+    name: 'Crisis management and rapid decision-making',
+    eyebrow: 'Executive response capacity',
+    research: 'Simply Talented (2024) identifies crisis management as a key maternal skill that transfers to management: "Mothers often employ an all-hazards approach, similar to emergency preparedness, which involves cross-compatible skills." CodePath (2023) identifies resilience and adaptability as essential for engineers handling "unplanned work and problems" — the most common challenges software engineers face (2022 study).',
+    openLabel: 'When a mother handles a medical emergency and a tech team handles a production outage, what is the same about those two situations?'
+  },
+  {
+    id: 'long_term_planning',
+    name: 'Long-term planning and goal-setting',
+    eyebrow: 'Strategic capacity',
+    research: '360training: "With parenting and working, you identify goals, create a plan, allocate resources." Strategic planning and roadmapping are foundational engineering and product management skills. The PMC/NIH review of maternal cognitive capacities specifically identifies "planning" as one of the executive functions critical to effective mothering — the same executive functions tested in product management interviews.',
+    openLabel: 'A parent planning a child\'s development and a product manager planning a product roadmap are both making strategic decisions under uncertainty. Is one of these work?'
+  },
+  {
+    id: 'trust_building',
+    name: 'Building psychological safety and trust',
+    eyebrow: 'Relational capacity',
+    research: 'Harvard Business Review found businesses prioritising empathy and customer experience outperform competitors by up to 85% in revenue growth. Deloitte found companies prioritising communication and collaboration experience a 20-25% boost in team productivity. The PMC study on maternal sensitivity identifies psychological safety as the foundation of child development. These are the same conditions described in Google\'s Project Aristotle as the #1 predictor of high-performing teams.',
+    openLabel: 'Google\'s research found psychological safety is the most important factor in team performance. Maternal sensitivity research says the same about child development. Does this surprise you?'
+  },
+  {
+    id: 'error_detection',
+    name: 'Error detection and course correction',
+    eyebrow: 'Quality assurance capacity',
+    research: 'Software testing and debugging are core engineering competencies. Margaret Hamilton\'s daughter accidentally crashed the Apollo simulator — Hamilton\'s response was to build error-detection and recovery code that saved the Apollo 8 mission. Noticing when something is wrong before it becomes catastrophic, and correcting course, is both a maternal vigilance skill and a foundational engineering discipline.',
+    openLabel: 'Hamilton built error-detection code because she was a working mother who brought her child to the lab. What other engineering innovations might have come from people doing care work and technical work simultaneously?'
+  },
+  {
+    id: 'resource_management',
+    name: 'Resource management under constraint',
+    eyebrow: 'Operational capacity',
+    research: '360training identifies mothers as expert at "efficient and strategic thinking about how to get everything done" with limited resources. Resource allocation and constraint-based optimisation are core engineering skills — from memory management in code to budget allocation in product teams. The skills are structurally identical: maximise output, minimise waste, under conditions you do not fully control.',
+    openLabel: 'Managing a household budget and managing an engineering sprint are both resource allocation problems. Is the person who does one prepared to do the other?'
+  },
+  {
+    id: 'continuous_learning',
+    name: 'Continuous learning and knowledge updating',
+    eyebrow: 'Growth capacity',
+    research: 'LinkedIn (2024): adaptability and continuous learning have the highest year-over-year growth in employer demand. Tech Elevator (2024): "the ability to learn on the fly to adapt to new tech and evolving challenges" is foundational to software development. Parenting requires continuous updating — developmental stages, medical guidance, educational approaches, and social norms change constantly. Both require staying current in a domain that never stops changing.',
+    openLabel: 'Both mothers and tech workers are required to continuously update their knowledge in domains that change constantly. Is one of these recognised as professional development?'
+  },
+  {
+    id: 'stakeholder_management',
+    name: 'Managing competing needs and expectations',
+    eyebrow: 'Stakeholder capacity',
+    research: 'Stakeholder management — balancing competing priorities from engineers, product, design, business, and users — is a core tech skill. Maternal stakeholder management involves balancing the needs of children at different developmental stages, partners, schools, healthcare systems, and extended family simultaneously. Simply Talented (2024) describes this as "multitasking and prioritising, skills honed through the demands of parenting."',
+    openLabel: 'A product manager balancing engineers, designers, sales, and users and a mother balancing a toddler, a school-age child, a partner, and a healthcare provider are both doing stakeholder management. Is one paid for it?'
+  },
+  {
+    id: 'pattern_recognition',
+    name: 'Pattern recognition and diagnostic reasoning',
+    eyebrow: 'Analytical capacity',
+    research: 'Debugging requires pattern recognition — identifying what is wrong from incomplete information. The PMC/NIH maternal cognition review identifies "paying attention and detecting relevant patterns" as a core maternal executive function. A mother diagnosing why a child is distressed from limited signals and an engineer debugging a system from error logs are performing structurally identical cognitive tasks.',
+    openLabel: 'Reading a child\'s behaviour for early signs of a problem and reading system logs for early signs of failure are both diagnostic reasoning tasks. How similar are they to you?'
+  },
+  {
+    id: 'documentation',
+    name: 'Documentation, explanation and knowledge transfer',
+    eyebrow: 'Knowledge management capacity',
+    research: 'Technical writing and documentation are essential engineering skills — code without documentation is considered incomplete work. Mothers are the primary maintainers of family health records, developmental histories, school documentation, and the vast tacit knowledge that holds a household together. Both involve creating systems of record for information that would otherwise be lost.',
+    openLabel: 'A mother who maintains the family\'s medical history, school records, and developmental notes is doing knowledge management. Is this recognised as a technical skill?'
+  },
+  {
+    id: 'user_empathy',
+    name: 'Understanding the needs of others before they articulate them',
+    eyebrow: 'User empathy / anticipatory capacity',
+    research: 'User research, UX, and product empathy — understanding what users need before they can say it — are among the most valued skills in tech (FutureCode IT Consulting, 2024). Maternal anticipatory care — reading a pre-verbal child\'s needs, anticipating developmental transitions, preventing problems before they escalate — is the same skill applied to a human who literally cannot yet speak their needs. This is described in maternal neuroscience as a neurologically supported capacity.',
+    openLabel: 'UX researchers are paid to understand what users need before they can articulate it. Mothers do this from day one of a child\'s life, often without sleep, often without pay. What does that gap reveal?'
+  },
+  {
+    id: 'resilience',
+    name: 'Resilience, persistence and sustained effort under uncertainty',
+    eyebrow: 'Endurance capacity',
+    research: 'CompuNnel (2025): "Organizations are facing constant disruptions... Professionals with adaptability, resilience, and problem-solving abilities can better navigate these uncertainties." CodePath (2023): "Resilience helps engineers adapt and use critical thinking and creativity during unexpected circumstances." Motherhood under economic pressure, with inadequate support infrastructure, requires sustained effort under conditions of structural uncertainty that few professional environments match.',
+    openLabel: 'Resilience is listed as a top required skill in tech job postings. How is resilience developed, measured, and compensated differently in caregiving versus professional contexts?'
+  }
+];
+
+// ══════════════════════════════════════════
+// FIREBASE
+// ══════════════════════════════════════════
+const SESSION_ID = 'cb41-' + Math.random().toString(36).slice(2,10);
+let db, responsesRef, onlineRef, fbReady = false;
+try {
+  firebase.initializeApp({
+    apiKey:"AIzaSyCZFDU-WlSmHqjXTs1Ox0nf9xeJU_xbaX0",
+    authDomain:"collaborativemashup.firebaseapp.com",
+    databaseURL:"https://collaborativemashup-default-rtdb.firebaseio.com",
+    projectId:"collaborativemashup",
+    storageBucket:"collaborativemashup.firebasestorage.app",
+    messagingSenderId:"562437984610",
+    appId:"1:562437984610:web:9f3711c26e097bc8ef9c3b"
+  });
+  db = firebase.database();
+  responsesRef = db.ref('cb41Responses');
+  onlineRef = db.ref('cb41Online');
+  fbReady = true;
+  const me = onlineRef.child(SESSION_ID);
+  me.set({ ts: firebase.database.ServerValue.TIMESTAMP });
+  me.onDisconnect().remove();
+  onlineRef.on('value', s => {
+    const n = Object.keys(s.val() || {}).length;
+    document.getElementById('onlineCount').innerHTML = '<span class="pip"></span>' + n + ' online';
+  });
+} catch(e) { fbReady = false; document.getElementById('onlineCount').textContent = 'Offline'; }
+
+function fbPush(data) {
+  if (!fbReady || !responsesRef) return;
+  responsesRef.push({ ...data, sessionId: SESSION_ID, ts: firebase.database.ServerValue.TIMESTAMP }).catch(() => {});
+}
+
+// ══════════════════════════════════════════
+// STATE
+// ══════════════════════════════════════════
+let current = 0;
+let applies = null;
+let rated = 0;
+
+// ══════════════════════════════════════════
+// CLOCK + SPARKLES
+// ══════════════════════════════════════════
+function tick(){const n=new Date(),p=v=>String(v).padStart(2,'0');document.getElementById('sysTime').textContent=`${p(n.getHours())}:${p(n.getMinutes())}`;}
+setInterval(tick,1000);tick();
+(function(){const w=document.getElementById('sparkles'),ch=['✦','✧','♡','˚','·','✿','◦','❀'];for(let i=0;i<28;i++){const s=document.createElement('span');s.className='sp';s.textContent=ch[Math.floor(Math.random()*ch.length)];s.style.left=Math.random()*100+'vw';s.style.bottom=Math.random()*-60+'px';s.style.fontSize=(9+Math.random()*10)+'px';s.style.color=`hsl(${280+Math.random()*60},75%,${65+Math.random()*22}%)`;s.style.animationDuration=(7+Math.random()*13)+'s';s.style.animationDelay=(Math.random()*12)+'s';w.appendChild(s);}})();
+
+// ══════════════════════════════════════════
+// RENDER SKILL
+// ══════════════════════════════════════════
+function loadSkill(idx) {
+  if (idx >= SKILLS.length) { showCompletion(); return; }
+  const sk = SKILLS[idx];
+  current = idx;
+  applies = null;
+
+  document.getElementById('skillNum').textContent = idx + 1;
+  document.getElementById('skillTotal').textContent = SKILLS.length;
+  document.getElementById('progCount').textContent = idx + ' rated';
+  document.getElementById('progFill').style.width = (idx / SKILLS.length * 100) + '%';
+  document.getElementById('skillEyebrow').textContent = '✦ ' + sk.eyebrow + ' · Skill ' + (idx+1) + ' of ' + SKILLS.length;
+
+  // Colour the skill name by type (alternate)
+  const nameEl = document.getElementById('skillName');
+  nameEl.textContent = sk.name;
+  nameEl.className = 'skill-name ' + (['mother','tech','mother','tech','mother','tech','mother','tech','mother','tech','mother','tech','mother','tech','mother','tech'][idx] || '');
+
+  document.getElementById('skillResearch').innerHTML = sk.research;
+  document.getElementById('openLabel').textContent = sk.openLabel;
+  document.getElementById('openText').value = '';
+
+  // Reset sliders
+  document.getElementById('rateMother').value = 5;
+  document.getElementById('rateMotherVal').textContent = '5';
+  document.getElementById('rateTech').value = 5;
+  document.getElementById('rateTechVal').textContent = '5';
+
+  // Reset apply buttons
+  document.querySelectorAll('.apply-btn').forEach(b => b.classList.remove('active'));
+
+  updateActionState();
+}
+
+function setApplies(val, btn) {
+  applies = val;
+  document.querySelectorAll('.apply-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  updateActionState();
+}
+
+function updateActionState() {
+  const can = applies !== null;
+  document.getElementById('nextBtn').disabled = !can;
+  document.getElementById('actionTip').textContent = can
+    ? '✦ Ready — add a note or proceed to the next skill'
+    : '✦ Select who this skill primarily applies to';
+}
+
+// Listen to slider changes to provide live feedback
+['rateMother','rateTech'].forEach(id => {
+  document.getElementById(id).addEventListener('input', updateActionState);
+});
+
+function nextSkill(skip) {
+  if (!skip && applies === null) return;
+
+  const sk = SKILLS[current];
+  const motherRating = parseInt(document.getElementById('rateMother').value);
+  const techRating = parseInt(document.getElementById('rateTech').value);
+  const openText = document.getElementById('openText').value.trim();
+
+  fbPush({
+    skillId: sk.id,
+    skillName: sk.name,
+    skillIndex: current,
+    motherRating,
+    techRating,
+    gap: techRating - motherRating,  // positive = tech rated higher; negative = mothers rated higher
+    applies: applies || 'skipped',
+    openText,
+    skipped: skip
+  });
+
+  rated++;
+  document.getElementById('progCount').textContent = rated + ' rated';
+
+  if (current + 1 >= SKILLS.length) {
+    document.getElementById('progFill').style.width = '100%';
+    showResults();
+    showCompletion();
+  } else {
+    loadSkill(current + 1);
+  }
+}
+
+// ══════════════════════════════════════════
+// LIVE RESULTS
+// ══════════════════════════════════════════
+function showResults() {
+  document.getElementById('resultsCard').style.display = 'block';
+  if (!fbReady) return;
+
+  responsesRef.once('value', snap => {
+    const all = [];
+    snap.forEach(c => all.push(c.val()));
+    renderResults(all);
+  });
+
+  // Keep updating
+  responsesRef.on('value', snap => {
+    const all = [];
+    snap.forEach(c => all.push(c.val()));
+    renderResults(all);
+  });
+}
+
+function renderResults(all) {
+  if (!all.length) return;
+
+  // Per skill aggregation
+  const bySkill = {};
+  SKILLS.forEach(sk => {
+    bySkill[sk.id] = { name: sk.name, mothers: [], tech: [], applies: { mothers:0, tech:0, both:0, neither:0 }, gap: [] };
+  });
+
+  all.forEach(r => {
+    if (!r.skillId || !bySkill[r.skillId]) return;
+    const s = bySkill[r.skillId];
+    if (r.motherRating) s.mothers.push(r.motherRating);
+    if (r.techRating) s.tech.push(r.techRating);
+    if (r.applies && s.applies[r.applies] !== undefined) s.applies[r.applies]++;
+    if (r.gap !== undefined) s.gap.push(r.gap);
+  });
+
+  const avg = arr => arr.length ? arr.reduce((a,b)=>a+b,0)/arr.length : 5;
+
+  // Sort by "both" votes descending for overlap display
+  const skillRows = SKILLS.map(sk => {
+    const s = bySkill[sk.id];
+    const total = s.applies.mothers + s.applies.tech + s.applies.both + s.applies.neither;
+    return {
+      name: sk.name,
+      id: sk.id,
+      avgMother: avg(s.mothers),
+      avgTech: avg(s.tech),
+      pctMothers: total ? Math.round(s.applies.mothers/total*100) : 0,
+      pctTech: total ? Math.round(s.applies.tech/total*100) : 0,
+      pctBoth: total ? Math.round(s.applies.both/total*100) : 0,
+      avgGap: avg(s.gap),
+      total
+    };
+  }).sort((a,b) => b.pctBoth - a.pctBoth);
+
+  const wrap = document.getElementById('overlapWrap');
+  wrap.innerHTML = '';
+  skillRows.forEach(r => {
+    const row = document.createElement('div');
+    row.className = 'overlap-row';
+
+    const maxWidth = r.pctMothers + r.pctTech + r.pctBoth;
+    row.innerHTML = `
+      <div class="overlap-label" title="${r.name}">${r.name.length > 22 ? r.name.substring(0,20)+'…' : r.name}</div>
+      <div class="overlap-track">
+        <div class="overlap-fill-wrap">
+          <div class="seg-mothers" style="width:${r.pctMothers}%"></div>
+          <div class="seg-tech" style="width:${r.pctTech}%"></div>
+          <div class="seg-both" style="width:${r.pctBoth}%"></div>
+        </div>
+      </div>
+      <div class="overlap-pct">${r.pctBoth}%</div>`;
+    wrap.appendChild(row);
+  });
+
+  // Summary stats
+  const totalResponses = all.length;
+  const totalBoth = all.filter(r => r.applies === 'both').length;
+  const totalMothers = all.filter(r => r.applies === 'mothers').length;
+  const totalTech = all.filter(r => r.applies === 'tech').length;
+  const avgGap = avg(all.filter(r=>r.gap!==undefined).map(r=>r.gap));
+
+  document.getElementById('summaryStats').innerHTML = `
+    <div class="sstat"><div class="sstat-num b">${Math.round(totalBoth/totalResponses*100)||0}%</div><div class="sstat-lbl">Rated "Both"</div></div>
+    <div class="sstat"><div class="sstat-num m">${Math.round(totalMothers/totalResponses*100)||0}%</div><div class="sstat-lbl">Mothers only</div></div>
+    <div class="sstat"><div class="sstat-num t">${Math.round(totalTech/totalResponses*100)||0}%</div><div class="sstat-lbl">Tech only</div></div>
+    <div class="sstat"><div class="sstat-num n">${totalResponses}</div><div class="sstat-lbl">Total ratings</div></div>`;
+
+  // Insight
+  const insightBox = document.getElementById('insightBox');
+  insightBox.style.display = 'block';
+  const overlapPct = Math.round(totalBoth/totalResponses*100) || 0;
+  const topOverlap = skillRows[0];
+  const bottomOverlap = skillRows[skillRows.length-1];
+
+  let insightText = '';
+  if (overlapPct > 60) {
+    insightText = `<strong>${overlapPct}% of all skill ratings</strong> are assigned to "Both" — participants are seeing significant overlap between what mothers and tech workers need. The skill most commonly rated as shared: <strong>${topOverlap.name}</strong>. The least shared: <strong>${bottomOverlap.name}</strong>.`;
+  } else if (overlapPct > 35) {
+    insightText = `<strong>${overlapPct}% of all skill ratings</strong> recognise these as shared skills. The skill most commonly seen as belonging to both: <strong>${topOverlap.name}</strong>. The gap may reflect how these skills are culturally coded — as care work or as professional work — rather than any real difference in what they require.`;
+  } else {
+    insightText = `Only <strong>${overlapPct}%</strong> of ratings so far assign these skills to "Both." The cultural separation between care-work skills and professional skills is visible in the data. The skill most associated with both: <strong>${topOverlap.name}</strong>. Research consistently shows the skills are the same. The compensation is not.`;
+  }
+  if (avgGap > 1) {
+    insightText += ` On average, participants rate tech workers <strong>${avgGap.toFixed(1)} points higher</strong> on these skills than mothers — even though researchers identify both groups as requiring them equally.`;
+  } else if (avgGap < -1) {
+    insightText += ` On average, participants rate mothers <strong>${Math.abs(avgGap).toFixed(1)} points higher</strong> on these skills than tech workers — a counter-intuitive finding given how rarely these skills are compensated in caregiving contexts.`;
+  }
+  insightBox.innerHTML = insightText;
+}
+
+// ══════════════════════════════════════════
+// COMPLETION
+// ══════════════════════════════════════════
+function showCompletion() {
+  document.getElementById('taskCard').style.opacity = '.4';
+  document.getElementById('taskCard').style.pointerEvents = 'none';
+
+  const slot = document.getElementById('completionSlot');
+  slot.innerHTML = `
+    <div class="completion">
+      <div class="ctx-eyebrow">✦ CAREBOT-41 · Session Complete</div>
+      <h2>Your ratings are now research data ✦</h2>
+      <p>You rated ${rated} of ${SKILLS.length} skills. The live chart above shows how all participants are mapping the overlap between what mothers and tech workers need. The research says the skills are the same. The compensation is not. Your data is part of making that visible.</p>
+      <a class="btn primary" href="hit.html" style="text-decoration:none;display:inline-flex;margin:0 auto;">✦ Advance to next task</a>
+    </div>`;
+}
+
+// ══════════════════════════════════════════
+// INIT
+// ══════════════════════════════════════════
+loadSkill(0);
+</script>
+</body>
+</html>
