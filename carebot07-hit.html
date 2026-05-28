@@ -263,6 +263,33 @@ function submitWorkerId(){
   revealRewardScreen(raw);
 }
 
+function announceWorker(wid){
+  if(!window.speechSynthesis)return;
+  const spelled=wid.split('').join(' ');
+  const msg=new SpeechSynthesisUtterance(`Please pay worker number ${spelled} one cent.`);
+  msg.rate=0.88;
+  msg.pitch=1.05;
+  msg.volume=1;
+  function speak(){
+    const voices=window.speechSynthesis.getVoices();
+    // 1. American English female by name
+    const female=voices.find(v=>v.lang==='en-US'&&/zira|samantha|aria|jenny|michelle|jane|linda|betty|emma|woman|female/i.test(v.name))
+      // 2. Any en-US voice that isn't explicitly male
+      ||voices.find(v=>v.lang==='en-US'&&!/male|david|mark|richard|guy|james/i.test(v.name))
+      // 3. Any en-US voice
+      ||voices.find(v=>v.lang==='en-US')
+      // 4. Fallback: any English female
+      ||voices.find(v=>v.lang.startsWith('en')&&!/male/i.test(v.name))
+      ||voices[0];
+    if(female)msg.voice=female;
+    msg.lang='en-US';
+    window.speechSynthesis.cancel();
+    window.speechSynthesis.speak(msg);
+  }
+  if(window.speechSynthesis.getVoices().length){speak();}
+  else{window.speechSynthesis.addEventListener('voiceschanged',speak,{once:true});}
+}
+
 function revealRewardScreen(workerId){
   document.getElementById('workerGate').style.display = 'none';
   const rs = document.getElementById('rewardScreen');
@@ -273,6 +300,8 @@ function revealRewardScreen(workerId){
   const cta = document.getElementById('ctaBtn');
   const base = cta.getAttribute('href').split('?')[0];
   cta.href = base + '?wid=' + encodeURIComponent(workerId);
+  // announce via speech synthesis
+  setTimeout(()=>announceWorker(workerId), 400);
 }
 
 // On page load: skip gate if worker already identified this session

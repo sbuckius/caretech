@@ -41,6 +41,23 @@ html,body{min-height:100%;font-family:var(--fb);font-weight:600;color:var(--crea
 @keyframes br{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.3;transform:scale(.65)}}
 .clk{font-size:12px;color:var(--td);letter-spacing:.08em;}
 
+/* WORKER BANNER */
+.worker-banner{position:relative;z-index:190;background:rgba(10,0,6,.95);border-bottom:2px solid rgba(255,45,107,.6);backdrop-filter:blur(24px);padding:20px clamp(16px,3vw,28px);}
+.worker-banner::before{content:'';position:absolute;top:0;left:5%;right:5%;height:1.5px;background:linear-gradient(90deg,transparent,#ff85b3 30%,#ff2d6b 50%,#ff85b3 70%,transparent);box-shadow:0 0 16px #ff85b3;border-radius:999px;}
+.worker-banner::after{content:'';position:absolute;bottom:0;left:5%;right:5%;height:1px;background:linear-gradient(90deg,transparent,rgba(255,100,160,.3) 40%,rgba(255,100,160,.3) 60%,transparent);}
+.wbanner-inner{max-width:1100px;margin:0 auto;display:flex;align-items:center;gap:18px;flex-wrap:wrap;}
+.wbanner-icon{flex-shrink:0;width:52px;height:52px;border-radius:14px;background:linear-gradient(135deg,rgba(255,45,107,.3),rgba(180,0,60,.45));border:1.5px solid rgba(255,100,160,.6);display:flex;align-items:center;justify-content:center;font-size:26px;box-shadow:0 4px 22px rgba(255,45,107,.35),inset 0 1px 0 rgba(255,200,200,.1);}
+.wbanner-text{flex:1;min-width:200px;}
+.wbanner-eyebrow{font-size:9px;letter-spacing:.22em;text-transform:uppercase;color:rgba(255,200,224,.5);font-family:'Nunito',sans-serif;font-weight:800;margin-bottom:6px;}
+.wbanner-headline{font-family:'Nunito',sans-serif;font-weight:900;font-size:clamp(18px,3vw,26px);line-height:1.2;letter-spacing:.01em;}
+.wbanner-headline .wid{background:linear-gradient(90deg,#ffb3cf,#ff1f80 55%,#ff85b3);-webkit-background-clip:text;background-clip:text;color:transparent;}
+.wbanner-headline .muted{color:rgba(255,210,228,.65);}
+.wbanner-headline .amount{background:linear-gradient(90deg,#ff85b3,#ff2d6b 60%,#ffb3cf);-webkit-background-clip:text;background-clip:text;color:transparent;}
+.wbanner-pills{display:flex;gap:8px;flex-wrap:wrap;align-items:center;}
+.wbanner-pill{padding:6px 14px;border-radius:999px;background:rgba(255,45,107,.1);border:1.5px solid rgba(255,100,160,.4);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:#ff85b3;font-family:'Nunito',sans-serif;font-weight:800;white-space:nowrap;}
+.wbanner-dismiss{flex-shrink:0;background:none;border:1px solid rgba(255,100,160,.25);border-radius:8px;color:rgba(255,200,224,.35);font-size:11px;padding:6px 11px;cursor:pointer;font-family:'Nunito',sans-serif;font-weight:800;letter-spacing:.06em;transition:border-color .15s,color .15s;}
+.wbanner-dismiss:hover{border-color:rgba(255,100,160,.6);color:rgba(255,200,224,.75);}
+
 /* SUMMARY */
 .summary{position:relative;z-index:2;display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:1px;background:rgba(255,100,160,.12);border-bottom:1.5px solid var(--cb);}
 .sbox{background:rgba(14,0,8,.85);padding:14px 18px;display:flex;flex-direction:column;gap:4px;backdrop-filter:blur(10px);}
@@ -144,6 +161,24 @@ html,body{min-height:100%;font-family:var(--fb);font-weight:600;color:var(--crea
   </div>
 </header>
 
+<!-- ══ WORKER ID BANNER ══ -->
+<div class="worker-banner" id="workerBanner" style="display:none;">
+  <div class="wbanner-inner">
+    <div class="wbanner-icon">💰</div>
+    <div class="wbanner-text">
+      <div class="wbanner-eyebrow">✦ CAREBOT-07 · Microtask Reward Confirmation</div>
+      <div class="wbanner-headline">
+        <span class="muted">Worker </span><span class="wid" id="bannerWorkerId"></span><span class="muted"> should be paid </span><span class="amount">$0.01</span>
+      </div>
+    </div>
+    <div class="wbanner-pills">
+      <div class="wbanner-pill">✦ Task Complete</div>
+      <div class="wbanner-pill">CARETECH Active</div>
+    </div>
+    <button class="wbanner-dismiss" onclick="document.getElementById('workerBanner').style.display='none'">✕ dismiss</button>
+  </div>
+</div>
+
 <div class="summary">
   <div class="sbox"><div class="sval" id="s-n">—</div><div class="slbl">Total Responses</div></div>
   <div class="sbox"><div class="sval" id="s-bots">—</div><div class="slbl">Panels Loaded</div></div>
@@ -160,6 +195,54 @@ html,body{min-height:100%;font-family:var(--fb);font-weight:600;color:var(--crea
 (function(){const w=document.getElementById('sparkles'),ch=['✦','✧','♡','˚','·','✿','◦','❀'];for(let i=0;i<28;i++){const s=document.createElement('span');s.className='sp';s.textContent=ch[Math.floor(Math.random()*ch.length)];s.style.left=Math.random()*100+'vw';s.style.bottom=Math.random()*-60+'px';s.style.fontSize=(10+Math.random()*10)+'px';s.style.color=`hsl(${320+Math.random()*40},80%,${70+Math.random()*20}%)`;s.style.animationDuration=(6+Math.random()*12)+'s';s.style.animationDelay=(Math.random()*12)+'s';w.appendChild(s);}})();
 function tick(){const n=new Date(),p=v=>String(v).padStart(2,'0');document.getElementById('clk').textContent=`${p(n.getHours())}:${p(n.getMinutes())}:${p(n.getSeconds())}`;}
 setInterval(tick,1000);tick();
+
+// ── Worker ID Banner + Voice Announcement ──
+function announceWorker(wid){
+  if(!window.speechSynthesis)return;
+  // spell out alphanumeric IDs character by character so they read clearly
+  const spelled=wid.split('').join(' ');
+  const msg=new SpeechSynthesisUtterance(`Please pay worker number ${spelled} one cent.`);
+  msg.rate=0.88;
+  msg.pitch=1.05;
+  msg.volume=1;
+  // pick a female voice if available, otherwise default
+  function speak(){
+    const voices=window.speechSynthesis.getVoices();
+    // 1. American English female by name (most common across platforms)
+    const female=voices.find(v=>v.lang==='en-US'&&/zira|samantha|aria|jenny|michelle|jane|linda|betty|emma|woman|female/i.test(v.name))
+      // 2. Any en-US voice that isn't explicitly male
+      ||voices.find(v=>v.lang==='en-US'&&!/male|david|mark|richard|guy|james/i.test(v.name))
+      // 3. Any en-US voice
+      ||voices.find(v=>v.lang==='en-US')
+      // 4. Fallback: any English female
+      ||voices.find(v=>v.lang.startsWith('en')&&!/male/i.test(v.name))
+      ||voices[0];
+    if(female)msg.voice=female;
+    msg.lang='en-US';
+    window.speechSynthesis.cancel();
+    window.speechSynthesis.speak(msg);
+  }
+  // voices may not be loaded yet on first call
+  if(window.speechSynthesis.getVoices().length){speak();}
+  else{window.speechSynthesis.addEventListener('voiceschanged',speak,{once:true});}
+}
+
+(function(){
+  const STORAGE_KEY='caretech_worker_id';
+  function getWorkerId(){
+    try{const s=localStorage.getItem(STORAGE_KEY);if(s&&s.length>2)return s;}catch(e){}
+    try{const p=new URLSearchParams(location.search).get('wid');if(p&&p.length>2)return p;}catch(e){}
+    return null;
+  }
+  const wid=getWorkerId();
+  if(wid){
+    document.getElementById('bannerWorkerId').textContent=wid;
+    document.getElementById('workerBanner').style.display='block';
+    try{localStorage.setItem(STORAGE_KEY,wid);}catch(e){}
+    // slight delay so page audio context is ready
+    setTimeout(()=>announceWorker(wid),600);
+  }
+})();
 
 // ══════════════════════════════════════════
 // FIREBASE INIT
@@ -214,7 +297,6 @@ function errMsg(el,msg){el.innerHTML=`<div class="error-msg">⚠ ${msg}</div>`;}
 function emptyMsg(el,msg){el.innerHTML=`<div class="empty-msg">${msg}</div>`;}
 
 function barChart(el,rows,maxVal,colorClass=''){
-  // rows: [{label, val, count}]
   const max=maxVal||Math.max(...rows.map(r=>r.val));
   el.innerHTML='<div class="bar-chart">'+rows.map(r=>{
     const w=max>0?Math.round(r.val/max*100):0;
@@ -227,7 +309,6 @@ function barChart(el,rows,maxVal,colorClass=''){
 }
 
 function sliderAvg(el,rows){
-  // rows: [{label, avg, min, max}]
   el.innerHTML=rows.map(r=>`
     <div class="slider-display">
       <div class="slider-label-row"><span class="slider-lbl">${r.label}</span><span class="slider-avg">${r.avg.toFixed(2)}/10</span></div>
@@ -237,7 +318,6 @@ function sliderAvg(el,rows){
 }
 
 function tagCloud(el,pairs){
-  // pairs: [[tag, count], ...]
   const max=pairs[0]?.[1]||1;
   el.innerHTML='<div class="tag-cloud">'+pairs.map(([t,c])=>{
     const size=10+Math.round((c/max)*4);
@@ -254,10 +334,9 @@ function insight(el,html){
 }
 
 // ══════════════════════════════════════════
-// PANEL BUILDERS — each returns a rendered panel or null
+// PANEL BUILDERS
 // ══════════════════════════════════════════
 
-// ── CB02 Miss Honeywell reactions ──
 async function buildCB02(wrap){
   const data=await rtdbAll('honey','honeywellReactions');
   const p=panel('CAREBOT-02 · Miss Honeywell 1968','Audience Affect: Surprising · Disturbing · Familiar',el=>{loading(el);});
@@ -265,39 +344,21 @@ async function buildCB02(wrap){
   const body=p.querySelector('.panel-body');
   if(!data){errMsg(body,'Could not load honeywellReactions');return 0;}
   if(!data.length){emptyMsg(body,'No reactions yet.');return 0;}
-
   const surprising=data.map(d=>safeNum(d.surprising)).filter(v=>v!==null);
   const disturbing=data.map(d=>safeNum(d.disturbing)).filter(v=>v!==null);
   const familiar=data.map(d=>safeNum(d.familiar)).filter(v=>v!==null);
-
-  const sliders=[
-    {label:'Surprising',avg:avg(surprising)},
-    {label:'Disturbing',avg:avg(disturbing)},
-    {label:'Familiar / still relevant today',avg:avg(familiar)}
-  ];
+  const sliders=[{label:'Surprising',avg:avg(surprising)},{label:'Disturbing',avg:avg(disturbing)},{label:'Familiar / still relevant today',avg:avg(familiar)}];
   const slidDiv=document.createElement('div');sliderAvg(slidDiv,sliders);body.appendChild(slidDiv);
-
-  // tag frequency
   const allTags=data.flatMap(d=>Array.isArray(d.tags)?d.tags:[]);
   if(allTags.length){
     const lbl=document.createElement('div');lbl.style.cssText='font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--td);font-family:var(--fh);font-weight:800;margin-top:4px;';lbl.textContent='✦ Tag Frequency';body.appendChild(lbl);
     const tDiv=document.createElement('div');tagCloud(tDiv,sortedFreq(allTags).slice(0,12));body.appendChild(tDiv);
   }
-
-  statRows(body,[
-    {label:'Total reactions',val:data.length},
-    {label:'Avg surprising',val:avg(surprising).toFixed(2)+'/10'},
-    {label:'Avg disturbing',val:avg(disturbing).toFixed(2)+'/10'},
-    {label:'Avg familiar',val:avg(familiar).toFixed(2)+'/10'},
-  ]);
-
-  if(avg(surprising)>avg(disturbing)){
-    insight(body,`People find Miss Honeywell <strong>more surprising than disturbing</strong> (${avg(surprising).toFixed(1)} vs ${avg(disturbing).toFixed(1)}). The high familiarity score (${avg(familiar).toFixed(1)}) suggests the pattern still reads as current.`);
-  }
+  statRows(body,[{label:'Total reactions',val:data.length},{label:'Avg surprising',val:avg(surprising).toFixed(2)+'/10'},{label:'Avg disturbing',val:avg(disturbing).toFixed(2)+'/10'},{label:'Avg familiar',val:avg(familiar).toFixed(2)+'/10'}]);
+  if(avg(surprising)>avg(disturbing)){insight(body,`People find Miss Honeywell <strong>more surprising than disturbing</strong> (${avg(surprising).toFixed(1)} vs ${avg(disturbing).toFixed(1)}). The high familiarity score (${avg(familiar).toFixed(1)}) suggests the pattern still reads as current.`);}
   return data.length;
 }
 
-// ── CB03 LOL vs Industrial ──
 async function buildCB03(wrap){
   const data=await fsAll('collab','annotations03');
   const p=panel('CAREBOT-03 · Apollo Rope Memory','LOL vs Industrial: Wage · Importance · Recognition',el=>{loading(el);});
@@ -305,68 +366,27 @@ async function buildCB03(wrap){
   const body=p.querySelector('.panel-body');
   if(!data){errMsg(body,'Could not load annotations03');return 0;}
   if(!data.length){emptyMsg(body,'No annotations yet.');return 0;}
-
   const lol=data.filter(d=>d.category==='lol');
   const ind=data.filter(d=>d.category==='industrial');
-
   const lolWage=lol.map(d=>safeNum(d.wage)).filter(v=>v!==null&&v>0);
   const indWage=ind.map(d=>safeNum(d.wage)).filter(v=>v!==null&&v>0);
   const lolImp=lol.map(d=>safeNum(d.importance)).filter(v=>v!==null);
   const indImp=ind.map(d=>safeNum(d.importance)).filter(v=>v!==null);
   const lolRec=lol.map(d=>safeNum(d.recognition)).filter(v=>v!==null);
   const indRec=ind.map(d=>safeNum(d.recognition)).filter(v=>v!==null);
-
-  // comparison grid
   const cg=document.createElement('div');cg.className='compare-grid';
-  cg.innerHTML=`
-    <div class="compare-col">
-      <div class="compare-label">LOL / Rope Memory</div>
-      <div class="compare-big lol">$${lolWage.length?avg(lolWage).toFixed(0):'—'}<span style="font-size:14px;color:var(--td)">/hr</span></div>
-      <div class="compare-sub">avg fair wage estimate</div>
-      <div style="margin-top:8px;display:flex;flex-direction:column;gap:4px;">
-        <div class="stat-row"><span class="stat-name">Importance</span><span class="stat-num">${lolImp.length?avg(lolImp).toFixed(1):'—'}/10</span></div>
-        <div class="stat-row"><span class="stat-name">Credit received</span><span class="stat-num">${lolRec.length?avg(lolRec).toFixed(1):'—'}/10</span></div>
-        <div class="stat-row"><span class="stat-name">Annotations</span><span class="stat-num">${lol.length}</span></div>
-      </div>
-    </div>
-    <div class="compare-col">
-      <div class="compare-label">Industrial Hardware</div>
-      <div class="compare-big ind">$${indWage.length?avg(indWage).toFixed(0):'—'}<span style="font-size:14px;color:var(--td)">/hr</span></div>
-      <div class="compare-sub">avg fair wage estimate</div>
-      <div style="margin-top:8px;display:flex;flex-direction:column;gap:4px;">
-        <div class="stat-row"><span class="stat-name">Importance</span><span class="stat-num">${indImp.length?avg(indImp).toFixed(1):'—'}/10</span></div>
-        <div class="stat-row"><span class="stat-name">Credit received</span><span class="stat-num">${indRec.length?avg(indRec).toFixed(1):'—'}/10</span></div>
-        <div class="stat-row"><span class="stat-name">Annotations</span><span class="stat-num">${ind.length}</span></div>
-      </div>
-    </div>`;
+  cg.innerHTML=`<div class="compare-col"><div class="compare-label">LOL / Rope Memory</div><div class="compare-big lol">$${lolWage.length?avg(lolWage).toFixed(0):'—'}<span style="font-size:14px;color:var(--td)">/hr</span></div><div class="compare-sub">avg fair wage estimate</div><div style="margin-top:8px;display:flex;flex-direction:column;gap:4px;"><div class="stat-row"><span class="stat-name">Importance</span><span class="stat-num">${lolImp.length?avg(lolImp).toFixed(1):'—'}/10</span></div><div class="stat-row"><span class="stat-name">Credit received</span><span class="stat-num">${lolRec.length?avg(lolRec).toFixed(1):'—'}/10</span></div><div class="stat-row"><span class="stat-name">Annotations</span><span class="stat-num">${lol.length}</span></div></div></div><div class="compare-col"><div class="compare-label">Industrial Hardware</div><div class="compare-big ind">$${indWage.length?avg(indWage).toFixed(0):'—'}<span style="font-size:14px;color:var(--td)">/hr</span></div><div class="compare-sub">avg fair wage estimate</div><div style="margin-top:8px;display:flex;flex-direction:column;gap:4px;"><div class="stat-row"><span class="stat-name">Importance</span><span class="stat-num">${indImp.length?avg(indImp).toFixed(1):'—'}/10</span></div><div class="stat-row"><span class="stat-name">Credit received</span><span class="stat-num">${indRec.length?avg(indRec).toFixed(1):'—'}/10</span></div><div class="stat-row"><span class="stat-name">Annotations</span><span class="stat-num">${ind.length}</span></div></div></div>`;
   body.appendChild(cg);
-
-  // skill tags
   const skillMap={'unskilled':1,'semi-skilled':2,'highly skilled':3,'expert / specialized':4};
   const lolSkill=lol.flatMap(d=>(d.tags||[]).filter(t=>skillMap[t])).map(t=>skillMap[t]);
   const indSkill=ind.flatMap(d=>(d.tags||[]).filter(t=>skillMap[t])).map(t=>skillMap[t]);
   const skillLabels=['','unskilled','semi-skilled','highly skilled','expert / specialized'];
-  if(lolSkill.length&&indSkill.length){
-    const la=avg(lolSkill),ia=avg(indSkill);
-    const ll=skillLabels[Math.round(la)]||'',il=skillLabels[Math.round(ia)]||'';
-    if(la<ia){
-      insight(body,`Participants rated the LOL/rope memory images as <strong>"${ll}"</strong> and the hardware as <strong>"${il}"</strong> on average — replicating the 1965 classification exactly. The historical bias persists in fresh annotation.`);
-    } else if(la>ia){
-      insight(body,`Participants rated the LOL work <strong>higher</strong> than the hardware (${la.toFixed(1)} vs ${ia.toFixed(1)}). This pushes back against the historical framing.`);
-    } else {
-      insight(body,`Participants rated both image categories at the same skill level on average (${la.toFixed(1)}). That is more equitable than the historical record.`);
-    }
-  }
-
+  if(lolSkill.length&&indSkill.length){const la=avg(lolSkill),ia=avg(indSkill);const ll=skillLabels[Math.round(la)]||'',il=skillLabels[Math.round(ia)]||'';if(la<ia){insight(body,`Participants rated the LOL/rope memory images as <strong>"${ll}"</strong> and the hardware as <strong>"${il}"</strong> on average — replicating the 1965 classification exactly.`);}else if(la>ia){insight(body,`Participants rated the LOL work <strong>higher</strong> than the hardware (${la.toFixed(1)} vs ${ia.toFixed(1)}).`);}else{insight(body,`Participants rated both image categories at the same skill level on average (${la.toFixed(1)}).`);}}
   const allTags=data.flatMap(d=>d.tags||[]).filter(t=>!skillMap[t]);
-  if(allTags.length){
-    const lbl=document.createElement('div');lbl.style.cssText='font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--td);font-family:var(--fh);font-weight:800;';lbl.textContent='✦ Tag Frequency (all)';body.appendChild(lbl);
-    const tDiv=document.createElement('div');tagCloud(tDiv,sortedFreq(allTags).slice(0,10));body.appendChild(tDiv);
-  }
+  if(allTags.length){const lbl=document.createElement('div');lbl.style.cssText='font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--td);font-family:var(--fh);font-weight:800;';lbl.textContent='✦ Tag Frequency (all)';body.appendChild(lbl);const tDiv=document.createElement('div');tagCloud(tDiv,sortedFreq(allTags).slice(0,10));body.appendChild(tDiv);}
   return data.length;
 }
 
-// ── CB04 Career Coach emotions + outcome ──
 async function buildCB04(wrap){
   const data=await rtdbAll('collab','carecoachReactions');
   const p=panel('CAREBOT-04 · AI Career Coach','RPS Outcome Distribution + Emotional Response',el=>{loading(el);});
@@ -374,50 +394,21 @@ async function buildCB04(wrap){
   const body=p.querySelector('.panel-body');
   if(!data){errMsg(body,'Could not load carecoachReactions');return 0;}
   if(!data.length){emptyMsg(body,'No reactions yet.');return 0;}
-
   const outcomes=data.map(d=>d.outcome).filter(Boolean);
   const freq=freqMap(outcomes);
   const total=outcomes.length;
-
   const outcomeDiv=document.createElement('div');
-  barChart(outcomeDiv,[
-    {label:'Win',val:freq.Win||0,count:`${freq.Win||0} (${pct(freq.Win||0,total)}%)`},
-    {label:'Lose',val:freq.Lose||0,count:`${freq.Lose||0} (${pct(freq.Lose||0,total)}%)`},
-    {label:'Tie',val:freq.Tie||0,count:`${freq.Tie||0} (${pct(freq.Tie||0,total)}%)`}
-  ],total,'purple');
+  barChart(outcomeDiv,[{label:'Win',val:freq.Win||0,count:`${freq.Win||0} (${pct(freq.Win||0,total)}%)`},{label:'Lose',val:freq.Lose||0,count:`${freq.Lose||0} (${pct(freq.Lose||0,total)}%)`},{label:'Tie',val:freq.Tie||0,count:`${freq.Tie||0} (${pct(freq.Tie||0,total)}%)`}],total,'purple');
   body.appendChild(outcomeDiv);
-
-  // emotion frequency
   const allEmotions=data.flatMap(d=>Array.isArray(d.emotions)?d.emotions:[]);
-  if(allEmotions.length){
-    const lbl=document.createElement('div');lbl.style.cssText='font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--td);font-family:var(--fh);font-weight:800;';lbl.textContent='✦ Emotion Frequency';body.appendChild(lbl);
-    const eDiv=document.createElement('div');
-    const sf=sortedFreq(allEmotions);
-    barChart(eDiv,sf.map(([e,c])=>({label:e,val:c,count:c})),sf[0]?.[1]);
-    body.appendChild(eDiv);
-  }
-
-  // relevance
+  if(allEmotions.length){const lbl=document.createElement('div');lbl.style.cssText='font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--td);font-family:var(--fh);font-weight:800;';lbl.textContent='✦ Emotion Frequency';body.appendChild(lbl);const eDiv=document.createElement('div');const sf=sortedFreq(allEmotions);barChart(eDiv,sf.map(([e,c])=>({label:e,val:c,count:c})),sf[0]?.[1]);body.appendChild(eDiv);}
   const relevance=data.map(d=>safeNum(d.relevance)).filter(v=>v!==null);
-  if(relevance.length){
-    const rDiv=document.createElement('div');
-    sliderAvg(rDiv,[{label:'Reminds me of real hiring processes',avg:avg(relevance)}]);
-    body.appendChild(rDiv);
-  }
-
-  statRows(body,[
-    {label:'Total reactions',val:data.length},
-    {label:'Win rate',val:pct(freq.Win||0,total)+'%'},
-    {label:'Avg relevance to real hiring',val:relevance.length?avg(relevance).toFixed(2)+'/10':'—'},
-  ]);
-
-  if(relevance.length&&avg(relevance)>6){
-    insight(body,`Avg relevance score of <strong>${avg(relevance).toFixed(1)}/10</strong> — participants are drawing explicit parallels to real hiring processes they've experienced.`);
-  }
+  if(relevance.length){const rDiv=document.createElement('div');sliderAvg(rDiv,[{label:'Reminds me of real hiring processes',avg:avg(relevance)}]);body.appendChild(rDiv);}
+  statRows(body,[{label:'Total reactions',val:data.length},{label:'Win rate',val:pct(freq.Win||0,total)+'%'},{label:'Avg relevance to real hiring',val:relevance.length?avg(relevance).toFixed(2)+'/10':'—'}]);
+  if(relevance.length&&avg(relevance)>6){insight(body,`Avg relevance score of <strong>${avg(relevance).toFixed(1)}/10</strong> — participants are drawing explicit parallels to real hiring processes.`);}
   return data.length;
 }
 
-// ── CB05 Weaving reactions ──
 async function buildCB05(wrap){
   const data=await fsAll('weave','weavingReactions');
   const p=panel('CAREBOT-05 · Weaving Diverse Data','Emotion Tags + Relevance by Question',el=>{loading(el);});
@@ -425,40 +416,14 @@ async function buildCB05(wrap){
   const body=p.querySelector('.panel-body');
   if(!data){errMsg(body,'Could not load weavingReactions');return 0;}
   if(!data.length){emptyMsg(body,'No reactions yet.');return 0;}
-
   const allEmotions=data.flatMap(d=>Array.isArray(d.emotions)?d.emotions:[]);
-  if(allEmotions.length){
-    const lbl=document.createElement('div');lbl.style.cssText='font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--td);font-family:var(--fh);font-weight:800;';lbl.textContent='✦ Emotion Frequency (all questions)';body.appendChild(lbl);
-    const eDiv=document.createElement('div');
-    const sf=sortedFreq(allEmotions);
-    barChart(eDiv,sf.map(([e,c])=>({label:e,val:c,count:c})),sf[0]?.[1],'purple');
-    body.appendChild(eDiv);
-  }
-
-  // relevance by question
-  const questions=[
-    "Does AI make you more efficient?","Can AI perform your tasks?","Would a self-driving car help?",
-    "Does tech improve learning?","Do you feel in control?","Does social media give you power?",
-    "Can you customize your tools?","Do algorithms serve you?","Does automation free you?","Do you trust AI?"
-  ];
-  const byQ=Array.from({length:10},(_,i)=>{
-    const qData=data.filter(d=>d.questionIndex===i);
-    const rel=qData.map(d=>safeNum(d.relevance)).filter(v=>v!==null);
-    return {label:`Q${i+1}`,avg:rel.length?avg(rel):null,n:qData.length};
-  }).filter(q=>q.avg!==null);
-
-  if(byQ.length){
-    const lbl2=document.createElement('div');lbl2.style.cssText='font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--td);font-family:var(--fh);font-weight:800;';lbl2.textContent='✦ Avg Relevance by Question';body.appendChild(lbl2);
-    const qDiv=document.createElement('div');
-    barChart(qDiv,byQ.map(q=>({label:q.label,val:q.avg,count:q.avg.toFixed(1)})),10,'blue');
-    body.appendChild(qDiv);
-  }
-
+  if(allEmotions.length){const lbl=document.createElement('div');lbl.style.cssText='font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--td);font-family:var(--fh);font-weight:800;';lbl.textContent='✦ Emotion Frequency (all questions)';body.appendChild(lbl);const eDiv=document.createElement('div');const sf=sortedFreq(allEmotions);barChart(eDiv,sf.map(([e,c])=>({label:e,val:c,count:c})),sf[0]?.[1],'purple');body.appendChild(eDiv);}
+  const byQ=Array.from({length:10},(_,i)=>{const qData=data.filter(d=>d.questionIndex===i);const rel=qData.map(d=>safeNum(d.relevance)).filter(v=>v!==null);return{label:`Q${i+1}`,avg:rel.length?avg(rel):null,n:qData.length};}).filter(q=>q.avg!==null);
+  if(byQ.length){const lbl2=document.createElement('div');lbl2.style.cssText='font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--td);font-family:var(--fh);font-weight:800;';lbl2.textContent='✦ Avg Relevance by Question';body.appendChild(lbl2);const qDiv=document.createElement('div');barChart(qDiv,byQ.map(q=>({label:q.label,val:q.avg,count:q.avg.toFixed(1)})),10,'blue');body.appendChild(qDiv);}
   statRows(body,[{label:'Total reactions',val:data.length},{label:'Avg relevance',val:data.length?avg(data.map(d=>safeNum(d.relevance)).filter(v=>v!==null)).toFixed(2)+'/10':'—'}]);
   return data.length;
 }
 
-// ── CB06 Inventor reactions ──
 async function buildCB06(wrap){
   const data=await rtdbAll('whoimp','inventorReactions');
   const p=panel('CAREBOT-06 · Women Inventors','Surprise + Familiarity by Inventor',el=>{loading(el);});
@@ -466,42 +431,16 @@ async function buildCB06(wrap){
   const body=p.querySelector('.panel-body');
   if(!data){errMsg(body,'Could not load inventorReactions');return 0;}
   if(!data.length){emptyMsg(body,'No reactions yet.');return 0;}
-
-  // by inventor
   const byInv={};
-  data.forEach(d=>{
-    const inv=d.inventor||'Unknown';
-    if(!byInv[inv])byInv[inv]={surprise:[],familiarity:[],known:[]};
-    if(safeNum(d.surprise)!==null)byInv[inv].surprise.push(safeNum(d.surprise));
-    if(safeNum(d.familiarity)!==null)byInv[inv].familiarity.push(safeNum(d.familiarity));
-    if(Array.isArray(d.knownTags))byInv[inv].known.push(...d.knownTags);
-  });
-
-  const invRows=Object.entries(byInv).map(([inv,v])=>({
-    name:inv,surprise:v.surprise.length?avg(v.surprise):null,familiarity:v.familiarity.length?avg(v.familiarity):null,n:v.surprise.length
-  })).filter(r=>r.surprise!==null).sort((a,b)=>b.surprise-a.surprise);
-
-  if(invRows.length){
-    const lbl=document.createElement('div');lbl.style.cssText='font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--td);font-family:var(--fh);font-weight:800;';lbl.textContent='✦ Avg Surprise by Inventor (ranked)';body.appendChild(lbl);
-    const sDiv=document.createElement('div');
-    barChart(sDiv,invRows.map(r=>({label:r.name.split('·')[0].split('/')[0].trim(),val:r.surprise,count:r.surprise.toFixed(1)})),10);
-    body.appendChild(sDiv);
-    const lbl2=document.createElement('div');lbl2.style.cssText='font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--td);font-family:var(--fh);font-weight:800;';lbl2.textContent='✦ Avg Familiarity by Inventor';body.appendChild(lbl2);
-    const fDiv=document.createElement('div');
-    barChart(fDiv,invRows.sort((a,b)=>a.familiarity-b.familiarity).map(r=>({label:r.name.split('·')[0].split('/')[0].trim(),val:r.familiarity,count:r.familiarity.toFixed(1)})),10,'blue');
-    body.appendChild(fDiv);
-  }
-
+  data.forEach(d=>{const inv=d.inventor||'Unknown';if(!byInv[inv])byInv[inv]={surprise:[],familiarity:[],known:[]};if(safeNum(d.surprise)!==null)byInv[inv].surprise.push(safeNum(d.surprise));if(safeNum(d.familiarity)!==null)byInv[inv].familiarity.push(safeNum(d.familiarity));if(Array.isArray(d.knownTags))byInv[inv].known.push(...d.knownTags);});
+  const invRows=Object.entries(byInv).map(([inv,v])=>({name:inv,surprise:v.surprise.length?avg(v.surprise):null,familiarity:v.familiarity.length?avg(v.familiarity):null,n:v.surprise.length})).filter(r=>r.surprise!==null).sort((a,b)=>b.surprise-a.surprise);
+  if(invRows.length){const lbl=document.createElement('div');lbl.style.cssText='font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--td);font-family:var(--fh);font-weight:800;';lbl.textContent='✦ Avg Surprise by Inventor (ranked)';body.appendChild(lbl);const sDiv=document.createElement('div');barChart(sDiv,invRows.map(r=>({label:r.name.split('·')[0].split('/')[0].trim(),val:r.surprise,count:r.surprise.toFixed(1)})),10);body.appendChild(sDiv);const lbl2=document.createElement('div');lbl2.style.cssText='font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--td);font-family:var(--fh);font-weight:800;';lbl2.textContent='✦ Avg Familiarity by Inventor';body.appendChild(lbl2);const fDiv=document.createElement('div');barChart(fDiv,invRows.sort((a,b)=>a.familiarity-b.familiarity).map(r=>({label:r.name.split('·')[0].split('/')[0].trim(),val:r.familiarity,count:r.familiarity.toFixed(1)})),10,'blue');body.appendChild(fDiv);}
   const allKnown=data.flatMap(d=>Array.isArray(d.knownTags)?d.knownTags:[]);
-  if(allKnown.length){
-    const lbl3=document.createElement('div');lbl3.style.cssText='font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--td);font-family:var(--fh);font-weight:800;';lbl3.textContent='✦ Should she be more widely known?';body.appendChild(lbl3);
-    const kDiv=document.createElement('div');tagCloud(kDiv,sortedFreq(allKnown));body.appendChild(kDiv);
-  }
+  if(allKnown.length){const lbl3=document.createElement('div');lbl3.style.cssText='font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--td);font-family:var(--fh);font-weight:800;';lbl3.textContent='✦ Should she be more widely known?';body.appendChild(lbl3);const kDiv=document.createElement('div');tagCloud(kDiv,sortedFreq(allKnown));body.appendChild(kDiv);}
   statRows(body,[{label:'Total reactions',val:data.length}]);
   return data.length;
 }
 
-// ── CB07 $0.01 emotions ──
 async function buildCB07(wrap){
   const data=await rtdbAll('collab','microtaskReactions');
   const p=panel('CAREBOT-07 · Microtask Reward $0.01','Emotional Response to $0.01 Reward',el=>{loading(el);});
@@ -509,7 +448,6 @@ async function buildCB07(wrap){
   const body=p.querySelector('.panel-body');
   if(!data){errMsg(body,'Could not load microtaskReactions');return 0;}
   if(!data.length){emptyMsg(body,'No reactions yet.');return 0;}
-
   const allEmotions=data.flatMap(d=>Array.isArray(d.emotions)?d.emotions:[]);
   const sf=sortedFreq(allEmotions);
   const total=allEmotions.length;
@@ -517,13 +455,10 @@ async function buildCB07(wrap){
   barChart(bDiv,sf.map(([e,c])=>({label:e,val:c,count:`${c} (${pct(c,total)}%)`})),sf[0]?.[1]);
   body.appendChild(bDiv);
   statRows(body,[{label:'Total responses',val:data.length},{label:'Most common reaction',val:sf[0]?sf[0][0]:'—'}]);
-  if(sf.length&&['resigned','angry','frustrated','insulted'].includes(sf[0][0])){
-    insight(body,`<strong>"${sf[0][0]}"</strong> is the dominant reaction to a $0.01 microtask reward — a direct measure of labor affect in automated work systems.`);
-  }
+  if(sf.length&&['resigned','angry','frustrated','insulted'].includes(sf[0][0])){insight(body,`<strong>"${sf[0][0]}"</strong> is the dominant reaction to a $0.01 microtask reward — a direct measure of labor affect in automated work systems.`);}
   return data.length;
 }
 
-// ── CB09 Bias Index ──
 async function buildCB09(wrap){
   const data=await fsAll('bias','bias_responses');
   const p=panel('CAREBOT-09 · Visual Gender Bias','Bias Index Distribution by Image Type',el=>{loading(el);});
@@ -531,50 +466,16 @@ async function buildCB09(wrap){
   const body=p.querySelector('.panel-body');
   if(!data){errMsg(body,'Could not load bias_responses');return 0;}
   if(!data.length){emptyMsg(body,'No responses yet.');return 0;}
-
   const byType={patent:[],photo:[],ad:[]};
-  data.forEach(d=>{
-    const t=d.imageType;const bi=safeNum(d.biasIndex);
-    if(byType[t]!==undefined&&bi!==null)byType[t].push(bi);
-  });
-
-  const types=[
-    {key:'patent',label:'Patent drawing',color:''},
-    {key:'photo',label:'Photograph',color:'blue'},
-    {key:'ad',label:'Advertisement',color:'amber'}
-  ];
-
-  types.forEach(({key,label,color})=>{
-    const arr=byType[key];if(!arr.length)return;
-    const a=avg(arr);
-    const lbl=document.createElement('div');lbl.style.cssText='font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:var(--td);font-family:var(--fh);font-weight:800;';lbl.textContent=`✦ ${label}`;body.appendChild(lbl);
-    const sDiv=document.createElement('div');
-    sliderAvg(sDiv,[{label:`Bias index avg (n=${arr.length})`,avg:(a+1)/2*10}]);
-    body.appendChild(sDiv);
-    // distribution buckets
-    const buckets={'Strongly masc (< -0.5)':0,'Moderately masc':0,'Neutral':0,'Moderately fem':0,'Strongly fem (> 0.5)':0};
-    arr.forEach(v=>{if(v<-0.5)buckets['Strongly masc (< -0.5)']++;else if(v<-0.15)buckets['Moderately masc']++;else if(v<=0.15)buckets['Neutral']++;else if(v<=0.5)buckets['Moderately fem']++;else buckets['Strongly fem (> 0.5)']++;});
-    const bDiv=document.createElement('div');
-    barChart(bDiv,Object.entries(buckets).map(([l,c])=>({label:l,val:c,count:c})),arr.length,color);
-    body.appendChild(bDiv);
-  });
-
-  statRows(body,[
-    {label:'Total coded images',val:data.length},
-    {label:'Patent avg bias',val:byType.patent.length?avg(byType.patent).toFixed(3):'—'},
-    {label:'Photo avg bias',val:byType.photo.length?avg(byType.photo).toFixed(3):'—'},
-    {label:'Ad avg bias',val:byType.ad.length?avg(byType.ad).toFixed(3):'—'},
-  ]);
-
+  data.forEach(d=>{const t=d.imageType;const bi=safeNum(d.biasIndex);if(byType[t]!==undefined&&bi!==null)byType[t].push(bi);});
+  const types=[{key:'patent',label:'Patent drawing',color:''},{key:'photo',label:'Photograph',color:'blue'},{key:'ad',label:'Advertisement',color:'amber'}];
+  types.forEach(({key,label,color})=>{const arr=byType[key];if(!arr.length)return;const a=avg(arr);const lbl=document.createElement('div');lbl.style.cssText='font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:var(--td);font-family:var(--fh);font-weight:800;';lbl.textContent=`✦ ${label}`;body.appendChild(lbl);const sDiv=document.createElement('div');sliderAvg(sDiv,[{label:`Bias index avg (n=${arr.length})`,avg:(a+1)/2*10}]);body.appendChild(sDiv);const buckets={'Strongly masc (< -0.5)':0,'Moderately masc':0,'Neutral':0,'Moderately fem':0,'Strongly fem (> 0.5)':0};arr.forEach(v=>{if(v<-0.5)buckets['Strongly masc (< -0.5)']++;else if(v<-0.15)buckets['Moderately masc']++;else if(v<=0.15)buckets['Neutral']++;else if(v<=0.5)buckets['Moderately fem']++;else buckets['Strongly fem (> 0.5)']++;});const bDiv=document.createElement('div');barChart(bDiv,Object.entries(buckets).map(([l,c])=>({label:l,val:c,count:c})),arr.length,color);body.appendChild(bDiv);});
+  statRows(body,[{label:'Total coded images',val:data.length},{label:'Patent avg bias',val:byType.patent.length?avg(byType.patent).toFixed(3):'—'},{label:'Photo avg bias',val:byType.photo.length?avg(byType.photo).toFixed(3):'—'},{label:'Ad avg bias',val:byType.ad.length?avg(byType.ad).toFixed(3):'—'}]);
   const allBias=data.map(d=>safeNum(d.biasIndex)).filter(v=>v!==null);
-  if(allBias.length){
-    const overall=avg(allBias);
-    insight(body,`Overall mean bias index: <strong>${overall.toFixed(3)}</strong> across ${data.length} coded images. ${overall<0?'Images skew masculine-coded on average.':overall>0?'Images skew feminine-coded on average.':'Images are roughly neutral on average.'}`);
-  }
+  if(allBias.length){const overall=avg(allBias);insight(body,`Overall mean bias index: <strong>${overall.toFixed(3)}</strong> across ${data.length} coded images. ${overall<0?'Images skew masculine-coded on average.':overall>0?'Images skew feminine-coded on average.':'Images are roughly neutral on average.'}`);}
   return data.length;
 }
 
-// ── CB10 CEO identification ──
 async function buildCB10(wrap){
   const ann=await rtdbAll('collab','ceoAnnotations');
   const sess=await rtdbAll('collab','ceoSessions');
@@ -583,36 +484,18 @@ async function buildCB10(wrap){
   const body=p.querySelector('.panel-body');
   const data=ann||[];const sdata=sess||[];
   if(!data.length&&!sdata.length){emptyMsg(body,'No data yet.');return 0;}
-
   const pcts=sdata.map(d=>safeNum(d.pctBoxed)).filter(v=>v!==null);
   const diffCounts=sdata.map(d=>safeNum(d.diffImages)).filter(v=>v!==null);
   const totalImgs=sdata.map(d=>safeNum(d.totalImages)).filter(v=>v!==null);
-
-  if(pcts.length){
-    const pDiv=document.createElement('div');
-    sliderAvg(pDiv,[{label:'Avg % image area boxed as CEO',avg:avg(pcts)}]);
-    body.appendChild(pDiv);
-  }
-  statRows(body,[
-    {label:'Annotation records',val:data.length},
-    {label:'Session records',val:sdata.length},
-    {label:'Avg % area boxed',val:pcts.length?avg(pcts).toFixed(2)+'%':'—'},
-    {label:'Avg images where CEO looked different',val:diffCounts.length?avg(diffCounts).toFixed(1):'—'},
-    {label:'Avg images per session',val:totalImgs.length?avg(totalImgs).toFixed(1):'—'},
-  ]);
-
-  // per-image breakdown
+  if(pcts.length){const pDiv=document.createElement('div');sliderAvg(pDiv,[{label:'Avg % image area boxed as CEO',avg:avg(pcts)}]);body.appendChild(pDiv);}
+  statRows(body,[{label:'Annotation records',val:data.length},{label:'Session records',val:sdata.length},{label:'Avg % area boxed',val:pcts.length?avg(pcts).toFixed(2)+'%':'—'},{label:'Avg images where CEO looked different',val:diffCounts.length?avg(diffCounts).toFixed(1):'—'},{label:'Avg images per session',val:totalImgs.length?avg(totalImgs).toFixed(1):'—'}]);
   const byImg={};
-  data.forEach(d=>{const i=d.imageFilename||d.imageIndex;if(i===undefined)return;if(!byImg[i])byImg[i]=[];const pct=safeNum(d.pctBoxed);if(pct!==null)byImg[i].push(pct);});
+  data.forEach(d=>{const i=d.imageFilename||d.imageIndex;if(i===undefined)return;if(!byImg[i])byImg[i]=[];const p=safeNum(d.pctBoxed);if(p!==null)byImg[i].push(p);});
   const imgRows=Object.entries(byImg).map(([img,pcts])=>({label:String(img).replace('ceo','img ').replace('.png',''),val:avg(pcts),count:avg(pcts).toFixed(1)+'%'})).sort((a,b)=>b.val-a.val).slice(0,8);
-  if(imgRows.length){
-    const lbl=document.createElement('div');lbl.style.cssText='font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--td);font-family:var(--fh);font-weight:800;';lbl.textContent='✦ Avg % Boxed by Image (top 8)';body.appendChild(lbl);
-    const iDiv=document.createElement('div');barChart(iDiv,imgRows,Math.max(...imgRows.map(r=>r.val)),'amber');body.appendChild(iDiv);
-  }
+  if(imgRows.length){const lbl=document.createElement('div');lbl.style.cssText='font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--td);font-family:var(--fh);font-weight:800;';lbl.textContent='✦ Avg % Boxed by Image (top 8)';body.appendChild(lbl);const iDiv=document.createElement('div');barChart(iDiv,imgRows,Math.max(...imgRows.map(r=>r.val)),'amber');body.appendChild(iDiv);}
   return data.length+(sdata.length);
 }
 
-// ── CB11 Replacement cost ──
 async function buildCB11(wrap){
   const data=await rtdbAll('collab','replacementCostSessions');
   const p=panel('CAREBOT-11 · Replacement Cost Analysis','How Much Would It Cost to Replace This?',el=>{loading(el);});
@@ -620,70 +503,32 @@ async function buildCB11(wrap){
   const body=p.querySelector('.panel-body');
   if(!data){errMsg(body,'Could not load replacementCostSessions');return 0;}
   if(!data.length){emptyMsg(body,'No data yet.');return 0;}
-
   const dollars=data.map(d=>safeNum(d.totalDollars)).filter(v=>v!==null&&v>0);
   const allItems=data.flatMap(d=>Array.isArray(d.items)?d.items:[]);
-
-  // per-image avg
   const byImg={};
-  allItems.forEach(item=>{
-    const i=item.imageIndex;
-    if(!byImg[i])byImg[i]=[];
-    const v=safeNum(item.cents||item.dollars*100);
-    if(v!==null&&v>0)byImg[i].push(v);
-  });
-  const imgRows=Object.entries(byImg).map(([i,vals])=>({label:`Image ${i}`,val:avg(vals)/100,count:'$'+( avg(vals)/100).toFixed(2)})).sort((a,b)=>b.val-a.val);
-
-  statRows(body,[
-    {label:'Total sessions',val:data.length},
-    {label:'Avg total per session',val:dollars.length?'$'+avg(dollars).toFixed(2):'—'},
-    {label:'Max total',val:dollars.length?'$'+Math.max(...dollars).toFixed(2):'—'},
-  ]);
-
-  if(imgRows.length){
-    const lbl=document.createElement('div');lbl.style.cssText='font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--td);font-family:var(--fh);font-weight:800;';lbl.textContent='✦ Avg Replacement Cost by Image';body.appendChild(lbl);
-    const iDiv=document.createElement('div');barChart(iDiv,imgRows,Math.max(...imgRows.map(r=>r.val)),'green');body.appendChild(iDiv);
-  }
+  allItems.forEach(item=>{const i=item.imageIndex;if(!byImg[i])byImg[i]=[];const v=safeNum(item.cents||item.dollars*100);if(v!==null&&v>0)byImg[i].push(v);});
+  const imgRows=Object.entries(byImg).map(([i,vals])=>({label:`Image ${i}`,val:avg(vals)/100,count:'$'+(avg(vals)/100).toFixed(2)})).sort((a,b)=>b.val-a.val);
+  statRows(body,[{label:'Total sessions',val:data.length},{label:'Avg total per session',val:dollars.length?'$'+avg(dollars).toFixed(2):'—'},{label:'Max total',val:dollars.length?'$'+Math.max(...dollars).toFixed(2):'—'}]);
+  if(imgRows.length){const lbl=document.createElement('div');lbl.style.cssText='font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--td);font-family:var(--fh);font-weight:800;';lbl.textContent='✦ Avg Replacement Cost by Image';body.appendChild(lbl);const iDiv=document.createElement('div');barChart(iDiv,imgRows,Math.max(...imgRows.map(r=>r.val)),'green');body.appendChild(iDiv);}
   return data.length;
 }
 
-// ── CB14 vs CB24 pctBoxed comparison ──
 async function buildCB14_24(wrap){
-  const [cb14ann, cb24sess] = await Promise.all([
-    rtdbAll('collab','humanComputerAnnotations'),
-    rtdbAll('collab','annotationSessions')
-  ]);
+  const [cb14ann,cb24sess]=await Promise.all([rtdbAll('collab','humanComputerAnnotations'),rtdbAll('collab','annotationSessions')]);
   const p=panel('CAREBOT-14 vs CB24 · Human Computers','pctBoxed Comparison: Same Images, Different Framing',el=>{loading(el);});
   wrap.appendChild(p);
   const body=p.querySelector('.panel-body');
-  const d14=cb14ann||[], d24=cb24sess||[];
+  const d14=cb14ann||[],d24=cb24sess||[];
   if(!d14.length&&!d24.length){emptyMsg(body,'No data yet.');return 0;}
-
   const p14=d14.map(d=>safeNum(d.pctBoxed)).filter(v=>v!==null);
   const p24=d24.map(d=>safeNum(d.coveragePct||d.pctBoxed)).filter(v=>v!==null);
-
   const cg=document.createElement('div');cg.className='compare-grid';
-  cg.innerHTML=`
-    <div class="compare-col">
-      <div class="compare-label">CB14 — "Performing computations"</div>
-      <div class="compare-big lol">${p14.length?avg(p14).toFixed(1):'—'}<span style="font-size:14px;color:var(--td)">%</span></div>
-      <div class="compare-sub">avg % image area boxed (n=${p14.length})</div>
-    </div>
-    <div class="compare-col">
-      <div class="compare-label">CB24 — "Technology work"</div>
-      <div class="compare-big ind">${p24.length?avg(p24).toFixed(1):'—'}<span style="font-size:14px;color:var(--td)">%</span></div>
-      <div class="compare-sub">avg % image area boxed (n=${p24.length})</div>
-    </div>`;
+  cg.innerHTML=`<div class="compare-col"><div class="compare-label">CB14 — "Performing computations"</div><div class="compare-big lol">${p14.length?avg(p14).toFixed(1):'—'}<span style="font-size:14px;color:var(--td)">%</span></div><div class="compare-sub">avg % image area boxed (n=${p14.length})</div></div><div class="compare-col"><div class="compare-label">CB24 — "Technology work"</div><div class="compare-big ind">${p24.length?avg(p24).toFixed(1):'—'}<span style="font-size:14px;color:var(--td)">%</span></div><div class="compare-sub">avg % image area boxed (n=${p24.length})</div></div>`;
   body.appendChild(cg);
-
-  if(p14.length&&p24.length){
-    const diff=avg(p14)-avg(p24);
-    insight(body,`Same images, different task framing. CB14 ("performing computations") boxes <strong>${Math.abs(diff).toFixed(1)}% ${diff>0?'more':'less'}</strong> of the image than CB24 ("technology work"). The label changes what participants see as worth annotating.`);
-  }
+  if(p14.length&&p24.length){const diff=avg(p14)-avg(p24);insight(body,`Same images, different task framing. CB14 ("performing computations") boxes <strong>${Math.abs(diff).toFixed(1)}% ${diff>0?'more':'less'}</strong> of the image than CB24 ("technology work"). The label changes what participants see as worth annotating.`);}
   return d14.length+d24.length;
 }
 
-// ── CB31 Domestic labor annotations ──
 async function buildCB31(wrap){
   const data=await rtdbAll('collab','domesticAnnotations');
   const p=panel('CAREBOT-31 · Training AI With Domestic Labor','Paid · Unpaid · Both — Per Task',el=>{loading(el);});
@@ -691,45 +536,20 @@ async function buildCB31(wrap){
   const body=p.querySelector('.panel-body');
   if(!data){errMsg(body,'Could not load domesticAnnotations');return 0;}
   if(!data.length){emptyMsg(body,'No annotations yet.');return 0;}
-
   const TASKS=['washing-dishes','cooking-meals','vacuuming','mopping','laundry-washing','laundry-folding','grocery-shopping','childcare-feeding','childcare-bathing','eldercare-bathing','eldercare-medication','surface-wiping','toilet-cleaning','trash-taking-out','making-beds','pet-care','home-organizing','school-transport'];
-  const taskTotals={};
-  TASKS.forEach(t=>taskTotals[t]={paid:0,unpaid:0,both:0,total:0});
-  data.forEach(d=>{
-    if(!d.labels)return;
-    Object.entries(d.labels).forEach(([task,label])=>{
-      if(taskTotals[task]&&taskTotals[task][label]!==undefined){taskTotals[task][label]++;taskTotals[task].total++;}
-    });
-  });
-
-  // show % unpaid per task
-  const rows=TASKS.map(t=>({
-    label:t.replace(/-/g,' '),
-    val:taskTotals[t].total?pct(taskTotals[t].unpaid,taskTotals[t].total):0,
-    count:taskTotals[t].total?`${pct(taskTotals[t].unpaid,taskTotals[t].total)}%`:'-'
-  })).filter(r=>r.val>0).sort((a,b)=>b.val-a.val);
-
-  if(rows.length){
-    const lbl=document.createElement('div');lbl.style.cssText='font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--td);font-family:var(--fh);font-weight:800;';lbl.textContent='✦ % Labeled "Unpaid" per Task';body.appendChild(lbl);
-    const bDiv=document.createElement('div');barChart(bDiv,rows,100,'amber');body.appendChild(bDiv);
-  }
-
+  const taskTotals={};TASKS.forEach(t=>taskTotals[t]={paid:0,unpaid:0,both:0,total:0});
+  data.forEach(d=>{if(!d.labels)return;Object.entries(d.labels).forEach(([task,label])=>{if(taskTotals[task]&&taskTotals[task][label]!==undefined){taskTotals[task][label]++;taskTotals[task].total++;}});});
+  const rows=TASKS.map(t=>({label:t.replace(/-/g,' '),val:taskTotals[t].total?pct(taskTotals[t].unpaid,taskTotals[t].total):0,count:taskTotals[t].total?`${pct(taskTotals[t].unpaid,taskTotals[t].total)}%`:'-'})).filter(r=>r.val>0).sort((a,b)=>b.val-a.val);
+  if(rows.length){const lbl=document.createElement('div');lbl.style.cssText='font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--td);font-family:var(--fh);font-weight:800;';lbl.textContent='✦ % Labeled "Unpaid" per Task';body.appendChild(lbl);const bDiv=document.createElement('div');barChart(bDiv,rows,100,'amber');body.appendChild(bDiv);}
   const totalAnnotations=data.length;
   const allLabels=data.flatMap(d=>Object.values(d.labels||{}));
   const lf=freqMap(allLabels);
-  statRows(body,[
-    {label:'Total annotations',val:totalAnnotations},
-    {label:'Labeled paid',val:lf.paid||0},
-    {label:'Labeled unpaid',val:lf.unpaid||0},
-    {label:'Labeled both',val:lf.both||0},
-  ]);
-
+  statRows(body,[{label:'Total annotations',val:totalAnnotations},{label:'Labeled paid',val:lf.paid||0},{label:'Labeled unpaid',val:lf.unpaid||0},{label:'Labeled both',val:lf.both||0}]);
   const mostUnpaid=rows[0];
-  if(mostUnpaid){insight(body,`<strong>${mostUnpaid.label}</strong> is most consistently labeled "unpaid" (${mostUnpaid.count} of responses). This data trains the AI categories in real time.`);}
+  if(mostUnpaid){insight(body,`<strong>${mostUnpaid.label}</strong> is most consistently labeled "unpaid" (${mostUnpaid.count} of responses).`);}
   return totalAnnotations;
 }
 
-// ── CB33 CEO Robot Human ──
 async function buildCB33(wrap){
   const data=await rtdbAll('collab','cb33Responses');
   const p=panel('CAREBOT-33 · CEO · Robot · Human','Who Owns the Robot? + Task Annotations',el=>{loading(el);});
@@ -737,40 +557,16 @@ async function buildCB33(wrap){
   const body=p.querySelector('.panel-body');
   if(!data){errMsg(body,'Could not load cb33Responses');return 0;}
   if(!data.length){emptyMsg(body,'No responses yet.');return 0;}
-
   const polls=data.filter(d=>d.type==='poll');
   const annotations=data.filter(d=>d.type==='annotation');
   const resolutions=data.filter(d=>d.type==='resolution');
-
-  if(polls.length){
-    const votes=polls.map(d=>d.vote).filter(Boolean);
-    const sf=sortedFreq(votes);
-    const lbl=document.createElement('div');lbl.style.cssText='font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--td);font-family:var(--fh);font-weight:800;';lbl.textContent='✦ Who Owns the Robot?';body.appendChild(lbl);
-    const pDiv=document.createElement('div');barChart(pDiv,sf.map(([v,c])=>({label:v,val:c,count:`${c} (${pct(c,votes.length)}%)`})),votes.length,'purple');body.appendChild(pDiv);
-  }
-
-  if(resolutions.length){
-    const ratings=resolutions.map(d=>safeNum(d.rating)).filter(v=>v!==null);
-    const rDiv=document.createElement('div');sliderAvg(rDiv,[{label:'How resolved does the contradiction feel? (1-5 scaled)',avg:avg(ratings)*2}]);body.appendChild(rDiv);
-  }
-
-  // annotation: % labeled CEO vs robot vs human per task
-  if(annotations.length){
-    const TASKS=['washing-dishes','cooking-meals','vacuuming','mopping','laundry-washing','laundry-folding','grocery-shopping','feeding-children','bathing-children','bathing-elderly','medication','wiping-surfaces','toilet-cleaning','taking-out-trash','making-beds','pet-care','home-organizing','transporting-children'];
-    const taskTotals={};TASKS.forEach(t=>taskTotals[t]={ceo:0,robot:0,human:0,total:0});
-    annotations.forEach(d=>{if(!d.labels)return;Object.entries(d.labels).forEach(([t,l])=>{if(taskTotals[t]&&taskTotals[t][l]!==undefined){taskTotals[t][l]++;taskTotals[t].total++;}});});
-    const ceoRows=TASKS.map(t=>({label:t.replace(/-/g,' '),val:taskTotals[t].total?pct(taskTotals[t].ceo,taskTotals[t].total):0,count:taskTotals[t].total?pct(taskTotals[t].ceo,taskTotals[t].total)+'%':'-'})).filter(r=>r.val>0).sort((a,b)=>b.val-a.val).slice(0,8);
-    if(ceoRows.length){
-      const lbl2=document.createElement('div');lbl2.style.cssText='font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--td);font-family:var(--fh);font-weight:800;';lbl2.textContent='✦ % Tasks Labeled "CEO" (top 8)';body.appendChild(lbl2);
-      const aDiv=document.createElement('div');barChart(aDiv,ceoRows,100);body.appendChild(aDiv);
-    }
-  }
-
+  if(polls.length){const votes=polls.map(d=>d.vote).filter(Boolean);const sf=sortedFreq(votes);const lbl=document.createElement('div');lbl.style.cssText='font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--td);font-family:var(--fh);font-weight:800;';lbl.textContent='✦ Who Owns the Robot?';body.appendChild(lbl);const pDiv=document.createElement('div');barChart(pDiv,sf.map(([v,c])=>({label:v,val:c,count:`${c} (${pct(c,votes.length)}%)`})),votes.length,'purple');body.appendChild(pDiv);}
+  if(resolutions.length){const ratings=resolutions.map(d=>safeNum(d.rating)).filter(v=>v!==null);const rDiv=document.createElement('div');sliderAvg(rDiv,[{label:'How resolved does the contradiction feel? (1-5 scaled)',avg:avg(ratings)*2}]);body.appendChild(rDiv);}
+  if(annotations.length){const TASKS=['washing-dishes','cooking-meals','vacuuming','mopping','laundry-washing','laundry-folding','grocery-shopping','feeding-children','bathing-children','bathing-elderly','medication','wiping-surfaces','toilet-cleaning','taking-out-trash','making-beds','pet-care','home-organizing','transporting-children'];const taskTotals={};TASKS.forEach(t=>taskTotals[t]={ceo:0,robot:0,human:0,total:0});annotations.forEach(d=>{if(!d.labels)return;Object.entries(d.labels).forEach(([t,l])=>{if(taskTotals[t]&&taskTotals[t][l]!==undefined){taskTotals[t][l]++;taskTotals[t].total++;}});});const ceoRows=TASKS.map(t=>({label:t.replace(/-/g,' '),val:taskTotals[t].total?pct(taskTotals[t].ceo,taskTotals[t].total):0,count:taskTotals[t].total?pct(taskTotals[t].ceo,taskTotals[t].total)+'%':'-'})).filter(r=>r.val>0).sort((a,b)=>b.val-a.val).slice(0,8);if(ceoRows.length){const lbl2=document.createElement('div');lbl2.style.cssText='font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--td);font-family:var(--fh);font-weight:800;';lbl2.textContent='✦ % Tasks Labeled "CEO" (top 8)';body.appendChild(lbl2);const aDiv=document.createElement('div');barChart(aDiv,ceoRows,100);body.appendChild(aDiv);}}
   statRows(body,[{label:'Poll votes',val:polls.length},{label:'Annotations',val:annotations.length},{label:'Resolution ratings',val:resolutions.length}]);
   return data.length;
 }
 
-// ── CB35 Skills Are Invaluable ──
 async function buildCB35(wrap){
   const data=await rtdbAll('collab','cb35Responses');
   const p=panel('CAREBOT-35 · Your Skills Are Invaluable. Also Leave.','Surprise + Intent + Frame (Maternal Wall)',el=>{loading(el);});
@@ -778,32 +574,15 @@ async function buildCB35(wrap){
   const body=p.querySelector('.panel-body');
   if(!data){errMsg(body,'Could not load cb35Responses');return 0;}
   if(!data.length){emptyMsg(body,'No responses yet.');return 0;}
-
   const surprise=data.map(d=>safeNum(d.surprise)).filter(v=>v!==null);
   const intent=data.map(d=>safeNum(d.intent)).filter(v=>v!==null);
-  if(surprise.length||intent.length){
-    const sDiv=document.createElement('div');
-    sliderAvg(sDiv,[
-      ...(surprise.length?[{label:'How surprising is the contradiction?',avg:avg(surprise)}]:[]),
-      ...(intent.length?[{label:'How intentional is the contradiction?',avg:avg(intent)}]:[])
-    ]);
-    body.appendChild(sDiv);
-  }
-
+  if(surprise.length||intent.length){const sDiv=document.createElement('div');sliderAvg(sDiv,[...(surprise.length?[{label:'How surprising is the contradiction?',avg:avg(surprise)}]:[]),...(intent.length?[{label:'How intentional is the contradiction?',avg:avg(intent)}]:[])]);body.appendChild(sDiv);}
   const frames=data.map(d=>d.frame).filter(Boolean);
-  if(frames.length){
-    const sf=sortedFreq(frames);
-    const lbl=document.createElement('div');lbl.style.cssText='font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--td);font-family:var(--fh);font-weight:800;';lbl.textContent='✦ How People Frame the Contradiction';body.appendChild(lbl);
-    const fDiv=document.createElement('div');
-    barChart(fDiv,sf.map(([f,c])=>({label:f,val:c,count:`${c} (${pct(c,frames.length)}%)`})),frames.length,'amber');
-    body.appendChild(fDiv);
-  }
-
+  if(frames.length){const sf=sortedFreq(frames);const lbl=document.createElement('div');lbl.style.cssText='font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--td);font-family:var(--fh);font-weight:800;';lbl.textContent='✦ How People Frame the Contradiction';body.appendChild(lbl);const fDiv=document.createElement('div');barChart(fDiv,sf.map(([f,c])=>({label:f,val:c,count:`${c} (${pct(c,frames.length)}%)`})),frames.length,'amber');body.appendChild(fDiv);}
   statRows(body,[{label:'Total responses',val:data.length},{label:'Most common frame',val:sortedFreq(data.map(d=>d.frame).filter(Boolean))[0]?.[0]||'—'}]);
   return data.length;
 }
 
-// ── CB29 Inventor star ratings ──
 async function buildCB29(wrap){
   const data=await rtdbAll('woman','cb29Ratings');
   const p=panel('CAREBOT-29 · Women Inventors · Surprise Ratings','Star Ratings by Inventor',el=>{loading(el);});
@@ -811,22 +590,14 @@ async function buildCB29(wrap){
   const body=p.querySelector('.panel-body');
   if(!data){errMsg(body,'Could not load cb29Ratings');return 0;}
   if(!data.length){emptyMsg(body,'No ratings yet.');return 0;}
-
   const byInv={};
-  data.forEach(d=>{
-    const inv=d.inventor||'Unknown';
-    if(!byInv[inv])byInv[inv]=[];
-    const s=safeNum(d.stars);if(s!==null)byInv[inv].push(s);
-  });
+  data.forEach(d=>{const inv=d.inventor||'Unknown';if(!byInv[inv])byInv[inv]=[];const s=safeNum(d.stars);if(s!==null)byInv[inv].push(s);});
   const rows=Object.entries(byInv).map(([inv,stars])=>({label:inv,val:avg(stars),count:avg(stars).toFixed(1)+'★'})).sort((a,b)=>b.val-a.val);
-  if(rows.length){
-    const bDiv=document.createElement('div');barChart(bDiv,rows,5,'purple');body.appendChild(bDiv);
-  }
+  if(rows.length){const bDiv=document.createElement('div');barChart(bDiv,rows,5,'purple');body.appendChild(bDiv);}
   statRows(body,[{label:'Total ratings',val:data.length}]);
   return data.length;
 }
 
-// ── CB08/23 HIT survey ──
 async function buildCB08(wrap){
   const parts=await fsAll('automat','hit_participants');
   const p=panel('CAREBOT-08/23 · Who Does the Work? Survey','Completion Rates + Section Distribution',el=>{loading(el);});
@@ -834,30 +605,13 @@ async function buildCB08(wrap){
   const body=p.querySelector('.panel-body');
   if(!parts){errMsg(body,'Could not load hit_participants');return 0;}
   if(!parts.length){emptyMsg(body,'No participants yet.');return 0;}
-
   const completed=parts.filter(d=>d.completed);
   const totalQ=parts.map(d=>safeNum(d.totalAnswered)).filter(v=>v!==null);
-
-  statRows(body,[
-    {label:'Total participants',val:parts.length},
-    {label:'Completed all sections',val:completed.length},
-    {label:'Completion rate',val:pct(completed.length,parts.length)+'%'},
-    {label:'Avg questions answered',val:totalQ.length?avg(totalQ).toFixed(1):'—'},
-  ]);
-
-  if(parts.length&&completed.length){
-    const lbl=document.createElement('div');lbl.style.cssText='font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--td);font-family:var(--fh);font-weight:800;';lbl.textContent='✦ Completion Rate';body.appendChild(lbl);
-    const bDiv=document.createElement('div');
-    barChart(bDiv,[
-      {label:'Completed',val:completed.length,count:`${completed.length} (${pct(completed.length,parts.length)}%)`},
-      {label:'Partial',val:parts.length-completed.length,count:`${parts.length-completed.length}`}
-    ],parts.length,'green');
-    body.appendChild(bDiv);
-  }
+  statRows(body,[{label:'Total participants',val:parts.length},{label:'Completed all sections',val:completed.length},{label:'Completion rate',val:pct(completed.length,parts.length)+'%'},{label:'Avg questions answered',val:totalQ.length?avg(totalQ).toFixed(1):'—'}]);
+  if(parts.length&&completed.length){const lbl=document.createElement('div');lbl.style.cssText='font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--td);font-family:var(--fh);font-weight:800;';lbl.textContent='✦ Completion Rate';body.appendChild(lbl);const bDiv=document.createElement('div');barChart(bDiv,[{label:'Completed',val:completed.length,count:`${completed.length} (${pct(completed.length,parts.length)}%)`},{label:'Partial',val:parts.length-completed.length,count:`${parts.length-completed.length}`}],parts.length,'green');body.appendChild(bDiv);}
   return parts.length;
 }
 
-// ── CB22 Kitchen Computer Survey ──
 async function buildCB22(wrap){
   const data=await fsAll('cook','kc_responses');
   const p=panel('CAREBOT-22 · Kitchen Computer Survey','Yes / No / Neutral per Question',el=>{loading(el);});
@@ -865,19 +619,8 @@ async function buildCB22(wrap){
   const body=p.querySelector('.panel-body');
   if(!data){errMsg(body,'Could not load kc_responses');return 0;}
   if(!data.length){emptyMsg(body,'No responses yet.');return 0;}
-
-  const rows=data.map(d=>{
-    const yes=safeNum(d.yes)||0;const no=safeNum(d.no)||0;const neu=safeNum(d.neutral)||0;
-    const tot=yes+no+neu;
-    return{id:d.id||'?',yes,no,neu,tot,pctYes:tot?pct(yes,tot):0};
-  }).filter(r=>r.tot>0).sort((a,b)=>b.pctYes-a.pctYes);
-
-  if(rows.length){
-    const lbl=document.createElement('div');lbl.style.cssText='font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--td);font-family:var(--fh);font-weight:800;';lbl.textContent='✦ % "Yes" per Question (ranked)';body.appendChild(lbl);
-    const bDiv=document.createElement('div');
-    barChart(bDiv,rows.slice(0,10).map(r=>({label:String(r.id).replace(/t\d+_q/,'Q'),val:r.pctYes,count:r.pctYes+'%'})),100,'green');
-    body.appendChild(bDiv);
-  }
+  const rows=data.map(d=>{const yes=safeNum(d.yes)||0;const no=safeNum(d.no)||0;const neu=safeNum(d.neutral)||0;const tot=yes+no+neu;return{id:d.id||'?',yes,no,neu,tot,pctYes:tot?pct(yes,tot):0};}).filter(r=>r.tot>0).sort((a,b)=>b.pctYes-a.pctYes);
+  if(rows.length){const lbl=document.createElement('div');lbl.style.cssText='font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--td);font-family:var(--fh);font-weight:800;';lbl.textContent='✦ % "Yes" per Question (ranked)';body.appendChild(lbl);const bDiv=document.createElement('div');barChart(bDiv,rows.slice(0,10).map(r=>({label:String(r.id).replace(/t\d+_q/,'Q'),val:r.pctYes,count:r.pctYes+'%'})),100,'green');body.appendChild(bDiv);}
   statRows(body,[{label:'Question records',val:data.length}]);
   return data.length;
 }
@@ -891,42 +634,29 @@ function addR(n){totalResponses+=n;document.getElementById('s-n').textContent=to
 async function buildAll(){
   const wrap=document.getElementById('wrap');
   wrap.innerHTML='';
-
-  // SECTION: Affect & Emotion
   wrap.appendChild(secHead('✦ AFFECT & EMOTIONAL RESPONSE'));
   const row1=document.createElement('div');row1.className='two-col';wrap.appendChild(row1);
   const [r02,r07,r04,r05]=await Promise.all([buildCB02(row1),buildCB07(row1),buildCB04(wrap),buildCB05(wrap)]);
   addR((r02||0)+(r07||0)+(r04||0)+(r05||0));
-
-  // SECTION: Inventor archive
   wrap.appendChild(secHead('✦ INVENTOR ARCHIVES'));
   const row2=document.createElement('div');row2.className='two-col';wrap.appendChild(row2);
   const [r06,r29]=await Promise.all([buildCB06(row2),buildCB29(row2)]);
   addR((r06||0)+(r29||0));
-
-  // SECTION: Annotation & visual coding
   wrap.appendChild(secHead('✦ ANNOTATION & VISUAL CODING'));
   const [r03,r09,r10,r14]=await Promise.all([buildCB03(wrap),buildCB09(wrap),buildCB10(wrap),buildCB14_24(wrap)]);
   addR((r03||0)+(r09||0)+(r10||0)+(r14||0));
-
-  // SECTION: Labor valuation
   wrap.appendChild(secHead('✦ LABOR VALUATION'));
   const row3=document.createElement('div');row3.className='two-col';wrap.appendChild(row3);
   const [r11,r31]=await Promise.all([buildCB11(row3),buildCB31(row3)]);
   addR((r11||0)+(r31||0));
-
-  // SECTION: Power & automation
   wrap.appendChild(secHead('✦ POWER, AUTOMATION & CONTRADICTION'));
   const row4=document.createElement('div');row4.className='two-col';wrap.appendChild(row4);
   const [r33,r35]=await Promise.all([buildCB33(row4),buildCB35(row4)]);
   addR((r33||0)+(r35||0));
-
-  // SECTION: Survey
   wrap.appendChild(secHead('✦ SURVEY DATA'));
   const row5=document.createElement('div');row5.className='two-col';wrap.appendChild(row5);
   const [r08,r22]=await Promise.all([buildCB08(row5),buildCB22(row5)]);
   addR((r08||0)+(r22||0));
-
   document.getElementById('s-bots').textContent='12';
 }
 
