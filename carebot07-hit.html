@@ -32,6 +32,18 @@
 
   .screen{position:relative;z-index:2;min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:max(18px,env(safe-area-inset-top)) clamp(16px,4vmin,32px) max(32px,env(safe-area-inset-bottom));gap:16px;}
 
+  /* ── WORKER ID GATE ── */
+  #workerGate{width:100%;max-width:480px;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:80vh;gap:20px;}
+  .gate-card{background:rgba(14,0,8,.82);border:1.5px solid var(--card-border-bright);border-radius:22px;box-shadow:var(--soft-glow),inset 0 1px 0 rgba(255,160,200,.07);backdrop-filter:blur(20px) saturate(1.4);padding:clamp(24px,4vmin,40px) clamp(24px,5vmin,48px);width:100%;position:relative;overflow:hidden;text-align:center;}
+  .gate-card::before{content:'';position:absolute;top:0;left:10%;right:10%;height:1.5px;background:linear-gradient(90deg,transparent,var(--candy) 35%,var(--hot) 50%,var(--candy) 65%,transparent);box-shadow:0 0 14px var(--candy);border-radius:999px;}
+  .gate-heading{font-family:'Nunito',sans-serif;font-weight:900;font-size:clamp(20px,4vw,28px);background:linear-gradient(120deg,var(--blush) 20%,var(--fuchsia) 60%,var(--candy) 90%);-webkit-background-clip:text;background-clip:text;color:transparent;margin-bottom:8px;}
+  .gate-sub{font-size:13px;color:rgba(255,210,228,.65);line-height:1.65;margin-bottom:24px;}
+  .gate-label{font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--text-dim);margin-bottom:8px;text-align:left;}
+  .gate-input{width:100%;background:rgba(255,45,107,.06);border:1.5px solid var(--card-border-bright);border-radius:12px;padding:12px 16px;font-family:'Nunito',sans-serif;font-weight:800;font-size:16px;color:var(--cream);letter-spacing:.06em;outline:none;transition:border-color .2s,box-shadow .2s;margin-bottom:6px;}
+  .gate-input:focus{border-color:var(--hot);box-shadow:0 0 0 3px rgba(255,45,107,.18);}
+  .gate-input::placeholder{color:rgba(255,160,200,.3);font-weight:600;}
+  .gate-error{font-size:11px;color:rgba(255,100,140,.8);min-height:16px;text-align:left;margin-bottom:10px;letter-spacing:.04em;}
+
   /* top bar */
   .top-bar{width:100%;max-width:540px;display:flex;align-items:center;justify-content:space-between;}
   .mascot{display:flex;align-items:center;gap:10px;}
@@ -55,6 +67,10 @@
   @keyframes textPulse{0%,100%{filter:drop-shadow(0 0 24px rgba(255,45,107,.5))}50%{filter:drop-shadow(0 0 44px rgba(255,45,107,.85)) drop-shadow(0 0 80px rgba(255,30,128,.3))}}
   .reward-label{font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--text-dim);margin-top:-6px;}
 
+  /* worker badge shown after auth */
+  .worker-badge{display:flex;align-items:center;gap:7px;padding:5px 13px;border-radius:999px;background:rgba(255,45,107,.08);border:1px solid var(--card-border-bright);font-size:11px;letter-spacing:.1em;color:var(--text-dim);font-family:'Nunito',sans-serif;font-weight:800;}
+  .worker-badge span{color:var(--blush);}
+
   /* message card */
   .message-card{background:rgba(14,0,8,.72);border:1.5px solid var(--card-border-bright);border-radius:22px;box-shadow:var(--soft-glow),inset 0 1px 0 rgba(255,160,200,.07);backdrop-filter:blur(20px) saturate(1.4);padding:clamp(18px,3.5vmin,28px) clamp(24px,4.5vmin,40px);width:100%;position:relative;overflow:hidden;}
   .message-card::before{content:'';position:absolute;top:0;left:10%;right:10%;height:1.5px;background:linear-gradient(90deg,transparent,var(--candy) 35%,var(--hot) 50%,var(--candy) 65%,transparent);box-shadow:0 0 14px var(--candy);border-radius:999px;}
@@ -65,7 +81,7 @@
   .chip{padding:5px 12px;border-radius:999px;background:rgba(255,45,107,.1);border:1px solid rgba(255,100,160,.24);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--text-dim);display:inline-flex;align-items:center;gap:5px;}
   .chip-dot{width:4px;height:4px;border-radius:50%;background:var(--rose);}
 
-  /* ── EMOTION REACTION PANEL (new) ── */
+  /* emotion reaction panel */
   .react-panel{background:rgba(14,0,8,.72);border:1.5px solid var(--card-border-bright);border-radius:22px;box-shadow:var(--soft-glow);backdrop-filter:blur(20px);padding:clamp(16px,3vmin,24px) clamp(20px,4vmin,32px);width:100%;position:relative;overflow:hidden;}
   .react-panel::before{content:'';position:absolute;top:0;left:10%;right:10%;height:1.5px;background:linear-gradient(90deg,transparent,var(--candy) 35%,var(--hot) 50%,var(--candy) 65%,transparent);box-shadow:0 0 10px var(--candy);border-radius:999px;}
   .react-eyebrow{font-size:9px;letter-spacing:.22em;text-transform:uppercase;color:var(--text-dim);margin-bottom:10px;font-weight:800;}
@@ -108,73 +124,100 @@
 
 <div class="screen">
 
-  <div class="top-bar">
-    <div class="mascot">
+  <!-- ══ WORKER ID GATE ══ -->
+  <div id="workerGate">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:4px;">
       <div class="bot-face">🤖</div>
       <div>
         <div class="bot-name">CAREBOT-07 · CARETECH ✦</div>
         <div class="bot-sub">Microtask Reward · Research System</div>
       </div>
     </div>
-    <div class="time-badge"><div class="time-pip"></div><span id="sysTime">--:--:--</span></div>
+    <div class="gate-card">
+      <div class="gate-heading">Enter your Worker ID ✦</div>
+      <div class="gate-sub">Your Mechanical Turk Worker ID is required to confirm your reward and continue to the next task.</div>
+      <div class="gate-label">Worker ID</div>
+      <input class="gate-input" id="workerIdInput" type="text" placeholder="e.g. A1B2C3D4EXAMPLE" autocomplete="off" autocapitalize="characters" spellcheck="false" />
+      <div class="gate-error" id="gateError"></div>
+      <button class="btn btn-primary" style="width:100%;justify-content:center;padding:13px 20px;font-size:14px;border-radius:14px;" onclick="submitWorkerId()">Confirm &amp; view reward ✦</button>
+    </div>
   </div>
 
-  <div class="hero">
+  <!-- ══ REWARD SCREEN (hidden until Worker ID confirmed) ══ -->
+  <div id="rewardScreen" style="display:none;width:100%;display:none;flex-direction:column;align-items:center;gap:16px;">
 
-    <div class="reward-ring">
-      <div class="reward-ring-outer"></div>
-      <div class="reward-ring-inner">💰</div>
+    <div class="top-bar">
+      <div class="mascot">
+        <div class="bot-face">🤖</div>
+        <div>
+          <div class="bot-name">CAREBOT-07 · CARETECH ✦</div>
+          <div class="bot-sub">Microtask Reward · Research System</div>
+        </div>
+      </div>
+      <div class="time-badge"><div class="time-pip"></div><span id="sysTime">--:--:--</span></div>
     </div>
 
-    <div>
-      <div class="reward-amount">$0.01</div>
-      <div class="reward-label">✦ earned · task complete ✦</div>
+    <div class="hero">
+
+      <div class="reward-ring">
+        <div class="reward-ring-outer"></div>
+        <div class="reward-ring-inner">💰</div>
+      </div>
+
+      <div>
+        <div class="reward-amount">$0.01</div>
+        <div class="reward-label">✦ earned · task complete ✦</div>
+      </div>
+
+      <!-- worker id badge -->
+      <div class="worker-badge">Worker ID: <span id="workerBadgeId">—</span></div>
+
+      <div class="message-card">
+        <div class="message-heading">Great work! ✦</div>
+        <div class="message-sub">
+          You completed this task and earned <em>$0.01</em>.<br>
+          Ready for your next assignment?
+        </div>
+        <div class="chips">
+          <div class="chip"><div class="chip-dot"></div>Reward confirmed</div>
+          <div class="chip"><div class="chip-dot"></div>CARETECH · Active</div>
+          <div class="chip"><div class="chip-dot"></div>More work available</div>
+        </div>
+      </div>
+
+      <!-- EMOTION REACTION PANEL -->
+      <div class="react-panel">
+        <div class="react-eyebrow">✦ CAREBOT-07 · Quick Research Question</div>
+        <div class="react-question">When you saw <em style="color:var(--hot);">$0.01</em> — what was your first reaction?</div>
+        <div class="etag-group" id="etagGroup">
+          <div class="etag" data-val="angry">angry</div>
+          <div class="etag" data-val="resigned">resigned</div>
+          <div class="etag" data-val="laughing">laughing</div>
+          <div class="etag" data-val="unsurprised">unsurprised</div>
+          <div class="etag" data-val="frustrated">frustrated</div>
+          <div class="etag" data-val="exhausted">exhausted</div>
+          <div class="etag" data-val="relieved it's something">relieved it's something</div>
+          <div class="etag" data-val="insulted">insulted</div>
+          <div class="etag" data-val="used to it">used to it</div>
+          <div class="etag" data-val="amused but sad">amused but sad</div>
+        </div>
+        <div class="react-save-row">
+          <div class="react-saved" id="reactSaved"></div>
+          <button class="btn btn-primary" onclick="saveReaction()" style="font-size:11px;padding:8px 16px;">Save reaction ✦</button>
+        </div>
+        <div class="react-direction" id="reactDirection">
+          ✦ Now go find the <strong>CEO</strong> in the room — and ask them to <em>pay you fairly</em> for your work. ✦
+        </div>
+      </div>
+
+      <a class="cta-btn" id="ctaBtn" href="hit.html">✦ Click for more work! ✦</a>
+
     </div>
 
-    <div class="message-card">
-      <div class="message-heading">Great work! ✦</div>
-      <div class="message-sub">
-        You completed this task and earned <em>$0.01</em>.<br>
-        Ready for your next assignment?
-      </div>
-      <div class="chips">
-        <div class="chip"><div class="chip-dot"></div>Reward confirmed</div>
-        <div class="chip"><div class="chip-dot"></div>CARETECH · Active</div>
-        <div class="chip"><div class="chip-dot"></div>More work available</div>
-      </div>
-    </div>
-
-    <!-- EMOTION REACTION PANEL -->
-    <div class="react-panel">
-      <div class="react-eyebrow">✦ CAREBOT-07 · Quick Research Question</div>
-      <div class="react-question">When you saw <em style="color:var(--hot);">$0.01</em> — what was your first reaction?</div>
-      <div class="etag-group" id="etagGroup">
-        <div class="etag" data-val="angry">angry</div>
-        <div class="etag" data-val="resigned">resigned</div>
-        <div class="etag" data-val="laughing">laughing</div>
-        <div class="etag" data-val="unsurprised">unsurprised</div>
-        <div class="etag" data-val="frustrated">frustrated</div>
-        <div class="etag" data-val="exhausted">exhausted</div>
-        <div class="etag" data-val="relieved it's something">relieved it's something</div>
-        <div class="etag" data-val="insulted">insulted</div>
-        <div class="etag" data-val="used to it">used to it</div>
-        <div class="etag" data-val="amused but sad">amused but sad</div>
-      </div>
-      <div class="react-save-row">
-        <div class="react-saved" id="reactSaved"></div>
-        <button class="btn btn-primary" onclick="saveReaction()" style="font-size:11px;padding:8px 16px;">Save reaction ✦</button>
-      </div>
-      <div class="react-direction" id="reactDirection">
-        ✦ Now go find the <strong>CEO</strong> in the room — and ask them to <em>pay you fairly</em> for your work. ✦
-      </div>
-    </div>
-
-    <a class="cta-btn" href="hit.html">✦ Click for more work! ✦</a>
-
+    <div class="wordmark">✦ carebot-07 / caretech research system · microtask labor · v2.0 ✦</div>
   </div>
 
-  <div class="wordmark">✦ carebot-07 / caretech research system · microtask labor · v2.0 ✦</div>
-</div>
+</div><!-- .screen -->
 
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
@@ -192,20 +235,78 @@ const FB_CONFIG = {
 let db, useFirebase=true;
 try{firebase.initializeApp(FB_CONFIG);db=firebase.database();}catch(e){useFirebase=false;}
 
-function updateClock(){const n=new Date(),p=v=>String(v).padStart(2,'0');document.getElementById('sysTime').textContent=`${p(n.getHours())}:${p(n.getMinutes())}:${p(n.getSeconds())}`;}
+/* ── WORKER ID GATE ── */
+const STORAGE_KEY = 'caretech_worker_id';
+
+function getStoredWorkerId(){
+  try{ return localStorage.getItem(STORAGE_KEY) || ''; }catch(e){ return ''; }
+}
+function storeWorkerId(id){
+  try{ localStorage.setItem(STORAGE_KEY, id); }catch(e){}
+}
+
+function submitWorkerId(){
+  const raw = document.getElementById('workerIdInput').value.trim();
+  const errorEl = document.getElementById('gateError');
+  if(!raw){
+    errorEl.textContent = 'Please enter your Worker ID to continue.';
+    document.getElementById('workerIdInput').focus();
+    return;
+  }
+  // Basic sanity: MTurk IDs are alphanumeric, typically 14 chars, but we just require ≥3
+  if(raw.length < 3){
+    errorEl.textContent = 'Worker ID looks too short — please check and try again.';
+    return;
+  }
+  errorEl.textContent = '';
+  storeWorkerId(raw);
+  revealRewardScreen(raw);
+}
+
+function revealRewardScreen(workerId){
+  document.getElementById('workerGate').style.display = 'none';
+  const rs = document.getElementById('rewardScreen');
+  rs.style.display = 'flex';
+  // show worker id in badge
+  document.getElementById('workerBadgeId').textContent = workerId;
+  // append worker id to the next-hit CTA link so carebot42 can read it from the URL too
+  const cta = document.getElementById('ctaBtn');
+  const base = cta.getAttribute('href').split('?')[0];
+  cta.href = base + '?wid=' + encodeURIComponent(workerId);
+}
+
+// On page load: skip gate if worker already identified this session
+(function(){
+  const stored = getStoredWorkerId();
+  if(stored){
+    revealRewardScreen(stored);
+  }
+})();
+
+// Allow Enter key to submit
+document.getElementById('workerIdInput').addEventListener('keydown', function(e){
+  if(e.key === 'Enter') submitWorkerId();
+});
+
+/* ── CLOCK ── */
+function updateClock(){const n=new Date(),p=v=>String(v).padStart(2,'0');const el=document.getElementById('sysTime');if(el)el.textContent=`${p(n.getHours())}:${p(n.getMinutes())}:${p(n.getSeconds())}`;}
 setInterval(updateClock,1000);updateClock();
 
+/* ── SPARKLES ── */
 (function(){const wrap=document.getElementById('sparkles');const chars=['✦','✧','♡','˚','·','✿','◦','❀','$','¢','★'];for(let i=0;i<44;i++){const s=document.createElement('span');s.className='sp';s.textContent=chars[Math.floor(Math.random()*chars.length)];s.style.left=Math.random()*100+'vw';s.style.bottom=Math.random()*-80+'px';s.style.fontSize=(8+Math.random()*14)+'px';s.style.color=`hsl(${310+Math.random()*55},80%,${68+Math.random()*22}%)`;s.style.animationDuration=(5+Math.random()*12)+'s';s.style.animationDelay=(Math.random()*14)+'s';wrap.appendChild(s);}})();
 
+/* ── EMOTION TAGS ── */
 document.getElementById('etagGroup').addEventListener('click',e=>{
   const tag=e.target.closest('.etag');if(!tag)return;
   tag.classList.toggle('selected');
 });
 
+/* ── SAVE REACTION ── */
 function saveReaction(){
   const emotions=[...document.querySelectorAll('.etag.selected')].map(t=>t.dataset.val);
   if(!emotions.length){document.getElementById('reactSaved').textContent='Select at least one reaction.';return;}
-  const payload={emotions,sessionId:SESSION_ID,timestamp:useFirebase?firebase.database.ServerValue.TIMESTAMP:Date.now()};
+  const workerId = getStoredWorkerId();
+  const payload={emotions,sessionId:SESSION_ID,workerId,timestamp:useFirebase?firebase.database.ServerValue.TIMESTAMP:Date.now()};
   if(useFirebase&&db){
     db.ref('microtaskReactions').push(payload)
       .then(()=>{document.getElementById('reactSaved').textContent='✦ Saved — thank you.';setTimeout(()=>document.getElementById('reactSaved').textContent='',3000);document.getElementById('reactDirection').classList.add('visible');})
