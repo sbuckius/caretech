@@ -149,6 +149,9 @@ html,body{min-height:100%;font-family:var(--fb);font-weight:600;color:var(--crea
 </style>
 </head>
 <body>
+
+
+
 <div class="bg"></div>
 <div class="orb orb-1"></div><div class="orb orb-2"></div><div class="orb orb-3"></div>
 <div class="sparkles" id="sparkles"></div>
@@ -211,9 +214,8 @@ setInterval(tick,1000);tick();
 // ── Worker ID Banner + Voice Announcement ──
 function announceWorker(wid){
   if(!window.speechSynthesis)return;
-  // spell out alphanumeric IDs character by character so they read clearly
   const spelled=wid.split('').join(' ');
-  const msg=new SpeechSynthesisUtterance(`Please pay worker number ${spelled} one cent.`);
+  const msg=new SpeechSynthesisUtterance('Please pay worker number ' + spelled + ' one cent.');
   msg.rate=0.88;
   msg.pitch=1.05;
   msg.volume=1;
@@ -579,8 +581,7 @@ async function buildCB07(wrap){
     speakBtn.title='Read payment aloud';
     speakBtn.addEventListener('click',(e)=>{
       e.stopPropagation();
-      const spelled=(wid==='—'?'unknown':wid).split('').join(' ');
-      announceWorker(spelled);
+      announceWorker(wid==='—'?'unknown':wid);
     });
     header.appendChild(speakBtn);
     card.appendChild(header);
@@ -1338,6 +1339,68 @@ async function buildPaymentCards(){
 
 // call after a short delay to ensure Firebase helpers are defined
 setTimeout(buildPaymentCards, 800);
+
+
+// ══ PRESENTATION MODE — first click anywhere starts audio sequence ══
+(function(){
+  let started=false;
+
+  function getVoice(){
+    const voices=window.speechSynthesis.getVoices();
+    return voices.find(v=>v.lang==='en-US'&&/zira|samantha|aria|jenny|michelle|jane|emma|woman|female/i.test(v.name))
+      ||voices.find(v=>v.lang==='en-US'&&!/male|david|mark|richard|guy|james/i.test(v.name))
+      ||voices.find(v=>v.lang==='en-US')||voices[0];
+  }
+
+  function speak(text,onDone){
+    const u=new SpeechSynthesisUtterance(text);
+    u.rate=0.88;u.pitch=1.05;u.lang='en-US';
+    const v=getVoice();if(v)u.voice=v;
+    u.onend=()=>setTimeout(onDone,420);
+    u.onerror=()=>setTimeout(onDone,200);
+    window.speechSynthesis.speak(u);
+  }
+
+  function buildQueue(){
+    const queue=[];
+    const cards=[...document.querySelectorAll('#paymentCards [data-wid]')];
+    cards.forEach(c=>{
+      const wid=c.dataset.wid||'';
+      const txt=wid&&wid!=='Anonymous'
+        ?'Please pay worker number '+wid.split('').join(' ')+' one cent.'
+        :'Please pay this worker one cent.';
+      queue.push({type:'payment',text:txt,wid:wid||'anonymous'});
+    });
+    (window._cb42Instructions||[]).forEach(d=>{
+      if(d.instruction)queue.push({type:'instruction',text:d.instruction,taskTitle:d.taskTitle||''});
+    });
+    return queue;
+  }
+
+  function runQueue(queue,i){
+    if(i>=queue.length)return;
+    speak(queue[i].text,()=>runQueue(queue,i+1));
+  }
+
+  function startPresentation(){
+    if(started)return;
+    started=true;
+    const tryStart=()=>{
+      const cards=[...document.querySelectorAll('#paymentCards [data-wid]')];
+      const instrs=window._cb42Instructions||[];
+      if(cards.length>0||instrs.length>0){
+        const queue=buildQueue();
+        if(queue.length){window.speechSynthesis.cancel();runQueue(queue,0);}
+      } else {
+        setTimeout(tryStart,500);
+      }
+    };
+    setTimeout(tryStart,900);
+  }
+
+  // first click anywhere on the page triggers the sequence
+  document.addEventListener('click',startPresentation,{once:true});
+})();
 
 
 buildAll();
