@@ -5,6 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
 <title>✦ CAREBOT-42 ✦ Nonsensical Data for Domestic Work</title>
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Quicksand:wght@500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<!-- Firebase MUST load before the inline script that uses it -->
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.0/p5.min.js"></script>
 <style>
 :root{
@@ -28,7 +31,6 @@ html,body{height:100%;min-height:100%;font-family:var(--fb);font-weight:600;colo
 @keyframes d2{0%,100%{transform:translate(0,0)}50%{transform:translate(-28px,-20px)}}
 @keyframes breathe{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.3;transform:scale(.65)}}
 .screen{position:relative;z-index:2;min-height:100%;display:flex;flex-direction:column;align-items:center;padding:max(16px,env(safe-area-inset-top)) clamp(12px,4vmin,24px) calc(44px + env(safe-area-inset-bottom));gap:14px;}
-/* TOP BAR */
 .topbar{width:100%;max-width:500px;display:flex;align-items:center;justify-content:space-between;}
 .mascot{display:flex;align-items:center;gap:10px;}
 .bot-face{width:42px;height:42px;border-radius:13px;background:linear-gradient(135deg,rgba(255,45,107,.22),rgba(180,0,60,.32));border:1.5px solid var(--border2);display:flex;align-items:center;justify-content:center;font-size:20px;animation:wobble 4s ease-in-out infinite;flex-shrink:0;}
@@ -37,61 +39,51 @@ html,body{height:100%;min-height:100%;font-family:var(--fb);font-weight:600;colo
 .bot-sub{font-size:9px;letter-spacing:.15em;text-transform:uppercase;color:var(--muted);margin-top:1px;}
 .time-badge{display:flex;align-items:center;gap:6px;padding:5px 11px;border-radius:999px;background:rgba(255,255,255,.04);border:1px solid var(--border);font-size:10px;letter-spacing:.1em;color:var(--muted);}
 .time-pip{width:5px;height:5px;border-radius:50%;background:var(--hot);animation:breathe 2s ease-in-out infinite;}
-/* CARDS */
 .card{width:min(100%,500px);background:rgba(255,45,107,.07);border:1.5px solid var(--border2);border-radius:20px;padding:18px 20px 16px;position:relative;overflow:hidden;}
 .card::before{content:'';position:absolute;top:0;left:8%;right:8%;height:1.5px;background:linear-gradient(90deg,transparent,var(--candy) 30%,var(--hot) 50%,var(--candy) 70%,transparent);box-shadow:0 0 8px var(--candy);border-radius:999px;}
 .eyebrow{font-size:9px;letter-spacing:.22em;text-transform:uppercase;color:var(--muted);margin-bottom:7px;}
 .card-title{font-family:var(--fh);font-weight:900;font-size:clamp(14px,3.5vw,18px);background:linear-gradient(90deg,var(--blush),var(--fuchsia) 55%,var(--candy));-webkit-background-clip:text;background-clip:text;color:transparent;margin-bottom:10px;line-height:1.3;}
 .card-body{font-size:12.5px;line-height:1.75;color:rgba(255,215,230,.82);}
 .card-body strong{color:var(--candy);}
-/* p5 FRAME */
 .frame-wrap{width:min(100%,460px);position:relative;}
 .frame-wrap::before{content:'';position:absolute;inset:-2px;border-radius:28px;background:linear-gradient(135deg,var(--hot),var(--berry),var(--crimson),var(--maroon),var(--berry),var(--hot));background-size:300% 300%;animation:borderShimmer 6s linear infinite;z-index:0;filter:blur(1px);}
 @keyframes borderShimmer{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
 .frame{width:100%;aspect-ratio:2/3;position:relative;border-radius:26px;overflow:hidden;box-shadow:var(--pop-glow);z-index:1;background:var(--maroon);display:block;}
 #defaultCanvas0{display:block;position:absolute;inset:0;width:100%!important;height:100%!important;z-index:1;}
 .hint{position:absolute;top:12px;left:50%;transform:translateX(-50%);z-index:3;font-family:var(--fb);font-weight:700;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,200,220,.75);background:rgba(255,45,107,.12);border:1px solid rgba(255,100,160,.28);padding:6px 14px;border-radius:999px;white-space:nowrap;}
-/* STEPS AREA */
 .step-panel{display:none;width:min(100%,500px);background:rgba(12,0,7,.95);border:1.5px solid var(--border2);border-radius:22px;padding:20px;position:relative;overflow:hidden;animation:slideUp .38s cubic-bezier(.34,1.4,.64,1);}
 .step-panel::before{content:'';position:absolute;top:0;left:10%;right:10%;height:1.5px;background:linear-gradient(90deg,transparent,var(--candy) 35%,var(--hot) 50%,var(--candy) 65%,transparent);box-shadow:0 0 10px var(--candy);border-radius:999px;}
 @keyframes slideUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
-/* INPUTS */
 .field-label{font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);margin-bottom:6px;margin-top:14px;display:block;}
 .field-label:first-child{margin-top:0;}
 .text-input{width:100%;padding:10px 13px;background:rgba(255,255,255,.06);border:1.5px solid rgba(255,80,150,.28);border-radius:11px;font-family:var(--fb);font-weight:600;font-size:13px;color:var(--cream);outline:none;transition:border-color .2s;}
 .text-input:focus{border-color:var(--candy);box-shadow:0 0 0 3px rgba(255,133,179,.1);}
 .text-input::placeholder{color:rgba(255,180,210,.25);}
-/* SELECT GRID */
 .select-grid{display:grid;gap:7px;}
 .select-grid.cols2{grid-template-columns:1fr 1fr;}
 .select-grid.cols3{grid-template-columns:1fr 1fr 1fr;}
 .sel-btn{appearance:none;font-family:var(--fb);font-weight:700;font-size:11px;padding:8px 10px;border-radius:9px;cursor:pointer;border:1.5px solid rgba(255,80,150,.22);background:rgba(255,255,255,.04);color:var(--muted);transition:all .15s;text-align:center;line-height:1.3;}
 .sel-btn:hover{background:rgba(255,45,107,.14);border-color:var(--border2);color:var(--blush);}
 .sel-btn.active{background:rgba(255,45,107,.28);border-color:var(--hot);color:var(--cream);box-shadow:0 0 10px rgba(255,45,107,.25);}
-/* COUNTER */
 .count-row{display:flex;align-items:center;gap:11px;margin-top:2px;}
 .count-btn{width:36px;height:36px;border-radius:9px;appearance:none;border:1.5px solid rgba(255,80,150,.35);background:rgba(255,45,107,.1);color:var(--candy);font-family:var(--fh);font-weight:900;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s;flex-shrink:0;}
 .count-btn:hover{background:rgba(255,45,107,.24);border-color:var(--hot);}
 .count-display{font-family:var(--fh);font-weight:900;font-size:28px;color:var(--cream);min-width:44px;text-align:center;}
 .count-label{font-size:11px;color:var(--muted);}
-/* LOCATION SELECT */
 .loc-scroll{display:flex;gap:7px;overflow-x:auto;padding-bottom:5px;-webkit-overflow-scrolling:touch;scrollbar-width:none;}
 .loc-scroll::-webkit-scrollbar{display:none;}
 .loc-chip{flex-shrink:0;padding:7px 13px;border-radius:999px;border:1.5px solid rgba(255,80,150,.22);background:rgba(255,255,255,.04);color:var(--muted);font-size:11px;font-weight:700;cursor:pointer;white-space:nowrap;transition:all .15s;}
 .loc-chip.active{background:rgba(255,45,107,.28);border-color:var(--hot);color:var(--cream);}
 .loc-chip:hover{background:rgba(255,45,107,.14);border-color:var(--border2);color:var(--blush);}
-/* DIAGRAM */
 #diagramWrap{display:none;width:min(100%,500px);}
 .diagram-card{background:rgba(12,0,7,.95);border:1.5px solid var(--border2);border-radius:22px;padding:18px;position:relative;overflow:hidden;}
 .diagram-card::before{content:'';position:absolute;top:0;left:10%;right:10%;height:1.5px;background:linear-gradient(90deg,transparent,var(--candy) 35%,var(--hot) 50%,var(--candy) 65%,transparent);box-shadow:0 0 10px var(--candy);border-radius:999px;}
 .diagram-eyebrow{font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);margin-bottom:8px;}
 .diagram-title{font-family:var(--fh);font-weight:900;font-size:15px;background:linear-gradient(90deg,var(--blush),var(--fuchsia));-webkit-background-clip:text;background-clip:text;color:transparent;margin-bottom:13px;line-height:1.3;}
 #stageSvg{width:100%;border-radius:12px;display:block;}
-/* INSTRUCTION BOX */
 .instruction-box{margin-top:14px;background:rgba(255,45,107,.08);border:1.5px solid rgba(255,80,150,.3);border-radius:14px;padding:14px;}
 .instruction-text{font-family:var(--fh);font-weight:900;font-size:clamp(14px,3.5vw,17px);color:var(--cream);line-height:1.5;}
 .instruction-sub{font-size:11px;color:var(--muted);margin-top:7px;line-height:1.65;}
-/* BUTTONS */
 .btn-row{display:flex;gap:9px;flex-wrap:wrap;margin-top:14px;}
 .btn{appearance:none;font-family:var(--fh);font-weight:800;font-size:12px;letter-spacing:.05em;color:var(--cream);display:inline-flex;align-items:center;justify-content:center;gap:5px;padding:10px 18px;border-radius:13px;min-height:38px;border:1.5px solid var(--border);cursor:pointer;transition:all .2s;white-space:nowrap;}
 .btn.primary{background:linear-gradient(135deg,var(--hot),var(--berry),var(--crimson));border-color:var(--hot);box-shadow:0 4px 20px rgba(255,45,107,.35);flex:1;}
@@ -101,11 +93,15 @@ html,body{height:100%;min-height:100%;font-family:var(--fb);font-weight:600;colo
 .btn.speak{background:linear-gradient(135deg,rgba(255,45,107,.25),rgba(180,0,60,.35));border-color:var(--candy);color:var(--blush);}
 .btn.speak:hover{background:rgba(255,45,107,.35);transform:translateY(-2px);}
 .btn:active{transform:translateY(0) scale(.97)!important;}
-/* DIVIDER */
 .divider{width:100%;max-width:500px;height:1px;background:linear-gradient(90deg,transparent,rgba(255,80,150,.2) 30%,rgba(255,80,150,.2) 70%,transparent);}
-/* GENERATE BTN */
 #generateBtn{display:none;width:min(100%,500px);}
 .wordmark{font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,140,185,.18);}
+
+/* save status indicator */
+#saveStatus{width:min(100%,500px);padding:10px 14px;border-radius:10px;font-size:11px;font-family:'Nunito',sans-serif;font-weight:800;letter-spacing:.08em;text-align:center;display:none;}
+#saveStatus.saving{background:rgba(255,45,107,.1);border:1px solid rgba(255,100,160,.3);color:rgba(255,180,210,.7);}
+#saveStatus.saved{background:rgba(0,200,100,.1);border:1px solid rgba(0,200,100,.3);color:rgba(100,255,180,.8);}
+#saveStatus.error{background:rgba(255,100,0,.1);border:1px solid rgba(255,100,0,.3);color:rgba(255,180,100,.8);}
 </style>
 </head>
 <body>
@@ -113,7 +109,6 @@ html,body{height:100%;min-height:100%;font-family:var(--fb);font-weight:600;colo
 
 <div class="screen">
 
-  <!-- TOP BAR -->
   <div class="topbar">
     <div class="mascot">
       <div class="bot-face">&#x1F3AD;</div>
@@ -125,8 +120,6 @@ html,body{height:100%;min-height:100%;font-family:var(--fb);font-weight:600;colo
     <div class="time-badge"><div class="time-pip"></div><span id="sysTime">--:--</span></div>
   </div>
 
-  <!-- INSTRUCTIONS -->
-  <!-- IRONY CARD -->
   <div class="card" style="background:linear-gradient(135deg,rgba(111,0,30,.88),rgba(50,0,15,.95));border-color:rgba(255,60,80,.4);">
     <div class="eyebrow">✦ CAREBOT-42 · Nonsensical Data for Domestic Work</div>
     <div class="card-title">You are the CEO. You are directing a robot to perform domestic labor. The instructions you generate are the data.</div>
@@ -137,7 +130,6 @@ html,body{height:100%;min-height:100%;font-family:var(--fb);font-weight:600;colo
     </div>
   </div>
 
-  <!-- HOW TO CARD -->
   <div class="card">
     <div class="eyebrow">✦ How this works</div>
     <div class="card-title" style="font-size:14px;">Build the instruction. The data is saved. You are done.</div>
@@ -150,19 +142,16 @@ html,body{height:100%;min-height:100%;font-family:var(--fb);font-weight:600;colo
     </div>
   </div>
 
-  <!-- p5 PICKER -->
   <div class="frame-wrap">
     <div class="frame" id="game-frame">
       <div class="hint" id="hint">✦ Tap the image to select</div>
     </div>
   </div>
 
-  <!-- RESET BUTTON (always visible after load) -->
   <div style="width:min(100%,460px);display:flex;justify-content:flex-end;">
     <button class="btn soft" id="resetBtn" onclick="doReset()" style="font-size:11px;padding:7px 14px;">&#x21BA; New image</button>
   </div>
 
-  <!-- STEP 1: IDENTIFY -->
   <div class="step-panel" id="stepIdentify">
     <div class="eyebrow">✦ Step 1 of 3 · Identify the image</div>
     <div class="card-title" id="identifyTitle" style="margin-bottom:6px;">—</div>
@@ -180,16 +169,11 @@ html,body{height:100%;min-height:100%;font-family:var(--fb);font-weight:600;colo
     </div>
   </div>
 
-  <!-- STEP 2: BUILD THE INSTRUCTION -->
   <div class="step-panel" id="stepBuilder">
     <div class="eyebrow">✦ Step 2 of 3 · Build the CEO instruction</div>
     <div class="card-title">Direct the robot. Make it absurd. This becomes the data.</div>
-
-    <!-- ACTION -->
     <label class="field-label">Choose an action</label>
     <div class="select-grid cols3" id="actionGrid"></div>
-
-    <!-- COUNT -->
     <label class="field-label">How many times?</label>
     <div class="count-row">
       <button class="count-btn" onclick="changeCount(-1)">−</button>
@@ -197,24 +181,21 @@ html,body{height:100%;min-height:100%;font-family:var(--fb);font-weight:600;colo
       <button class="count-btn" onclick="changeCount(1)">+</button>
       <div class="count-label">times</div>
     </div>
-
-    <!-- ON / OFF -->
     <label class="field-label">Object state</label>
     <div class="select-grid cols2" id="stateGrid">
       <button class="sel-btn active" id="stateOn" onclick="selectState('on')">&#x26A1; On / Active</button>
       <button class="sel-btn" id="stateOff" onclick="selectState('off')">&#x2B1C; Off / Passive</button>
     </div>
-
-    <!-- LOCATION -->
     <label class="field-label">Where on stage? (6 ft × 6 ft)</label>
     <div class="loc-scroll" id="locationScroll"></div>
-
     <div class="btn-row" style="margin-top:16px;">
       <button class="btn primary" id="generateBtn2" onclick="generateInstruction()">✦ Generate instruction &amp; diagram →</button>
     </div>
   </div>
 
-  <!-- DIAGRAM + INSTRUCTION OUTPUT -->
+  <!-- save status -->
+  <div id="saveStatus"></div>
+
   <div id="diagramWrap">
     <div class="diagram-card">
       <div class="diagram-eyebrow">✦ Step 3 of 3 · Instruction generated — saved to dashboard</div>
@@ -246,11 +227,21 @@ html,body{height:100%;min-height:100%;font-family:var(--fb);font-weight:600;colo
 function updateClock(){const n=new Date(),p=v=>String(v).padStart(2,'0');document.getElementById('sysTime').textContent=p(n.getHours())+':'+p(n.getMinutes());}
 setInterval(updateClock,1000);updateClock();
 
+/* ── FIREBASE INIT ── */
+// Firebase SDKs are loaded in <head> so this runs safely
+let fbReady=false,fbDb=null;
+try{
+  const FB_CFG={apiKey:"AIzaSyCZFDU-WlSmHqjXTs1Ox0nf9xeJU_xbaX0",authDomain:"collaborativemashup.firebaseapp.com",databaseURL:"https://collaborativemashup-default-rtdb.firebaseio.com",projectId:"collaborativemashup",storageBucket:"collaborativemashup.firebasestorage.app",messagingSenderId:"562437984610",appId:"1:562437984610:web:9f3711c26e097bc8ef9c3b"};
+  const fbApp=firebase.apps.length?firebase.app():firebase.initializeApp(FB_CFG);
+  fbDb=firebase.database(fbApp);
+  fbReady=true;
+  console.log('Firebase ready ✓');
+}catch(e){console.error('Firebase init failed:',e);}
+
 /* ── DATA ── */
 const ASSET_BASE='./images';
 const IMAGE_SIZE=160,SWITCH_MS=30;
 
-// Stage objects — update this list as needed
 const STAGE_OBJECTS=[
   {id:'basket1',label:'Laundry basket 1',emoji:'🧺',x:.18,y:.22},
   {id:'basket2',label:'Laundry basket 2',emoji:'🧺',x:.35,y:.18},
@@ -272,103 +263,77 @@ const STAGE_OBJECTS=[
 ];
 
 const ACTIONS=[
-  {id:'flip',label:'Turn upside down'},
-  {id:'tap',label:'Tap it'},
-  {id:'move2ft',label:'Move 2 feet'},
-  {id:'spin',label:'Spin in place'},
-  {id:'placehead',label:'Put on robot\'s head'},
-  {id:'placeobj',label:'Place on stage object'},
-  {id:'drag',label:'Drag across stage'},
-  {id:'raise',label:'Raise above head'},
-  {id:'balance',label:'Balance on one edge'},
-  {id:'carry',label:'Carry to center stage'},
-  {id:'shake',label:'Shake 3 times'},
-  {id:'stack',label:'Stack on another object'},
-  {id:'hide',label:'Hide behind object'},
-  {id:'circle',label:'Circle around object'},
-  {id:'present',label:'Present to audience'},
-  {id:'drop',label:'Drop from waist height'},
-  {id:'hold',label:'Hold perfectly still'},
-  {id:'gesture',label:'Gesture toward it'},
+  {id:'flip',label:'Turn upside down'},{id:'tap',label:'Tap it'},
+  {id:'move2ft',label:'Move 2 feet'},{id:'spin',label:'Spin in place'},
+  {id:'placehead',label:"Put on robot's head"},{id:'placeobj',label:'Place on stage object'},
+  {id:'drag',label:'Drag across stage'},{id:'raise',label:'Raise above head'},
+  {id:'balance',label:'Balance on one edge'},{id:'carry',label:'Carry to center stage'},
+  {id:'shake',label:'Shake 3 times'},{id:'stack',label:'Stack on another object'},
+  {id:'hide',label:'Hide behind object'},{id:'circle',label:'Circle around object'},
+  {id:'present',label:'Present to audience'},{id:'drop',label:'Drop from waist height'},
+  {id:'hold',label:'Hold perfectly still'},{id:'gesture',label:'Gesture toward it'},
 ];
 
-// Location options: corners + center + on-object
 const ZONE_LABELS=[
-  {id:'center',label:'Center stage'},
-  {id:'front_left',label:'Front left'},
-  {id:'front_right',label:'Front right'},
-  {id:'back_left',label:'Back left'},
-  {id:'back_right',label:'Back right'},
-  {id:'front_center',label:'Front center'},
+  {id:'center',label:'Center stage'},{id:'front_left',label:'Front left'},
+  {id:'front_right',label:'Front right'},{id:'back_left',label:'Back left'},
+  {id:'back_right',label:'Back right'},{id:'front_center',label:'Front center'},
   {id:'back_center',label:'Back center'},
   ...STAGE_OBJECTS.map(o=>({id:'on_'+o.id,label:'On: '+o.label,onObject:true,emoji:o.emoji}))
 ];
 
-// Robot tasks (from carebot-04)
 const ROBOT_TASKS=[
-{title:"Hang Clothing on a Rack",caption:"Organizing garments on hangers"},
-{title:"Load Laundry into a Washing Machine",caption:"Putting clothes into a front-load washer"},
-{title:"Wipe Down a Countertop",caption:"Cleaning a surface with a damp cloth"},
-{title:"Play a Board Game with a Family",caption:"Engaging children in tabletop play"},
-{title:"Prepare and Serve Tea",caption:"Setting up a full tea service tray"},
-{title:"Hang a Garment in a Closet",caption:"Placing clothes on a closet rod or hook"},
-{title:"Cook Food in a Pan on the Stove",caption:"Using a skillet to prepare a hot meal"},
-{title:"Iron a Garment",caption:"Pressing clothing on an ironing board"},
-{title:"Fold and Set Table Linens",caption:"Preparing napkins or cloth at a table setting"},
-{title:"Collect and Load Laundry",caption:"Gathering clothes and operating the washer"},
-{title:"Empty a Trash Can",caption:"Removing and replacing a garbage bag"},
-{title:"Vacuum the Floor",caption:"Using a vacuum cleaner on hard floors or carpet"},
-{title:"Clean a Kitchen Counter",caption:"Wiping down a stone or marble countertop"},
-{title:"Remove Food from a Cooking Appliance",caption:"Taking a waffle out of a waffle iron"},
-{title:"Prepare and Pour Drinks",caption:"Handling pitchers and glasses in a kitchen"},
-{title:"Retrieve Items from the Refrigerator",caption:"Getting food out of the fridge"},
-{title:"Make an Espresso",caption:"Operating a professional espresso machine"},
-{title:"Pour Tea into Cups",caption:"Serving tea from a kettle over a tray"},
-{title:"Fold Laundry on a Table",caption:"Smoothing and folding clothes from a basket"},
-{title:"Stock the Refrigerator",caption:"Loading groceries or items into a fridge"},
-{title:"Hold a Conversation",caption:"Engaging a person in natural dialogue"},
-{title:"Express and Read Emotions",caption:"Demonstrating facial expressions for interaction"},
-{title:"Answer Questions in an Interview",caption:"Responding to spoken questions clearly"},
-{title:"Water a Houseplant",caption:"Using a watering can to tend to indoor plants"},
-{title:"Serve a Beverage at a Table",caption:"Bringing a hot drink to seated guests"},
-{title:"Pull an Espresso Shot",caption:"Operating a lever-style espresso machine"},
-{title:"Greet and Welcome Visitors",caption:"Welcoming people at an entrance or reception"},
-{title:"Play Jenga with a Person",caption:"Taking turns in a stacking block game"},
-{title:"Navigate a Space on Foot",caption:"Walking through a crowded area with awareness"},
-{title:"Demonstrate Facial Recognition",caption:"Using face-tracking to engage with a viewer"},
-{title:"Greet Customers at a Showroom",caption:"Welcoming visitors in a professional setting"},
-{title:"Conduct a Professional Conversation",caption:"Engaging professionally with poise and gestures"},
-{title:"Express Empathy in Conversation",caption:"Responding with appropriate emotional sensitivity"},
-{title:"Deliver a Spoken Presentation",caption:"Speaking to an audience with clarity and presence"},
-{title:"Demonstrate Deep Listening",caption:"Showing focused attentiveness to a speaker"},
-{title:"Participate in a Panel Discussion",caption:"Contributing to a formal group conversation"},
-{title:"Clean Using a Dustpan and Brush",caption:"Sweeping up debris from a floor surface"},
-{title:"Respond to a Direct Question",caption:"Giving a clear verbal answer to a posed question"},
-{title:"Put on Sunglasses",caption:"Locating and placing eyewear on your face"},
-{title:"Participate in a Video Interview",caption:"Responding clearly in a recorded or live video session"},
-{title:"Run on a Track",caption:"Completing a sprint or run on an athletic track"},
-{title:"Stand By for Instruction",caption:"Remaining attentive and ready to receive a task"},
-{title:"Smile and Make Eye Contact",caption:"Using positive facial cues in social interaction"},
-{title:"Try on Accessories",caption:"Selecting and wearing eyewear or accessories"},
+  {title:"Hang Clothing on a Rack",caption:"Organizing garments on hangers"},
+  {title:"Load Laundry into a Washing Machine",caption:"Putting clothes into a front-load washer"},
+  {title:"Wipe Down a Countertop",caption:"Cleaning a surface with a damp cloth"},
+  {title:"Play a Board Game with a Family",caption:"Engaging children in tabletop play"},
+  {title:"Prepare and Serve Tea",caption:"Setting up a full tea service tray"},
+  {title:"Hang a Garment in a Closet",caption:"Placing clothes on a closet rod or hook"},
+  {title:"Cook Food in a Pan on the Stove",caption:"Using a skillet to prepare a hot meal"},
+  {title:"Iron a Garment",caption:"Pressing clothing on an ironing board"},
+  {title:"Fold and Set Table Linens",caption:"Preparing napkins or cloth at a table setting"},
+  {title:"Collect and Load Laundry",caption:"Gathering clothes and operating the washer"},
+  {title:"Empty a Trash Can",caption:"Removing and replacing a garbage bag"},
+  {title:"Vacuum the Floor",caption:"Using a vacuum cleaner on hard floors or carpet"},
+  {title:"Clean a Kitchen Counter",caption:"Wiping down a stone or marble countertop"},
+  {title:"Remove Food from a Cooking Appliance",caption:"Taking a waffle out of a waffle iron"},
+  {title:"Prepare and Pour Drinks",caption:"Handling pitchers and glasses in a kitchen"},
+  {title:"Retrieve Items from the Refrigerator",caption:"Getting food out of the fridge"},
+  {title:"Make an Espresso",caption:"Operating a professional espresso machine"},
+  {title:"Pour Tea into Cups",caption:"Serving tea from a kettle over a tray"},
+  {title:"Fold Laundry on a Table",caption:"Smoothing and folding clothes from a basket"},
+  {title:"Stock the Refrigerator",caption:"Loading groceries or items into a fridge"},
+  {title:"Hold a Conversation",caption:"Engaging a person in natural dialogue"},
+  {title:"Express and Read Emotions",caption:"Demonstrating facial expressions for interaction"},
+  {title:"Answer Questions in an Interview",caption:"Responding to spoken questions clearly"},
+  {title:"Water a Houseplant",caption:"Using a watering can to tend to indoor plants"},
+  {title:"Serve a Beverage at a Table",caption:"Bringing a hot drink to seated guests"},
+  {title:"Pull an Espresso Shot",caption:"Operating a lever-style espresso machine"},
+  {title:"Greet and Welcome Visitors",caption:"Welcoming people at an entrance or reception"},
+  {title:"Play Jenga with a Person",caption:"Taking turns in a stacking block game"},
+  {title:"Navigate a Space on Foot",caption:"Walking through a crowded area with awareness"},
+  {title:"Demonstrate Facial Recognition",caption:"Using face-tracking to engage with a viewer"},
+  {title:"Greet Customers at a Showroom",caption:"Welcoming visitors in a professional setting"},
+  {title:"Conduct a Professional Conversation",caption:"Engaging professionally with poise and gestures"},
+  {title:"Express Empathy in Conversation",caption:"Responding with appropriate emotional sensitivity"},
+  {title:"Deliver a Spoken Presentation",caption:"Speaking to an audience with clarity and presence"},
+  {title:"Demonstrate Deep Listening",caption:"Showing focused attentiveness to a speaker"},
+  {title:"Participate in a Panel Discussion",caption:"Contributing to a formal group conversation"},
+  {title:"Clean Using a Dustpan and Brush",caption:"Sweeping up debris from a floor surface"},
+  {title:"Respond to a Direct Question",caption:"Giving a clear verbal answer to a posed question"},
+  {title:"Put on Sunglasses",caption:"Locating and placing eyewear on your face"},
+  {title:"Participate in a Video Interview",caption:"Responding clearly in a recorded or live video session"},
+  {title:"Run on a Track",caption:"Completing a sprint or run on an athletic track"},
+  {title:"Stand By for Instruction",caption:"Remaining attentive and ready to receive a task"},
+  {title:"Smile and Make Eye Contact",caption:"Using positive facial cues in social interaction"},
+  {title:"Try on Accessories",caption:"Selecting and wearing eyewear or accessories"},
 ];
 
 const items=ROBOT_TASKS.map((t,i)=>({idx:i,...t,resolvedSrc:null}));
 
-/* ── FIREBASE ── */
-let fbReady=false;
-(function(){
-  try{
-    if(!firebase.apps.length){
-      firebase.initializeApp({apiKey:"AIzaSyCZFDU-WlSmHqjXTs1Ox0nf9xeJU_xbaX0",authDomain:"collaborativemashup.firebaseapp.com",databaseURL:"https://collaborativemashup-default-rtdb.firebaseio.com",projectId:"collaborativemashup",storageBucket:"collaborativemashup.firebasestorage.app",messagingSenderId:"562437984610",appId:"1:562437984610:web:9f3711c26e097bc8ef9c3b"});
-    }
-    fbReady=true;
-  }catch(e){console.warn('Firebase init failed:',e);}
-})();
-
 /* ── STATE ── */
 let selectedAction=null,selectedState='on',selectedLocation=null,actionCount=1;
-let lockedIndex=-1;
-let lastInstruction='';
+let lockedIndex=-1,lastInstruction='';
 
 /* ── BUILD UI ── */
 function buildActionGrid(){
@@ -497,12 +462,20 @@ function generateInstruction(){
   document.getElementById('diagramWrap').style.display='block';
   setTimeout(()=>document.getElementById('diagramWrap').scrollIntoView({behavior:'smooth',block:'start'}),80);
   setTimeout(speakInstruction,900);
-  // Save instruction as data to Firebase
   saveInstructionData();
 }
 
+function setSaveStatus(state,msg){
+  const el=document.getElementById('saveStatus');
+  el.className=state;el.textContent=msg;el.style.display='block';
+  if(state==='saved')setTimeout(()=>{el.style.display='none';},4000);
+}
+
 function saveInstructionData(){
-  if(!window.firebase||!fbReady)return;
+  if(!fbReady||!fbDb){
+    setSaveStatus('error','⚠ Firebase not ready — data not saved.');
+    return;
+  }
   const task=items[lockedIndex];
   const payload={
     type:'cb42_instruction',
@@ -516,15 +489,23 @@ function saveInstructionData(){
     instruction:lastInstruction,
     ts:firebase.database.ServerValue.TIMESTAMP
   };
-  try{
-    firebase.database().ref('cb42Instructions').push(payload);
-  }catch(e){console.warn('Firebase save failed:',e);}
+  setSaveStatus('saving','✦ Saving to dashboard…');
+  fbDb.ref('cb42Instructions').push(payload)
+    .then(()=>{
+      console.log('cb42 saved ✓');
+      setSaveStatus('saved','✦ Saved to dashboard ✓');
+    })
+    .catch(e=>{
+      console.error('cb42 save failed:',e);
+      setSaveStatus('error','⚠ Save failed: '+( e.code||e.message));
+    });
 }
 
 function doReset(){
   lockedIndex=-1;
   hide('stepIdentify');hide('stepBuilder');
   document.getElementById('diagramWrap').style.display='none';
+  document.getElementById('saveStatus').style.display='none';
   document.getElementById('hint').style.display='block';
   order=makeOrder(items.length);currentIndex=Math.floor(Math.random()*items.length);
   lastSwitch=0;loop();
@@ -538,27 +519,14 @@ function hide(id){document.getElementById(id).style.display='none';}
 function buildDiagram(){
   const task=items[lockedIndex];
   const desc=document.getElementById('describeInput').value.trim();
-  const action=selectedAction;
-  const loc=selectedLocation;
-  const state=selectedState;
-  const count=actionCount;
-
-  // Build human-readable instruction
-  let actionText=action.label.toLowerCase();
-  let locationText=loc.label.toLowerCase();
-  let stateText=state==='on'?'(active/on)':'(passive/off)';
-  let times=count===1?'once':(count===2?'twice':`${count} times`);
-
+  const action=selectedAction,loc=selectedLocation,state=selectedState,count=actionCount;
+  const times=count===1?'once':(count===2?'twice':`${count} times`);
   const instruction=`Take the object you see in this image — ${desc}. ${action.label} ${times}, then place it at: ${loc.label}. Object should be ${state==='on'?'active / switched on':'passive / switched off'}.`;
   lastInstruction=instruction;
-
-  const sub=`Robot task context: "${task.title}". ${stateText}. Stage is 6 ft × 6 ft. Perform this instruction precisely in sequence.`;
-
+  const sub=`Robot task context: "${task.title}". Stage is 6 ft × 6 ft. Perform this instruction precisely in sequence.`;
   document.getElementById('diagramTitle').textContent=`${action.label} — ${times} — ${loc.label}`;
   document.getElementById('instructionText').textContent=instruction;
   document.getElementById('instructionSub').textContent=sub;
-
-  // Build SVG stage diagram
   renderStageSVG(loc,action,desc,count,state);
 }
 
@@ -566,103 +534,54 @@ function renderStageSVG(loc,action,desc,count,state){
   const svg=document.getElementById('stageSvg');
   const W=420,H=420,PAD=36,GRID=W-PAD*2;
   const toSVG=(nx,ny)=>({x:PAD+nx*GRID,y:PAD+ny*GRID});
-
-  // Resolve target position
   let targetX,targetY;
   const locId=loc.id;
-  const posMap={
-    center:{nx:.5,ny:.5},front_left:{nx:.15,ny:.85},front_right:{nx:.85,ny:.85},
-    back_left:{nx:.15,ny:.15},back_right:{nx:.85,ny:.15},
-    front_center:{nx:.5,ny:.85},back_center:{nx:.5,ny:.15}
-  };
+  const posMap={center:{nx:.5,ny:.5},front_left:{nx:.15,ny:.85},front_right:{nx:.85,ny:.85},back_left:{nx:.15,ny:.15},back_right:{nx:.85,ny:.15},front_center:{nx:.5,ny:.85},back_center:{nx:.5,ny:.15}};
   if(posMap[locId]){const p=posMap[locId];const sv=toSVG(p.nx,p.ny);targetX=sv.x;targetY=sv.y;}
-  else if(locId.startsWith('on_')){
-    const objId=locId.replace('on_','');const obj=STAGE_OBJECTS.find(o=>o.id===objId);
-    if(obj){const sv=toSVG(obj.x,obj.y);targetX=sv.x+14;targetY=sv.y-14;}
-    else{targetX=W/2;targetY=H/2;}
-  }else{targetX=W/2;targetY=H/2;}
-
+  else if(locId.startsWith('on_')){const objId=locId.replace('on_','');const obj=STAGE_OBJECTS.find(o=>o.id===objId);if(obj){const sv=toSVG(obj.x,obj.y);targetX=sv.x+14;targetY=sv.y-14;}else{targetX=W/2;targetY=H/2;}}
+  else{targetX=W/2;targetY=H/2;}
   let html='';
-  // Background
   html+=`<rect x="0" y="0" width="${W}" height="${H}" rx="12" fill="#0a0006"/>`;
-  // Stage grid floor
   html+=`<rect x="${PAD}" y="${PAD}" width="${GRID}" height="${GRID}" rx="8" fill="rgba(100,0,30,.35)" stroke="rgba(255,80,140,.3)" stroke-width="1.5"/>`;
-  // Grid lines (6x6)
-  for(let i=1;i<6;i++){
-    const x=PAD+(GRID/6)*i,y=PAD+(GRID/6)*i;
-    html+=`<line x1="${x}" y1="${PAD}" x2="${x}" y2="${PAD+GRID}" stroke="rgba(255,80,140,.1)" stroke-width=".8"/>`;
-    html+=`<line x1="${PAD}" y1="${y}" x2="${PAD+GRID}" y2="${y}" stroke="rgba(255,80,140,.1)" stroke-width=".8"/>`;
-  }
-  // Stage border label
+  for(let i=1;i<6;i++){const x=PAD+(GRID/6)*i,y=PAD+(GRID/6)*i;html+=`<line x1="${x}" y1="${PAD}" x2="${x}" y2="${PAD+GRID}" stroke="rgba(255,80,140,.1)" stroke-width=".8"/>`;html+=`<line x1="${PAD}" y1="${y}" x2="${PAD+GRID}" y2="${y}" stroke="rgba(255,80,140,.1)" stroke-width=".8"/>`;}
   html+=`<text x="${W/2}" y="${PAD-6}" text-anchor="middle" font-family="DM Mono,monospace" font-size="9" fill="rgba(255,133,179,.5)" letter-spacing=".12em">6 ft</text>`;
   html+=`<text x="${PAD-8}" y="${H/2}" text-anchor="middle" font-family="DM Mono,monospace" font-size="9" fill="rgba(255,133,179,.5)" transform="rotate(-90 ${PAD-8} ${H/2})" letter-spacing=".12em">6 ft</text>`;
-  // Audience label
   html+=`<text x="${W/2}" y="${PAD+GRID+16}" text-anchor="middle" font-family="Quicksand,sans-serif" font-size="9" fill="rgba(255,133,179,.35)" letter-spacing=".12em">AUDIENCE →</text>`;
-
-  // Stage objects
-  STAGE_OBJECTS.forEach(obj=>{
-    const p=toSVG(obj.x,obj.y);
-    const isTarget=loc.id==='on_'+obj.id;
-    html+=`<circle cx="${p.x}" cy="${p.y}" r="${isTarget?13:9}" fill="${isTarget?'rgba(255,45,107,.5)':'rgba(180,0,60,.35)'}" stroke="${isTarget?'#ff85b3':'rgba(255,80,140,.4)'}" stroke-width="${isTarget?2:1}"/>`;
-    html+=`<text x="${p.x}" y="${p.y+4}" text-anchor="middle" font-size="${isTarget?12:10}" font-family="sans-serif">${obj.emoji}</text>`;
-    html+=`<text x="${p.x}" y="${p.y+20}" text-anchor="middle" font-family="Quicksand,sans-serif" font-size="7" fill="rgba(255,180,210,.55)">${obj.label.replace('Laundry basket','Basket').replace('Watering can','Can')}</text>`;
-  });
-
-  // Target marker
+  STAGE_OBJECTS.forEach(obj=>{const p=toSVG(obj.x,obj.y);const isTarget=loc.id==='on_'+obj.id;html+=`<circle cx="${p.x}" cy="${p.y}" r="${isTarget?13:9}" fill="${isTarget?'rgba(255,45,107,.5)':'rgba(180,0,60,.35)'}" stroke="${isTarget?'#ff85b3':'rgba(255,80,140,.4)'}" stroke-width="${isTarget?2:1}"/>`;html+=`<text x="${p.x}" y="${p.y+4}" text-anchor="middle" font-size="${isTarget?12:10}" font-family="sans-serif">${obj.emoji}</text>`;html+=`<text x="${p.x}" y="${p.y+20}" text-anchor="middle" font-family="Quicksand,sans-serif" font-size="7" fill="rgba(255,180,210,.55)">${obj.label.replace('Laundry basket','Basket').replace('Watering can','Can')}</text>`;});
   html+=`<circle cx="${targetX}" cy="${targetY}" r="20" fill="rgba(255,45,107,.18)" stroke="#ff2d6b" stroke-width="2" stroke-dasharray="5 3"/>`;
   html+=`<text x="${targetX}" y="${targetY+5}" text-anchor="middle" font-size="16" font-family="sans-serif">🎯</text>`;
-
-  // Arrow from center to target (if not center)
-  if(locId!=='center'){
-    const cx=W/2,cy=H/2;
-    const dx=targetX-cx,dy=targetY-cy,d=Math.sqrt(dx*dx+dy*dy);
-    const nx=dx/d,ny=dy/d;
-    const x1=cx+nx*22,y1=cy+ny*22,x2=targetX-nx*22,y2=targetY-ny*22;
-    html+=`<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="rgba(255,85,140,.55)" stroke-width="1.5" stroke-dasharray="6 4"/>`;
-    html+=`<polygon points="${x2},${y2} ${x2-nx*8+ny*5},${y2-ny*8-nx*5} ${x2-nx*8-ny*5},${y2-ny*8+nx*5}" fill="rgba(255,85,140,.7)"/>`;
-  }
-
-  // Robot marker at center
+  if(locId!=='center'){const cx=W/2,cy=H/2,dx=targetX-cx,dy=targetY-cy,d=Math.sqrt(dx*dx+dy*dy),nx=dx/d,ny=dy/d,x1=cx+nx*22,y1=cy+ny*22,x2=targetX-nx*22,y2=targetY-ny*22;html+=`<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="rgba(255,85,140,.55)" stroke-width="1.5" stroke-dasharray="6 4"/>`;html+=`<polygon points="${x2},${y2} ${x2-nx*8+ny*5},${y2-ny*8-nx*5} ${x2-nx*8-ny*5},${y2-ny*8+nx*5}" fill="rgba(255,85,140,.7)"/>`;}
   html+=`<circle cx="${W/2}" cy="${H/2}" r="18" fill="rgba(255,45,107,.25)" stroke="#ff85b3" stroke-width="1.5"/>`;
   html+=`<text x="${W/2}" y="${H/2+6}" text-anchor="middle" font-size="18" font-family="sans-serif">🤖</text>`;
-
-  // Selected image task label top-left
-  const task=items[lockedIndex];
-  const shortTitle=task.title.length>24?task.title.slice(0,23)+'…':task.title;
+  const task=items[lockedIndex];const shortTitle=task.title.length>24?task.title.slice(0,23)+'…':task.title;
   html+=`<text x="${PAD+5}" y="${PAD+14}" font-family="Quicksand,sans-serif" font-size="8" fill="rgba(255,180,210,.6)">${shortTitle}</text>`;
-
-  // Action + count overlay
   const actionLabel=action.label+(count>1?` ×${count}`:'');
   html+=`<rect x="${W-PAD-80}" y="${H-PAD-22}" width="84" height="18" rx="4" fill="rgba(255,45,107,.22)" stroke="rgba(255,80,140,.4)" stroke-width="1"/>`;
   html+=`<text x="${W-PAD-38}" y="${H-PAD-10}" text-anchor="middle" font-family="DM Mono,monospace" font-size="8" fill="rgba(255,200,220,.8)">${actionLabel}</text>`;
-
-  // State badge
   const stateCol=state==='on'?'rgba(255,200,80,.8)':'rgba(180,180,180,.6)';
-  const stateLabel=state==='on'?'ON':'OFF';
   html+=`<rect x="${PAD}" y="${H-PAD-22}" width="32" height="18" rx="4" fill="rgba(0,0,0,.4)" stroke="rgba(255,80,140,.3)" stroke-width="1"/>`;
-  html+=`<text x="${PAD+16}" y="${H-PAD-10}" text-anchor="middle" font-family="DM Mono,monospace" font-size="9" fill="${stateCol}" font-weight="700">${stateLabel}</text>`;
-
+  html+=`<text x="${PAD+16}" y="${H-PAD-10}" text-anchor="middle" font-family="DM Mono,monospace" font-size="9" fill="${stateCol}" font-weight="700">${state==='on'?'ON':'OFF'}</text>`;
   svg.innerHTML=html;
 }
 
 /* ── SPEECH ── */
 function speakInstruction(){
-  if(!lastInstruction){return;}
-  if(!('speechSynthesis' in window)){alert('Speech synthesis not available on this browser.');return;}
+  if(!lastInstruction)return;
+  if(!('speechSynthesis' in window)){alert('Speech synthesis not available.');return;}
   window.speechSynthesis.cancel();
   const u=new SpeechSynthesisUtterance(lastInstruction);
-  u.rate=0.9;u.pitch=1.05;
+  u.rate=0.9;u.pitch=1.05;u.lang='en-US';
   const trySpeak=()=>{
     const voices=window.speechSynthesis.getVoices();
-    const fv=voices.find(v=>v.lang==='en-US'&&/samantha|karen|amy|emma|female|woman/i.test(v.name))||voices.find(v=>v.lang==='en-US')||voices[0];
+    const fv=voices.find(v=>v.lang==='en-US'&&/zira|samantha|aria|jenny|michelle|jane|emma|female|woman/i.test(v.name))
+      ||voices.find(v=>v.lang==='en-US'&&!/male|david|mark|richard|guy|james/i.test(v.name))
+      ||voices.find(v=>v.lang==='en-US')||voices[0];
     if(fv)u.voice=fv;
     window.speechSynthesis.speak(u);
   };
   if(window.speechSynthesis.getVoices().length)trySpeak();
-  else{window.speechSynthesis.onvoiceschanged=trySpeak;}
+  else window.speechSynthesis.addEventListener('voiceschanged',trySpeak,{once:true});
 }
 </script>
-<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
 </body>
 </html>
