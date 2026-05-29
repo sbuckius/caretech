@@ -263,8 +263,8 @@ const apps={},dbs={},stores={};
 function app(k){if(!apps[k]){try{apps[k]=firebase.initializeApp(CFGS[k],k);}catch(e){apps[k]=firebase.app(k);}}return apps[k];}
 function db(k){if(!dbs[k]){try{dbs[k]=firebase.database(app(k));}catch(e){return null;}}return dbs[k];}
 function fs(k){if(!stores[k]){try{stores[k]=firebase.firestore(app(k));}catch(e){return null;}}return stores[k];}
-async function rtdbAll(key,path){try{const s=await db(key).ref(path).once('value');const v=s.val();return v?Object.values(v):[];}catch(e){return null;}}
-async function fsAll(key,col){try{const s=await fs(key).collection(col).get();return s.docs.map(d=>d.data());}catch(e){return null;}}
+async function rtdbAll(key,path){try{const s=await db(key).ref(path).once('value');const v=s.val();const n=v?Object.keys(v).length:0;console.log(`[rtdbAll] ${key}/${path}: ${n} records`);return v?Object.values(v):[];}catch(e){const msg=e.code||e.message;console.error(`[rtdbAll ERROR] ${key}/${path}:`,msg,e);return null;}}
+async function fsAll(key,col){try{const s=await fs(key).collection(col).get();console.log(`[fsAll] ${key}/${col}: ${s.docs.length} records`);return s.docs.map(d=>d.data());}catch(e){const msg=e.code||e.message;console.error(`[fsAll ERROR] ${key}/${col}:`,msg,e);return null;}}
 
 // ══════════════════════════════════════════
 // HELPERS
@@ -448,6 +448,7 @@ async function buildCB07(wrap){
   const body=p.querySelector('.panel-body');
   if(!data){errMsg(body,'Could not load microtaskReactions');return 0;}
   if(!data.length){emptyMsg(body,'No reactions yet.');return 0;}
+  window._cb07Data=[...new Set(data.filter(d=>d.workerId).sort((a,b)=>(b.ts||0)-(a.ts||0)).map(d=>d.workerId))];
   const allEmotions=data.flatMap(d=>Array.isArray(d.emotions)?d.emotions:[]);
   const sf=sortedFreq(allEmotions);
   const total=allEmotions.length;
@@ -760,26 +761,37 @@ async function buildCB42(wrap){
     const lDiv=document.createElement('div');barChart(lDiv,sf2.map(([l,c])=>({label:l,val:c,count:c})),sf2[0]?.[1],'amber');body.appendChild(lDiv);
   }
   const onCount=states.filter(s=>s==='on').length,offCount=states.filter(s=>s==='off').length;
-  statRows(body,[
-    {label:'Total instructions',val:data.length},
-    {label:'Avg repetitions',val:counts.length?avg(counts).toFixed(1):'—'},
-    {label:'State: On / Active',val:onCount+' ('+pct(onCount,states.length)+'%)'},
-    {label:'State: Off / Passive',val:offCount+' ('+pct(offCount,states.length)+'%)'},
-    {label:'Most common task',val:sortedFreq(tasks)[0]?.[0]||'—'},
-  ]);
   if(tasks.length){
     const lbl3=document.createElement('div');lbl3.style.cssText='font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--td);font-family:var(--fh);font-weight:800;';lbl3.textContent='✦ Task Contexts';body.appendChild(lbl3);
     const tDiv=document.createElement('div');tagCloud(tDiv,sortedFreq(tasks).slice(0,10));body.appendChild(tDiv);
   }
 
-  // ── INSTRUCTION CARDS WITH DIAGRAM + AUDIO ──
-  const feedLbl=document.createElement('div');feedLbl.style.cssText='font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--td);font-family:var(--fh);font-weight:800;margin-top:6px;';feedLbl.textContent='✦ All Instructions — Stage Diagram + Audio';body.appendChild(feedLbl);
+  // ── PLAY ALL BUTTON ──
+  const playRow=document.createElement('div');playRow.style.cssText='display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-top:6px;';
+  const feedLbl=document.createElement('div');feedLbl.style.cssText='font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--td);font-family:var(--fh);font-weight:800;';feedLbl.textContent='✦ All Instructions — Stage Diagram + Audio';
+  const playAllBtn=document.createElement('button');
+  playAllBtn.id='cb42-play-all';
+  playAllBtn.style.cssText='appearance:none;font-family:var(--fh);font-weight:900;font-size:11px;letter-spacing:.08em;color:var(--cream);background:linear-gradient(135deg,var(--hot),var(--berry));border:1.5px solid var(--hot);border-radius:10px;padding:7px 16px;cursor:pointer;box-shadow:0 3px 14px rgba(255,45,107,.35);white-space:nowrap;';
+  playAllBtn.textContent='▶ Play all — payments then instructions';
+  playAllBtn.onclick=()=>cb42PlayAll(sorted);
+  playRow.appendChild(feedLbl);playRow.appendChild(playAllBtn);body.appendChild(playRow);
 
-  const feed=document.createElement('div');feed.style.cssText='display:flex;flex-direction:column;gap:14px;';body.appendChild(feed);
+  // ── GRID OF CARDS (5 across) ──
+  const feed=document.createElement('div');
+  feed.style.cssText='display:grid;grid-template-columns:repeat(5,1fr);gap:12px;';
+  // responsive: fewer columns on narrow screens via a style tag
+  const styleEl=document.createElement('style');
+  styleEl.textContent='@media(max-width:1200px){#cb42-grid{grid-template-columns:repeat(4,1fr)!important;}}@media(max-width:900px){#cb42-grid{grid-template-columns:repeat(3,1fr)!important;}}@media(max-width:600px){#cb42-grid{grid-template-columns:repeat(2,1fr)!important;}}@media(max-width:400px){#cb42-grid{grid-template-columns:1fr!important;}}';
+  document.head.appendChild(styleEl);
+  feed.id='cb42-grid';
+  body.appendChild(feed);
+
+  // store instructions on window so play-all can access CB07 data
+  window._cb42Instructions=sorted;
 
   sorted.forEach((d)=>{
     const card=document.createElement('div');
-    card.style.cssText='background:rgba(14,0,8,.7);border:1.5px solid rgba(255,100,160,.28);border-radius:14px;overflow:hidden;';
+    card.style.cssText='background:rgba(14,0,8,.7);border:1.5px solid rgba(255,100,160,.28);border-radius:14px;overflow:hidden;display:flex;flex-direction:column;';
 
     const ts=d.ts?new Date(d.ts).toLocaleString():'—';
     const stateEmoji=d.state==='on'?'⚡':'⬜';
@@ -788,30 +800,84 @@ async function buildCB42(wrap){
     const uid='cb42-'+Math.random().toString(36).slice(2,8);
 
     card.innerHTML=`
-      <div style="padding:12px 14px 10px;">
-        <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:6px;flex-wrap:wrap;">
-          <div style="font-family:'Nunito',sans-serif;font-weight:900;font-size:13px;color:var(--blush);line-height:1.3;">${d.taskTitle||'—'}</div>
-          <div style="font-size:9px;letter-spacing:.08em;color:var(--td);white-space:nowrap;flex-shrink:0;">${ts}</div>
+      <div style="padding:8px 8px 0;">${svgHtml}</div>
+      <div style="padding:8px 11px 10px;flex:1;">
+        <div style="font-family:'Nunito',sans-serif;font-weight:900;font-size:11px;color:var(--blush);line-height:1.3;margin-bottom:5px;">${d.taskTitle||'—'}</div>
+        <div style="font-size:10px;color:rgba(255,215,230,.8);line-height:1.6;margin-bottom:8px;">${d.instruction||'—'}</div>
+        <div style="display:flex;gap:4px;flex-wrap:wrap;margin-bottom:8px;">
+          <span style="padding:2px 7px;border-radius:999px;background:rgba(255,45,107,.12);border:1px solid rgba(255,100,160,.22);font-size:9px;color:rgba(255,180,210,.8);font-family:'Nunito',sans-serif;font-weight:800;">⚙ ${d.action||'—'}</span>
+          <span style="padding:2px 7px;border-radius:999px;background:rgba(255,45,107,.12);border:1px solid rgba(255,100,160,.22);font-size:9px;color:rgba(255,180,210,.8);font-family:'Nunito',sans-serif;font-weight:800;">🎯 ${(d.location||'—').replace(/^On: /i,'')}</span>
+          <span style="padding:2px 7px;border-radius:999px;background:rgba(255,45,107,.12);border:1px solid rgba(255,100,160,.22);font-size:9px;color:rgba(255,180,210,.8);font-family:'Nunito',sans-serif;font-weight:800;">${stateEmoji} ↺${d.count||1}</span>
         </div>
-        <div style="font-size:12px;color:rgba(255,215,230,.85);line-height:1.7;margin-bottom:10px;">${d.instruction||'—'}</div>
-        <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px;">
-          <span style="padding:3px 9px;border-radius:999px;background:rgba(255,45,107,.12);border:1px solid rgba(255,100,160,.25);font-size:10px;color:rgba(255,180,210,.8);font-family:'Nunito',sans-serif;font-weight:800;">⚙ ${d.action||'—'}</span>
-          <span style="padding:3px 9px;border-radius:999px;background:rgba(255,45,107,.12);border:1px solid rgba(255,100,160,.25);font-size:10px;color:rgba(255,180,210,.8);font-family:'Nunito',sans-serif;font-weight:800;">🎯 ${d.location||'—'}</span>
-          <span style="padding:3px 9px;border-radius:999px;background:rgba(255,45,107,.12);border:1px solid rgba(255,100,160,.25);font-size:10px;color:rgba(255,180,210,.8);font-family:'Nunito',sans-serif;font-weight:800;">${stateEmoji} ${(d.state||'—').toUpperCase()}</span>
-          <span style="padding:3px 9px;border-radius:999px;background:rgba(255,45,107,.12);border:1px solid rgba(255,100,160,.25);font-size:10px;color:rgba(255,180,210,.8);font-family:'Nunito',sans-serif;font-weight:800;">↺ ${countStr}</span>
-        </div>
-        ${d.imageDescription?`<div style="font-size:10px;color:rgba(255,180,210,.45);font-style:italic;margin-bottom:10px;">"${d.imageDescription}"</div>`:''}
-        <button id="${uid}" onclick="cb42Speak(${JSON.stringify(d.instruction||'')}, document.getElementById('${uid}'))" style="appearance:none;font-family:'Nunito',sans-serif;font-weight:800;font-size:11px;letter-spacing:.06em;color:var(--blush);background:rgba(255,45,107,.14);border:1.5px solid rgba(255,100,160,.4);border-radius:9px;padding:7px 14px;cursor:pointer;transition:all .15s;width:100%;">🔊 Read aloud</button>
+        ${d.imageDescription?`<div style="font-size:9px;color:rgba(255,180,210,.4);font-style:italic;margin-bottom:8px;">"${d.imageDescription.slice(0,60)}${d.imageDescription.length>60?'…':''}"</div>`:''}
+        <button id="${uid}" onclick="cb42Speak(${JSON.stringify(d.instruction||'')}, document.getElementById('${uid}'))" style="appearance:none;font-family:'Nunito',sans-serif;font-weight:800;font-size:10px;color:var(--blush);background:rgba(255,45,107,.14);border:1.5px solid rgba(255,100,160,.4);border-radius:8px;padding:6px 10px;cursor:pointer;width:100%;margin-top:auto;">🔊 Read aloud</button>
       </div>
-      <div style="padding:0 10px 10px;">${svgHtml}</div>
     `;
     feed.appendChild(card);
   });
+
+  statRows(body,[
+    {label:'Total instructions',val:data.length},
+    {label:'Avg repetitions',val:counts.length?avg(counts).toFixed(1):'—'},
+    {label:'State: On / Active',val:onCount+' ('+pct(onCount,states.length)+'%)'},
+    {label:'State: Off / Passive',val:offCount+' ('+pct(offCount,states.length)+'%)'},
+    {label:'Most common task',val:sortedFreq(tasks)[0]?.[0]||'—'},
+  ]);
 
   if(sorted.length){
     insight(body,`<strong>${sorted.length} CEO robot instructions</strong> saved. Most used action: <strong>"${sortedFreq(actions)[0]?.[0]||'—'}"</strong>. Avg repetitions: <strong>${counts.length?avg(counts).toFixed(1):'—'}</strong>. The instructions are data. The robot has not received them. The work remains undone.`);
   }
   return data.length;
+}
+
+// ── PLAY ALL: payments first, then instructions in sequence ──
+function cb42PlayAll(instructions){
+  if(!window.speechSynthesis){alert('Speech synthesis not supported.');return;}
+  window.speechSynthesis.cancel();
+
+  // build queue: for each instruction, pair it with its worker ID if available
+  // first read all payment announcements, then all instructions
+  const cb07Data=window._cb07Data||[];
+  const queue=[];
+
+  // payments
+  cb07Data.forEach(wid=>{
+    const spelled=wid.split('').join(' ');
+    queue.push(`Please pay worker number ${spelled} one cent.`);
+  });
+
+  // instructions
+  instructions.forEach(d=>{
+    if(d.instruction)queue.push(d.instruction);
+  });
+
+  if(!queue.length){alert('Nothing to play.');return;}
+
+  const btn=document.getElementById('cb42-play-all');
+  if(btn){btn.textContent='⏸ Playing… (click to stop)';btn.onclick=()=>{window.speechSynthesis.cancel();if(btn){btn.textContent='▶ Play all — payments then instructions';btn.onclick=()=>cb42PlayAll(instructions);}};}
+
+  function getVoice(){
+    const voices=window.speechSynthesis.getVoices();
+    return voices.find(v=>v.lang==='en-US'&&/zira|samantha|aria|jenny|michelle|jane|linda|betty|emma|woman|female/i.test(v.name))
+      ||voices.find(v=>v.lang==='en-US'&&!/male|david|mark|richard|guy|james/i.test(v.name))
+      ||voices.find(v=>v.lang==='en-US')||voices[0];
+  }
+
+  function playNext(i){
+    if(i>=queue.length){
+      if(btn){btn.textContent='▶ Play all — payments then instructions';btn.onclick=()=>cb42PlayAll(instructions);}
+      return;
+    }
+    const u=new SpeechSynthesisUtterance(queue[i]);
+    u.rate=0.88;u.pitch=1.05;u.lang='en-US';
+    const voice=getVoice();if(voice)u.voice=voice;
+    u.onend=()=>setTimeout(()=>playNext(i+1),420);
+    u.onerror=()=>playNext(i+1);
+    window.speechSynthesis.speak(u);
+  }
+
+  if(window.speechSynthesis.getVoices().length){playNext(0);}
+  else{window.speechSynthesis.addEventListener('voiceschanged',()=>playNext(0),{once:true});}
 }
 
 // ══════════════════════════════════════════
@@ -823,14 +889,14 @@ function addR(n){totalResponses+=n;document.getElementById('s-n').textContent=to
 async function buildAll(){
   const wrap=document.getElementById('wrap');
   wrap.innerHTML='';
+  wrap.appendChild(secHead('✦ CEO ROBOT INSTRUCTIONS · NONSENSICAL DATA'));
+  const r42=await buildCB42(wrap);
+  addR(r42||0);
+
   wrap.appendChild(secHead('✦ AFFECT & EMOTIONAL RESPONSE'));
   const row1=document.createElement('div');row1.className='two-col';wrap.appendChild(row1);
   const [r02,r07,r04,r05]=await Promise.all([buildCB02(row1),buildCB07(row1),buildCB04(wrap),buildCB05(wrap)]);
   addR((r02||0)+(r07||0)+(r04||0)+(r05||0));
-
-  wrap.appendChild(secHead('✦ CEO ROBOT INSTRUCTIONS · NONSENSICAL DATA'));
-  const r42=await buildCB42(wrap);
-  addR(r42||0);
 
   wrap.appendChild(secHead('✦ INVENTOR ARCHIVES'));
   const row2=document.createElement('div');row2.className='two-col';wrap.appendChild(row2);
