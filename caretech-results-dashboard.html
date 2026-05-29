@@ -625,6 +625,195 @@ async function buildCB22(wrap){
   return data.length;
 }
 
+// ── CB42 CEO Robot Instructions ──
+// ── CB42 stage objects (mirrors carebot42 source) ──
+const CB42_STAGE_OBJECTS=[
+  {id:'basket1',label:'Laundry basket 1',emoji:'🧺',x:.18,y:.22},
+  {id:'basket2',label:'Laundry basket 2',emoji:'🧺',x:.35,y:.18},
+  {id:'basket3',label:'Laundry basket 3',emoji:'🧺',x:.68,y:.25},
+  {id:'basket4',label:'Laundry basket 4',emoji:'🧺',x:.82,y:.72},
+  {id:'desk',label:'Rolling desk',emoji:'🖥',x:.55,y:.45},
+  {id:'watering1',label:'Watering can 1',emoji:'🪣',x:.22,y:.58},
+  {id:'watering2',label:'Watering can 2',emoji:'🪣',x:.78,y:.38},
+  {id:'vacuum',label:'Vacuum',emoji:'🤖',x:.45,y:.72},
+  {id:'typewriter',label:'Typewriter',emoji:'⌨',x:.30,y:.82},
+  {id:'ironingboard',label:'Ironing board',emoji:'🏳',x:.70,y:.80},
+  {id:'moneybox',label:'Money box',emoji:'💰',x:.62,y:.62},
+  {id:'towels',label:'Towels',emoji:'🏳',x:.15,y:.75},
+  {id:'squeegee',label:'Squeegee',emoji:'🪣',x:.85,y:.55},
+  {id:'broom',label:'Broom',emoji:'🧹',x:.50,y:.15},
+  {id:'cabinet',label:'Cabinet',emoji:'🗄',x:.88,y:.18},
+  {id:'wig',label:'Wig',emoji:'👱',x:.12,y:.42},
+  {id:'sunglasses',label:'Sunglasses',emoji:'🕶',x:.40,y:.35},
+];
+
+function cb42RenderSVG(d){
+  const W=340,H=340,PAD=28,GRID=W-PAD*2;
+  const toSVG=(nx,ny)=>({x:PAD+nx*GRID,y:PAD+ny*GRID});
+  const locId=(d.location||'').toLowerCase().replace(/\s+/g,'_').replace(/[^a-z0-9_]/g,'');
+  const posMap={
+    center:{nx:.5,ny:.5},front_left:{nx:.15,ny:.85},front_right:{nx:.85,ny:.85},
+    back_left:{nx:.15,ny:.15},back_right:{nx:.85,ny:.15},
+    front_center:{nx:.5,ny:.85},back_center:{nx:.5,ny:.15}
+  };
+  // match location string to posMap key or stage object
+  let targetX=W/2,targetY=H/2;
+  const locLower=(d.location||'').toLowerCase();
+  // try positional map first
+  const pmKey=Object.keys(posMap).find(k=>locLower.includes(k.replace(/_/g,' ')));
+  if(pmKey){const p=posMap[pmKey];const sv=toSVG(p.nx,p.ny);targetX=sv.x;targetY=sv.y;}
+  else{
+    // try "on: <object>" pattern
+    const onMatch=locLower.match(/^on:\s*(.+)$/);
+    if(onMatch){
+      const objName=onMatch[1].trim();
+      const obj=CB42_STAGE_OBJECTS.find(o=>o.label.toLowerCase()===objName||o.id===objName.replace(/\s+/g,''));
+      if(obj){const sv=toSVG(obj.x,obj.y);targetX=sv.x+12;targetY=sv.y-12;}
+    }
+    // fallback: fuzzy match stage object label
+    if(targetX===W/2){
+      const obj=CB42_STAGE_OBJECTS.find(o=>locLower.includes(o.label.toLowerCase().split(' ')[0]));
+      if(obj){const sv=toSVG(obj.x,obj.y);targetX=sv.x;targetY=sv.y;}
+    }
+  }
+  let html='';
+  html+=`<rect x="0" y="0" width="${W}" height="${H}" rx="10" fill="#08000a"/>`;
+  html+=`<rect x="${PAD}" y="${PAD}" width="${GRID}" height="${GRID}" rx="6" fill="rgba(80,0,25,.4)" stroke="rgba(255,80,140,.28)" stroke-width="1.2"/>`;
+  for(let i=1;i<6;i++){
+    const x=PAD+(GRID/6)*i,y=PAD+(GRID/6)*i;
+    html+=`<line x1="${x}" y1="${PAD}" x2="${x}" y2="${PAD+GRID}" stroke="rgba(255,80,140,.09)" stroke-width=".7"/>`;
+    html+=`<line x1="${PAD}" y1="${y}" x2="${PAD+GRID}" y2="${y}" stroke="rgba(255,80,140,.09)" stroke-width=".7"/>`;
+  }
+  html+=`<text x="${W/2}" y="${PAD+GRID+14}" text-anchor="middle" font-family="monospace" font-size="8" fill="rgba(255,133,179,.3)" letter-spacing=".1em">AUDIENCE</text>`;
+  CB42_STAGE_OBJECTS.forEach(obj=>{
+    const p=toSVG(obj.x,obj.y);
+    const isTarget=locLower.includes(obj.label.toLowerCase().split(' ')[0])||locLower.includes(obj.id);
+    html+=`<circle cx="${p.x}" cy="${p.y}" r="${isTarget?11:7}" fill="${isTarget?'rgba(255,45,107,.45)':'rgba(140,0,40,.35)'}" stroke="${isTarget?'#ff85b3':'rgba(255,80,140,.35)'}" stroke-width="${isTarget?1.8:1}"/>`;
+    html+=`<text x="${p.x}" y="${p.y+4}" text-anchor="middle" font-size="${isTarget?11:9}" font-family="sans-serif">${obj.emoji}</text>`;
+  });
+  // target marker
+  html+=`<circle cx="${targetX}" cy="${targetY}" r="16" fill="rgba(255,45,107,.15)" stroke="#ff2d6b" stroke-width="1.8" stroke-dasharray="4 3"/>`;
+  html+=`<text x="${targetX}" y="${targetY+5}" text-anchor="middle" font-size="14" font-family="sans-serif">🎯</text>`;
+  // arrow center→target
+  if(Math.abs(targetX-W/2)>8||Math.abs(targetY-H/2)>8){
+    const cx=W/2,cy=H/2,dx=targetX-cx,dy=targetY-cy,dist=Math.sqrt(dx*dx+dy*dy);
+    const nx2=dx/dist,ny2=dy/dist;
+    const x1=cx+nx2*20,y1=cy+ny2*20,x2=targetX-nx2*18,y2=targetY-ny2*18;
+    html+=`<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="rgba(255,85,140,.5)" stroke-width="1.4" stroke-dasharray="5 3"/>`;
+    html+=`<polygon points="${x2},${y2} ${x2-nx2*7+ny2*4},${y2-ny2*7-nx2*4} ${x2-nx2*7-ny2*4},${y2-ny2*7+nx2*4}" fill="rgba(255,85,140,.65)"/>`;
+  }
+  // robot at center
+  html+=`<circle cx="${W/2}" cy="${H/2}" r="14" fill="rgba(255,45,107,.22)" stroke="#ff85b3" stroke-width="1.2"/>`;
+  html+=`<text x="${W/2}" y="${H/2+5}" text-anchor="middle" font-size="14" font-family="sans-serif">🤖</text>`;
+  // action badge
+  const actionLabel=(d.action||'')+(d.count>1?` ×${d.count}`:'');
+  html+=`<rect x="${W-PAD-68}" y="${H-PAD-18}" width="72" height="15" rx="4" fill="rgba(255,45,107,.2)" stroke="rgba(255,80,140,.35)" stroke-width="1"/>`;
+  html+=`<text x="${W-PAD-32}" y="${H-PAD-8}" text-anchor="middle" font-family="monospace" font-size="7" fill="rgba(255,200,220,.8)">${actionLabel.slice(0,20)}</text>`;
+  // state badge
+  const stateCol=d.state==='on'?'rgba(255,210,80,.85)':'rgba(180,180,180,.6)';
+  html+=`<rect x="${PAD}" y="${H-PAD-18}" width="28" height="15" rx="4" fill="rgba(0,0,0,.4)" stroke="rgba(255,80,140,.28)" stroke-width="1"/>`;
+  html+=`<text x="${PAD+14}" y="${H-PAD-8}" text-anchor="middle" font-family="monospace" font-size="8" fill="${stateCol}" font-weight="700">${(d.state||'').toUpperCase()}</text>`;
+  return `<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" style="width:100%;border-radius:10px;display:block;">${html}</svg>`;
+}
+
+function cb42Speak(text, btnEl){
+  if(!window.speechSynthesis){alert('Speech synthesis not supported.');return;}
+  window.speechSynthesis.cancel();
+  const u=new SpeechSynthesisUtterance(text);
+  u.rate=0.88;u.pitch=1.05;u.lang='en-US';
+  function doSpeak(){
+    const voices=window.speechSynthesis.getVoices();
+    const female=voices.find(v=>v.lang==='en-US'&&/zira|samantha|aria|jenny|michelle|jane|linda|betty|emma|woman|female/i.test(v.name))
+      ||voices.find(v=>v.lang==='en-US'&&!/male|david|mark|richard|guy|james/i.test(v.name))
+      ||voices.find(v=>v.lang==='en-US')||voices[0];
+    if(female)u.voice=female;
+    if(btnEl){u.onstart=()=>{btnEl.textContent='🔊 Speaking…';btnEl.style.opacity='.6';};u.onend=()=>{btnEl.textContent='🔊 Read aloud';btnEl.style.opacity='1';};}
+    window.speechSynthesis.speak(u);
+  }
+  if(window.speechSynthesis.getVoices().length)doSpeak();
+  else window.speechSynthesis.addEventListener('voiceschanged',doSpeak,{once:true});
+}
+
+async function buildCB42(wrap){
+  const data=await rtdbAll('collab','cb42Instructions');
+  const p=panel('CAREBOT-42 · Nonsensical Data for Domestic Work','CEO Robot Instructions — Diagrams + Audio Feed',el=>{loading(el);});
+  wrap.appendChild(p);
+  const body=p.querySelector('.panel-body');
+  if(!data){errMsg(body,'Could not load cb42Instructions');return 0;}
+  if(!data.length){emptyMsg(body,'No instructions yet.');return 0;}
+
+  const sorted=[...data].sort((a,b)=>(b.ts||0)-(a.ts||0));
+  const actions=data.map(d=>d.action).filter(Boolean);
+  const locations=data.map(d=>d.location).filter(Boolean);
+  const states=data.map(d=>d.state).filter(Boolean);
+  const counts=data.map(d=>safeNum(d.count)).filter(v=>v!==null);
+  const tasks=data.map(d=>d.taskTitle).filter(Boolean);
+
+  if(actions.length){
+    const lbl=document.createElement('div');lbl.style.cssText='font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--td);font-family:var(--fh);font-weight:800;';lbl.textContent='✦ Most Used Actions';body.appendChild(lbl);
+    const sf=sortedFreq(actions).slice(0,8);
+    const bDiv=document.createElement('div');barChart(bDiv,sf.map(([a,c])=>({label:a,val:c,count:c})),sf[0]?.[1],'purple');body.appendChild(bDiv);
+  }
+  if(locations.length){
+    const lbl2=document.createElement('div');lbl2.style.cssText='font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--td);font-family:var(--fh);font-weight:800;';lbl2.textContent='✦ Target Locations';body.appendChild(lbl2);
+    const sf2=sortedFreq(locations).slice(0,8);
+    const lDiv=document.createElement('div');barChart(lDiv,sf2.map(([l,c])=>({label:l,val:c,count:c})),sf2[0]?.[1],'amber');body.appendChild(lDiv);
+  }
+  const onCount=states.filter(s=>s==='on').length,offCount=states.filter(s=>s==='off').length;
+  statRows(body,[
+    {label:'Total instructions',val:data.length},
+    {label:'Avg repetitions',val:counts.length?avg(counts).toFixed(1):'—'},
+    {label:'State: On / Active',val:onCount+' ('+pct(onCount,states.length)+'%)'},
+    {label:'State: Off / Passive',val:offCount+' ('+pct(offCount,states.length)+'%)'},
+    {label:'Most common task',val:sortedFreq(tasks)[0]?.[0]||'—'},
+  ]);
+  if(tasks.length){
+    const lbl3=document.createElement('div');lbl3.style.cssText='font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--td);font-family:var(--fh);font-weight:800;';lbl3.textContent='✦ Task Contexts';body.appendChild(lbl3);
+    const tDiv=document.createElement('div');tagCloud(tDiv,sortedFreq(tasks).slice(0,10));body.appendChild(tDiv);
+  }
+
+  // ── INSTRUCTION CARDS WITH DIAGRAM + AUDIO ──
+  const feedLbl=document.createElement('div');feedLbl.style.cssText='font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--td);font-family:var(--fh);font-weight:800;margin-top:6px;';feedLbl.textContent='✦ All Instructions — Stage Diagram + Audio';body.appendChild(feedLbl);
+
+  const feed=document.createElement('div');feed.style.cssText='display:flex;flex-direction:column;gap:14px;';body.appendChild(feed);
+
+  sorted.forEach((d)=>{
+    const card=document.createElement('div');
+    card.style.cssText='background:rgba(14,0,8,.7);border:1.5px solid rgba(255,100,160,.28);border-radius:14px;overflow:hidden;';
+
+    const ts=d.ts?new Date(d.ts).toLocaleString():'—';
+    const stateEmoji=d.state==='on'?'⚡':'⬜';
+    const countStr=d.count==1?'once':d.count==2?'twice':`${d.count}×`;
+    const svgHtml=cb42RenderSVG(d);
+    const uid='cb42-'+Math.random().toString(36).slice(2,8);
+
+    card.innerHTML=`
+      <div style="padding:12px 14px 10px;">
+        <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:6px;flex-wrap:wrap;">
+          <div style="font-family:'Nunito',sans-serif;font-weight:900;font-size:13px;color:var(--blush);line-height:1.3;">${d.taskTitle||'—'}</div>
+          <div style="font-size:9px;letter-spacing:.08em;color:var(--td);white-space:nowrap;flex-shrink:0;">${ts}</div>
+        </div>
+        <div style="font-size:12px;color:rgba(255,215,230,.85);line-height:1.7;margin-bottom:10px;">${d.instruction||'—'}</div>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px;">
+          <span style="padding:3px 9px;border-radius:999px;background:rgba(255,45,107,.12);border:1px solid rgba(255,100,160,.25);font-size:10px;color:rgba(255,180,210,.8);font-family:'Nunito',sans-serif;font-weight:800;">⚙ ${d.action||'—'}</span>
+          <span style="padding:3px 9px;border-radius:999px;background:rgba(255,45,107,.12);border:1px solid rgba(255,100,160,.25);font-size:10px;color:rgba(255,180,210,.8);font-family:'Nunito',sans-serif;font-weight:800;">🎯 ${d.location||'—'}</span>
+          <span style="padding:3px 9px;border-radius:999px;background:rgba(255,45,107,.12);border:1px solid rgba(255,100,160,.25);font-size:10px;color:rgba(255,180,210,.8);font-family:'Nunito',sans-serif;font-weight:800;">${stateEmoji} ${(d.state||'—').toUpperCase()}</span>
+          <span style="padding:3px 9px;border-radius:999px;background:rgba(255,45,107,.12);border:1px solid rgba(255,100,160,.25);font-size:10px;color:rgba(255,180,210,.8);font-family:'Nunito',sans-serif;font-weight:800;">↺ ${countStr}</span>
+        </div>
+        ${d.imageDescription?`<div style="font-size:10px;color:rgba(255,180,210,.45);font-style:italic;margin-bottom:10px;">"${d.imageDescription}"</div>`:''}
+        <button id="${uid}" onclick="cb42Speak(${JSON.stringify(d.instruction||'')}, document.getElementById('${uid}'))" style="appearance:none;font-family:'Nunito',sans-serif;font-weight:800;font-size:11px;letter-spacing:.06em;color:var(--blush);background:rgba(255,45,107,.14);border:1.5px solid rgba(255,100,160,.4);border-radius:9px;padding:7px 14px;cursor:pointer;transition:all .15s;width:100%;">🔊 Read aloud</button>
+      </div>
+      <div style="padding:0 10px 10px;">${svgHtml}</div>
+    `;
+    feed.appendChild(card);
+  });
+
+  if(sorted.length){
+    insight(body,`<strong>${sorted.length} CEO robot instructions</strong> saved. Most used action: <strong>"${sortedFreq(actions)[0]?.[0]||'—'}"</strong>. Avg repetitions: <strong>${counts.length?avg(counts).toFixed(1):'—'}</strong>. The instructions are data. The robot has not received them. The work remains undone.`);
+  }
+  return data.length;
+}
+
 // ══════════════════════════════════════════
 // ORCHESTRATE
 // ══════════════════════════════════════════
@@ -638,6 +827,11 @@ async function buildAll(){
   const row1=document.createElement('div');row1.className='two-col';wrap.appendChild(row1);
   const [r02,r07,r04,r05]=await Promise.all([buildCB02(row1),buildCB07(row1),buildCB04(wrap),buildCB05(wrap)]);
   addR((r02||0)+(r07||0)+(r04||0)+(r05||0));
+
+  wrap.appendChild(secHead('✦ CEO ROBOT INSTRUCTIONS · NONSENSICAL DATA'));
+  const r42=await buildCB42(wrap);
+  addR(r42||0);
+
   wrap.appendChild(secHead('✦ INVENTOR ARCHIVES'));
   const row2=document.createElement('div');row2.className='two-col';wrap.appendChild(row2);
   const [r06,r29]=await Promise.all([buildCB06(row2),buildCB29(row2)]);
@@ -657,7 +851,8 @@ async function buildAll(){
   const row5=document.createElement('div');row5.className='two-col';wrap.appendChild(row5);
   const [r08,r22]=await Promise.all([buildCB08(row5),buildCB22(row5)]);
   addR((r08||0)+(r22||0));
-  document.getElementById('s-bots').textContent='12';
+
+  document.getElementById('s-bots').textContent='13';
 }
 
 buildAll();
