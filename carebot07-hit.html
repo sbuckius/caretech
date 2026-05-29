@@ -294,14 +294,22 @@ function revealRewardScreen(workerId){
   document.getElementById('workerGate').style.display = 'none';
   const rs = document.getElementById('rewardScreen');
   rs.style.display = 'flex';
-  // show worker id in badge
   document.getElementById('workerBadgeId').textContent = workerId;
-  // append worker id to the next-hit CTA link so carebot42 can read it from the URL too
   const cta = document.getElementById('ctaBtn');
   const base = cta.getAttribute('href').split('?')[0];
   cta.href = base + '?wid=' + encodeURIComponent(workerId);
-  // announce via speech synthesis
   setTimeout(()=>announceWorker(workerId), 400);
+  // save payment record immediately on ID confirmation
+  // so worker appears on dashboard even if they skip the emotion panel
+  if(useFirebase && db){
+    db.ref('microtaskReactions').push({
+      workerId: workerId,
+      sessionId: SESSION_ID,
+      emotions: [],
+      paymentConfirmed: true,
+      timestamp: firebase.database.ServerValue.TIMESTAMP
+    }).catch(e=>console.warn('Payment record save failed:',e));
+  }
 }
 
 // Always show the gate — worker must enter ID every time
