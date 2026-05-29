@@ -179,6 +179,18 @@ html,body{min-height:100%;font-family:var(--fb);font-weight:600;color:var(--crea
   </div>
 </div>
 
+
+<!-- ══ PAYMENT CARDS ══ -->
+<div id="paymentSection" style="position:relative;z-index:190;background:rgba(10,0,6,.92);border-bottom:2px solid rgba(255,45,107,.35);padding:18px clamp(16px,3vw,28px);">
+  <div style="max-width:1100px;margin:0 auto;">
+    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:12px;">
+      <div style="font-size:9px;letter-spacing:.22em;text-transform:uppercase;color:rgba(255,200,224,.45);font-family:'Nunito',sans-serif;font-weight:800;">✦ CAREBOT-07 · Worker Payments Due</div>
+      <button id="payAllBtn" onclick="playAllPayments()" style="appearance:none;font-family:'Nunito',sans-serif;font-weight:900;font-size:11px;letter-spacing:.08em;color:var(--cream);background:linear-gradient(135deg,var(--hot),var(--berry));border:1.5px solid var(--hot);border-radius:10px;padding:7px 16px;cursor:pointer;box-shadow:0 3px 14px rgba(255,45,107,.35);white-space:nowrap;">▶ Play all payments</button>
+    </div>
+    <div id="paymentCards" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px;"></div>
+  </div>
+</div>
+
 <div class="summary">
   <div class="sbox"><div class="sval" id="s-n">—</div><div class="slbl">Total Responses</div></div>
   <div class="sbox"><div class="sval" id="s-bots">—</div><div class="slbl">Panels Loaded</div></div>
@@ -376,7 +388,9 @@ function tagCloud(el,pairs){
 }
 
 function statRows(el,rows){
-  el.innerHTML=rows.map(r=>`<div class="stat-row"><span class="stat-name">${r.label}</span><span class="stat-num">${r.val}</span></div>`).join('');
+  const wrap=document.createElement('div');
+  wrap.innerHTML=rows.map(r=>`<div class="stat-row"><span class="stat-name">${r.label}</span><span class="stat-num">${r.val}</span></div>`).join('');
+  el.appendChild(wrap);
 }
 
 function insight(el,html){
@@ -518,9 +532,11 @@ async function buildCB07(wrap){
   workerLbl.textContent='✦ Individual Worker Responses';
   body.appendChild(workerLbl);
 
+  const wgWrap=document.createElement('div');wgWrap.style.cssText='display:block;width:100%;';
   const workerGrid=document.createElement('div');
-  workerGrid.style.cssText='display:grid;grid-template-columns:repeat(3,1fr);gap:10px;';
-  body.appendChild(workerGrid);
+  workerGrid.style.cssText='display:grid;grid-template-columns:repeat(3,1fr);gap:10px;width:100%;min-width:0;';
+  wgWrap.appendChild(workerGrid);
+  body.appendChild(wgWrap);
 
   sorted.forEach((d,i)=>{
     const wid=d.workerId||'—';
@@ -932,13 +948,14 @@ async function buildCB42(wrap){
 
   // ── GRID OF CARDS (5 across) ──
   const feed=document.createElement('div');
-  feed.style.cssText='display:grid;grid-template-columns:repeat(5,1fr);gap:12px;';
-  // responsive: fewer columns on narrow screens via a style tag
+  feed.style.cssText='display:grid;grid-template-columns:repeat(5,1fr);gap:12px;width:100%;min-width:0;';
   const styleEl=document.createElement('style');
   styleEl.textContent='@media(max-width:1200px){#cb42-grid{grid-template-columns:repeat(4,1fr)!important;}}@media(max-width:900px){#cb42-grid{grid-template-columns:repeat(3,1fr)!important;}}@media(max-width:600px){#cb42-grid{grid-template-columns:repeat(2,1fr)!important;}}@media(max-width:400px){#cb42-grid{grid-template-columns:1fr!important;}}';
   document.head.appendChild(styleEl);
   feed.id='cb42-grid';
-  body.appendChild(feed);
+  const feedWrap=document.createElement('div');feedWrap.style.cssText='display:block;width:100%;';
+  feedWrap.appendChild(feed);
+  body.appendChild(feedWrap);
 
   // store instructions on window so play-all can access CB07 data
   window._cb42Instructions=sorted;
@@ -1131,6 +1148,197 @@ async function buildAll(){
 
   document.getElementById('s-bots').textContent='13';
 }
+
+// ── PLAY ALL PAYMENTS ──
+function playAllPayments(){
+  const cards=document.querySelectorAll('#paymentCards [data-wid]');
+  const btn=document.getElementById('payAllBtn');
+  if(!window.speechSynthesis){alert('Speech synthesis not supported.');return;}
+  window.speechSynthesis.cancel();
+
+  const wids=[...cards].map(c=>c.dataset.wid).filter(Boolean);
+  if(!wids.length){alert('No payment cards loaded yet.');return;}
+
+  const queue=wids.map(wid=>'Please pay worker number '+wid.split('').join(' ')+' one cent.');
+
+  if(btn){btn.textContent='⏸ Playing… (click to stop)';btn.onclick=()=>{window.speechSynthesis.cancel();btn.textContent='▶ Play all payments';btn.onclick=playAllPayments;};}
+
+  function getVoice(){
+    const voices=window.speechSynthesis.getVoices();
+    return voices.find(v=>v.lang==='en-US'&&/zira|samantha|aria|jenny|michelle|jane|emma|woman|female/i.test(v.name))
+      ||voices.find(v=>v.lang==='en-US'&&!/male|david|mark|richard|guy|james/i.test(v.name))
+      ||voices.find(v=>v.lang==='en-US')||voices[0];
+  }
+
+  function playNext(i){
+    if(i>=queue.length){
+      if(btn){btn.textContent='▶ Play all payments';btn.onclick=playAllPayments;}
+      return;
+    }
+    const u=new SpeechSynthesisUtterance(queue[i]);
+    u.rate=0.88;u.pitch=1.05;u.lang='en-US';
+    const v=getVoice();if(v)u.voice=v;
+    u.onend=()=>setTimeout(()=>playNext(i+1),400);
+    u.onerror=()=>playNext(i+1);
+    window.speechSynthesis.speak(u);
+  }
+
+  if(window.speechSynthesis.getVoices().length)playNext(0);
+  else window.speechSynthesis.addEventListener('voiceschanged',()=>playNext(0),{once:true});
+}
+
+// ── PAYMENT CARDS (top of page, one per worker submission) ──
+async function buildPaymentCards(){
+  // wait for Firebase to be ready — CFGS and db() defined later in script,
+  // so we poll briefly if needed
+  const waitForDb=()=>new Promise(resolve=>{
+    const check=()=>{
+      try{
+        const d=typeof db==='function'?db('collab'):null;
+        if(d){resolve(d);}else{setTimeout(check,100);}
+      }catch(e){setTimeout(check,100);}
+    };
+    check();
+  });
+
+  let data=null;
+  try{
+    const d=await waitForDb();
+    const snap=await d.ref('microtaskReactions').once('value');
+    const val=snap.val();
+    data=val?Object.values(val):[];
+  }catch(e){
+    console.error('paymentCards fetch failed:',e);
+    return;
+  }
+  if(!data||!data.length)return;
+
+  const sorted=[...data].sort((a,b)=>(b.ts||0)-(a.ts||0));
+  const container=document.getElementById('paymentCards');
+  if(!container)return;
+  container.innerHTML='';
+
+  sorted.forEach((d,i)=>{
+    const wid=d.workerId||'Anonymous';
+    const emotions=Array.isArray(d.emotions)?d.emotions:[];
+    const ts=d.ts?new Date(d.ts).toLocaleString():'—';
+
+    const card=document.createElement('div');
+    card.style.cssText='background:rgba(14,0,8,.85);border:1.5px solid rgba(255,100,160,.35);border-radius:14px;padding:12px 14px;position:relative;overflow:hidden;transition:opacity .3s,border-color .3s;';
+    card.dataset.wid=wid;
+
+    // shimmer top line
+    const shimmer=document.createElement('div');
+    shimmer.style.cssText='position:absolute;top:0;left:8%;right:8%;height:1px;background:linear-gradient(90deg,transparent,#ff85b3 40%,#ff2d6b 50%,#ff85b3 60%,transparent);border-radius:999px;';
+    card.appendChild(shimmer);
+
+    // checkbox + worker id row
+    const topRow=document.createElement('div');
+    topRow.style.cssText='display:flex;align-items:flex-start;gap:8px;margin-bottom:8px;';
+
+    const chk=document.createElement('input');
+    chk.type='checkbox';
+    chk.title='Mark as paid — collapse card';
+    chk.style.cssText='width:16px;height:16px;flex-shrink:0;margin-top:2px;cursor:pointer;accent-color:var(--hot);';
+
+    const idBlock=document.createElement('div');
+    idBlock.style.cssText='flex:1;min-width:0;';
+
+    const widLine=document.createElement('div');
+    widLine.style.cssText="font-family:'Nunito',sans-serif;font-weight:900;font-size:12px;color:var(--blush);word-break:break-all;line-height:1.3;";
+    widLine.textContent=wid;
+
+    const tsLine=document.createElement('div');
+    tsLine.style.cssText='font-size:9px;color:var(--td);margin-top:2px;';
+    tsLine.textContent=ts;
+
+    idBlock.appendChild(widLine);
+    idBlock.appendChild(tsLine);
+    topRow.appendChild(chk);
+    topRow.appendChild(idBlock);
+    card.appendChild(topRow);
+
+    // collapsible content
+    const content=document.createElement('div');
+
+    // payment amount
+    const amtRow=document.createElement('div');
+    amtRow.style.cssText="display:flex;align-items:center;justify-content:space-between;padding:7px 10px;background:rgba(255,45,107,.1);border:1px solid rgba(255,100,160,.25);border-radius:9px;margin-bottom:8px;";
+
+    const amtLabel=document.createElement('span');
+    amtLabel.style.cssText="font-family:'Nunito',sans-serif;font-weight:900;font-size:13px;color:var(--cream);";
+    amtLabel.textContent='$0.01';
+
+    const payLabel=document.createElement('span');
+    payLabel.style.cssText='font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--td);';
+    payLabel.textContent='owed';
+
+    amtRow.appendChild(amtLabel);
+    amtRow.appendChild(payLabel);
+    content.appendChild(amtRow);
+
+    // emotion tags
+    if(emotions.length){
+      const tagWrap=document.createElement('div');
+      tagWrap.style.cssText='display:flex;flex-wrap:wrap;gap:4px;margin-bottom:8px;';
+      emotions.forEach(e=>{
+        const t=document.createElement('span');
+        t.style.cssText='padding:2px 8px;border-radius:999px;background:rgba(255,45,107,.1);border:1px solid rgba(255,100,160,.2);font-size:9px;color:rgba(255,180,210,.75);';
+        t.textContent=e;
+        tagWrap.appendChild(t);
+      });
+      content.appendChild(tagWrap);
+    }
+
+    // speak button
+    const speakBtn=document.createElement('button');
+    speakBtn.style.cssText="appearance:none;font-family:'Nunito',sans-serif;font-weight:800;font-size:10px;color:var(--blush);background:rgba(255,45,107,.12);border:1.5px solid rgba(255,100,160,.35);border-radius:8px;padding:6px 10px;cursor:pointer;width:100%;";
+    speakBtn.textContent='🔊 Please pay worker #'+wid+' one cent';
+    speakBtn.addEventListener('click',()=>{
+      const spelled=wid==='Anonymous'?'anonymous':wid.split('').join(' ');
+      if(!window.speechSynthesis)return;
+      window.speechSynthesis.cancel();
+      const u=new SpeechSynthesisUtterance('Please pay worker number '+spelled+' one cent.');
+      u.rate=0.88;u.pitch=1.05;u.lang='en-US';
+      const doSpeak=()=>{
+        const voices=window.speechSynthesis.getVoices();
+        const v=voices.find(v=>v.lang==='en-US'&&/zira|samantha|aria|jenny|michelle|jane|emma|woman|female/i.test(v.name))
+          ||voices.find(v=>v.lang==='en-US'&&!/male|david|mark|richard|guy|james/i.test(v.name))
+          ||voices.find(v=>v.lang==='en-US')||voices[0];
+        if(v)u.voice=v;
+        speakBtn.textContent='🔊 Speaking…';
+        u.onend=()=>{speakBtn.textContent='🔊 Please pay worker #'+wid+' one cent';};
+        window.speechSynthesis.speak(u);
+      };
+      if(window.speechSynthesis.getVoices().length)doSpeak();
+      else window.speechSynthesis.addEventListener('voiceschanged',doSpeak,{once:true});
+    });
+    content.appendChild(speakBtn);
+
+    card.appendChild(content);
+
+    // checkbox collapses card
+    chk.addEventListener('change',()=>{
+      if(chk.checked){
+        content.style.display='none';
+        card.style.opacity='.35';
+        card.style.borderColor='rgba(255,100,160,.1)';
+        widLine.style.textDecoration='line-through';
+      } else {
+        content.style.display='';
+        card.style.opacity='1';
+        card.style.borderColor='rgba(255,100,160,.35)';
+        widLine.style.textDecoration='none';
+      }
+    });
+
+    container.appendChild(card);
+  });
+}
+
+// call after a short delay to ensure Firebase helpers are defined
+setTimeout(buildPaymentCards, 800);
+
 
 buildAll();
 </script>
