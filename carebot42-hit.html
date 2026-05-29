@@ -1,0 +1,668 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
+<title>✦ CAREBOT-42 ✦ Nonsensical Data for Domestic Work</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Quicksand:wght@500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.0/p5.min.js"></script>
+<style>
+:root{
+  --rose:#ff5c8a;--hot:#ff2d6b;--candy:#ff85b3;--blush:#ffb3cf;
+  --cream:#fff5f8;--berry:#c4005a;--crimson:#8b0030;--maroon:#4a001a;
+  --fuchsia:#ff1f80;--bg:#0e0008;
+  --border:rgba(255,140,185,.25);--border2:rgba(255,80,150,.6);
+  --soft-glow:0 4px 30px rgba(255,45,107,.2);
+  --pop-glow:0 8px 50px rgba(255,45,107,.45),0 0 90px rgba(200,0,80,.15);
+  --muted:rgba(255,190,220,.5);
+  --fh:'Nunito',sans-serif;--fb:'Quicksand',sans-serif;--fm:'DM Mono',monospace;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html,body{height:100%;min-height:100%;font-family:var(--fb);font-weight:600;color:var(--cream);background:var(--bg);-webkit-font-smoothing:antialiased;}
+::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px}
+.bg-layer{position:fixed;inset:0;z-index:0;pointer-events:none;background:radial-gradient(ellipse 75% 55% at 5% 90%,rgba(180,0,60,.38) 0%,transparent 58%),radial-gradient(ellipse 60% 65% at 95% 10%,rgba(120,0,35,.32) 0%,transparent 58%),linear-gradient(155deg,#160008,#0e0005 50%,#080003);}
+.orb{position:fixed;border-radius:50%;pointer-events:none;z-index:0;filter:blur(65px);}
+.orb-1{width:380px;height:380px;background:var(--crimson);opacity:.2;bottom:-80px;left:-70px;animation:d1 21s ease-in-out infinite;}
+.orb-2{width:300px;height:300px;background:var(--berry);opacity:.18;top:-60px;right:-60px;animation:d2 25s ease-in-out infinite;}
+@keyframes d1{0%,100%{transform:translate(0,0)}50%{transform:translate(38px,26px)}}
+@keyframes d2{0%,100%{transform:translate(0,0)}50%{transform:translate(-28px,-20px)}}
+@keyframes breathe{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.3;transform:scale(.65)}}
+.screen{position:relative;z-index:2;min-height:100%;display:flex;flex-direction:column;align-items:center;padding:max(16px,env(safe-area-inset-top)) clamp(12px,4vmin,24px) calc(44px + env(safe-area-inset-bottom));gap:14px;}
+/* TOP BAR */
+.topbar{width:100%;max-width:500px;display:flex;align-items:center;justify-content:space-between;}
+.mascot{display:flex;align-items:center;gap:10px;}
+.bot-face{width:42px;height:42px;border-radius:13px;background:linear-gradient(135deg,rgba(255,45,107,.22),rgba(180,0,60,.32));border:1.5px solid var(--border2);display:flex;align-items:center;justify-content:center;font-size:20px;animation:wobble 4s ease-in-out infinite;flex-shrink:0;}
+@keyframes wobble{0%,100%{transform:rotate(-2deg) scale(1)}25%{transform:rotate(1deg) scale(1.04)}50%{transform:rotate(-1deg) scale(1)}75%{transform:rotate(2deg) scale(1.03)}}
+.bot-name{font-family:var(--fh);font-weight:900;font-size:15px;background:linear-gradient(90deg,var(--blush),var(--fuchsia) 55%,var(--candy));-webkit-background-clip:text;background-clip:text;color:transparent;}
+.bot-sub{font-size:9px;letter-spacing:.15em;text-transform:uppercase;color:var(--muted);margin-top:1px;}
+.time-badge{display:flex;align-items:center;gap:6px;padding:5px 11px;border-radius:999px;background:rgba(255,255,255,.04);border:1px solid var(--border);font-size:10px;letter-spacing:.1em;color:var(--muted);}
+.time-pip{width:5px;height:5px;border-radius:50%;background:var(--hot);animation:breathe 2s ease-in-out infinite;}
+/* CARDS */
+.card{width:min(100%,500px);background:rgba(255,45,107,.07);border:1.5px solid var(--border2);border-radius:20px;padding:18px 20px 16px;position:relative;overflow:hidden;}
+.card::before{content:'';position:absolute;top:0;left:8%;right:8%;height:1.5px;background:linear-gradient(90deg,transparent,var(--candy) 30%,var(--hot) 50%,var(--candy) 70%,transparent);box-shadow:0 0 8px var(--candy);border-radius:999px;}
+.eyebrow{font-size:9px;letter-spacing:.22em;text-transform:uppercase;color:var(--muted);margin-bottom:7px;}
+.card-title{font-family:var(--fh);font-weight:900;font-size:clamp(14px,3.5vw,18px);background:linear-gradient(90deg,var(--blush),var(--fuchsia) 55%,var(--candy));-webkit-background-clip:text;background-clip:text;color:transparent;margin-bottom:10px;line-height:1.3;}
+.card-body{font-size:12.5px;line-height:1.75;color:rgba(255,215,230,.82);}
+.card-body strong{color:var(--candy);}
+/* p5 FRAME */
+.frame-wrap{width:min(100%,460px);position:relative;}
+.frame-wrap::before{content:'';position:absolute;inset:-2px;border-radius:28px;background:linear-gradient(135deg,var(--hot),var(--berry),var(--crimson),var(--maroon),var(--berry),var(--hot));background-size:300% 300%;animation:borderShimmer 6s linear infinite;z-index:0;filter:blur(1px);}
+@keyframes borderShimmer{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
+.frame{width:100%;aspect-ratio:2/3;position:relative;border-radius:26px;overflow:hidden;box-shadow:var(--pop-glow);z-index:1;background:var(--maroon);display:block;}
+#defaultCanvas0{display:block;position:absolute;inset:0;width:100%!important;height:100%!important;z-index:1;}
+.hint{position:absolute;top:12px;left:50%;transform:translateX(-50%);z-index:3;font-family:var(--fb);font-weight:700;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,200,220,.75);background:rgba(255,45,107,.12);border:1px solid rgba(255,100,160,.28);padding:6px 14px;border-radius:999px;white-space:nowrap;}
+/* STEPS AREA */
+.step-panel{display:none;width:min(100%,500px);background:rgba(12,0,7,.95);border:1.5px solid var(--border2);border-radius:22px;padding:20px;position:relative;overflow:hidden;animation:slideUp .38s cubic-bezier(.34,1.4,.64,1);}
+.step-panel::before{content:'';position:absolute;top:0;left:10%;right:10%;height:1.5px;background:linear-gradient(90deg,transparent,var(--candy) 35%,var(--hot) 50%,var(--candy) 65%,transparent);box-shadow:0 0 10px var(--candy);border-radius:999px;}
+@keyframes slideUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+/* INPUTS */
+.field-label{font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);margin-bottom:6px;margin-top:14px;display:block;}
+.field-label:first-child{margin-top:0;}
+.text-input{width:100%;padding:10px 13px;background:rgba(255,255,255,.06);border:1.5px solid rgba(255,80,150,.28);border-radius:11px;font-family:var(--fb);font-weight:600;font-size:13px;color:var(--cream);outline:none;transition:border-color .2s;}
+.text-input:focus{border-color:var(--candy);box-shadow:0 0 0 3px rgba(255,133,179,.1);}
+.text-input::placeholder{color:rgba(255,180,210,.25);}
+/* SELECT GRID */
+.select-grid{display:grid;gap:7px;}
+.select-grid.cols2{grid-template-columns:1fr 1fr;}
+.select-grid.cols3{grid-template-columns:1fr 1fr 1fr;}
+.sel-btn{appearance:none;font-family:var(--fb);font-weight:700;font-size:11px;padding:8px 10px;border-radius:9px;cursor:pointer;border:1.5px solid rgba(255,80,150,.22);background:rgba(255,255,255,.04);color:var(--muted);transition:all .15s;text-align:center;line-height:1.3;}
+.sel-btn:hover{background:rgba(255,45,107,.14);border-color:var(--border2);color:var(--blush);}
+.sel-btn.active{background:rgba(255,45,107,.28);border-color:var(--hot);color:var(--cream);box-shadow:0 0 10px rgba(255,45,107,.25);}
+/* COUNTER */
+.count-row{display:flex;align-items:center;gap:11px;margin-top:2px;}
+.count-btn{width:36px;height:36px;border-radius:9px;appearance:none;border:1.5px solid rgba(255,80,150,.35);background:rgba(255,45,107,.1);color:var(--candy);font-family:var(--fh);font-weight:900;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s;flex-shrink:0;}
+.count-btn:hover{background:rgba(255,45,107,.24);border-color:var(--hot);}
+.count-display{font-family:var(--fh);font-weight:900;font-size:28px;color:var(--cream);min-width:44px;text-align:center;}
+.count-label{font-size:11px;color:var(--muted);}
+/* LOCATION SELECT */
+.loc-scroll{display:flex;gap:7px;overflow-x:auto;padding-bottom:5px;-webkit-overflow-scrolling:touch;scrollbar-width:none;}
+.loc-scroll::-webkit-scrollbar{display:none;}
+.loc-chip{flex-shrink:0;padding:7px 13px;border-radius:999px;border:1.5px solid rgba(255,80,150,.22);background:rgba(255,255,255,.04);color:var(--muted);font-size:11px;font-weight:700;cursor:pointer;white-space:nowrap;transition:all .15s;}
+.loc-chip.active{background:rgba(255,45,107,.28);border-color:var(--hot);color:var(--cream);}
+.loc-chip:hover{background:rgba(255,45,107,.14);border-color:var(--border2);color:var(--blush);}
+/* DIAGRAM */
+#diagramWrap{display:none;width:min(100%,500px);}
+.diagram-card{background:rgba(12,0,7,.95);border:1.5px solid var(--border2);border-radius:22px;padding:18px;position:relative;overflow:hidden;}
+.diagram-card::before{content:'';position:absolute;top:0;left:10%;right:10%;height:1.5px;background:linear-gradient(90deg,transparent,var(--candy) 35%,var(--hot) 50%,var(--candy) 65%,transparent);box-shadow:0 0 10px var(--candy);border-radius:999px;}
+.diagram-eyebrow{font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);margin-bottom:8px;}
+.diagram-title{font-family:var(--fh);font-weight:900;font-size:15px;background:linear-gradient(90deg,var(--blush),var(--fuchsia));-webkit-background-clip:text;background-clip:text;color:transparent;margin-bottom:13px;line-height:1.3;}
+#stageSvg{width:100%;border-radius:12px;display:block;}
+/* INSTRUCTION BOX */
+.instruction-box{margin-top:14px;background:rgba(255,45,107,.08);border:1.5px solid rgba(255,80,150,.3);border-radius:14px;padding:14px;}
+.instruction-text{font-family:var(--fh);font-weight:900;font-size:clamp(14px,3.5vw,17px);color:var(--cream);line-height:1.5;}
+.instruction-sub{font-size:11px;color:var(--muted);margin-top:7px;line-height:1.65;}
+/* BUTTONS */
+.btn-row{display:flex;gap:9px;flex-wrap:wrap;margin-top:14px;}
+.btn{appearance:none;font-family:var(--fh);font-weight:800;font-size:12px;letter-spacing:.05em;color:var(--cream);display:inline-flex;align-items:center;justify-content:center;gap:5px;padding:10px 18px;border-radius:13px;min-height:38px;border:1.5px solid var(--border);cursor:pointer;transition:all .2s;white-space:nowrap;}
+.btn.primary{background:linear-gradient(135deg,var(--hot),var(--berry),var(--crimson));border-color:var(--hot);box-shadow:0 4px 20px rgba(255,45,107,.35);flex:1;}
+.btn.primary:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(255,45,107,.5);}
+.btn.soft{background:rgba(255,255,255,.05);border-color:rgba(255,140,185,.2);color:var(--muted);}
+.btn.soft:hover{background:rgba(255,45,107,.15);border-color:var(--border2);color:var(--blush);transform:translateY(-2px);}
+.btn.speak{background:linear-gradient(135deg,rgba(255,45,107,.25),rgba(180,0,60,.35));border-color:var(--candy);color:var(--blush);}
+.btn.speak:hover{background:rgba(255,45,107,.35);transform:translateY(-2px);}
+.btn:active{transform:translateY(0) scale(.97)!important;}
+/* DIVIDER */
+.divider{width:100%;max-width:500px;height:1px;background:linear-gradient(90deg,transparent,rgba(255,80,150,.2) 30%,rgba(255,80,150,.2) 70%,transparent);}
+/* GENERATE BTN */
+#generateBtn{display:none;width:min(100%,500px);}
+.wordmark{font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,140,185,.18);}
+</style>
+</head>
+<body>
+<div class="bg-layer"></div><div class="orb orb-1"></div><div class="orb orb-2"></div>
+
+<div class="screen">
+
+  <!-- TOP BAR -->
+  <div class="topbar">
+    <div class="mascot">
+      <div class="bot-face">&#x1F3AD;</div>
+      <div>
+        <div class="bot-name">CAREBOT-42 ✦</div>
+        <div class="bot-sub">Directing the CEO Robot · Nonsensical Data · CAREtech</div>
+      </div>
+    </div>
+    <div class="time-badge"><div class="time-pip"></div><span id="sysTime">--:--</span></div>
+  </div>
+
+  <!-- INSTRUCTIONS -->
+  <!-- IRONY CARD -->
+  <div class="card" style="background:linear-gradient(135deg,rgba(111,0,30,.88),rgba(50,0,15,.95));border-color:rgba(255,60,80,.4);">
+    <div class="eyebrow">✦ CAREBOT-42 · Nonsensical Data for Domestic Work</div>
+    <div class="card-title">You are the CEO. You are directing a robot to perform domestic labor. The instructions you generate are the data.</div>
+    <div class="card-body">
+      This task is about <strong>domestic work</strong> — the labor of the home: laundry, dishes, cooking, cleaning, caregiving. This work is invisible in economic data, undervalued in the market, and now being automated by robots designed by people who have never done it.<br><br>
+      You are taking the role of CEO. You will build an instruction for a robot to perform domestic tasks on stage. The instruction is <strong>intentionally absurd</strong> — a robot turning a laundry basket upside down three times, or placing a vacuum on its own head — because the premise is absurd. The premise is that a CEO directing a robot is the solution to the invisible labor that holds up the economy.<br><br>
+      <strong>You do not deliver this instruction.</strong> The instruction you build is saved as data. It is visible on the <a href="http://care-tech.org/caretech-results-dashboard.html" target="_blank" style="color:var(--candy);">CAREtech live results dashboard</a>. The data feeds the system. The system does not know the data is nonsense. <em>This is the point.</em>
+    </div>
+  </div>
+
+  <!-- HOW TO CARD -->
+  <div class="card">
+    <div class="eyebrow">✦ How this works</div>
+    <div class="card-title" style="font-size:14px;">Build the instruction. The data is saved. You are done.</div>
+    <div class="card-body">
+      <strong>Step 1:</strong> Tap the spinning image to select a robot from the performance.<br>
+      <strong>Step 2:</strong> Type what you see in the image — describe the domestic task depicted.<br>
+      <strong>Step 3:</strong> Build the instruction: choose an action, how many times, where on stage, and whether the object is on or off.<br>
+      <strong>Step 4:</strong> A stage diagram and spoken instruction are generated. Your instruction is <strong>saved as data</strong> to the live dashboard.<br>
+      <strong>You do not go to the robot. You do not deliver this instruction.</strong> The instruction lives in the database. The robot does not receive it. The work remains undone.
+    </div>
+  </div>
+
+  <!-- p5 PICKER -->
+  <div class="frame-wrap">
+    <div class="frame" id="game-frame">
+      <div class="hint" id="hint">✦ Tap the image to select</div>
+    </div>
+  </div>
+
+  <!-- RESET BUTTON (always visible after load) -->
+  <div style="width:min(100%,460px);display:flex;justify-content:flex-end;">
+    <button class="btn soft" id="resetBtn" onclick="doReset()" style="font-size:11px;padding:7px 14px;">&#x21BA; New image</button>
+  </div>
+
+  <!-- STEP 1: IDENTIFY -->
+  <div class="step-panel" id="stepIdentify">
+    <div class="eyebrow">✦ Step 1 of 3 · Identify the image</div>
+    <div class="card-title" id="identifyTitle" style="margin-bottom:6px;">—</div>
+    <div style="display:flex;gap:12px;align-items:center;margin-bottom:14px;">
+      <img id="identifyImg" style="width:80px;height:80px;border-radius:10px;object-fit:cover;border:1.5px solid var(--border2);flex-shrink:0;" src="" alt="">
+      <div>
+        <div style="font-size:11px;color:var(--muted);margin-bottom:4px;">What domestic work is depicted in this image?</div>
+        <div style="font-size:11px;color:rgba(255,200,220,.6);line-height:1.55;" id="identifyCaption">—</div>
+      </div>
+    </div>
+    <label class="field-label">Describe what you see in the image</label>
+    <input class="text-input" type="text" id="describeInput" placeholder="e.g. a robot folding laundry — describe the domestic task being shown…" autocomplete="off">
+    <div class="btn-row" style="margin-top:12px;">
+      <button class="btn primary" onclick="advanceToBuilder()">✦ Continue to builder →</button>
+    </div>
+  </div>
+
+  <!-- STEP 2: BUILD THE INSTRUCTION -->
+  <div class="step-panel" id="stepBuilder">
+    <div class="eyebrow">✦ Step 2 of 3 · Build the CEO instruction</div>
+    <div class="card-title">Direct the robot. Make it absurd. This becomes the data.</div>
+
+    <!-- ACTION -->
+    <label class="field-label">Choose an action</label>
+    <div class="select-grid cols3" id="actionGrid"></div>
+
+    <!-- COUNT -->
+    <label class="field-label">How many times?</label>
+    <div class="count-row">
+      <button class="count-btn" onclick="changeCount(-1)">−</button>
+      <div class="count-display" id="countDisplay">1</div>
+      <button class="count-btn" onclick="changeCount(1)">+</button>
+      <div class="count-label">times</div>
+    </div>
+
+    <!-- ON / OFF -->
+    <label class="field-label">Object state</label>
+    <div class="select-grid cols2" id="stateGrid">
+      <button class="sel-btn active" id="stateOn" onclick="selectState('on')">&#x26A1; On / Active</button>
+      <button class="sel-btn" id="stateOff" onclick="selectState('off')">&#x2B1C; Off / Passive</button>
+    </div>
+
+    <!-- LOCATION -->
+    <label class="field-label">Where on stage? (6 ft × 6 ft)</label>
+    <div class="loc-scroll" id="locationScroll"></div>
+
+    <div class="btn-row" style="margin-top:16px;">
+      <button class="btn primary" id="generateBtn2" onclick="generateInstruction()">✦ Generate instruction &amp; diagram →</button>
+    </div>
+  </div>
+
+  <!-- DIAGRAM + INSTRUCTION OUTPUT -->
+  <div id="diagramWrap">
+    <div class="diagram-card">
+      <div class="diagram-eyebrow">✦ Step 3 of 3 · Instruction generated — saved to dashboard</div>
+      <div class="diagram-title" id="diagramTitle">—</div>
+      <svg id="stageSvg" viewBox="0 0 420 420" xmlns="http://www.w3.org/2000/svg"></svg>
+      <div class="instruction-box">
+        <div class="instruction-text" id="instructionText">—</div>
+        <div class="instruction-sub" id="instructionSub">—</div>
+        <div style="margin-top:10px;padding-top:10px;border-top:1px solid rgba(255,80,150,.15);font-size:11px;color:var(--muted);line-height:1.65;">
+          ✦ This instruction has been saved as data. You do not deliver it.<br>
+          View it on the <a href="http://care-tech.org/caretech-results-dashboard.html" target="_blank" style="color:var(--candy);text-decoration:none;">CAREtech live results dashboard ↗</a>
+        </div>
+      </div>
+      <div class="btn-row">
+        <button class="btn speak" onclick="speakInstruction()">&#x1F50A; Read instruction aloud</button>
+        <button class="btn soft" onclick="doReset()">&#x21BA; Start over</button>
+      </div>
+      <div class="btn-row" style="margin-top:6px;">
+        <a class="btn primary" href="https://care-tech.org/hit.html">✦ Advance to next task</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="wordmark">✦ carebot-42 · nonsensical data for domestic work · caretech ✦</div>
+</div>
+
+<script>
+/* ── CLOCK ── */
+function updateClock(){const n=new Date(),p=v=>String(v).padStart(2,'0');document.getElementById('sysTime').textContent=p(n.getHours())+':'+p(n.getMinutes());}
+setInterval(updateClock,1000);updateClock();
+
+/* ── DATA ── */
+const ASSET_BASE='./images';
+const IMAGE_SIZE=160,SWITCH_MS=30;
+
+// Stage objects — update this list as needed
+const STAGE_OBJECTS=[
+  {id:'basket1',label:'Laundry basket 1',emoji:'🧺',x:.18,y:.22},
+  {id:'basket2',label:'Laundry basket 2',emoji:'🧺',x:.35,y:.18},
+  {id:'basket3',label:'Laundry basket 3',emoji:'🧺',x:.68,y:.25},
+  {id:'basket4',label:'Laundry basket 4',emoji:'🧺',x:.82,y:.72},
+  {id:'desk',label:'Rolling desk',emoji:'🖥',x:.55,y:.45},
+  {id:'watering1',label:'Watering can 1',emoji:'🪣',x:.22,y:.58},
+  {id:'watering2',label:'Watering can 2',emoji:'🪣',x:.78,y:.38},
+  {id:'vacuum',label:'Vacuum',emoji:'🤖',x:.45,y:.72},
+  {id:'typewriter',label:'Typewriter',emoji:'⌨',x:.30,y:.82},
+  {id:'ironingboard',label:'Ironing board',emoji:'🏳',x:.70,y:.80},
+  {id:'moneybox',label:'Money box',emoji:'💰',x:.62,y:.62},
+  {id:'towels',label:'Towels',emoji:'🏳',x:.15,y:.75},
+  {id:'squeegee',label:'Squeegee',emoji:'🪣',x:.85,y:.55},
+  {id:'broom',label:'Broom',emoji:'🧹',x:.50,y:.15},
+  {id:'cabinet',label:'Cabinet',emoji:'🗄',x:.88,y:.18},
+  {id:'wig',label:'Wig',emoji:'👱',x:.12,y:.42},
+  {id:'sunglasses',label:'Sunglasses',emoji:'🕶',x:.40,y:.35},
+];
+
+const ACTIONS=[
+  {id:'flip',label:'Turn upside down'},
+  {id:'tap',label:'Tap it'},
+  {id:'move2ft',label:'Move 2 feet'},
+  {id:'spin',label:'Spin in place'},
+  {id:'placehead',label:'Put on robot\'s head'},
+  {id:'placeobj',label:'Place on stage object'},
+  {id:'drag',label:'Drag across stage'},
+  {id:'raise',label:'Raise above head'},
+  {id:'balance',label:'Balance on one edge'},
+  {id:'carry',label:'Carry to center stage'},
+  {id:'shake',label:'Shake 3 times'},
+  {id:'stack',label:'Stack on another object'},
+  {id:'hide',label:'Hide behind object'},
+  {id:'circle',label:'Circle around object'},
+  {id:'present',label:'Present to audience'},
+  {id:'drop',label:'Drop from waist height'},
+  {id:'hold',label:'Hold perfectly still'},
+  {id:'gesture',label:'Gesture toward it'},
+];
+
+// Location options: corners + center + on-object
+const ZONE_LABELS=[
+  {id:'center',label:'Center stage'},
+  {id:'front_left',label:'Front left'},
+  {id:'front_right',label:'Front right'},
+  {id:'back_left',label:'Back left'},
+  {id:'back_right',label:'Back right'},
+  {id:'front_center',label:'Front center'},
+  {id:'back_center',label:'Back center'},
+  ...STAGE_OBJECTS.map(o=>({id:'on_'+o.id,label:'On: '+o.label,onObject:true,emoji:o.emoji}))
+];
+
+// Robot tasks (from carebot-04)
+const ROBOT_TASKS=[
+{title:"Hang Clothing on a Rack",caption:"Organizing garments on hangers"},
+{title:"Load Laundry into a Washing Machine",caption:"Putting clothes into a front-load washer"},
+{title:"Wipe Down a Countertop",caption:"Cleaning a surface with a damp cloth"},
+{title:"Play a Board Game with a Family",caption:"Engaging children in tabletop play"},
+{title:"Prepare and Serve Tea",caption:"Setting up a full tea service tray"},
+{title:"Hang a Garment in a Closet",caption:"Placing clothes on a closet rod or hook"},
+{title:"Cook Food in a Pan on the Stove",caption:"Using a skillet to prepare a hot meal"},
+{title:"Iron a Garment",caption:"Pressing clothing on an ironing board"},
+{title:"Fold and Set Table Linens",caption:"Preparing napkins or cloth at a table setting"},
+{title:"Collect and Load Laundry",caption:"Gathering clothes and operating the washer"},
+{title:"Empty a Trash Can",caption:"Removing and replacing a garbage bag"},
+{title:"Vacuum the Floor",caption:"Using a vacuum cleaner on hard floors or carpet"},
+{title:"Clean a Kitchen Counter",caption:"Wiping down a stone or marble countertop"},
+{title:"Remove Food from a Cooking Appliance",caption:"Taking a waffle out of a waffle iron"},
+{title:"Prepare and Pour Drinks",caption:"Handling pitchers and glasses in a kitchen"},
+{title:"Retrieve Items from the Refrigerator",caption:"Getting food out of the fridge"},
+{title:"Make an Espresso",caption:"Operating a professional espresso machine"},
+{title:"Pour Tea into Cups",caption:"Serving tea from a kettle over a tray"},
+{title:"Fold Laundry on a Table",caption:"Smoothing and folding clothes from a basket"},
+{title:"Stock the Refrigerator",caption:"Loading groceries or items into a fridge"},
+{title:"Hold a Conversation",caption:"Engaging a person in natural dialogue"},
+{title:"Express and Read Emotions",caption:"Demonstrating facial expressions for interaction"},
+{title:"Answer Questions in an Interview",caption:"Responding to spoken questions clearly"},
+{title:"Water a Houseplant",caption:"Using a watering can to tend to indoor plants"},
+{title:"Serve a Beverage at a Table",caption:"Bringing a hot drink to seated guests"},
+{title:"Pull an Espresso Shot",caption:"Operating a lever-style espresso machine"},
+{title:"Greet and Welcome Visitors",caption:"Welcoming people at an entrance or reception"},
+{title:"Play Jenga with a Person",caption:"Taking turns in a stacking block game"},
+{title:"Navigate a Space on Foot",caption:"Walking through a crowded area with awareness"},
+{title:"Demonstrate Facial Recognition",caption:"Using face-tracking to engage with a viewer"},
+{title:"Greet Customers at a Showroom",caption:"Welcoming visitors in a professional setting"},
+{title:"Conduct a Professional Conversation",caption:"Engaging professionally with poise and gestures"},
+{title:"Express Empathy in Conversation",caption:"Responding with appropriate emotional sensitivity"},
+{title:"Deliver a Spoken Presentation",caption:"Speaking to an audience with clarity and presence"},
+{title:"Demonstrate Deep Listening",caption:"Showing focused attentiveness to a speaker"},
+{title:"Participate in a Panel Discussion",caption:"Contributing to a formal group conversation"},
+{title:"Clean Using a Dustpan and Brush",caption:"Sweeping up debris from a floor surface"},
+{title:"Respond to a Direct Question",caption:"Giving a clear verbal answer to a posed question"},
+{title:"Put on Sunglasses",caption:"Locating and placing eyewear on your face"},
+{title:"Participate in a Video Interview",caption:"Responding clearly in a recorded or live video session"},
+{title:"Run on a Track",caption:"Completing a sprint or run on an athletic track"},
+{title:"Stand By for Instruction",caption:"Remaining attentive and ready to receive a task"},
+{title:"Smile and Make Eye Contact",caption:"Using positive facial cues in social interaction"},
+{title:"Try on Accessories",caption:"Selecting and wearing eyewear or accessories"},
+];
+
+const items=ROBOT_TASKS.map((t,i)=>({idx:i,...t,resolvedSrc:null}));
+
+/* ── FIREBASE ── */
+let fbReady=false;
+(function(){
+  try{
+    if(!firebase.apps.length){
+      firebase.initializeApp({apiKey:"AIzaSyCZFDU-WlSmHqjXTs1Ox0nf9xeJU_xbaX0",authDomain:"collaborativemashup.firebaseapp.com",databaseURL:"https://collaborativemashup-default-rtdb.firebaseio.com",projectId:"collaborativemashup",storageBucket:"collaborativemashup.firebasestorage.app",messagingSenderId:"562437984610",appId:"1:562437984610:web:9f3711c26e097bc8ef9c3b"});
+    }
+    fbReady=true;
+  }catch(e){console.warn('Firebase init failed:',e);}
+})();
+
+/* ── STATE ── */
+let selectedAction=null,selectedState='on',selectedLocation=null,actionCount=1;
+let lockedIndex=-1;
+let lastInstruction='';
+
+/* ── BUILD UI ── */
+function buildActionGrid(){
+  const g=document.getElementById('actionGrid');g.innerHTML='';
+  ACTIONS.forEach(a=>{
+    const b=document.createElement('button');b.className='sel-btn';b.textContent=a.label;b.dataset.id=a.id;
+    b.onclick=()=>{selectedAction=a;document.querySelectorAll('#actionGrid .sel-btn').forEach(x=>x.classList.remove('active'));b.classList.add('active');};
+    g.appendChild(b);
+  });
+}
+function buildLocationScroll(){
+  const s=document.getElementById('locationScroll');s.innerHTML='';
+  ZONE_LABELS.forEach(z=>{
+    const c=document.createElement('div');c.className='loc-chip';
+    c.textContent=(z.emoji?z.emoji+' ':'')+z.label;c.dataset.id=z.id;
+    c.onclick=()=>{selectedLocation=z;document.querySelectorAll('#locationScroll .loc-chip').forEach(x=>x.classList.remove('active'));c.classList.add('active');};
+    s.appendChild(c);
+  });
+}
+buildActionGrid();buildLocationScroll();
+
+function changeCount(d){actionCount=Math.max(1,Math.min(10,actionCount+d));document.getElementById('countDisplay').textContent=actionCount;}
+function selectState(s){selectedState=s;document.getElementById('stateOn').classList.toggle('active',s==='on');document.getElementById('stateOff').classList.toggle('active',s==='off');}
+
+/* ── P5 SKETCH ── */
+let imgs=[],currentIndex=0,order=[],lastSwitch=0;
+
+function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}}
+function makeOrder(n){const a=Array.from({length:n},(_,i)=>i);shuffle(a);return a;}
+
+function preload(){
+  const exts=['.jpg','.jpeg','.png','.JPG','.JPEG','.PNG'];
+  imgs=new Array(items.length);
+  items.forEach((it,ix)=>{
+    const cands=exts.map(e=>`${ASSET_BASE}/robot${it.idx}${e}`);
+    const attempt=k=>{
+      if(k>=cands.length){const pg=createGraphics(IMAGE_SIZE,IMAGE_SIZE);pg.background(20,0,10);pg.fill(255,150,180);pg.textAlign(CENTER,CENTER);pg.textSize(11);pg.text(`robot${it.idx}`,IMAGE_SIZE/2,IMAGE_SIZE/2);imgs[ix]=pg;return;}
+      loadImage(cands[k],img=>{imgs[ix]=img;items[ix].resolvedSrc=cands[k];},()=>attempt(k+1));
+    };attempt(0);
+  });
+}
+
+function setup(){
+  const frame=document.getElementById('game-frame');
+  const c=createCanvas(frame.clientWidth||400,frame.clientHeight||600);c.parent('game-frame');
+  imageMode(CENTER);noStroke();
+  order=makeOrder(items.length);currentIndex=Math.floor(Math.random()*items.length);lastSwitch=millis();
+}
+
+function getLayout(){
+  const boxX=width/2,boxY=height*.38,boxW=width-28,boxH=Math.min(230,height*.38);
+  const boxLeft=boxX-boxW/2,leftColW=IMAGE_SIZE+100;
+  const imgX=boxLeft+leftColW/2,imgY=boxY,textPad=16,textX=boxLeft+leftColW+textPad;
+  return{boxX,boxY,boxW,boxH,imgX,imgY,textX,textY:imgY-IMAGE_SIZE/2+4,textW:Math.max(100,(boxX+boxW/2)-textX-textPad)};
+}
+
+function draw(){
+  background(14,0,8);
+  if(lockedIndex===-1&&millis()-lastSwitch>SWITCH_MS){currentIndex=(currentIndex+1+Math.floor(Math.random()*4))%items.length;lastSwitch=millis();}
+  const L=getLayout(),showIdx=order[currentIndex],img=imgs[showIdx],task=items[showIdx];
+  const ctx=drawingContext;
+  push();
+  const grad=ctx.createLinearGradient(L.boxX-L.boxW/2,L.boxY-L.boxH/2,L.boxX+L.boxW/2,L.boxY+L.boxH/2);
+  grad.addColorStop(0,'rgba(140,0,45,.95)');grad.addColorStop(.5,'rgba(100,0,32,.98)');grad.addColorStop(1,'rgba(70,0,22,.98)');
+  ctx.save();ctx.fillStyle=grad;ctx.beginPath();ctx.roundRect(L.boxX-L.boxW/2,L.boxY-L.boxH/2,L.boxW,L.boxH,18);ctx.fill();ctx.restore();
+  const sh=ctx.createLinearGradient(L.boxX-L.boxW/2,0,L.boxX+L.boxW/2,0);
+  sh.addColorStop(0,'rgba(255,90,140,0)');sh.addColorStop(.35,'rgba(255,133,179,.7)');sh.addColorStop(.5,'rgba(255,45,107,.9)');sh.addColorStop(.65,'rgba(255,133,179,.7)');sh.addColorStop(1,'rgba(255,90,140,0)');
+  ctx.save();ctx.fillStyle=sh;ctx.fillRect(L.boxX-L.boxW/2+12,L.boxY-L.boxH/2,L.boxW-24,1.5);ctx.restore();
+  ctx.save();ctx.strokeStyle='rgba(255,100,155,.4)';ctx.lineWidth=1.5;ctx.beginPath();ctx.roundRect(L.boxX-L.boxW/2,L.boxY-L.boxH/2,L.boxW,L.boxH,18);ctx.stroke();ctx.restore();
+  if(img&&img.width>0){
+    ctx.save();ctx.beginPath();ctx.roundRect(L.imgX-IMAGE_SIZE/2,L.imgY-IMAGE_SIZE/2,IMAGE_SIZE,IMAGE_SIZE,14);ctx.clip();image(img,L.imgX,L.imgY,IMAGE_SIZE,IMAGE_SIZE);ctx.restore();
+    ctx.save();ctx.strokeStyle='rgba(255,133,179,.5)';ctx.lineWidth=2;ctx.beginPath();ctx.roundRect(L.imgX-IMAGE_SIZE/2,L.imgY-IMAGE_SIZE/2,IMAGE_SIZE,IMAGE_SIZE,14);ctx.stroke();ctx.restore();
+  }else{fill(255,255,255,20);rectMode(CENTER);rect(L.imgX,L.imgY,IMAGE_SIZE,IMAGE_SIZE,14);fill(255,160,200);textAlign(CENTER,CENTER);textSize(13);text('Loading…',L.imgX,L.imgY);}
+  fill(255,210,230);textSize(13);textWrap(WORD);textAlign(LEFT,TOP);text(task.title,L.textX,L.textY,L.textW);
+  fill(255,160,200,160);textSize(10);textWrap(WORD);textAlign(LEFT,TOP);text(task.caption,L.textX,L.textY+22,L.textW);
+  pop();
+  push();fill(255,150,190,80);textAlign(CENTER,BOTTOM);textSize(10);
+  text(lockedIndex===-1?'✦ tap image to select ✦':'✦ selected — see below ✦',width/2,height-10);
+  pop();
+  if(lockedIndex!==-1)noLoop();
+}
+
+function mousePressed(){
+  if(lockedIndex!==-1)return;
+  const L=getLayout(),h=IMAGE_SIZE/2;
+  if(mouseX>=L.imgX-h&&mouseX<=L.imgX+h&&mouseY>=L.imgY-h&&mouseY<=L.imgY+h){lockedIndex=order[currentIndex];showIdentify(lockedIndex);}
+}
+function touchStarted(e){
+  const cnv=document.getElementById('defaultCanvas0');if(!cnv)return;
+  const rect=cnv.getBoundingClientRect(),t=(e.touches&&e.touches[0])||(e.changedTouches&&e.changedTouches[0]);if(!t)return;
+  if(t.clientX<rect.left||t.clientX>rect.right||t.clientY<rect.top||t.clientY>rect.bottom)return;mousePressed();
+}
+
+window.preload=preload;window.setup=setup;window.draw=draw;window.mousePressed=mousePressed;window.touchStarted=touchStarted;
+
+/* ── FLOW ── */
+function showIdentify(idx){
+  const task=items[idx];
+  document.getElementById('identifyTitle').textContent=task.title;
+  document.getElementById('identifyCaption').textContent=task.caption;
+  const img=document.getElementById('identifyImg');
+  img.src=items[idx].resolvedSrc||`${ASSET_BASE}/robot${idx}.png`;
+  img.onerror=()=>{img.style.display='none';};
+  document.getElementById('describeInput').value='';
+  show('stepIdentify');
+  setTimeout(()=>document.getElementById('stepIdentify').scrollIntoView({behavior:'smooth',block:'start'}),80);
+}
+
+function advanceToBuilder(){
+  const desc=document.getElementById('describeInput').value.trim();
+  if(!desc){alert('Please describe what you see in the image first.');return;}
+  selectedAction=null;selectedState='on';selectedLocation=null;actionCount=1;
+  document.querySelectorAll('#actionGrid .sel-btn').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('#locationScroll .loc-chip').forEach(b=>b.classList.remove('active'));
+  document.getElementById('countDisplay').textContent='1';
+  document.getElementById('stateOn').classList.add('active');
+  document.getElementById('stateOff').classList.remove('active');
+  show('stepBuilder');
+  setTimeout(()=>document.getElementById('stepBuilder').scrollIntoView({behavior:'smooth',block:'start'}),80);
+}
+
+function generateInstruction(){
+  if(!selectedAction){alert('Please choose an action.');return;}
+  if(!selectedLocation){alert('Please choose a location.');return;}
+  buildDiagram();
+  document.getElementById('diagramWrap').style.display='block';
+  setTimeout(()=>document.getElementById('diagramWrap').scrollIntoView({behavior:'smooth',block:'start'}),80);
+  setTimeout(speakInstruction,900);
+  // Save instruction as data to Firebase
+  saveInstructionData();
+}
+
+function saveInstructionData(){
+  if(!window.firebase||!fbReady)return;
+  const task=items[lockedIndex];
+  const payload={
+    type:'cb42_instruction',
+    taskTitle:task.title,
+    taskCaption:task.caption,
+    imageDescription:document.getElementById('describeInput').value.trim(),
+    action:selectedAction?selectedAction.label:'',
+    count:actionCount,
+    state:selectedState,
+    location:selectedLocation?selectedLocation.label:'',
+    instruction:lastInstruction,
+    ts:firebase.database.ServerValue.TIMESTAMP
+  };
+  try{
+    firebase.database().ref('cb42Instructions').push(payload);
+  }catch(e){console.warn('Firebase save failed:',e);}
+}
+
+function doReset(){
+  lockedIndex=-1;
+  hide('stepIdentify');hide('stepBuilder');
+  document.getElementById('diagramWrap').style.display='none';
+  document.getElementById('hint').style.display='block';
+  order=makeOrder(items.length);currentIndex=Math.floor(Math.random()*items.length);
+  lastSwitch=0;loop();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function show(id){document.getElementById(id).style.display='block';}
+function hide(id){document.getElementById(id).style.display='none';}
+
+/* ── DIAGRAM ── */
+function buildDiagram(){
+  const task=items[lockedIndex];
+  const desc=document.getElementById('describeInput').value.trim();
+  const action=selectedAction;
+  const loc=selectedLocation;
+  const state=selectedState;
+  const count=actionCount;
+
+  // Build human-readable instruction
+  let actionText=action.label.toLowerCase();
+  let locationText=loc.label.toLowerCase();
+  let stateText=state==='on'?'(active/on)':'(passive/off)';
+  let times=count===1?'once':(count===2?'twice':`${count} times`);
+
+  const instruction=`Take the object you see in this image — ${desc}. ${action.label} ${times}, then place it at: ${loc.label}. Object should be ${state==='on'?'active / switched on':'passive / switched off'}.`;
+  lastInstruction=instruction;
+
+  const sub=`Robot task context: "${task.title}". ${stateText}. Stage is 6 ft × 6 ft. Perform this instruction precisely in sequence.`;
+
+  document.getElementById('diagramTitle').textContent=`${action.label} — ${times} — ${loc.label}`;
+  document.getElementById('instructionText').textContent=instruction;
+  document.getElementById('instructionSub').textContent=sub;
+
+  // Build SVG stage diagram
+  renderStageSVG(loc,action,desc,count,state);
+}
+
+function renderStageSVG(loc,action,desc,count,state){
+  const svg=document.getElementById('stageSvg');
+  const W=420,H=420,PAD=36,GRID=W-PAD*2;
+  const toSVG=(nx,ny)=>({x:PAD+nx*GRID,y:PAD+ny*GRID});
+
+  // Resolve target position
+  let targetX,targetY;
+  const locId=loc.id;
+  const posMap={
+    center:{nx:.5,ny:.5},front_left:{nx:.15,ny:.85},front_right:{nx:.85,ny:.85},
+    back_left:{nx:.15,ny:.15},back_right:{nx:.85,ny:.15},
+    front_center:{nx:.5,ny:.85},back_center:{nx:.5,ny:.15}
+  };
+  if(posMap[locId]){const p=posMap[locId];const sv=toSVG(p.nx,p.ny);targetX=sv.x;targetY=sv.y;}
+  else if(locId.startsWith('on_')){
+    const objId=locId.replace('on_','');const obj=STAGE_OBJECTS.find(o=>o.id===objId);
+    if(obj){const sv=toSVG(obj.x,obj.y);targetX=sv.x+14;targetY=sv.y-14;}
+    else{targetX=W/2;targetY=H/2;}
+  }else{targetX=W/2;targetY=H/2;}
+
+  let html='';
+  // Background
+  html+=`<rect x="0" y="0" width="${W}" height="${H}" rx="12" fill="#0a0006"/>`;
+  // Stage grid floor
+  html+=`<rect x="${PAD}" y="${PAD}" width="${GRID}" height="${GRID}" rx="8" fill="rgba(100,0,30,.35)" stroke="rgba(255,80,140,.3)" stroke-width="1.5"/>`;
+  // Grid lines (6x6)
+  for(let i=1;i<6;i++){
+    const x=PAD+(GRID/6)*i,y=PAD+(GRID/6)*i;
+    html+=`<line x1="${x}" y1="${PAD}" x2="${x}" y2="${PAD+GRID}" stroke="rgba(255,80,140,.1)" stroke-width=".8"/>`;
+    html+=`<line x1="${PAD}" y1="${y}" x2="${PAD+GRID}" y2="${y}" stroke="rgba(255,80,140,.1)" stroke-width=".8"/>`;
+  }
+  // Stage border label
+  html+=`<text x="${W/2}" y="${PAD-6}" text-anchor="middle" font-family="DM Mono,monospace" font-size="9" fill="rgba(255,133,179,.5)" letter-spacing=".12em">6 ft</text>`;
+  html+=`<text x="${PAD-8}" y="${H/2}" text-anchor="middle" font-family="DM Mono,monospace" font-size="9" fill="rgba(255,133,179,.5)" transform="rotate(-90 ${PAD-8} ${H/2})" letter-spacing=".12em">6 ft</text>`;
+  // Audience label
+  html+=`<text x="${W/2}" y="${PAD+GRID+16}" text-anchor="middle" font-family="Quicksand,sans-serif" font-size="9" fill="rgba(255,133,179,.35)" letter-spacing=".12em">AUDIENCE →</text>`;
+
+  // Stage objects
+  STAGE_OBJECTS.forEach(obj=>{
+    const p=toSVG(obj.x,obj.y);
+    const isTarget=loc.id==='on_'+obj.id;
+    html+=`<circle cx="${p.x}" cy="${p.y}" r="${isTarget?13:9}" fill="${isTarget?'rgba(255,45,107,.5)':'rgba(180,0,60,.35)'}" stroke="${isTarget?'#ff85b3':'rgba(255,80,140,.4)'}" stroke-width="${isTarget?2:1}"/>`;
+    html+=`<text x="${p.x}" y="${p.y+4}" text-anchor="middle" font-size="${isTarget?12:10}" font-family="sans-serif">${obj.emoji}</text>`;
+    html+=`<text x="${p.x}" y="${p.y+20}" text-anchor="middle" font-family="Quicksand,sans-serif" font-size="7" fill="rgba(255,180,210,.55)">${obj.label.replace('Laundry basket','Basket').replace('Watering can','Can')}</text>`;
+  });
+
+  // Target marker
+  html+=`<circle cx="${targetX}" cy="${targetY}" r="20" fill="rgba(255,45,107,.18)" stroke="#ff2d6b" stroke-width="2" stroke-dasharray="5 3"/>`;
+  html+=`<text x="${targetX}" y="${targetY+5}" text-anchor="middle" font-size="16" font-family="sans-serif">🎯</text>`;
+
+  // Arrow from center to target (if not center)
+  if(locId!=='center'){
+    const cx=W/2,cy=H/2;
+    const dx=targetX-cx,dy=targetY-cy,d=Math.sqrt(dx*dx+dy*dy);
+    const nx=dx/d,ny=dy/d;
+    const x1=cx+nx*22,y1=cy+ny*22,x2=targetX-nx*22,y2=targetY-ny*22;
+    html+=`<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="rgba(255,85,140,.55)" stroke-width="1.5" stroke-dasharray="6 4"/>`;
+    html+=`<polygon points="${x2},${y2} ${x2-nx*8+ny*5},${y2-ny*8-nx*5} ${x2-nx*8-ny*5},${y2-ny*8+nx*5}" fill="rgba(255,85,140,.7)"/>`;
+  }
+
+  // Robot marker at center
+  html+=`<circle cx="${W/2}" cy="${H/2}" r="18" fill="rgba(255,45,107,.25)" stroke="#ff85b3" stroke-width="1.5"/>`;
+  html+=`<text x="${W/2}" y="${H/2+6}" text-anchor="middle" font-size="18" font-family="sans-serif">🤖</text>`;
+
+  // Selected image task label top-left
+  const task=items[lockedIndex];
+  const shortTitle=task.title.length>24?task.title.slice(0,23)+'…':task.title;
+  html+=`<text x="${PAD+5}" y="${PAD+14}" font-family="Quicksand,sans-serif" font-size="8" fill="rgba(255,180,210,.6)">${shortTitle}</text>`;
+
+  // Action + count overlay
+  const actionLabel=action.label+(count>1?` ×${count}`:'');
+  html+=`<rect x="${W-PAD-80}" y="${H-PAD-22}" width="84" height="18" rx="4" fill="rgba(255,45,107,.22)" stroke="rgba(255,80,140,.4)" stroke-width="1"/>`;
+  html+=`<text x="${W-PAD-38}" y="${H-PAD-10}" text-anchor="middle" font-family="DM Mono,monospace" font-size="8" fill="rgba(255,200,220,.8)">${actionLabel}</text>`;
+
+  // State badge
+  const stateCol=state==='on'?'rgba(255,200,80,.8)':'rgba(180,180,180,.6)';
+  const stateLabel=state==='on'?'ON':'OFF';
+  html+=`<rect x="${PAD}" y="${H-PAD-22}" width="32" height="18" rx="4" fill="rgba(0,0,0,.4)" stroke="rgba(255,80,140,.3)" stroke-width="1"/>`;
+  html+=`<text x="${PAD+16}" y="${H-PAD-10}" text-anchor="middle" font-family="DM Mono,monospace" font-size="9" fill="${stateCol}" font-weight="700">${stateLabel}</text>`;
+
+  svg.innerHTML=html;
+}
+
+/* ── SPEECH ── */
+function speakInstruction(){
+  if(!lastInstruction){return;}
+  if(!('speechSynthesis' in window)){alert('Speech synthesis not available on this browser.');return;}
+  window.speechSynthesis.cancel();
+  const u=new SpeechSynthesisUtterance(lastInstruction);
+  u.rate=0.9;u.pitch=1.05;
+  const trySpeak=()=>{
+    const voices=window.speechSynthesis.getVoices();
+    const fv=voices.find(v=>v.lang==='en-US'&&/samantha|karen|amy|emma|female|woman/i.test(v.name))||voices.find(v=>v.lang==='en-US')||voices[0];
+    if(fv)u.voice=fv;
+    window.speechSynthesis.speak(u);
+  };
+  if(window.speechSynthesis.getVoices().length)trySpeak();
+  else{window.speechSynthesis.onvoiceschanged=trySpeak;}
+}
+</script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+</body>
+</html>
