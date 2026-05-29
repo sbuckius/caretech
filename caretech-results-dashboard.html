@@ -263,42 +263,40 @@ const apps={},dbs={},stores={};
 function app(k){
   if(!apps[k]){
     try{
-      // check if already initialised under this name
-      apps[k]=firebase.apps.find(a=>a.name===k)||firebase.initializeApp(CFGS[k],k);
+      const existing=firebase.apps.find(a=>a.name===k);
+      apps[k]=existing||firebase.initializeApp(CFGS[k],k);
     }catch(e){
-      try{apps[k]=firebase.app(k);}catch(e2){console.error('app() failed for',k,e2);apps[k]=null;}
+      console.error('app() failed for',k,e.message);
+      apps[k]=null;
     }
   }
   return apps[k];
 }
 function db(k){
-  if(!dbs[k]){
-    try{
-      const a=app(k);
-      if(!a){return null;}
-      dbs[k]=firebase.database(a);
-    }catch(e){console.error('db() failed for',k,e);dbs[k]=null;}
-  }
+  if(dbs[k]!==undefined)return dbs[k];
+  try{
+    const a=app(k);
+    if(!a||!CFGS[k].databaseURL){dbs[k]=null;return null;}
+    dbs[k]=a.database();
+  }catch(e){console.error('db() failed for',k,e.message);dbs[k]=null;}
   return dbs[k];
 }
 function fs(k){
-  if(!stores[k]){
-    try{
-      const a=app(k);
-      if(!a){return null;}
-      stores[k]=firebase.firestore(a);
-    }catch(e){console.error('fs() failed for',k,e);stores[k]=null;}
-  }
+  if(stores[k]!==undefined)return stores[k];
+  try{
+    const a=app(k);
+    if(!a){stores[k]=null;return null;}
+    stores[k]=a.firestore();
+  }catch(e){console.error('fs() failed for',k,e.message);stores[k]=null;}
   return stores[k];
 }
 async function rtdbAll(key,path){
   try{
     const d=db(key);
-    if(!d){console.error(`[rtdbAll] ${key}: no database instance`);return null;}
+    if(!d){console.error(`[rtdbAll] ${key}/${path}: no db`);return null;}
     const s=await d.ref(path).once('value');
     const v=s.val();
-    const n=v?Object.keys(v).length:0;
-    console.log(`[rtdbAll] ${key}/${path}: ${n} records`);
+    console.log(`[rtdbAll] ${key}/${path}:`,v?Object.keys(v).length:0,'records');
     return v?Object.values(v):[];
   }catch(e){
     console.error(`[rtdbAll ERROR] ${key}/${path}:`,e.code||e.message);
@@ -308,9 +306,9 @@ async function rtdbAll(key,path){
 async function fsAll(key,col){
   try{
     const f=fs(key);
-    if(!f){console.error(`[fsAll] ${key}: no firestore instance`);return null;}
+    if(!f){console.error(`[fsAll] ${key}/${col}: no firestore`);return null;}
     const s=await f.collection(col).get();
-    console.log(`[fsAll] ${key}/${col}: ${s.docs.length} records`);
+    console.log(`[fsAll] ${key}/${col}:`,s.docs.length,'records');
     return s.docs.map(d=>d.data());
   }catch(e){
     console.error(`[fsAll ERROR] ${key}/${col}:`,e.code||e.message);
@@ -500,7 +498,11 @@ async function buildCB07(wrap){
   const body=p.querySelector('.panel-body');
   if(!data){errMsg(body,'Could not load microtaskReactions');return 0;}
   if(!data.length){emptyMsg(body,'No reactions yet.');return 0;}
-  window._cb07Data=[...new Set(data.filter(d=>d.workerId).sort((a,b)=>(b.ts||0)-(a.ts||0)).map(d=>d.workerId))];
+
+  // sort newest first
+  const sorted=[...data].sort((a,b)=>(b.ts||0)-(a.ts||0));
+  window._cb07Data=[...new Set(sorted.filter(d=>d.workerId).map(d=>d.workerId))];
+
   const allEmotions=data.flatMap(d=>Array.isArray(d.emotions)?d.emotions:[]);
   const sf=sortedFreq(allEmotions);
   const total=allEmotions.length;
@@ -509,6 +511,106 @@ async function buildCB07(wrap){
   body.appendChild(bDiv);
   statRows(body,[{label:'Total responses',val:data.length},{label:'Most common reaction',val:sf[0]?sf[0][0]:'—'}]);
   if(sf.length&&['resigned','angry','frustrated','insulted'].includes(sf[0][0])){insight(body,`<strong>"${sf[0][0]}"</strong> is the dominant reaction to a $0.01 microtask reward — a direct measure of labor affect in automated work systems.`);}
+
+  // ── PER-WORKER CARDS ──
+  const workerLbl=document.createElement('div');
+  workerLbl.style.cssText='font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--td);font-family:var(--fh);font-weight:800;margin-top:4px;';
+  workerLbl.textContent='✦ Individual Worker Responses';
+  body.appendChild(workerLbl);
+
+  const workerGrid=document.createElement('div');
+  workerGrid.style.cssText='display:grid;grid-template-columns:repeat(3,1fr);gap:10px;';
+  body.appendChild(workerGrid);
+
+  sorted.forEach((d,i)=>{
+    const wid=d.workerId||'—';
+    const emotions=Array.isArray(d.emotions)?d.emotions:[];
+    const ts=d.ts?new Date(d.ts).toLocaleString():'—';
+
+    const card=document.createElement('div');
+    card.style.cssText='background:rgba(14,0,8,.7);border:1.5px solid rgba(255,100,160,.28);border-radius:12px;overflow:hidden;transition:all .3s ease;';
+
+    // header row — always visible
+    const header=document.createElement('div');
+    header.style.cssText='display:flex;align-items:center;gap:8px;padding:10px 12px;cursor:pointer;';
+
+    // collapse checkbox
+    const chk=document.createElement('input');
+    chk.type='checkbox';
+    chk.title='Mark as done — collapse card';
+    chk.style.cssText='width:15px;height:15px;flex-shrink:0;cursor:pointer;accent-color:var(--hot);';
+
+    const headerText=document.createElement('div');
+    headerText.style.cssText='flex:1;min-width:0;';
+
+    const widEl=document.createElement('div');
+    widEl.style.cssText="font-family:'Nunito',sans-serif;font-weight:900;font-size:11px;color:var(--blush);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;";
+    widEl.textContent='Worker: '+wid;
+
+    const tsEl=document.createElement('div');
+    tsEl.style.cssText='font-size:9px;color:var(--td);margin-top:1px;';
+    tsEl.textContent=ts;
+
+    headerText.appendChild(widEl);
+    headerText.appendChild(tsEl);
+    header.appendChild(chk);
+    header.appendChild(headerText);
+
+    // speak btn in header
+    const speakBtn=document.createElement('button');
+    speakBtn.style.cssText="appearance:none;font-family:'Nunito',sans-serif;font-weight:800;font-size:10px;color:var(--blush);background:rgba(255,45,107,.14);border:1.5px solid rgba(255,100,160,.4);border-radius:7px;padding:4px 9px;cursor:pointer;flex-shrink:0;white-space:nowrap;";
+    speakBtn.textContent='🔊';
+    speakBtn.title='Read payment aloud';
+    speakBtn.addEventListener('click',(e)=>{
+      e.stopPropagation();
+      const spelled=(wid==='—'?'unknown':wid).split('').join(' ');
+      announceWorker(spelled);
+    });
+    header.appendChild(speakBtn);
+    card.appendChild(header);
+
+    // body — collapsible
+    const cardBody=document.createElement('div');
+    cardBody.style.cssText='padding:0 12px 10px;';
+
+    // payment line
+    const payLine=document.createElement('div');
+    payLine.style.cssText='font-size:11px;color:rgba(255,215,230,.8);margin-bottom:8px;padding:6px 10px;background:rgba(255,45,107,.08);border-radius:7px;';
+    payLine.textContent='Should be paid $0.01';
+    cardBody.appendChild(payLine);
+
+    // emotion tags
+    if(emotions.length){
+      const tagWrap=document.createElement('div');
+      tagWrap.style.cssText='display:flex;flex-wrap:wrap;gap:4px;';
+      emotions.forEach(e=>{
+        const t=document.createElement('span');
+        t.style.cssText='padding:2px 8px;border-radius:999px;background:rgba(255,45,107,.12);border:1px solid rgba(255,100,160,.22);font-size:9px;color:rgba(255,180,210,.8);';
+        t.textContent=e;
+        tagWrap.appendChild(t);
+      });
+      cardBody.appendChild(tagWrap);
+    }
+    card.appendChild(cardBody);
+
+    // checkbox collapses card
+    chk.addEventListener('change',()=>{
+      if(chk.checked){
+        cardBody.style.display='none';
+        card.style.opacity='.45';
+        card.style.borderColor='rgba(255,100,160,.1)';
+        speakBtn.style.display='none';
+      } else {
+        cardBody.style.display='';
+        card.style.opacity='1';
+        card.style.borderColor='rgba(255,100,160,.28)';
+        speakBtn.style.display='';
+      }
+    });
+
+    workerGrid.appendChild(card);
+  });
+
   return data.length;
 }
 
@@ -845,26 +947,83 @@ async function buildCB42(wrap){
     const card=document.createElement('div');
     card.style.cssText='background:rgba(14,0,8,.7);border:1.5px solid rgba(255,100,160,.28);border-radius:14px;overflow:hidden;display:flex;flex-direction:column;';
 
-    const ts=d.ts?new Date(d.ts).toLocaleString():'—';
     const stateEmoji=d.state==='on'?'⚡':'⬜';
-    const countStr=d.count==1?'once':d.count==2?'twice':`${d.count}×`;
-    const svgHtml=cb42RenderSVG(d);
-    const uid='cb42-'+Math.random().toString(36).slice(2,8);
 
-    card.innerHTML=`
-      <div style="padding:8px 8px 0;">${svgHtml}</div>
-      <div style="padding:8px 11px 10px;flex:1;">
-        <div style="font-family:'Nunito',sans-serif;font-weight:900;font-size:11px;color:var(--blush);line-height:1.3;margin-bottom:5px;">${d.taskTitle||'—'}</div>
-        <div style="font-size:10px;color:rgba(255,215,230,.8);line-height:1.6;margin-bottom:8px;">${d.instruction||'—'}</div>
-        <div style="display:flex;gap:4px;flex-wrap:wrap;margin-bottom:8px;">
-          <span style="padding:2px 7px;border-radius:999px;background:rgba(255,45,107,.12);border:1px solid rgba(255,100,160,.22);font-size:9px;color:rgba(255,180,210,.8);font-family:'Nunito',sans-serif;font-weight:800;">⚙ ${d.action||'—'}</span>
-          <span style="padding:2px 7px;border-radius:999px;background:rgba(255,45,107,.12);border:1px solid rgba(255,100,160,.22);font-size:9px;color:rgba(255,180,210,.8);font-family:'Nunito',sans-serif;font-weight:800;">🎯 ${(d.location||'—').replace(/^On: /i,'')}</span>
-          <span style="padding:2px 7px;border-radius:999px;background:rgba(255,45,107,.12);border:1px solid rgba(255,100,160,.22);font-size:9px;color:rgba(255,180,210,.8);font-family:'Nunito',sans-serif;font-weight:800;">${stateEmoji} ↺${d.count||1}</span>
-        </div>
-        ${d.imageDescription?`<div style="font-size:9px;color:rgba(255,180,210,.4);font-style:italic;margin-bottom:8px;">"${d.imageDescription.slice(0,60)}${d.imageDescription.length>60?'…':''}"</div>`:''}
-        <button id="${uid}" onclick="cb42Speak(${JSON.stringify(d.instruction||'')}, document.getElementById('${uid}'))" style="appearance:none;font-family:'Nunito',sans-serif;font-weight:800;font-size:10px;color:var(--blush);background:rgba(255,45,107,.14);border:1.5px solid rgba(255,100,160,.4);border-radius:8px;padding:6px 10px;cursor:pointer;width:100%;margin-top:auto;">🔊 Read aloud</button>
-      </div>
-    `;
+    // collapse checkbox header
+    const cardHeader=document.createElement('div');
+    cardHeader.style.cssText='display:flex;align-items:center;gap:7px;padding:8px 10px 4px;';
+
+    const chk42=document.createElement('input');
+    chk42.type='checkbox';
+    chk42.title='Mark as done — collapse card';
+    chk42.style.cssText='width:14px;height:14px;flex-shrink:0;cursor:pointer;accent-color:var(--hot);';
+
+    const chkLbl=document.createElement('div');
+    chkLbl.style.cssText="font-family:'Nunito',sans-serif;font-weight:900;font-size:10px;color:var(--blush);flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;";
+    chkLbl.textContent=d.taskTitle||'—';
+    cardHeader.appendChild(chk42);
+    cardHeader.appendChild(chkLbl);
+    card.appendChild(cardHeader);
+
+    // collapsible content
+    const cardContent=document.createElement('div');
+
+    // SVG diagram
+    const svgWrap=document.createElement('div');
+    svgWrap.style.cssText='padding:0 8px 0;';
+    svgWrap.innerHTML=cb42RenderSVG(d);
+    cardContent.appendChild(svgWrap);
+
+    // text body
+    const textWrap=document.createElement('div');
+    textWrap.style.cssText="padding:8px 11px 10px;flex:1;display:flex;flex-direction:column;";
+
+    // instruction
+    const instr=document.createElement('div');
+    instr.style.cssText='font-size:10px;color:rgba(255,215,230,.8);line-height:1.6;margin-bottom:8px;';
+    instr.textContent=d.instruction||'—';
+    textWrap.appendChild(instr);
+
+    // badges
+    const badges=document.createElement('div');
+    badges.style.cssText='display:flex;gap:4px;flex-wrap:wrap;margin-bottom:8px;';
+    const badgeStyle="padding:2px 7px;border-radius:999px;background:rgba(255,45,107,.12);border:1px solid rgba(255,100,160,.22);font-size:9px;color:rgba(255,180,210,.8);font-family:'Nunito',sans-serif;font-weight:800;";
+    ['⚙ '+(d.action||'—'), '🎯 '+(d.location||'—').replace(/^On: /i,''), stateEmoji+' ↺'+(d.count||1)].forEach(t=>{
+      const s=document.createElement('span');s.style.cssText=badgeStyle;s.textContent=t;badges.appendChild(s);
+    });
+    textWrap.appendChild(badges);
+
+    // image description
+    if(d.imageDescription){
+      const desc=document.createElement('div');
+      desc.style.cssText='font-size:9px;color:rgba(255,180,210,.4);font-style:italic;margin-bottom:8px;';
+      desc.textContent='"'+(d.imageDescription.length>60?d.imageDescription.slice(0,60)+'…':d.imageDescription)+'"';
+      textWrap.appendChild(desc);
+    }
+
+    // speak button
+    const btn=document.createElement('button');
+    btn.style.cssText="appearance:none;font-family:'Nunito',sans-serif;font-weight:800;font-size:10px;color:var(--blush);background:rgba(255,45,107,.14);border:1.5px solid rgba(255,100,160,.4);border-radius:8px;padding:6px 10px;cursor:pointer;width:100%;margin-top:auto;";
+    btn.textContent='🔊 Read aloud';
+    btn.addEventListener('click',()=>cb42Speak(d.instruction||'',btn));
+    textWrap.appendChild(btn);
+
+    cardContent.appendChild(textWrap);
+    card.appendChild(cardContent);
+
+    // checkbox collapses card content
+    chk42.addEventListener('change',()=>{
+      if(chk42.checked){
+        cardContent.style.display='none';
+        card.style.opacity='.4';
+        card.style.borderColor='rgba(255,100,160,.1)';
+      } else {
+        cardContent.style.display='';
+        card.style.opacity='1';
+        card.style.borderColor='rgba(255,100,160,.28)';
+      }
+    });
+
     feed.appendChild(card);
   });
 
