@@ -304,11 +304,12 @@ function revealRewardScreen(workerId){
   setTimeout(()=>announceWorker(workerId), 400);
 }
 
-// On page load: skip gate if worker already identified this session
+// Always show the gate — worker must enter ID every time
+// (pre-fill the input if they've been here before, but don't skip)
 (function(){
   const stored = getStoredWorkerId();
   if(stored){
-    revealRewardScreen(stored);
+    document.getElementById('workerIdInput').value = stored;
   }
 })();
 
