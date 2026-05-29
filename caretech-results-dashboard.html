@@ -260,11 +260,63 @@ const CFGS={
   honey:{apiKey:"AIzaSyCOq3yuuvOiUlJILo_RbBoXf0WYGJBaLRE",authDomain:"misshoneywell.firebaseapp.com",databaseURL:"https://misshoneywell-default-rtdb.firebaseio.com",projectId:"misshoneywell",storageBucket:"misshoneywell.firebasestorage.app",messagingSenderId:"112158461514",appId:"1:112158461514:web:9f42950241d9abe1c3e0b3"}
 };
 const apps={},dbs={},stores={};
-function app(k){if(!apps[k]){try{apps[k]=firebase.initializeApp(CFGS[k],k);}catch(e){apps[k]=firebase.app(k);}}return apps[k];}
-function db(k){if(!dbs[k]){try{dbs[k]=firebase.database(app(k));}catch(e){return null;}}return dbs[k];}
-function fs(k){if(!stores[k]){try{stores[k]=firebase.firestore(app(k));}catch(e){return null;}}return stores[k];}
-async function rtdbAll(key,path){try{const s=await db(key).ref(path).once('value');const v=s.val();const n=v?Object.keys(v).length:0;console.log(`[rtdbAll] ${key}/${path}: ${n} records`);return v?Object.values(v):[];}catch(e){const msg=e.code||e.message;console.error(`[rtdbAll ERROR] ${key}/${path}:`,msg,e);return null;}}
-async function fsAll(key,col){try{const s=await fs(key).collection(col).get();console.log(`[fsAll] ${key}/${col}: ${s.docs.length} records`);return s.docs.map(d=>d.data());}catch(e){const msg=e.code||e.message;console.error(`[fsAll ERROR] ${key}/${col}:`,msg,e);return null;}}
+function app(k){
+  if(!apps[k]){
+    try{
+      // check if already initialised under this name
+      apps[k]=firebase.apps.find(a=>a.name===k)||firebase.initializeApp(CFGS[k],k);
+    }catch(e){
+      try{apps[k]=firebase.app(k);}catch(e2){console.error('app() failed for',k,e2);apps[k]=null;}
+    }
+  }
+  return apps[k];
+}
+function db(k){
+  if(!dbs[k]){
+    try{
+      const a=app(k);
+      if(!a){return null;}
+      dbs[k]=firebase.database(a);
+    }catch(e){console.error('db() failed for',k,e);dbs[k]=null;}
+  }
+  return dbs[k];
+}
+function fs(k){
+  if(!stores[k]){
+    try{
+      const a=app(k);
+      if(!a){return null;}
+      stores[k]=firebase.firestore(a);
+    }catch(e){console.error('fs() failed for',k,e);stores[k]=null;}
+  }
+  return stores[k];
+}
+async function rtdbAll(key,path){
+  try{
+    const d=db(key);
+    if(!d){console.error(`[rtdbAll] ${key}: no database instance`);return null;}
+    const s=await d.ref(path).once('value');
+    const v=s.val();
+    const n=v?Object.keys(v).length:0;
+    console.log(`[rtdbAll] ${key}/${path}: ${n} records`);
+    return v?Object.values(v):[];
+  }catch(e){
+    console.error(`[rtdbAll ERROR] ${key}/${path}:`,e.code||e.message);
+    return null;
+  }
+}
+async function fsAll(key,col){
+  try{
+    const f=fs(key);
+    if(!f){console.error(`[fsAll] ${key}: no firestore instance`);return null;}
+    const s=await f.collection(col).get();
+    console.log(`[fsAll] ${key}/${col}: ${s.docs.length} records`);
+    return s.docs.map(d=>d.data());
+  }catch(e){
+    console.error(`[fsAll ERROR] ${key}/${col}:`,e.code||e.message);
+    return null;
+  }
+}
 
 // ══════════════════════════════════════════
 // HELPERS
