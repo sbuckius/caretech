@@ -3,9 +3,8 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
-<title>✦ CAREBOT-42 ✦ Nonsensical Data for Domestic Work</title>
+<title>✦ CAREBOT-42 ✦ Data for Domestic & Presentation Work</title>
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Quicksand:wght@500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
-<!-- Firebase MUST load before the inline script that uses it -->
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.0/p5.min.js"></script>
@@ -56,15 +55,24 @@ html,body{height:100%;min-height:100%;font-family:var(--fb);font-weight:600;colo
 @keyframes slideUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
 .field-label{font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);margin-bottom:6px;margin-top:14px;display:block;}
 .field-label:first-child{margin-top:0;}
+.field-label .sublabel{font-size:9px;color:rgba(255,180,210,.35);text-transform:none;letter-spacing:.05em;margin-left:6px;}
 .text-input{width:100%;padding:10px 13px;background:rgba(255,255,255,.06);border:1.5px solid rgba(255,80,150,.28);border-radius:11px;font-family:var(--fb);font-weight:600;font-size:13px;color:var(--cream);outline:none;transition:border-color .2s;}
 .text-input:focus{border-color:var(--candy);box-shadow:0 0 0 3px rgba(255,133,179,.1);}
 .text-input::placeholder{color:rgba(255,180,210,.25);}
+.example-chips{display:flex;flex-wrap:wrap;gap:5px;margin-top:6px;}
+.eg-chip{padding:4px 9px;border-radius:999px;border:1px solid rgba(255,80,150,.2);background:rgba(255,45,107,.08);color:rgba(255,180,210,.6);font-size:10px;cursor:pointer;transition:all .15s;white-space:nowrap;}
+.eg-chip:hover{background:rgba(255,45,107,.22);border-color:var(--candy);color:var(--cream);}
 .select-grid{display:grid;gap:7px;}
 .select-grid.cols2{grid-template-columns:1fr 1fr;}
 .select-grid.cols3{grid-template-columns:1fr 1fr 1fr;}
+.select-grid.cols4{grid-template-columns:1fr 1fr 1fr 1fr;}
 .sel-btn{appearance:none;font-family:var(--fb);font-weight:700;font-size:11px;padding:8px 10px;border-radius:9px;cursor:pointer;border:1.5px solid rgba(255,80,150,.22);background:rgba(255,255,255,.04);color:var(--muted);transition:all .15s;text-align:center;line-height:1.3;}
 .sel-btn:hover{background:rgba(255,45,107,.14);border-color:var(--border2);color:var(--blush);}
 .sel-btn.active{background:rgba(255,45,107,.28);border-color:var(--hot);color:var(--cream);box-shadow:0 0 10px rgba(255,45,107,.25);}
+.sel-btn.chosen-1{background:rgba(255,45,107,.35);border-color:var(--hot);color:var(--cream);box-shadow:0 0 12px rgba(255,45,107,.3);}
+.sel-btn.chosen-2{background:rgba(180,0,60,.35);border-color:var(--berry);color:var(--cream);box-shadow:0 0 10px rgba(180,0,60,.3);}
+.sel-btn.chosen-3{background:rgba(100,0,30,.45);border-color:var(--crimson);color:var(--blush);box-shadow:0 0 8px rgba(100,0,30,.3);}
+.sel-btn.chosen-4{background:rgba(60,0,18,.5);border-color:#7a0028;color:rgba(255,180,210,.8);}
 .count-row{display:flex;align-items:center;gap:11px;margin-top:2px;}
 .count-btn{width:36px;height:36px;border-radius:9px;appearance:none;border:1.5px solid rgba(255,80,150,.35);background:rgba(255,45,107,.1);color:var(--candy);font-family:var(--fh);font-weight:900;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s;flex-shrink:0;}
 .count-btn:hover{background:rgba(255,45,107,.24);border-color:var(--hot);}
@@ -72,9 +80,18 @@ html,body{height:100%;min-height:100%;font-family:var(--fb);font-weight:600;colo
 .count-label{font-size:11px;color:var(--muted);}
 .loc-scroll{display:flex;gap:7px;overflow-x:auto;padding-bottom:5px;-webkit-overflow-scrolling:touch;scrollbar-width:none;}
 .loc-scroll::-webkit-scrollbar{display:none;}
-.loc-chip{flex-shrink:0;padding:7px 13px;border-radius:999px;border:1.5px solid rgba(255,80,150,.22);background:rgba(255,255,255,.04);color:var(--muted);font-size:11px;font-weight:700;cursor:pointer;white-space:nowrap;transition:all .15s;}
-.loc-chip.active{background:rgba(255,45,107,.28);border-color:var(--hot);color:var(--cream);}
+.loc-chip{flex-shrink:0;padding:7px 13px;border-radius:999px;border:1.5px solid rgba(255,80,150,.22);background:rgba(255,255,255,.04);color:var(--muted);font-size:11px;font-weight:700;cursor:pointer;white-space:nowrap;transition:all .15s;position:relative;}
+.loc-chip.loc-stop-1{background:rgba(255,45,107,.28);border-color:var(--hot);color:var(--cream);}
+.loc-chip.loc-stop-2{background:rgba(180,0,60,.3);border-color:var(--berry);color:var(--cream);}
+.loc-chip.loc-stop-3{background:rgba(100,0,30,.4);border-color:var(--crimson);color:var(--blush);}
 .loc-chip:hover{background:rgba(255,45,107,.14);border-color:var(--border2);color:var(--blush);}
+.loc-chip .stop-badge{display:inline-block;font-size:9px;font-weight:800;font-family:var(--fh);background:var(--hot);color:#fff;border-radius:999px;padding:1px 5px;margin-left:5px;vertical-align:middle;}
+.loc-chip .stop-badge.b2{background:var(--berry);}
+.loc-chip .stop-badge.b3{background:var(--crimson);}
+.path-summary{margin-top:10px;padding:10px 12px;background:rgba(255,45,107,.08);border:1px solid rgba(255,80,150,.2);border-radius:10px;font-size:11px;color:rgba(255,180,210,.7);line-height:1.8;font-family:var(--fm);}
+.action-slots{display:flex;flex-direction:column;gap:8px;margin-top:4px;}
+.action-slot{padding:8px 12px;background:rgba(255,255,255,.03);border:1.5px dashed rgba(255,80,150,.2);border-radius:10px;font-size:11px;color:rgba(255,180,210,.35);font-family:var(--fm);}
+.action-slot.filled{background:rgba(255,45,107,.1);border-color:rgba(255,80,150,.4);color:var(--blush);border-style:solid;}
 #diagramWrap{display:none;width:min(100%,500px);}
 .diagram-card{background:rgba(12,0,7,.95);border:1.5px solid var(--border2);border-radius:22px;padding:18px;position:relative;overflow:hidden;}
 .diagram-card::before{content:'';position:absolute;top:0;left:10%;right:10%;height:1.5px;background:linear-gradient(90deg,transparent,var(--candy) 35%,var(--hot) 50%,var(--candy) 65%,transparent);box-shadow:0 0 10px var(--candy);border-radius:999px;}
@@ -82,7 +99,7 @@ html,body{height:100%;min-height:100%;font-family:var(--fb);font-weight:600;colo
 .diagram-title{font-family:var(--fh);font-weight:900;font-size:15px;background:linear-gradient(90deg,var(--blush),var(--fuchsia));-webkit-background-clip:text;background-clip:text;color:transparent;margin-bottom:13px;line-height:1.3;}
 #stageSvg{width:100%;border-radius:12px;display:block;}
 .instruction-box{margin-top:14px;background:rgba(255,45,107,.08);border:1.5px solid rgba(255,80,150,.3);border-radius:14px;padding:14px;}
-.instruction-text{font-family:var(--fh);font-weight:900;font-size:clamp(14px,3.5vw,17px);color:var(--cream);line-height:1.5;}
+.instruction-text{font-family:var(--fh);font-weight:900;font-size:clamp(13px,3.2vw,16px);color:var(--cream);line-height:1.55;}
 .instruction-sub{font-size:11px;color:var(--muted);margin-top:7px;line-height:1.65;}
 .btn-row{display:flex;gap:9px;flex-wrap:wrap;margin-top:14px;}
 .btn{appearance:none;font-family:var(--fh);font-weight:800;font-size:12px;letter-spacing:.05em;color:var(--cream);display:inline-flex;align-items:center;justify-content:center;gap:5px;padding:10px 18px;border-radius:13px;min-height:38px;border:1.5px solid var(--border);cursor:pointer;transition:all .2s;white-space:nowrap;}
@@ -94,10 +111,7 @@ html,body{height:100%;min-height:100%;font-family:var(--fb);font-weight:600;colo
 .btn.speak:hover{background:rgba(255,45,107,.35);transform:translateY(-2px);}
 .btn:active{transform:translateY(0) scale(.97)!important;}
 .divider{width:100%;max-width:500px;height:1px;background:linear-gradient(90deg,transparent,rgba(255,80,150,.2) 30%,rgba(255,80,150,.2) 70%,transparent);}
-#generateBtn{display:none;width:min(100%,500px);}
 .wordmark{font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,140,185,.18);}
-
-/* save status indicator */
 #saveStatus{width:min(100%,500px);padding:10px 14px;border-radius:10px;font-size:11px;font-family:'Nunito',sans-serif;font-weight:800;letter-spacing:.08em;text-align:center;display:none;}
 #saveStatus.saving{background:rgba(255,45,107,.1);border:1px solid rgba(255,100,160,.3);color:rgba(255,180,210,.7);}
 #saveStatus.saved{background:rgba(0,200,100,.1);border:1px solid rgba(0,200,100,.3);color:rgba(100,255,180,.8);}
@@ -111,34 +125,33 @@ html,body{height:100%;min-height:100%;font-family:var(--fb);font-weight:600;colo
 
   <div class="topbar">
     <div class="mascot">
-      <div class="bot-face">&#x1F3AD;</div>
+      <div class="bot-face">🎭</div>
       <div>
         <div class="bot-name">CAREBOT-42 ✦</div>
-        <div class="bot-sub">Directing the CEO Robot · Nonsensical Data · CAREtech</div>
+        <div class="bot-sub">Data for Domestic &amp; Presentation Work · CAREtech</div>
       </div>
     </div>
     <div class="time-badge"><div class="time-pip"></div><span id="sysTime">--:--</span></div>
   </div>
 
   <div class="card" style="background:linear-gradient(135deg,rgba(111,0,30,.88),rgba(50,0,15,.95));border-color:rgba(255,60,80,.4);">
-    <div class="eyebrow">✦ CAREBOT-42 · Nonsensical Data for Domestic Work</div>
-    <div class="card-title">You are the CEO. You are directing a robot to perform domestic labor. The instructions you generate are the data.</div>
+    <div class="eyebrow">✦ CAREBOT-42 · Data for Domestic &amp; Presentation Work</div>
+    <div class="card-title">You will direct a robot to perform work done by humanoid robots — domestic labor or presentation labor.</div>
     <div class="card-body">
-      This task is about <strong>domestic work</strong> — the labor of the home: laundry, dishes, cooking, cleaning, caregiving. This work is invisible in economic data, undervalued in the market, and now being automated by robots designed by people who have never done it.<br><br>
-      You are taking the role of CEO. You will build an instruction for a robot to perform domestic tasks on stage. The instruction is <strong>intentionally absurd</strong> — a robot turning a laundry basket upside down three times, or placing a vacuum on its own head — because the premise is absurd. The premise is that a CEO directing a robot is the solution to the invisible labor that holds up the economy.<br><br>
-      <strong>You do not deliver this instruction.</strong> The instruction you build is saved as data. It is visible on the <a href="http://care-tech.org/caretech-results-dashboard.html" target="_blank" style="color:var(--candy);">CAREtech live results dashboard</a>. The data feeds the system. The system does not know the data is nonsense. <em>This is the point.</em>
+      Right now humans are wearing cameras on their heads and getting paid to film themselves doing domestic work in order to <strong>train the robots of the future</strong>.<br><br>
+      The instruction you build is saved as data. It is visible on the <a href="http://care-tech.org/caretech-results-dashboard.html" target="_blank" style="color:var(--candy);">CAREtech live results dashboard</a>. The data feeds the system.
     </div>
   </div>
 
   <div class="card">
     <div class="eyebrow">✦ How this works</div>
-    <div class="card-title" style="font-size:14px;">Build the instruction. The data is saved. You are done.</div>
+    <div class="card-title" style="font-size:14px;">Build the instruction. The data is saved. You are done. The robot performs. You get paid.</div>
     <div class="card-body">
       <strong>Step 1:</strong> Tap the spinning image to select a robot from the performance.<br>
-      <strong>Step 2:</strong> Type what you see in the image — describe the domestic task depicted.<br>
-      <strong>Step 3:</strong> Build the instruction: choose an action, how many times, where on stage, and whether the object is on or off.<br>
-      <strong>Step 4:</strong> A stage diagram and spoken instruction are generated. Your instruction is <strong>saved as data</strong> to the live dashboard.<br>
-      <strong>You do not go to the robot. You do not deliver this instruction.</strong> The instruction lives in the database. The robot does not receive it. The work remains undone.
+      <strong>Step 2:</strong> Type the name of the object you see in the image.<br>
+      <strong>Step 3:</strong> Describe the task being completed in the image.<br>
+      <strong>Step 4:</strong> Build the instruction — choose 4 actions, how many times, 3 locations to move within the 7 ft × 7 ft square, and whether the object is on or off.<br>
+      <strong>Step 5:</strong> A diagram of the movements and spoken instruction are generated. Your instruction is <strong>saved as data</strong> to the live dashboard.
     </div>
   </div>
 
@@ -149,58 +162,74 @@ html,body{height:100%;min-height:100%;font-family:var(--fb);font-weight:600;colo
   </div>
 
   <div style="width:min(100%,460px);display:flex;justify-content:flex-end;">
-    <button class="btn soft" id="resetBtn" onclick="doReset()" style="font-size:11px;padding:7px 14px;">&#x21BA; New image</button>
+    <button class="btn soft" id="resetBtn" onclick="doReset()" style="font-size:11px;padding:7px 14px;">↺ New image</button>
   </div>
 
+  <!-- STEP 1: Identify object -->
   <div class="step-panel" id="stepIdentify">
-    <div class="eyebrow">✦ Step 1 of 3 · Identify the image</div>
-    <div class="card-title" id="identifyTitle" style="margin-bottom:6px;">—</div>
+    <div class="eyebrow">✦ Step 1 of 4 · Identify the image</div>
     <div style="display:flex;gap:12px;align-items:center;margin-bottom:14px;">
       <img id="identifyImg" style="width:80px;height:80px;border-radius:10px;object-fit:cover;border:1.5px solid var(--border2);flex-shrink:0;" src="" alt="">
-      <div>
-        <div style="font-size:11px;color:var(--muted);margin-bottom:4px;">What domestic work is depicted in this image?</div>
-        <div style="font-size:11px;color:rgba(255,200,220,.6);line-height:1.55;" id="identifyCaption">—</div>
-      </div>
     </div>
-    <label class="field-label">Describe what you see in the image</label>
-    <input class="text-input" type="text" id="describeInput" placeholder="e.g. a robot folding laundry — describe the domestic task being shown…" autocomplete="off">
-    <div class="btn-row" style="margin-top:12px;">
+
+    <label class="field-label" style="color:var(--blush);font-size:12px;letter-spacing:.1em;">What object do you see in this image?<span class="sublabel" style="color:rgba(255,180,210,.55);">tap an example or type your own</span></label>
+    <input class="text-input" type="text" id="objectInput" placeholder="e.g. ironing board, vacuum, laundry basket…" autocomplete="off">
+    <div class="example-chips" id="objectChips"></div>
+
+    <label class="field-label" style="color:var(--blush);font-size:12px;letter-spacing:.1em;margin-top:14px;">Describe the task being completed<span class="sublabel" style="color:rgba(255,180,210,.55);">tap an example or type your own</span></label>
+    <input class="text-input" type="text" id="describeInput" placeholder="e.g. fold laundry, pour some tea, sweep the floor…" autocomplete="off">
+    <div class="example-chips" id="taskChips"></div>
+
+    <div class="btn-row" style="margin-top:14px;">
       <button class="btn primary" onclick="advanceToBuilder()">✦ Continue to builder →</button>
     </div>
   </div>
 
+  <!-- STEP 2: Build instruction -->
   <div class="step-panel" id="stepBuilder">
-    <div class="eyebrow">✦ Step 2 of 3 · Build the CEO instruction</div>
-    <div class="card-title">Direct the robot. Make it absurd. This becomes the data.</div>
-    <label class="field-label">Choose an action</label>
-    <div class="select-grid cols3" id="actionGrid"></div>
-    <label class="field-label">How many times?</label>
+    <div class="eyebrow">✦ Step 2 of 4 · Build the instruction</div>
+    <div class="card-title">Choose 4 actions. Set count, state, and 3 movement locations.</div>
+
+    <label class="field-label">Choose 4 actions <span class="sublabel" id="actionCountLabel">0 of 4 chosen</span></label>
+    <div class="action-slots" id="actionSlots">
+      <div class="action-slot" id="slot0">Action 1 — not chosen</div>
+      <div class="action-slot" id="slot1">Action 2 — not chosen</div>
+      <div class="action-slot" id="slot2">Action 3 — not chosen</div>
+      <div class="action-slot" id="slot3">Action 4 — not chosen</div>
+    </div>
+    <div class="select-grid cols3" id="actionGrid" style="margin-top:10px;"></div>
+
+    <label class="field-label" style="margin-top:16px;">How many times per action?</label>
     <div class="count-row">
       <button class="count-btn" onclick="changeCount(-1)">−</button>
       <div class="count-display" id="countDisplay">1</div>
       <button class="count-btn" onclick="changeCount(1)">+</button>
-      <div class="count-label">times</div>
+      <div class="count-label">times each</div>
     </div>
-    <label class="field-label">Object state</label>
+
+    <label class="field-label" style="margin-top:16px;">Object state</label>
     <div class="select-grid cols2" id="stateGrid">
-      <button class="sel-btn active" id="stateOn" onclick="selectState('on')">&#x26A1; On / Active</button>
-      <button class="sel-btn" id="stateOff" onclick="selectState('off')">&#x2B1C; Off / Passive</button>
+      <button class="sel-btn active" id="stateOn" onclick="selectState('on')">⚡ On / Active</button>
+      <button class="sel-btn" id="stateOff" onclick="selectState('off')">⬜ Off / Passive</button>
     </div>
-    <label class="field-label">Where on stage? (6 ft × 6 ft)</label>
+
+    <label class="field-label" style="margin-top:16px;">Movement path — choose 3 locations <span class="sublabel" id="locCountLabel">0 of 3 chosen</span></label>
     <div class="loc-scroll" id="locationScroll"></div>
+    <div class="path-summary" id="pathSummary">No locations chosen yet.</div>
+
     <div class="btn-row" style="margin-top:16px;">
-      <button class="btn primary" id="generateBtn2" onclick="generateInstruction()">✦ Generate instruction &amp; diagram →</button>
+      <button class="btn primary" onclick="generateInstruction()">✦ Generate instruction &amp; diagram →</button>
     </div>
   </div>
 
-  <!-- save status -->
   <div id="saveStatus"></div>
 
+  <!-- DIAGRAM -->
   <div id="diagramWrap">
     <div class="diagram-card">
-      <div class="diagram-eyebrow">✦ Step 3 of 3 · Instruction generated — saved to dashboard</div>
+      <div class="diagram-eyebrow">✦ Step 3 of 4 · Instruction generated — saved to dashboard</div>
       <div class="diagram-title" id="diagramTitle">—</div>
-      <svg id="stageSvg" viewBox="0 0 420 420" xmlns="http://www.w3.org/2000/svg"></svg>
+      <svg id="stageSvg" viewBox="0 0 440 440" xmlns="http://www.w3.org/2000/svg"></svg>
       <div class="instruction-box">
         <div class="instruction-text" id="instructionText">—</div>
         <div class="instruction-sub" id="instructionSub">—</div>
@@ -210,8 +239,8 @@ html,body{height:100%;min-height:100%;font-family:var(--fb);font-weight:600;colo
         </div>
       </div>
       <div class="btn-row">
-        <button class="btn speak" onclick="speakInstruction()">&#x1F50A; Read instruction aloud</button>
-        <button class="btn soft" onclick="doReset()">&#x21BA; Start over</button>
+        <button class="btn speak" onclick="speakInstruction()">🔊 Read instruction aloud</button>
+        <button class="btn soft" onclick="doReset()">↺ Start over</button>
       </div>
       <div class="btn-row" style="margin-top:6px;">
         <a class="btn primary" href="https://care-tech.org/hit.html">✦ Advance to next task</a>
@@ -219,7 +248,7 @@ html,body{height:100%;min-height:100%;font-family:var(--fb);font-weight:600;colo
     </div>
   </div>
 
-  <div class="wordmark">✦ carebot-42 · nonsensical data for domestic work · caretech ✦</div>
+  <div class="wordmark">✦ carebot-42 · data for domestic &amp; presentation work · caretech ✦</div>
 </div>
 
 <script>
@@ -228,58 +257,116 @@ function updateClock(){const n=new Date(),p=v=>String(v).padStart(2,'0');documen
 setInterval(updateClock,1000);updateClock();
 
 /* ── FIREBASE INIT ── */
-// Firebase SDKs are loaded in <head> so this runs safely
 let fbReady=false,fbDb=null;
 try{
   const FB_CFG={apiKey:"AIzaSyCZFDU-WlSmHqjXTs1Ox0nf9xeJU_xbaX0",authDomain:"collaborativemashup.firebaseapp.com",databaseURL:"https://collaborativemashup-default-rtdb.firebaseio.com",projectId:"collaborativemashup",storageBucket:"collaborativemashup.firebasestorage.app",messagingSenderId:"562437984610",appId:"1:562437984610:web:9f3711c26e097bc8ef9c3b"};
   const fbApp=firebase.apps.length?firebase.app():firebase.initializeApp(FB_CFG);
   fbDb=firebase.database(fbApp);
   fbReady=true;
-  console.log('Firebase ready ✓');
 }catch(e){console.error('Firebase init failed:',e);}
 
 /* ── DATA ── */
 const ASSET_BASE='./images';
 const IMAGE_SIZE=160,SWITCH_MS=30;
 
+const OBJECT_OPTIONS=[
+  'Ironing board','Watering can','Vacuum','Covers','Laundry basket',
+  'Typewriter','Money case','Tea kettle','Dustpan','Broom','Brush',
+  'Wig','Sunglasses','Pink washing towels','Trash can','Rolling stand','Clothes hanger','Rolling desk'
+];
+
+const TASK_OPTIONS=[
+  'Fold laundry','Iron','Get in a closet','Put trash in a laundry basket',
+  'Put on a wig','Wear sunglasses','Sweep','Brush the floor','Pour some tea',
+  'Type a sentence','Put laundry in the laundry basket','Hold a dustpan and brush',
+  'Vacuum','Water a plant','Hang up clothes','Cover the objects',
+  'Pour tea','Iron with the ironing board'
+];
+
 const STAGE_OBJECTS=[
   {id:'basket1',label:'Laundry basket 1',emoji:'🧺',x:.18,y:.22},
   {id:'basket2',label:'Laundry basket 2',emoji:'🧺',x:.35,y:.18},
   {id:'basket3',label:'Laundry basket 3',emoji:'🧺',x:.68,y:.25},
   {id:'basket4',label:'Laundry basket 4',emoji:'🧺',x:.82,y:.72},
-  {id:'desk',label:'Rolling desk',emoji:'🖥',x:.55,y:.45},
+  {id:'desk',label:'Rolling stand',emoji:'🖥',x:.55,y:.45},
   {id:'watering1',label:'Watering can 1',emoji:'🪣',x:.22,y:.58},
   {id:'watering2',label:'Watering can 2',emoji:'🪣',x:.78,y:.38},
   {id:'vacuum',label:'Vacuum',emoji:'🤖',x:.45,y:.72},
   {id:'typewriter',label:'Typewriter',emoji:'⌨',x:.30,y:.82},
   {id:'ironingboard',label:'Ironing board',emoji:'🏳',x:.70,y:.80},
-  {id:'moneybox',label:'Money box',emoji:'💰',x:.62,y:.62},
-  {id:'towels',label:'Towels',emoji:'🏳',x:.15,y:.75},
-  {id:'squeegee',label:'Squeegee',emoji:'🪣',x:.85,y:.55},
+  {id:'moneycase',label:'Money case',emoji:'💰',x:.62,y:.62},
+  {id:'towels',label:'Pink towels',emoji:'🧣',x:.15,y:.75},
   {id:'broom',label:'Broom',emoji:'🧹',x:.50,y:.15},
-  {id:'cabinet',label:'Cabinet',emoji:'🗄',x:.88,y:.18},
   {id:'wig',label:'Wig',emoji:'👱',x:.12,y:.42},
   {id:'sunglasses',label:'Sunglasses',emoji:'🕶',x:.40,y:.35},
-];
-
-const ACTIONS=[
-  {id:'flip',label:'Turn upside down'},{id:'tap',label:'Tap it'},
-  {id:'move2ft',label:'Move 2 feet'},{id:'spin',label:'Spin in place'},
-  {id:'placehead',label:"Put on robot's head"},{id:'placeobj',label:'Place on stage object'},
-  {id:'drag',label:'Drag across stage'},{id:'raise',label:'Raise above head'},
-  {id:'balance',label:'Balance on one edge'},{id:'carry',label:'Carry to center stage'},
-  {id:'shake',label:'Shake 3 times'},{id:'stack',label:'Stack on another object'},
-  {id:'hide',label:'Hide behind object'},{id:'circle',label:'Circle around object'},
-  {id:'present',label:'Present to audience'},{id:'drop',label:'Drop from waist height'},
-  {id:'hold',label:'Hold perfectly still'},{id:'gesture',label:'Gesture toward it'},
+  {id:'trashcan',label:'Trash can',emoji:'🗑',x:.85,y:.55},
+  {id:'hanger',label:'Clothes hanger',emoji:'🪝',x:.88,y:.18},
+  {id:'teakettle',label:'Tea kettle',emoji:'🫖',x:.25,y:.35},
+  {id:'dustpan',label:'Dustpan',emoji:'🧹',x:.65,y:.15},
+  {id:'brush',label:'Brush',emoji:'🖌',x:.72,y:.50},
 ];
 
 const ZONE_LABELS=[
-  {id:'center',label:'Center stage'},{id:'front_left',label:'Front left'},
-  {id:'front_right',label:'Front right'},{id:'back_left',label:'Back left'},
-  {id:'back_right',label:'Back right'},{id:'front_center',label:'Front center'},
+  {id:'center',label:'Center stage'},
+  {id:'front_left',label:'Front left'},
+  {id:'front_right',label:'Front right'},
+  {id:'back_left',label:'Back left'},
+  {id:'back_right',label:'Back right'},
+  {id:'front_center',label:'Front center'},
   {id:'back_center',label:'Back center'},
+  {id:'mid_left',label:'Mid left'},
+  {id:'mid_right',label:'Mid right'},
   ...STAGE_OBJECTS.map(o=>({id:'on_'+o.id,label:'On: '+o.label,onObject:true,emoji:o.emoji}))
+];
+
+const ACTIONS=[
+  // Original
+  {id:'flip',label:'Turn upside down'},
+  {id:'tap',label:'Tap it'},
+  {id:'move2ft',label:'Move 2 feet'},
+  {id:'spin',label:'Spin in place'},
+  {id:'placehead',label:"Put on robot's head"},
+  {id:'placeobj',label:'Place on stage object'},
+  {id:'drag',label:'Drag across stage'},
+  {id:'raise',label:'Raise above head'},
+  {id:'balance',label:'Balance on one edge'},
+  {id:'carry',label:'Carry to center stage'},
+  {id:'shake',label:'Shake 3 times'},
+  {id:'stack',label:'Stack on another object'},
+  {id:'hide',label:'Hide behind object'},
+  {id:'circle',label:'Circle around object'},
+  {id:'present',label:'Present to audience'},
+  {id:'drop',label:'Drop from waist height'},
+  {id:'hold',label:'Hold perfectly still'},
+  {id:'gesture',label:'Gesture toward it'},
+  // New additions
+  {id:'open',label:'Open it'},
+  {id:'close',label:'Close it'},
+  {id:'openclose',label:'Open and close'},
+  {id:'swing',label:'Swing it'},
+  {id:'lean',label:'Lean it against wall'},
+  {id:'unfold',label:'Unfold it'},
+  {id:'fold',label:'Fold it'},
+  {id:'fill',label:'Fill it up'},
+  {id:'empty',label:'Empty it out'},
+  {id:'wear',label:'Put it on/wear it'},
+  {id:'remove',label:'Remove and set aside'},
+  {id:'arrange',label:'Arrange in a row'},
+  {id:'bridge',label:'Bridge two objects'},
+  {id:'tower',label:'Build a tower with it'},
+  {id:'lean2',label:'Rest on another object'},
+  {id:'suspend',label:'Suspend above surface'},
+  {id:'line',label:'Line up with others'},
+  {id:'surround',label:'Surround with objects'},
+  {id:'interlock',label:'Interlock with object'},
+  {id:'pour',label:'Pour from/into'},
+  {id:'press',label:'Press down firmly'},
+  {id:'slide',label:'Slide across surface'},
+  {id:'rotate',label:'Rotate 90 degrees'},
+  {id:'wrap',label:'Wrap around object'},
+  {id:'prop',label:'Use as a prop/stand'},
+  {id:'knock',label:'Knock it over'},
+  {id:'reassemble',label:'Knock over and reassemble'},
 ];
 
 const ROBOT_TASKS=[
@@ -302,7 +389,6 @@ const ROBOT_TASKS=[
   {title:"Make an Espresso",caption:"Operating a professional espresso machine"},
   {title:"Pour Tea into Cups",caption:"Serving tea from a kettle over a tray"},
   {title:"Fold Laundry on a Table",caption:"Smoothing and folding clothes from a basket"},
-  {title:"Stock the Refrigerator",caption:"Loading groceries or items into a fridge"},
   {title:"Hold a Conversation",caption:"Engaging a person in natural dialogue"},
   {title:"Express and Read Emotions",caption:"Demonstrating facial expressions for interaction"},
   {title:"Answer Questions in an Interview",caption:"Responding to spoken questions clearly"},
@@ -315,7 +401,6 @@ const ROBOT_TASKS=[
   {title:"Demonstrate Facial Recognition",caption:"Using face-tracking to engage with a viewer"},
   {title:"Greet Customers at a Showroom",caption:"Welcoming visitors in a professional setting"},
   {title:"Conduct a Professional Conversation",caption:"Engaging professionally with poise and gestures"},
-  {title:"Express Empathy in Conversation",caption:"Responding with appropriate emotional sensitivity"},
   {title:"Deliver a Spoken Presentation",caption:"Speaking to an audience with clarity and presence"},
   {title:"Demonstrate Deep Listening",caption:"Showing focused attentiveness to a speaker"},
   {title:"Participate in a Panel Discussion",caption:"Contributing to a formal group conversation"},
@@ -326,35 +411,138 @@ const ROBOT_TASKS=[
   {title:"Run on a Track",caption:"Completing a sprint or run on an athletic track"},
   {title:"Stand By for Instruction",caption:"Remaining attentive and ready to receive a task"},
   {title:"Smile and Make Eye Contact",caption:"Using positive facial cues in social interaction"},
-  {title:"Try on Accessories",caption:"Selecting and wearing eyewear or accessories"},
 ];
 
 const items=ROBOT_TASKS.map((t,i)=>({idx:i,...t,resolvedSrc:null}));
 
 /* ── STATE ── */
-let selectedAction=null,selectedState='on',selectedLocation=null,actionCount=1;
-let lockedIndex=-1,lastInstruction='';
+let selectedActions=[]; // up to 4
+let selectedState='on';
+let selectedLocations=[]; // up to 3 (in order)
+let actionCount=1;
+let lockedIndex=-1;
+let lastInstruction='';
 
-/* ── BUILD UI ── */
+/* ── BUILD CHIPS ── */
+function buildChips(){
+  const oc=document.getElementById('objectChips');
+  OBJECT_OPTIONS.forEach(o=>{
+    const c=document.createElement('span');c.className='eg-chip';c.textContent=o;
+    c.onclick=()=>{document.getElementById('objectInput').value=o;};
+    oc.appendChild(c);
+  });
+  const tc=document.getElementById('taskChips');
+  TASK_OPTIONS.forEach(t=>{
+    const c=document.createElement('span');c.className='eg-chip';c.textContent=t;
+    c.onclick=()=>{document.getElementById('describeInput').value=t;};
+    tc.appendChild(c);
+  });
+}
+buildChips();
+
+/* ── BUILD ACTION GRID ── */
 function buildActionGrid(){
   const g=document.getElementById('actionGrid');g.innerHTML='';
   ACTIONS.forEach(a=>{
     const b=document.createElement('button');b.className='sel-btn';b.textContent=a.label;b.dataset.id=a.id;
-    b.onclick=()=>{selectedAction=a;document.querySelectorAll('#actionGrid .sel-btn').forEach(x=>x.classList.remove('active'));b.classList.add('active');};
+    b.onclick=()=>toggleAction(a,b);
     g.appendChild(b);
   });
 }
+
+function toggleAction(a,btn){
+  const idx=selectedActions.findIndex(x=>x.id===a.id);
+  if(idx!==-1){
+    // deselect
+    selectedActions.splice(idx,1);
+    btn.className='sel-btn';
+  } else {
+    if(selectedActions.length>=4)return; // max 4
+    selectedActions.push(a);
+    const slot=selectedActions.length;
+    btn.className=`sel-btn chosen-${slot}`;
+  }
+  updateActionSlots();
+  updateActionGrid();
+}
+
+function updateActionSlots(){
+  for(let i=0;i<4;i++){
+    const el=document.getElementById('slot'+i);
+    if(selectedActions[i]){
+      el.className='action-slot filled';
+      el.textContent=`Action ${i+1}: ${selectedActions[i].label}`;
+    } else {
+      el.className='action-slot';
+      el.textContent=`Action ${i+1} — not chosen`;
+    }
+  }
+  document.getElementById('actionCountLabel').textContent=`${selectedActions.length} of 4 chosen`;
+}
+
+function updateActionGrid(){
+  // re-color all buttons
+  document.querySelectorAll('#actionGrid .sel-btn').forEach(btn=>{
+    const id=btn.dataset.id;
+    const sidx=selectedActions.findIndex(x=>x.id===id);
+    if(sidx!==-1){
+      btn.className=`sel-btn chosen-${sidx+1}`;
+    } else {
+      btn.className='sel-btn';
+    }
+  });
+}
+
+buildActionGrid();
+
+/* ── BUILD LOCATION SCROLL ── */
 function buildLocationScroll(){
   const s=document.getElementById('locationScroll');s.innerHTML='';
   ZONE_LABELS.forEach(z=>{
     const c=document.createElement('div');c.className='loc-chip';
     c.textContent=(z.emoji?z.emoji+' ':'')+z.label;c.dataset.id=z.id;
-    c.onclick=()=>{selectedLocation=z;document.querySelectorAll('#locationScroll .loc-chip').forEach(x=>x.classList.remove('active'));c.classList.add('active');};
+    c.onclick=()=>toggleLocation(z,c);
     s.appendChild(c);
   });
 }
-buildActionGrid();buildLocationScroll();
 
+function toggleLocation(z,chip){
+  const idx=selectedLocations.findIndex(x=>x.id===z.id);
+  if(idx!==-1){
+    selectedLocations.splice(idx,1);
+  } else {
+    if(selectedLocations.length>=3)return;
+    selectedLocations.push(z);
+  }
+  updateLocationChips();
+}
+
+function updateLocationChips(){
+  document.querySelectorAll('#locationScroll .loc-chip').forEach(chip=>{
+    const id=chip.dataset.id;
+    const idx=selectedLocations.findIndex(x=>x.id===id);
+    // remove all stop classes
+    chip.classList.remove('loc-stop-1','loc-stop-2','loc-stop-3');
+    // remove old badges
+    chip.querySelectorAll('.stop-badge').forEach(b=>b.remove());
+    if(idx!==-1){
+      chip.classList.add(`loc-stop-${idx+1}`);
+      const badge=document.createElement('span');
+      badge.className=`stop-badge${idx===1?' b2':idx===2?' b3':''}`;
+      badge.textContent=idx+1;
+      chip.appendChild(badge);
+    }
+  });
+  const labels=['No locations chosen yet.','Stop 1 chosen.','Stop 1 → Stop 2','Stop 1 → Stop 2 → Stop 3 ✓'];
+  const summary=selectedLocations.length===0?'No locations chosen yet.':
+    selectedLocations.map((l,i)=>`Stop ${i+1}: ${l.label}`).join('  →  ');
+  document.getElementById('pathSummary').textContent=summary;
+  document.getElementById('locCountLabel').textContent=`${selectedLocations.length} of 3 chosen`;
+}
+
+buildLocationScroll();
+
+/* ── CONTROLS ── */
 function changeCount(d){actionCount=Math.max(1,Math.min(10,actionCount+d));document.getElementById('countDisplay').textContent=actionCount;}
 function selectState(s){selectedState=s;document.getElementById('stateOn').classList.toggle('active',s==='on');document.getElementById('stateOff').classList.toggle('active',s==='off');}
 
@@ -407,8 +595,6 @@ function draw(){
     ctx.save();ctx.beginPath();ctx.roundRect(L.imgX-IMAGE_SIZE/2,L.imgY-IMAGE_SIZE/2,IMAGE_SIZE,IMAGE_SIZE,14);ctx.clip();image(img,L.imgX,L.imgY,IMAGE_SIZE,IMAGE_SIZE);ctx.restore();
     ctx.save();ctx.strokeStyle='rgba(255,133,179,.5)';ctx.lineWidth=2;ctx.beginPath();ctx.roundRect(L.imgX-IMAGE_SIZE/2,L.imgY-IMAGE_SIZE/2,IMAGE_SIZE,IMAGE_SIZE,14);ctx.stroke();ctx.restore();
   }else{fill(255,255,255,20);rectMode(CENTER);rect(L.imgX,L.imgY,IMAGE_SIZE,IMAGE_SIZE,14);fill(255,160,200);textAlign(CENTER,CENTER);textSize(13);text('Loading…',L.imgX,L.imgY);}
-  fill(255,210,230);textSize(13);textWrap(WORD);textAlign(LEFT,TOP);text(task.title,L.textX,L.textY,L.textW);
-  fill(255,160,200,160);textSize(10);textWrap(WORD);textAlign(LEFT,TOP);text(task.caption,L.textX,L.textY+22,L.textW);
   pop();
   push();fill(255,150,190,80);textAlign(CENTER,BOTTOM);textSize(10);
   text(lockedIndex===-1?'✦ tap image to select ✦':'✦ selected — see below ✦',width/2,height-10);
@@ -432,22 +618,24 @@ window.preload=preload;window.setup=setup;window.draw=draw;window.mousePressed=m
 /* ── FLOW ── */
 function showIdentify(idx){
   const task=items[idx];
-  document.getElementById('identifyTitle').textContent=task.title;
-  document.getElementById('identifyCaption').textContent=task.caption;
   const img=document.getElementById('identifyImg');
   img.src=items[idx].resolvedSrc||`${ASSET_BASE}/robot${idx}.png`;
   img.onerror=()=>{img.style.display='none';};
+  document.getElementById('objectInput').value='';
   document.getElementById('describeInput').value='';
   show('stepIdentify');
   setTimeout(()=>document.getElementById('stepIdentify').scrollIntoView({behavior:'smooth',block:'start'}),80);
 }
 
 function advanceToBuilder(){
+  const obj=document.getElementById('objectInput').value.trim();
   const desc=document.getElementById('describeInput').value.trim();
-  if(!desc){alert('Please describe what you see in the image first.');return;}
-  selectedAction=null;selectedState='on';selectedLocation=null;actionCount=1;
-  document.querySelectorAll('#actionGrid .sel-btn').forEach(b=>b.classList.remove('active'));
-  document.querySelectorAll('#locationScroll .loc-chip').forEach(b=>b.classList.remove('active'));
+  if(!obj){alert('Please enter the object you see in the image.');return;}
+  if(!desc){alert('Please describe the task being completed.');return;}
+  // reset builder state
+  selectedActions=[];selectedState='on';selectedLocations=[];actionCount=1;
+  updateActionSlots();updateActionGrid();updateLocationChips();
+  document.querySelectorAll('#locationScroll .loc-chip').forEach(c=>{c.classList.remove('loc-stop-1','loc-stop-2','loc-stop-3');c.querySelectorAll('.stop-badge').forEach(b=>b.remove());});
   document.getElementById('countDisplay').textContent='1';
   document.getElementById('stateOn').classList.add('active');
   document.getElementById('stateOff').classList.remove('active');
@@ -456,8 +644,8 @@ function advanceToBuilder(){
 }
 
 function generateInstruction(){
-  if(!selectedAction){alert('Please choose an action.');return;}
-  if(!selectedLocation){alert('Please choose a location.');return;}
+  if(selectedActions.length<4){alert('Please choose 4 actions.');return;}
+  if(selectedLocations.length<3){alert('Please choose 3 movement locations.');return;}
   buildDiagram();
   document.getElementById('diagramWrap').style.display='block';
   setTimeout(()=>document.getElementById('diagramWrap').scrollIntoView({behavior:'smooth',block:'start'}),80);
@@ -465,6 +653,7 @@ function generateInstruction(){
   saveInstructionData();
 }
 
+/* ── SAVE ── */
 function setSaveStatus(state,msg){
   const el=document.getElementById('saveStatus');
   el.className=state;el.textContent=msg;el.style.display='block';
@@ -472,33 +661,25 @@ function setSaveStatus(state,msg){
 }
 
 function saveInstructionData(){
-  if(!fbReady||!fbDb){
-    setSaveStatus('error','⚠ Firebase not ready — data not saved.');
-    return;
-  }
+  if(!fbReady||!fbDb){setSaveStatus('error','⚠ Firebase not ready — data not saved.');return;}
   const task=items[lockedIndex];
   const payload={
-    type:'cb42_instruction',
+    type:'cb42_instruction_v2',
     taskTitle:task.title,
     taskCaption:task.caption,
-    imageDescription:document.getElementById('describeInput').value.trim(),
-    action:selectedAction?selectedAction.label:'',
+    objectSeen:document.getElementById('objectInput').value.trim(),
+    taskDescription:document.getElementById('describeInput').value.trim(),
+    actions:selectedActions.map(a=>a.label),
     count:actionCount,
     state:selectedState,
-    location:selectedLocation?selectedLocation.label:'',
+    locations:selectedLocations.map(l=>l.label),
     instruction:lastInstruction,
     ts:firebase.database.ServerValue.TIMESTAMP
   };
   setSaveStatus('saving','✦ Saving to dashboard…');
   fbDb.ref('cb42Instructions').push(payload)
-    .then(()=>{
-      console.log('cb42 saved ✓');
-      setSaveStatus('saved','✦ Saved to dashboard ✓');
-    })
-    .catch(e=>{
-      console.error('cb42 save failed:',e);
-      setSaveStatus('error','⚠ Save failed: '+( e.code||e.message));
-    });
+    .then(()=>{console.log('cb42 saved ✓');setSaveStatus('saved','✦ Saved to dashboard ✓');})
+    .catch(e=>{console.error('cb42 save failed:',e);setSaveStatus('error','⚠ Save failed: '+(e.code||e.message));});
 }
 
 function doReset(){
@@ -518,49 +699,103 @@ function hide(id){document.getElementById(id).style.display='none';}
 /* ── DIAGRAM ── */
 function buildDiagram(){
   const task=items[lockedIndex];
+  const objSeen=document.getElementById('objectInput').value.trim();
   const desc=document.getElementById('describeInput').value.trim();
-  const action=selectedAction,loc=selectedLocation,state=selectedState,count=actionCount;
-  const times=count===1?'once':(count===2?'twice':`${count} times`);
-  const instruction=`Take the object you see in this image — ${desc}. ${action.label} ${times}, then place it at: ${loc.label}. Object should be ${state==='on'?'active / switched on':'passive / switched off'}.`;
-  lastInstruction=instruction;
-  const sub=`Robot task context: "${task.title}". Stage is 6 ft × 6 ft. Perform this instruction precisely in sequence.`;
-  document.getElementById('diagramTitle').textContent=`${action.label} — ${times} — ${loc.label}`;
-  document.getElementById('instructionText').textContent=instruction;
+  const times=actionCount===1?'once':(actionCount===2?'twice':`${actionCount} times`);
+  const actionsText=selectedActions.map((a,i)=>`(${i+1}) ${a.label}`).join(', ');
+  const locsText=selectedLocations.map((l,i)=>`Stop ${i+1}: ${l.label}`).join(' → ');
+  const stateWord=selectedState==='on'?'active / switched on':'passive / switched off';
+
+  lastInstruction=`Object: ${objSeen}. Task: ${desc}. Perform the following sequence, each ${times}: ${actionsText}. Movement path — ${locsText}. Object should remain ${stateWord} throughout.`;
+
+  const sub=`Robot task context: "${task.title}". Stage is 7 ft × 7 ft. Follow the movement path precisely in order.`;
+  document.getElementById('diagramTitle').textContent=`${selectedActions[0].label} → ${selectedActions[1].label} → … via ${selectedLocations[0].label}`;
+  document.getElementById('instructionText').textContent=lastInstruction;
   document.getElementById('instructionSub').textContent=sub;
-  renderStageSVG(loc,action,desc,count,state);
+  renderStageSVG(selectedLocations,selectedActions,objSeen,actionCount,selectedState);
 }
 
-function renderStageSVG(loc,action,desc,count,state){
+function renderStageSVG(locs,actions,desc,count,state){
   const svg=document.getElementById('stageSvg');
-  const W=420,H=420,PAD=36,GRID=W-PAD*2;
+  const W=440,H=440,PAD=40,GRID=W-PAD*2;
   const toSVG=(nx,ny)=>({x:PAD+nx*GRID,y:PAD+ny*GRID});
-  let targetX,targetY;
-  const locId=loc.id;
-  const posMap={center:{nx:.5,ny:.5},front_left:{nx:.15,ny:.85},front_right:{nx:.85,ny:.85},back_left:{nx:.15,ny:.15},back_right:{nx:.85,ny:.15},front_center:{nx:.5,ny:.85},back_center:{nx:.5,ny:.15}};
-  if(posMap[locId]){const p=posMap[locId];const sv=toSVG(p.nx,p.ny);targetX=sv.x;targetY=sv.y;}
-  else if(locId.startsWith('on_')){const objId=locId.replace('on_','');const obj=STAGE_OBJECTS.find(o=>o.id===objId);if(obj){const sv=toSVG(obj.x,obj.y);targetX=sv.x+14;targetY=sv.y-14;}else{targetX=W/2;targetY=H/2;}}
-  else{targetX=W/2;targetY=H/2;}
+
+  const posMap={
+    center:{nx:.5,ny:.5},front_left:{nx:.15,ny:.85},front_right:{nx:.85,ny:.85},
+    back_left:{nx:.15,ny:.15},back_right:{nx:.85,ny:.15},front_center:{nx:.5,ny:.85},
+    back_center:{nx:.5,ny:.15},mid_left:{nx:.15,ny:.5},mid_right:{nx:.85,ny:.5}
+  };
+
+  function getLocPos(loc){
+    const id=loc.id;
+    if(posMap[id]){const p=posMap[id];return toSVG(p.nx,p.ny);}
+    if(id.startsWith('on_')){const objId=id.replace('on_','');const obj=STAGE_OBJECTS.find(o=>o.id===objId);if(obj){const sv=toSVG(obj.x,obj.y);return{x:sv.x+14,y:sv.y-14};}}
+    return{x:W/2,y:H/2};
+  }
+
+  const stops=locs.map(getLocPos);
+  const robotStart={x:W/2,y:H/2};
+
   let html='';
+  // BG
   html+=`<rect x="0" y="0" width="${W}" height="${H}" rx="12" fill="#0a0006"/>`;
   html+=`<rect x="${PAD}" y="${PAD}" width="${GRID}" height="${GRID}" rx="8" fill="rgba(100,0,30,.35)" stroke="rgba(255,80,140,.3)" stroke-width="1.5"/>`;
-  for(let i=1;i<6;i++){const x=PAD+(GRID/6)*i,y=PAD+(GRID/6)*i;html+=`<line x1="${x}" y1="${PAD}" x2="${x}" y2="${PAD+GRID}" stroke="rgba(255,80,140,.1)" stroke-width=".8"/>`;html+=`<line x1="${PAD}" y1="${y}" x2="${PAD+GRID}" y2="${y}" stroke="rgba(255,80,140,.1)" stroke-width=".8"/>`;}
-  html+=`<text x="${W/2}" y="${PAD-6}" text-anchor="middle" font-family="DM Mono,monospace" font-size="9" fill="rgba(255,133,179,.5)" letter-spacing=".12em">6 ft</text>`;
-  html+=`<text x="${PAD-8}" y="${H/2}" text-anchor="middle" font-family="DM Mono,monospace" font-size="9" fill="rgba(255,133,179,.5)" transform="rotate(-90 ${PAD-8} ${H/2})" letter-spacing=".12em">6 ft</text>`;
+  // Grid lines
+  for(let i=1;i<7;i++){const x=PAD+(GRID/7)*i,y=PAD+(GRID/7)*i;html+=`<line x1="${x}" y1="${PAD}" x2="${x}" y2="${PAD+GRID}" stroke="rgba(255,80,140,.08)" stroke-width=".8"/>`;html+=`<line x1="${PAD}" y1="${y}" x2="${PAD+GRID}" y2="${y}" stroke="rgba(255,80,140,.08)" stroke-width=".8"/>`;}
+  // Labels
+  html+=`<text x="${W/2}" y="${PAD-8}" text-anchor="middle" font-family="DM Mono,monospace" font-size="9" fill="rgba(255,133,179,.5)" letter-spacing=".12em">7 ft</text>`;
+  html+=`<text x="${PAD-10}" y="${H/2}" text-anchor="middle" font-family="DM Mono,monospace" font-size="9" fill="rgba(255,133,179,.5)" transform="rotate(-90 ${PAD-10} ${H/2})" letter-spacing=".12em">7 ft</text>`;
   html+=`<text x="${W/2}" y="${PAD+GRID+16}" text-anchor="middle" font-family="Quicksand,sans-serif" font-size="9" fill="rgba(255,133,179,.35)" letter-spacing=".12em">AUDIENCE →</text>`;
-  STAGE_OBJECTS.forEach(obj=>{const p=toSVG(obj.x,obj.y);const isTarget=loc.id==='on_'+obj.id;html+=`<circle cx="${p.x}" cy="${p.y}" r="${isTarget?13:9}" fill="${isTarget?'rgba(255,45,107,.5)':'rgba(180,0,60,.35)'}" stroke="${isTarget?'#ff85b3':'rgba(255,80,140,.4)'}" stroke-width="${isTarget?2:1}"/>`;html+=`<text x="${p.x}" y="${p.y+4}" text-anchor="middle" font-size="${isTarget?12:10}" font-family="sans-serif">${obj.emoji}</text>`;html+=`<text x="${p.x}" y="${p.y+20}" text-anchor="middle" font-family="Quicksand,sans-serif" font-size="7" fill="rgba(255,180,210,.55)">${obj.label.replace('Laundry basket','Basket').replace('Watering can','Can')}</text>`;});
-  html+=`<circle cx="${targetX}" cy="${targetY}" r="20" fill="rgba(255,45,107,.18)" stroke="#ff2d6b" stroke-width="2" stroke-dasharray="5 3"/>`;
-  html+=`<text x="${targetX}" y="${targetY+5}" text-anchor="middle" font-size="16" font-family="sans-serif">🎯</text>`;
-  if(locId!=='center'){const cx=W/2,cy=H/2,dx=targetX-cx,dy=targetY-cy,d=Math.sqrt(dx*dx+dy*dy),nx=dx/d,ny=dy/d,x1=cx+nx*22,y1=cy+ny*22,x2=targetX-nx*22,y2=targetY-ny*22;html+=`<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="rgba(255,85,140,.55)" stroke-width="1.5" stroke-dasharray="6 4"/>`;html+=`<polygon points="${x2},${y2} ${x2-nx*8+ny*5},${y2-ny*8-nx*5} ${x2-nx*8-ny*5},${y2-ny*8+nx*5}" fill="rgba(255,85,140,.7)"/>`;}
-  html+=`<circle cx="${W/2}" cy="${H/2}" r="18" fill="rgba(255,45,107,.25)" stroke="#ff85b3" stroke-width="1.5"/>`;
-  html+=`<text x="${W/2}" y="${H/2+6}" text-anchor="middle" font-size="18" font-family="sans-serif">🤖</text>`;
-  const task=items[lockedIndex];const shortTitle=task.title.length>24?task.title.slice(0,23)+'…':task.title;
-  html+=`<text x="${PAD+5}" y="${PAD+14}" font-family="Quicksand,sans-serif" font-size="8" fill="rgba(255,180,210,.6)">${shortTitle}</text>`;
-  const actionLabel=action.label+(count>1?` ×${count}`:'');
-  html+=`<rect x="${W-PAD-80}" y="${H-PAD-22}" width="84" height="18" rx="4" fill="rgba(255,45,107,.22)" stroke="rgba(255,80,140,.4)" stroke-width="1"/>`;
-  html+=`<text x="${W-PAD-38}" y="${H-PAD-10}" text-anchor="middle" font-family="DM Mono,monospace" font-size="8" fill="rgba(255,200,220,.8)">${actionLabel}</text>`;
+
+  // Stage objects
+  STAGE_OBJECTS.forEach(obj=>{
+    const p=toSVG(obj.x,obj.y);
+    const isStop=locs.some(l=>l.id==='on_'+obj.id);
+    html+=`<circle cx="${p.x}" cy="${p.y}" r="${isStop?13:9}" fill="${isStop?'rgba(255,45,107,.5)':'rgba(180,0,60,.35)'}" stroke="${isStop?'#ff85b3':'rgba(255,80,140,.4)'}" stroke-width="${isStop?2:1}"/>`;
+    html+=`<text x="${p.x}" y="${p.y+4}" text-anchor="middle" font-size="${isStop?12:10}" font-family="sans-serif">${obj.emoji}</text>`;
+    html+=`<text x="${p.x}" y="${p.y+20}" text-anchor="middle" font-family="Quicksand,sans-serif" font-size="7" fill="rgba(255,180,210,.55)">${obj.label.replace('Laundry basket','Bkt').replace('Watering can','Can')}</text>`;
+  });
+
+  // Path: robot → stop1 → stop2 → stop3
+  const pathPoints=[robotStart,...stops];
+  const stopColors=['rgba(255,45,107,.8)','rgba(200,0,80,.75)','rgba(140,0,50,.7)'];
+
+  // Draw connecting arrows
+  for(let i=0;i<pathPoints.length-1;i++){
+    const s=pathPoints[i],e=pathPoints[i+1];
+    const dx=e.x-s.x,dy=e.y-s.y,d=Math.sqrt(dx*dx+dy*dy);
+    if(d<2)continue;
+    const nx=dx/d,ny=dy/d;
+    const x1=s.x+nx*22,y1=s.y+ny*22,x2=e.x-nx*22,y2=e.y-ny*22;
+    html+=`<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${stopColors[i]||'rgba(255,80,120,.5)'}" stroke-width="2" stroke-dasharray="7 4"/>`;
+    html+=`<polygon points="${x2},${y2} ${x2-nx*8+ny*5},${y2-ny*8-nx*5} ${x2-nx*8-ny*5},${y2-ny*8+nx*5}" fill="${stopColors[i]||'rgba(255,80,120,.6)'}"/>`;
+  }
+
+  // Draw stop markers
+  const stopEmojis=['1️⃣','2️⃣','3️⃣'];
+  const stopLabels=['①','②','③'];
+  stops.forEach((s,i)=>{
+    html+=`<circle cx="${s.x}" cy="${s.y}" r="20" fill="rgba(255,45,107,.18)" stroke="${['#ff2d6b','#c4005a','#8b0030'][i]}" stroke-width="2" stroke-dasharray="5 3"/>`;
+    html+=`<text x="${s.x}" y="${s.y+5}" text-anchor="middle" font-family="Nunito,sans-serif" font-weight="900" font-size="13" fill="${['#ff85b3','#ff5c8a','#c4005a'][i]}">${stopLabels[i]}</text>`;
+    const lname=locs[i].label.replace('On: ','');
+    html+=`<text x="${s.x}" y="${s.y+33}" text-anchor="middle" font-family="Quicksand,sans-serif" font-size="8" fill="rgba(255,180,210,.7)">${lname.length>14?lname.slice(0,13)+'…':lname}</text>`;
+  });
+
+  // Robot at center
+  html+=`<circle cx="${robotStart.x}" cy="${robotStart.y}" r="18" fill="rgba(255,45,107,.25)" stroke="#ff85b3" stroke-width="1.5"/>`;
+  html+=`<text x="${robotStart.x}" y="${robotStart.y+6}" text-anchor="middle" font-size="18" font-family="sans-serif">🤖</text>`;
+  html+=`<text x="${robotStart.x}" y="${robotStart.y+28}" text-anchor="middle" font-family="Quicksand,sans-serif" font-size="7" fill="rgba(255,180,210,.6)">START</text>`;
+
+  // Action legend bottom
+  const actionStr=actions.slice(0,4).map((a,i)=>`${i+1}.${a.label.slice(0,10)}`).join('  ');
+  html+=`<rect x="${PAD}" y="${H-PAD-22}" width="${GRID}" height="18" rx="4" fill="rgba(0,0,0,.5)" stroke="rgba(255,80,140,.2)" stroke-width="1"/>`;
+  html+=`<text x="${W/2}" y="${H-PAD-10}" text-anchor="middle" font-family="DM Mono,monospace" font-size="7.5" fill="rgba(255,200,220,.7)">${actionStr.slice(0,72)}</text>`;
+
+  // State badge
   const stateCol=state==='on'?'rgba(255,200,80,.8)':'rgba(180,180,180,.6)';
-  html+=`<rect x="${PAD}" y="${H-PAD-22}" width="32" height="18" rx="4" fill="rgba(0,0,0,.4)" stroke="rgba(255,80,140,.3)" stroke-width="1"/>`;
-  html+=`<text x="${PAD+16}" y="${H-PAD-10}" text-anchor="middle" font-family="DM Mono,monospace" font-size="9" fill="${stateCol}" font-weight="700">${state==='on'?'ON':'OFF'}</text>`;
+  html+=`<rect x="${W-PAD-34}" y="${PAD+4}" width="32" height="18" rx="4" fill="rgba(0,0,0,.4)" stroke="rgba(255,80,140,.3)" stroke-width="1"/>`;
+  html+=`<text x="${W-PAD-18}" y="${PAD+16}" text-anchor="middle" font-family="DM Mono,monospace" font-size="9" fill="${stateCol}" font-weight="700">${state==='on'?'ON':'OFF'}</text>`;
+
   svg.innerHTML=html;
 }
 
