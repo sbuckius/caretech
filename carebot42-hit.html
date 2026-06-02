@@ -5,9 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
 <title>✦ CAREBOT-42 ✦ Data for Domestic & Presentation Work</title>
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Quicksand:wght@500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
-<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.0/p5.min.js"></script>
+<!-- FIX 1: Firebase scripts moved to bottom of body -->
+<!-- FIX 2: p5.js moved to bottom of body -->
 <style>
 :root{
   --rose:#ff5c8a;--hot:#ff2d6b;--candy:#ff85b3;--blush:#ffb3cf;
@@ -122,7 +121,6 @@ html,body{height:100%;min-height:100%;font-family:var(--fb);font-weight:600;colo
 <div class="bg-layer"></div><div class="orb orb-1"></div><div class="orb orb-2"></div>
 
 <div class="screen">
-
   <div class="topbar">
     <div class="mascot">
       <div class="bot-face">🎭</div>
@@ -165,31 +163,25 @@ html,body{height:100%;min-height:100%;font-family:var(--fb);font-weight:600;colo
     <button class="btn soft" id="resetBtn" onclick="doReset()" style="font-size:11px;padding:7px 14px;">↺ New image</button>
   </div>
 
-  <!-- STEP 1: Identify object -->
   <div class="step-panel" id="stepIdentify">
     <div class="eyebrow">✦ Step 1 of 4 · Identify the image</div>
     <div style="display:flex;gap:12px;align-items:center;margin-bottom:14px;">
       <img id="identifyImg" style="width:80px;height:80px;border-radius:10px;object-fit:cover;border:1.5px solid var(--border2);flex-shrink:0;" src="" alt="">
     </div>
-
     <label class="field-label" style="color:var(--blush);font-size:12px;letter-spacing:.1em;">What object do you see in this image?<span class="sublabel" style="color:rgba(255,180,210,.55);">tap an example or type your own</span></label>
     <input class="text-input" type="text" id="objectInput" placeholder="e.g. ironing board, vacuum, laundry basket…" autocomplete="off">
     <div class="example-chips" id="objectChips"></div>
-
     <label class="field-label" style="color:var(--blush);font-size:12px;letter-spacing:.1em;margin-top:14px;">Describe the task being completed<span class="sublabel" style="color:rgba(255,180,210,.55);">tap an example or type your own</span></label>
     <input class="text-input" type="text" id="describeInput" placeholder="e.g. fold laundry, pour some tea, sweep the floor…" autocomplete="off">
     <div class="example-chips" id="taskChips"></div>
-
     <div class="btn-row" style="margin-top:14px;">
       <button class="btn primary" onclick="advanceToBuilder()">✦ Continue to builder →</button>
     </div>
   </div>
 
-  <!-- STEP 2: Build instruction -->
   <div class="step-panel" id="stepBuilder">
     <div class="eyebrow">✦ Step 2 of 4 · Build the instruction</div>
     <div class="card-title">Choose 4 actions. Set count, state, and 3 movement locations.</div>
-
     <label class="field-label">Choose 4 actions <span class="sublabel" id="actionCountLabel">0 of 4 chosen</span></label>
     <div class="action-slots" id="actionSlots">
       <div class="action-slot" id="slot0">Action 1 — not chosen</div>
@@ -198,7 +190,6 @@ html,body{height:100%;min-height:100%;font-family:var(--fb);font-weight:600;colo
       <div class="action-slot" id="slot3">Action 4 — not chosen</div>
     </div>
     <div class="select-grid cols3" id="actionGrid" style="margin-top:10px;"></div>
-
     <label class="field-label" style="margin-top:16px;">How many times per action?</label>
     <div class="count-row">
       <button class="count-btn" onclick="changeCount(-1)">−</button>
@@ -206,17 +197,14 @@ html,body{height:100%;min-height:100%;font-family:var(--fb);font-weight:600;colo
       <button class="count-btn" onclick="changeCount(1)">+</button>
       <div class="count-label">times each</div>
     </div>
-
     <label class="field-label" style="margin-top:16px;">Object state</label>
     <div class="select-grid cols2" id="stateGrid">
       <button class="sel-btn active" id="stateOn" onclick="selectState('on')">⚡ On / Active</button>
       <button class="sel-btn" id="stateOff" onclick="selectState('off')">⬜ Off / Passive</button>
     </div>
-
     <label class="field-label" style="margin-top:16px;">Movement path — choose 3 locations <span class="sublabel" id="locCountLabel">0 of 3 chosen</span></label>
     <div class="loc-scroll" id="locationScroll"></div>
     <div class="path-summary" id="pathSummary">No locations chosen yet.</div>
-
     <div class="btn-row" style="margin-top:16px;">
       <button class="btn primary" onclick="generateInstruction()">✦ Generate instruction &amp; diagram →</button>
     </div>
@@ -224,7 +212,6 @@ html,body{height:100%;min-height:100%;font-family:var(--fb);font-weight:600;colo
 
   <div id="saveStatus"></div>
 
-  <!-- DIAGRAM -->
   <div id="diagramWrap">
     <div class="diagram-card">
       <div class="diagram-eyebrow">✦ Step 3 of 4 · Instruction generated — saved to dashboard</div>
@@ -251,7 +238,32 @@ html,body{height:100%;min-height:100%;font-family:var(--fb);font-weight:600;colo
   <div class="wordmark">✦ carebot-42 · data for domestic &amp; presentation work · caretech ✦</div>
 </div>
 
+<!-- FIX 1: Firebase loaded at bottom so DOM is ready -->
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+<!-- FIX 2: p5.js loaded at bottom, BEFORE the sketch script -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.0/p5.min.js"></script>
+
 <script>
+/* ── FIX 3: roundRect polyfill for Safari < 15.4 and older browsers ── */
+if (!CanvasRenderingContext2D.prototype.roundRect) {
+  CanvasRenderingContext2D.prototype.roundRect = function(x, y, w, h, r) {
+    r = Math.min(r, w / 2, h / 2);
+    this.beginPath();
+    this.moveTo(x + r, y);
+    this.lineTo(x + w - r, y);
+    this.quadraticCurveTo(x + w, y, x + w, y + r);
+    this.lineTo(x + w, y + h - r);
+    this.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+    this.lineTo(x + r, y + h);
+    this.quadraticCurveTo(x, y + h, x, y + h - r);
+    this.lineTo(x, y + r);
+    this.quadraticCurveTo(x, y, x + r, y);
+    this.closePath();
+    return this;
+  };
+}
+
 /* ── CLOCK ── */
 function updateClock(){const n=new Date(),p=v=>String(v).padStart(2,'0');document.getElementById('sysTime').textContent=p(n.getHours())+':'+p(n.getMinutes());}
 setInterval(updateClock,1000);updateClock();
@@ -269,156 +281,33 @@ try{
 const ASSET_BASE='./images';
 const IMAGE_SIZE=160,SWITCH_MS=30;
 
-const OBJECT_OPTIONS=[
-  'Ironing board','Watering can','Vacuum','Covers','Laundry basket',
-  'Typewriter','Money case','Tea kettle','Dustpan','Broom','Brush',
-  'Wig','Sunglasses','Pink washing towels','Trash can','Rolling stand','Clothes hanger','Rolling desk'
-];
-
-const TASK_OPTIONS=[
-  'Fold laundry','Iron','Get in a closet','Put trash in a laundry basket',
-  'Put on a wig','Wear sunglasses','Sweep','Brush the floor','Pour some tea',
-  'Type a sentence','Put laundry in the laundry basket','Hold a dustpan and brush',
-  'Vacuum','Water a plant','Hang up clothes','Cover the objects',
-  'Pour tea','Iron with the ironing board'
-];
+const OBJECT_OPTIONS=['Ironing board','Watering can','Vacuum','Covers','Laundry basket','Typewriter','Money case','Tea kettle','Dustpan','Broom','Brush','Wig','Sunglasses','Pink washing towels','Trash can','Rolling stand','Clothes hanger','Rolling desk'];
+const TASK_OPTIONS=['Fold laundry','Iron','Get in a closet','Put trash in a laundry basket','Put on a wig','Wear sunglasses','Sweep','Brush the floor','Pour some tea','Type a sentence','Put laundry in the laundry basket','Hold a dustpan and brush','Vacuum','Water a plant','Hang up clothes','Cover the objects','Pour tea','Iron with the ironing board'];
 
 const STAGE_OBJECTS=[
-  {id:'basket1',label:'Laundry basket 1',emoji:'🧺',x:.18,y:.22},
-  {id:'basket2',label:'Laundry basket 2',emoji:'🧺',x:.35,y:.18},
-  {id:'basket3',label:'Laundry basket 3',emoji:'🧺',x:.68,y:.25},
-  {id:'basket4',label:'Laundry basket 4',emoji:'🧺',x:.82,y:.72},
-  {id:'desk',label:'Rolling stand',emoji:'🖥',x:.55,y:.45},
-  {id:'watering1',label:'Watering can 1',emoji:'🪣',x:.22,y:.58},
-  {id:'watering2',label:'Watering can 2',emoji:'🪣',x:.78,y:.38},
-  {id:'vacuum',label:'Vacuum',emoji:'🤖',x:.45,y:.72},
-  {id:'typewriter',label:'Typewriter',emoji:'⌨',x:.30,y:.82},
-  {id:'ironingboard',label:'Ironing board',emoji:'🏳',x:.70,y:.80},
-  {id:'moneycase',label:'Money case',emoji:'💰',x:.62,y:.62},
-  {id:'towels',label:'Pink towels',emoji:'🧣',x:.15,y:.75},
-  {id:'broom',label:'Broom',emoji:'🧹',x:.50,y:.15},
-  {id:'wig',label:'Wig',emoji:'👱',x:.12,y:.42},
-  {id:'sunglasses',label:'Sunglasses',emoji:'🕶',x:.40,y:.35},
-  {id:'trashcan',label:'Trash can',emoji:'🗑',x:.85,y:.55},
-  {id:'hanger',label:'Clothes hanger',emoji:'🪝',x:.88,y:.18},
-  {id:'teakettle',label:'Tea kettle',emoji:'🫖',x:.25,y:.35},
-  {id:'dustpan',label:'Dustpan',emoji:'🧹',x:.65,y:.15},
-  {id:'brush',label:'Brush',emoji:'🖌',x:.72,y:.50},
+  {id:'basket1',label:'Laundry basket 1',emoji:'🧺',x:.18,y:.22},{id:'basket2',label:'Laundry basket 2',emoji:'🧺',x:.35,y:.18},{id:'basket3',label:'Laundry basket 3',emoji:'🧺',x:.68,y:.25},{id:'basket4',label:'Laundry basket 4',emoji:'🧺',x:.82,y:.72},{id:'desk',label:'Rolling stand',emoji:'🖥',x:.55,y:.45},{id:'watering1',label:'Watering can 1',emoji:'🪣',x:.22,y:.58},{id:'watering2',label:'Watering can 2',emoji:'🪣',x:.78,y:.38},{id:'vacuum',label:'Vacuum',emoji:'🤖',x:.45,y:.72},{id:'typewriter',label:'Typewriter',emoji:'⌨',x:.30,y:.82},{id:'ironingboard',label:'Ironing board',emoji:'🏳',x:.70,y:.80},{id:'moneycase',label:'Money case',emoji:'💰',x:.62,y:.62},{id:'towels',label:'Pink towels',emoji:'🧣',x:.15,y:.75},{id:'broom',label:'Broom',emoji:'🧹',x:.50,y:.15},{id:'wig',label:'Wig',emoji:'👱',x:.12,y:.42},{id:'sunglasses',label:'Sunglasses',emoji:'🕶',x:.40,y:.35},{id:'trashcan',label:'Trash can',emoji:'🗑',x:.85,y:.55},{id:'hanger',label:'Clothes hanger',emoji:'🪝',x:.88,y:.18},{id:'teakettle',label:'Tea kettle',emoji:'🫖',x:.25,y:.35},{id:'dustpan',label:'Dustpan',emoji:'🧹',x:.65,y:.15},{id:'brush',label:'Brush',emoji:'🖌',x:.72,y:.50},
 ];
 
 const ZONE_LABELS=[
-  {id:'center',label:'Center stage'},
-  {id:'front_left',label:'Front left'},
-  {id:'front_right',label:'Front right'},
-  {id:'back_left',label:'Back left'},
-  {id:'back_right',label:'Back right'},
-  {id:'front_center',label:'Front center'},
-  {id:'back_center',label:'Back center'},
-  {id:'mid_left',label:'Mid left'},
-  {id:'mid_right',label:'Mid right'},
+  {id:'center',label:'Center stage'},{id:'front_left',label:'Front left'},{id:'front_right',label:'Front right'},{id:'back_left',label:'Back left'},{id:'back_right',label:'Back right'},{id:'front_center',label:'Front center'},{id:'back_center',label:'Back center'},{id:'mid_left',label:'Mid left'},{id:'mid_right',label:'Mid right'},
   ...STAGE_OBJECTS.map(o=>({id:'on_'+o.id,label:'On: '+o.label,onObject:true,emoji:o.emoji}))
 ];
 
 const ACTIONS=[
-  // Original
-  {id:'flip',label:'Turn upside down'},
-  {id:'tap',label:'Tap it'},
-  {id:'move2ft',label:'Move 2 feet'},
-  {id:'spin',label:'Spin in place'},
-  {id:'placehead',label:"Put on robot's head"},
-  {id:'placeobj',label:'Place on stage object'},
-  {id:'drag',label:'Drag across stage'},
-  {id:'raise',label:'Raise above head'},
-  {id:'balance',label:'Balance on one edge'},
-  {id:'carry',label:'Carry to center stage'},
-  {id:'shake',label:'Shake 3 times'},
-  {id:'stack',label:'Stack on another object'},
-  {id:'hide',label:'Hide behind object'},
-  {id:'circle',label:'Circle around object'},
-  {id:'present',label:'Present to audience'},
-  {id:'drop',label:'Drop from waist height'},
-  {id:'hold',label:'Hold perfectly still'},
-  {id:'gesture',label:'Gesture toward it'},
-  // New additions
-  {id:'open',label:'Open it'},
-  {id:'close',label:'Close it'},
-  {id:'openclose',label:'Open and close'},
-  {id:'swing',label:'Swing it'},
-  {id:'lean',label:'Lean it against wall'},
-  {id:'unfold',label:'Unfold it'},
-  {id:'fold',label:'Fold it'},
-  {id:'fill',label:'Fill it up'},
-  {id:'empty',label:'Empty it out'},
-  {id:'wear',label:'Put it on/wear it'},
-  {id:'remove',label:'Remove and set aside'},
-  {id:'arrange',label:'Arrange in a row'},
-  {id:'bridge',label:'Bridge two objects'},
-  {id:'tower',label:'Build a tower with it'},
-  {id:'lean2',label:'Rest on another object'},
-  {id:'suspend',label:'Suspend above surface'},
-  {id:'line',label:'Line up with others'},
-  {id:'surround',label:'Surround with objects'},
-  {id:'interlock',label:'Interlock with object'},
-  {id:'pour',label:'Pour from/into'},
-  {id:'press',label:'Press down firmly'},
-  {id:'slide',label:'Slide across surface'},
-  {id:'rotate',label:'Rotate 90 degrees'},
-  {id:'wrap',label:'Wrap around object'},
-  {id:'prop',label:'Use as a prop/stand'},
-  {id:'knock',label:'Knock it over'},
-  {id:'reassemble',label:'Knock over and reassemble'},
+  {id:'flip',label:'Turn upside down'},{id:'tap',label:'Tap it'},{id:'move2ft',label:'Move 2 feet'},{id:'spin',label:'Spin in place'},{id:'placehead',label:"Put on robot's head"},{id:'placeobj',label:'Place on stage object'},{id:'drag',label:'Drag across stage'},{id:'raise',label:'Raise above head'},{id:'balance',label:'Balance on one edge'},{id:'carry',label:'Carry to center stage'},{id:'shake',label:'Shake 3 times'},{id:'stack',label:'Stack on another object'},{id:'hide',label:'Hide behind object'},{id:'circle',label:'Circle around object'},{id:'present',label:'Present to audience'},{id:'drop',label:'Drop from waist height'},{id:'hold',label:'Hold perfectly still'},{id:'gesture',label:'Gesture toward it'},
+  {id:'open',label:'Open it'},{id:'close',label:'Close it'},{id:'openclose',label:'Open and close'},{id:'swing',label:'Swing it'},{id:'lean',label:'Lean it against wall'},{id:'unfold',label:'Unfold it'},{id:'fold',label:'Fold it'},{id:'fill',label:'Fill it up'},{id:'empty',label:'Empty it out'},{id:'wear',label:'Put it on/wear it'},{id:'remove',label:'Remove and set aside'},{id:'arrange',label:'Arrange in a row'},{id:'bridge',label:'Bridge two objects'},{id:'tower',label:'Build a tower with it'},{id:'lean2',label:'Rest on another object'},{id:'suspend',label:'Suspend above surface'},{id:'line',label:'Line up with others'},{id:'surround',label:'Surround with objects'},{id:'interlock',label:'Interlock with object'},{id:'pour',label:'Pour from/into'},{id:'press',label:'Press down firmly'},{id:'slide',label:'Slide across surface'},{id:'rotate',label:'Rotate 90 degrees'},{id:'wrap',label:'Wrap around object'},{id:'prop',label:'Use as a prop/stand'},{id:'knock',label:'Knock it over'},{id:'reassemble',label:'Knock over and reassemble'},
 ];
 
 const ROBOT_TASKS=[
-  {title:"Hang Clothing on a Rack",caption:"Organizing garments on hangers"},
-  {title:"Load Laundry into a Washing Machine",caption:"Putting clothes into a front-load washer"},
-  {title:"Wipe Down a Countertop",caption:"Cleaning a surface with a damp cloth"},
-  {title:"Play a Board Game with a Family",caption:"Engaging children in tabletop play"},
-  {title:"Prepare and Serve Tea",caption:"Setting up a full tea service tray"},
-  {title:"Hang a Garment in a Closet",caption:"Placing clothes on a closet rod or hook"},
-  {title:"Cook Food in a Pan on the Stove",caption:"Using a skillet to prepare a hot meal"},
-  {title:"Iron a Garment",caption:"Pressing clothing on an ironing board"},
-  {title:"Fold and Set Table Linens",caption:"Preparing napkins or cloth at a table setting"},
-  {title:"Collect and Load Laundry",caption:"Gathering clothes and operating the washer"},
-  {title:"Empty a Trash Can",caption:"Removing and replacing a garbage bag"},
-  {title:"Vacuum the Floor",caption:"Using a vacuum cleaner on hard floors or carpet"},
-  {title:"Clean a Kitchen Counter",caption:"Wiping down a stone or marble countertop"},
-  {title:"Remove Food from a Cooking Appliance",caption:"Taking a waffle out of a waffle iron"},
-  {title:"Prepare and Pour Drinks",caption:"Handling pitchers and glasses in a kitchen"},
-  {title:"Retrieve Items from the Refrigerator",caption:"Getting food out of the fridge"},
-  {title:"Make an Espresso",caption:"Operating a professional espresso machine"},
-  {title:"Pour Tea into Cups",caption:"Serving tea from a kettle over a tray"},
-  {title:"Fold Laundry on a Table",caption:"Smoothing and folding clothes from a basket"},
-  {title:"Hold a Conversation",caption:"Engaging a person in natural dialogue"},
-  {title:"Express and Read Emotions",caption:"Demonstrating facial expressions for interaction"},
-  {title:"Answer Questions in an Interview",caption:"Responding to spoken questions clearly"},
-  {title:"Water a Houseplant",caption:"Using a watering can to tend to indoor plants"},
-  {title:"Serve a Beverage at a Table",caption:"Bringing a hot drink to seated guests"},
-  {title:"Pull an Espresso Shot",caption:"Operating a lever-style espresso machine"},
-  {title:"Greet and Welcome Visitors",caption:"Welcoming people at an entrance or reception"},
-  {title:"Play Jenga with a Person",caption:"Taking turns in a stacking block game"},
-  {title:"Navigate a Space on Foot",caption:"Walking through a crowded area with awareness"},
-  {title:"Demonstrate Facial Recognition",caption:"Using face-tracking to engage with a viewer"},
-  {title:"Greet Customers at a Showroom",caption:"Welcoming visitors in a professional setting"},
-  {title:"Conduct a Professional Conversation",caption:"Engaging professionally with poise and gestures"},
-  {title:"Deliver a Spoken Presentation",caption:"Speaking to an audience with clarity and presence"},
-  {title:"Demonstrate Deep Listening",caption:"Showing focused attentiveness to a speaker"},
-  {title:"Participate in a Panel Discussion",caption:"Contributing to a formal group conversation"},
-  {title:"Clean Using a Dustpan and Brush",caption:"Sweeping up debris from a floor surface"},
-  {title:"Respond to a Direct Question",caption:"Giving a clear verbal answer to a posed question"},
-  {title:"Put on Sunglasses",caption:"Locating and placing eyewear on your face"},
-  {title:"Participate in a Video Interview",caption:"Responding clearly in a recorded or live video session"},
-  {title:"Run on a Track",caption:"Completing a sprint or run on an athletic track"},
-  {title:"Stand By for Instruction",caption:"Remaining attentive and ready to receive a task"},
-  {title:"Smile and Make Eye Contact",caption:"Using positive facial cues in social interaction"},
+  {title:"Hang Clothing on a Rack",caption:"Organizing garments on hangers"},{title:"Load Laundry into a Washing Machine",caption:"Putting clothes into a front-load washer"},{title:"Wipe Down a Countertop",caption:"Cleaning a surface with a damp cloth"},{title:"Play a Board Game with a Family",caption:"Engaging children in tabletop play"},{title:"Prepare and Serve Tea",caption:"Setting up a full tea service tray"},{title:"Hang a Garment in a Closet",caption:"Placing clothes on a closet rod or hook"},{title:"Cook Food in a Pan on the Stove",caption:"Using a skillet to prepare a hot meal"},{title:"Iron a Garment",caption:"Pressing clothing on an ironing board"},{title:"Fold and Set Table Linens",caption:"Preparing napkins or cloth at a table setting"},{title:"Collect and Load Laundry",caption:"Gathering clothes and operating the washer"},{title:"Empty a Trash Can",caption:"Removing and replacing a garbage bag"},{title:"Vacuum the Floor",caption:"Using a vacuum cleaner on hard floors or carpet"},{title:"Clean a Kitchen Counter",caption:"Wiping down a stone or marble countertop"},{title:"Remove Food from a Cooking Appliance",caption:"Taking a waffle out of a waffle iron"},{title:"Prepare and Pour Drinks",caption:"Handling pitchers and glasses in a kitchen"},{title:"Retrieve Items from the Refrigerator",caption:"Getting food out of the fridge"},{title:"Make an Espresso",caption:"Operating a professional espresso machine"},{title:"Pour Tea into Cups",caption:"Serving tea from a kettle over a tray"},{title:"Fold Laundry on a Table",caption:"Smoothing and folding clothes from a basket"},{title:"Hold a Conversation",caption:"Engaging a person in natural dialogue"},{title:"Express and Read Emotions",caption:"Demonstrating facial expressions for interaction"},{title:"Answer Questions in an Interview",caption:"Responding to spoken questions clearly"},{title:"Water a Houseplant",caption:"Using a watering can to tend to indoor plants"},{title:"Serve a Beverage at a Table",caption:"Bringing a hot drink to seated guests"},{title:"Pull an Espresso Shot",caption:"Operating a lever-style espresso machine"},{title:"Greet and Welcome Visitors",caption:"Welcoming people at an entrance or reception"},{title:"Play Jenga with a Person",caption:"Taking turns in a stacking block game"},{title:"Navigate a Space on Foot",caption:"Walking through a crowded area with awareness"},{title:"Demonstrate Facial Recognition",caption:"Using face-tracking to engage with a viewer"},{title:"Greet Customers at a Showroom",caption:"Welcoming visitors in a professional setting"},{title:"Conduct a Professional Conversation",caption:"Engaging professionally with poise and gestures"},{title:"Deliver a Spoken Presentation",caption:"Speaking to an audience with clarity and presence"},{title:"Demonstrate Deep Listening",caption:"Showing focused attentiveness to a speaker"},{title:"Participate in a Panel Discussion",caption:"Contributing to a formal group conversation"},{title:"Clean Using a Dustpan and Brush",caption:"Sweeping up debris from a floor surface"},{title:"Respond to a Direct Question",caption:"Giving a clear verbal answer to a posed question"},{title:"Put on Sunglasses",caption:"Locating and placing eyewear on your face"},{title:"Participate in a Video Interview",caption:"Responding clearly in a recorded or live video session"},{title:"Run on a Track",caption:"Completing a sprint or run on an athletic track"},{title:"Stand By for Instruction",caption:"Remaining attentive and ready to receive a task"},{title:"Smile and Make Eye Contact",caption:"Using positive facial cues in social interaction"},
 ];
 
 const items=ROBOT_TASKS.map((t,i)=>({idx:i,...t,resolvedSrc:null}));
 
 /* ── STATE ── */
-let selectedActions=[]; // up to 4
+let selectedActions=[];
 let selectedState='on';
-let selectedLocations=[]; // up to 3 (in order)
+let selectedLocations=[];
 let actionCount=1;
 let lockedIndex=-1;
 let lastInstruction='';
@@ -426,120 +315,54 @@ let lastInstruction='';
 /* ── BUILD CHIPS ── */
 function buildChips(){
   const oc=document.getElementById('objectChips');
-  OBJECT_OPTIONS.forEach(o=>{
-    const c=document.createElement('span');c.className='eg-chip';c.textContent=o;
-    c.onclick=()=>{document.getElementById('objectInput').value=o;};
-    oc.appendChild(c);
-  });
+  OBJECT_OPTIONS.forEach(o=>{const c=document.createElement('span');c.className='eg-chip';c.textContent=o;c.onclick=()=>{document.getElementById('objectInput').value=o;};oc.appendChild(c);});
   const tc=document.getElementById('taskChips');
-  TASK_OPTIONS.forEach(t=>{
-    const c=document.createElement('span');c.className='eg-chip';c.textContent=t;
-    c.onclick=()=>{document.getElementById('describeInput').value=t;};
-    tc.appendChild(c);
-  });
+  TASK_OPTIONS.forEach(t=>{const c=document.createElement('span');c.className='eg-chip';c.textContent=t;c.onclick=()=>{document.getElementById('describeInput').value=t;};tc.appendChild(c);});
 }
 buildChips();
 
 /* ── BUILD ACTION GRID ── */
 function buildActionGrid(){
   const g=document.getElementById('actionGrid');g.innerHTML='';
-  ACTIONS.forEach(a=>{
-    const b=document.createElement('button');b.className='sel-btn';b.textContent=a.label;b.dataset.id=a.id;
-    b.onclick=()=>toggleAction(a,b);
-    g.appendChild(b);
-  });
+  ACTIONS.forEach(a=>{const b=document.createElement('button');b.className='sel-btn';b.textContent=a.label;b.dataset.id=a.id;b.onclick=()=>toggleAction(a,b);g.appendChild(b);});
 }
-
 function toggleAction(a,btn){
   const idx=selectedActions.findIndex(x=>x.id===a.id);
-  if(idx!==-1){
-    // deselect
-    selectedActions.splice(idx,1);
-    btn.className='sel-btn';
-  } else {
-    if(selectedActions.length>=4)return; // max 4
-    selectedActions.push(a);
-    const slot=selectedActions.length;
-    btn.className=`sel-btn chosen-${slot}`;
-  }
-  updateActionSlots();
-  updateActionGrid();
+  if(idx!==-1){selectedActions.splice(idx,1);btn.className='sel-btn';}
+  else{if(selectedActions.length>=4)return;selectedActions.push(a);btn.className=`sel-btn chosen-${selectedActions.length}`;}
+  updateActionSlots();updateActionGrid();
 }
-
 function updateActionSlots(){
-  for(let i=0;i<4;i++){
-    const el=document.getElementById('slot'+i);
-    if(selectedActions[i]){
-      el.className='action-slot filled';
-      el.textContent=`Action ${i+1}: ${selectedActions[i].label}`;
-    } else {
-      el.className='action-slot';
-      el.textContent=`Action ${i+1} — not chosen`;
-    }
-  }
+  for(let i=0;i<4;i++){const el=document.getElementById('slot'+i);if(selectedActions[i]){el.className='action-slot filled';el.textContent=`Action ${i+1}: ${selectedActions[i].label}`;}else{el.className='action-slot';el.textContent=`Action ${i+1} — not chosen`;}}
   document.getElementById('actionCountLabel').textContent=`${selectedActions.length} of 4 chosen`;
 }
-
 function updateActionGrid(){
-  // re-color all buttons
-  document.querySelectorAll('#actionGrid .sel-btn').forEach(btn=>{
-    const id=btn.dataset.id;
-    const sidx=selectedActions.findIndex(x=>x.id===id);
-    if(sidx!==-1){
-      btn.className=`sel-btn chosen-${sidx+1}`;
-    } else {
-      btn.className='sel-btn';
-    }
-  });
+  document.querySelectorAll('#actionGrid .sel-btn').forEach(btn=>{const id=btn.dataset.id;const sidx=selectedActions.findIndex(x=>x.id===id);btn.className=sidx!==-1?`sel-btn chosen-${sidx+1}`:'sel-btn';});
 }
-
 buildActionGrid();
 
 /* ── BUILD LOCATION SCROLL ── */
 function buildLocationScroll(){
   const s=document.getElementById('locationScroll');s.innerHTML='';
-  ZONE_LABELS.forEach(z=>{
-    const c=document.createElement('div');c.className='loc-chip';
-    c.textContent=(z.emoji?z.emoji+' ':'')+z.label;c.dataset.id=z.id;
-    c.onclick=()=>toggleLocation(z,c);
-    s.appendChild(c);
-  });
+  ZONE_LABELS.forEach(z=>{const c=document.createElement('div');c.className='loc-chip';c.textContent=(z.emoji?z.emoji+' ':'')+z.label;c.dataset.id=z.id;c.onclick=()=>toggleLocation(z,c);s.appendChild(c);});
 }
-
 function toggleLocation(z,chip){
   const idx=selectedLocations.findIndex(x=>x.id===z.id);
-  if(idx!==-1){
-    selectedLocations.splice(idx,1);
-  } else {
-    if(selectedLocations.length>=3)return;
-    selectedLocations.push(z);
-  }
+  if(idx!==-1)selectedLocations.splice(idx,1);
+  else{if(selectedLocations.length>=3)return;selectedLocations.push(z);}
   updateLocationChips();
 }
-
 function updateLocationChips(){
   document.querySelectorAll('#locationScroll .loc-chip').forEach(chip=>{
-    const id=chip.dataset.id;
-    const idx=selectedLocations.findIndex(x=>x.id===id);
-    // remove all stop classes
+    const id=chip.dataset.id,idx=selectedLocations.findIndex(x=>x.id===id);
     chip.classList.remove('loc-stop-1','loc-stop-2','loc-stop-3');
-    // remove old badges
     chip.querySelectorAll('.stop-badge').forEach(b=>b.remove());
-    if(idx!==-1){
-      chip.classList.add(`loc-stop-${idx+1}`);
-      const badge=document.createElement('span');
-      badge.className=`stop-badge${idx===1?' b2':idx===2?' b3':''}`;
-      badge.textContent=idx+1;
-      chip.appendChild(badge);
-    }
+    if(idx!==-1){chip.classList.add(`loc-stop-${idx+1}`);const badge=document.createElement('span');badge.className=`stop-badge${idx===1?' b2':idx===2?' b3':''}`;badge.textContent=idx+1;chip.appendChild(badge);}
   });
-  const labels=['No locations chosen yet.','Stop 1 chosen.','Stop 1 → Stop 2','Stop 1 → Stop 2 → Stop 3 ✓'];
-  const summary=selectedLocations.length===0?'No locations chosen yet.':
-    selectedLocations.map((l,i)=>`Stop ${i+1}: ${l.label}`).join('  →  ');
+  const summary=selectedLocations.length===0?'No locations chosen yet.':selectedLocations.map((l,i)=>`Stop ${i+1}: ${l.label}`).join('  →  ');
   document.getElementById('pathSummary').textContent=summary;
   document.getElementById('locCountLabel').textContent=`${selectedLocations.length} of 3 chosen`;
 }
-
 buildLocationScroll();
 
 /* ── CONTROLS ── */
@@ -547,77 +370,99 @@ function changeCount(d){actionCount=Math.max(1,Math.min(10,actionCount+d));docum
 function selectState(s){selectedState=s;document.getElementById('stateOn').classList.toggle('active',s==='on');document.getElementById('stateOff').classList.toggle('active',s==='off');}
 
 /* ── P5 SKETCH ── */
-let imgs=[],currentIndex=0,order=[],lastSwitch=0;
+/* FIX 4: Use p5 instance mode to avoid global timing issues entirely */
+let imgs=[],currentIndex=0,order=[],lastSwitch=0,lockedIndex_p5=-1;
+
+new p5(function(p) {
+  p.preload = function() {
+    const exts=['.jpg','.jpeg','.png','.JPG','.JPEG','.PNG'];
+    imgs = new Array(items.length);
+    items.forEach((it, ix) => {
+      const cands = exts.map(e => `${ASSET_BASE}/robot${it.idx}${e}`);
+      const attempt = k => {
+        if(k >= cands.length){
+          const pg = p.createGraphics(IMAGE_SIZE, IMAGE_SIZE);
+          pg.background(20, 0, 10); pg.fill(255, 150, 180);
+          pg.textAlign(p.CENTER, p.CENTER); pg.textSize(11);
+          pg.text(`robot${it.idx}`, IMAGE_SIZE/2, IMAGE_SIZE/2);
+          imgs[ix] = pg; return;
+        }
+        p.loadImage(cands[k], img => { imgs[ix]=img; items[ix].resolvedSrc=cands[k]; }, () => attempt(k+1));
+      };
+      attempt(0);
+    });
+  };
+
+  p.setup = function() {
+    const frame = document.getElementById('game-frame');
+    const c = p.createCanvas(frame.clientWidth || 400, frame.clientHeight || 600);
+    c.parent('game-frame');
+    p.imageMode(p.CENTER); p.noStroke();
+    order = makeOrder(items.length);
+    currentIndex = Math.floor(Math.random() * items.length);
+    lastSwitch = p.millis();
+  };
+
+  function getLayout() {
+    const boxX=p.width/2, boxY=p.height*.38, boxW=p.width-28, boxH=Math.min(230,p.height*.38);
+    const boxLeft=boxX-boxW/2, leftColW=IMAGE_SIZE+100;
+    const imgX=boxLeft+leftColW/2, imgY=boxY, textPad=16, textX=boxLeft+leftColW+textPad;
+    return{boxX,boxY,boxW,boxH,imgX,imgY,textX,textY:imgY-IMAGE_SIZE/2+4,textW:Math.max(100,(boxX+boxW/2)-textX-textPad)};
+  }
+
+  p.draw = function() {
+    p.background(14, 0, 8);
+    if(lockedIndex === -1 && p.millis() - lastSwitch > SWITCH_MS){
+      currentIndex = (currentIndex + 1 + Math.floor(Math.random()*4)) % items.length;
+      lastSwitch = p.millis();
+    }
+    const L=getLayout(), showIdx=order[currentIndex], img=imgs[showIdx], task=items[showIdx];
+    const ctx = p.drawingContext;
+    p.push();
+    const grad = ctx.createLinearGradient(L.boxX-L.boxW/2, L.boxY-L.boxH/2, L.boxX+L.boxW/2, L.boxY+L.boxH/2);
+    grad.addColorStop(0,'rgba(140,0,45,.95)'); grad.addColorStop(.5,'rgba(100,0,32,.98)'); grad.addColorStop(1,'rgba(70,0,22,.98)');
+    ctx.save(); ctx.fillStyle=grad; ctx.beginPath(); ctx.roundRect(L.boxX-L.boxW/2, L.boxY-L.boxH/2, L.boxW, L.boxH, 18); ctx.fill(); ctx.restore();
+    const sh = ctx.createLinearGradient(L.boxX-L.boxW/2,0,L.boxX+L.boxW/2,0);
+    sh.addColorStop(0,'rgba(255,90,140,0)'); sh.addColorStop(.35,'rgba(255,133,179,.7)'); sh.addColorStop(.5,'rgba(255,45,107,.9)'); sh.addColorStop(.65,'rgba(255,133,179,.7)'); sh.addColorStop(1,'rgba(255,90,140,0)');
+    ctx.save(); ctx.fillStyle=sh; ctx.fillRect(L.boxX-L.boxW/2+12, L.boxY-L.boxH/2, L.boxW-24, 1.5); ctx.restore();
+    ctx.save(); ctx.strokeStyle='rgba(255,100,155,.4)'; ctx.lineWidth=1.5; ctx.beginPath(); ctx.roundRect(L.boxX-L.boxW/2, L.boxY-L.boxH/2, L.boxW, L.boxH, 18); ctx.stroke(); ctx.restore();
+    if(img && img.width > 0){
+      ctx.save(); ctx.beginPath(); ctx.roundRect(L.imgX-IMAGE_SIZE/2, L.imgY-IMAGE_SIZE/2, IMAGE_SIZE, IMAGE_SIZE, 14); ctx.clip();
+      p.image(img, L.imgX, L.imgY, IMAGE_SIZE, IMAGE_SIZE); ctx.restore();
+      ctx.save(); ctx.strokeStyle='rgba(255,133,179,.5)'; ctx.lineWidth=2; ctx.beginPath(); ctx.roundRect(L.imgX-IMAGE_SIZE/2, L.imgY-IMAGE_SIZE/2, IMAGE_SIZE, IMAGE_SIZE, 14); ctx.stroke(); ctx.restore();
+    } else {
+      p.fill(255,255,255,20); p.rectMode(p.CENTER); p.rect(L.imgX, L.imgY, IMAGE_SIZE, IMAGE_SIZE, 14);
+      p.fill(255,160,200); p.textAlign(p.CENTER, p.CENTER); p.textSize(13); p.text('Loading…', L.imgX, L.imgY);
+    }
+    p.pop();
+    p.push(); p.fill(255,150,190,80); p.textAlign(p.CENTER, p.BOTTOM); p.textSize(10);
+    p.text(lockedIndex===-1?'✦ tap image to select ✦':'✦ selected — see below ✦', p.width/2, p.height-10);
+    p.pop();
+    if(lockedIndex !== -1) p.noLoop();
+  };
+
+  p.mousePressed = function() {
+    if(lockedIndex !== -1) return;
+    const L = getLayout(), h = IMAGE_SIZE/2;
+    if(p.mouseX>=L.imgX-h && p.mouseX<=L.imgX+h && p.mouseY>=L.imgY-h && p.mouseY<=L.imgY+h){
+      lockedIndex = order[currentIndex];
+      showIdentify(lockedIndex);
+    }
+  };
+
+  p.touchStarted = function(e) {
+    const cnv = document.getElementById('defaultCanvas0'); if(!cnv) return;
+    const rect = cnv.getBoundingClientRect(), t = (e.touches&&e.touches[0])||(e.changedTouches&&e.changedTouches[0]); if(!t) return;
+    if(t.clientX<rect.left||t.clientX>rect.right||t.clientY<rect.top||t.clientY>rect.bottom) return;
+    p.mousePressed();
+  };
+});
 
 function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}}
 function makeOrder(n){const a=Array.from({length:n},(_,i)=>i);shuffle(a);return a;}
 
-function preload(){
-  const exts=['.jpg','.jpeg','.png','.JPG','.JPEG','.PNG'];
-  imgs=new Array(items.length);
-  items.forEach((it,ix)=>{
-    const cands=exts.map(e=>`${ASSET_BASE}/robot${it.idx}${e}`);
-    const attempt=k=>{
-      if(k>=cands.length){const pg=createGraphics(IMAGE_SIZE,IMAGE_SIZE);pg.background(20,0,10);pg.fill(255,150,180);pg.textAlign(CENTER,CENTER);pg.textSize(11);pg.text(`robot${it.idx}`,IMAGE_SIZE/2,IMAGE_SIZE/2);imgs[ix]=pg;return;}
-      loadImage(cands[k],img=>{imgs[ix]=img;items[ix].resolvedSrc=cands[k];},()=>attempt(k+1));
-    };attempt(0);
-  });
-}
-
-function setup(){
-  const frame=document.getElementById('game-frame');
-  const c=createCanvas(frame.clientWidth||400,frame.clientHeight||600);c.parent('game-frame');
-  imageMode(CENTER);noStroke();
-  order=makeOrder(items.length);currentIndex=Math.floor(Math.random()*items.length);lastSwitch=millis();
-}
-
-function getLayout(){
-  const boxX=width/2,boxY=height*.38,boxW=width-28,boxH=Math.min(230,height*.38);
-  const boxLeft=boxX-boxW/2,leftColW=IMAGE_SIZE+100;
-  const imgX=boxLeft+leftColW/2,imgY=boxY,textPad=16,textX=boxLeft+leftColW+textPad;
-  return{boxX,boxY,boxW,boxH,imgX,imgY,textX,textY:imgY-IMAGE_SIZE/2+4,textW:Math.max(100,(boxX+boxW/2)-textX-textPad)};
-}
-
-function draw(){
-  background(14,0,8);
-  if(lockedIndex===-1&&millis()-lastSwitch>SWITCH_MS){currentIndex=(currentIndex+1+Math.floor(Math.random()*4))%items.length;lastSwitch=millis();}
-  const L=getLayout(),showIdx=order[currentIndex],img=imgs[showIdx],task=items[showIdx];
-  const ctx=drawingContext;
-  push();
-  const grad=ctx.createLinearGradient(L.boxX-L.boxW/2,L.boxY-L.boxH/2,L.boxX+L.boxW/2,L.boxY+L.boxH/2);
-  grad.addColorStop(0,'rgba(140,0,45,.95)');grad.addColorStop(.5,'rgba(100,0,32,.98)');grad.addColorStop(1,'rgba(70,0,22,.98)');
-  ctx.save();ctx.fillStyle=grad;ctx.beginPath();ctx.roundRect(L.boxX-L.boxW/2,L.boxY-L.boxH/2,L.boxW,L.boxH,18);ctx.fill();ctx.restore();
-  const sh=ctx.createLinearGradient(L.boxX-L.boxW/2,0,L.boxX+L.boxW/2,0);
-  sh.addColorStop(0,'rgba(255,90,140,0)');sh.addColorStop(.35,'rgba(255,133,179,.7)');sh.addColorStop(.5,'rgba(255,45,107,.9)');sh.addColorStop(.65,'rgba(255,133,179,.7)');sh.addColorStop(1,'rgba(255,90,140,0)');
-  ctx.save();ctx.fillStyle=sh;ctx.fillRect(L.boxX-L.boxW/2+12,L.boxY-L.boxH/2,L.boxW-24,1.5);ctx.restore();
-  ctx.save();ctx.strokeStyle='rgba(255,100,155,.4)';ctx.lineWidth=1.5;ctx.beginPath();ctx.roundRect(L.boxX-L.boxW/2,L.boxY-L.boxH/2,L.boxW,L.boxH,18);ctx.stroke();ctx.restore();
-  if(img&&img.width>0){
-    ctx.save();ctx.beginPath();ctx.roundRect(L.imgX-IMAGE_SIZE/2,L.imgY-IMAGE_SIZE/2,IMAGE_SIZE,IMAGE_SIZE,14);ctx.clip();image(img,L.imgX,L.imgY,IMAGE_SIZE,IMAGE_SIZE);ctx.restore();
-    ctx.save();ctx.strokeStyle='rgba(255,133,179,.5)';ctx.lineWidth=2;ctx.beginPath();ctx.roundRect(L.imgX-IMAGE_SIZE/2,L.imgY-IMAGE_SIZE/2,IMAGE_SIZE,IMAGE_SIZE,14);ctx.stroke();ctx.restore();
-  }else{fill(255,255,255,20);rectMode(CENTER);rect(L.imgX,L.imgY,IMAGE_SIZE,IMAGE_SIZE,14);fill(255,160,200);textAlign(CENTER,CENTER);textSize(13);text('Loading…',L.imgX,L.imgY);}
-  pop();
-  push();fill(255,150,190,80);textAlign(CENTER,BOTTOM);textSize(10);
-  text(lockedIndex===-1?'✦ tap image to select ✦':'✦ selected — see below ✦',width/2,height-10);
-  pop();
-  if(lockedIndex!==-1)noLoop();
-}
-
-function mousePressed(){
-  if(lockedIndex!==-1)return;
-  const L=getLayout(),h=IMAGE_SIZE/2;
-  if(mouseX>=L.imgX-h&&mouseX<=L.imgX+h&&mouseY>=L.imgY-h&&mouseY<=L.imgY+h){lockedIndex=order[currentIndex];showIdentify(lockedIndex);}
-}
-function touchStarted(e){
-  const cnv=document.getElementById('defaultCanvas0');if(!cnv)return;
-  const rect=cnv.getBoundingClientRect(),t=(e.touches&&e.touches[0])||(e.changedTouches&&e.changedTouches[0]);if(!t)return;
-  if(t.clientX<rect.left||t.clientX>rect.right||t.clientY<rect.top||t.clientY>rect.bottom)return;mousePressed();
-}
-
-window.preload=preload;window.setup=setup;window.draw=draw;window.mousePressed=mousePressed;window.touchStarted=touchStarted;
-
 /* ── FLOW ── */
 function showIdentify(idx){
-  const task=items[idx];
   const img=document.getElementById('identifyImg');
   img.src=items[idx].resolvedSrc||`${ASSET_BASE}/robot${idx}.png`;
   img.onerror=()=>{img.style.display='none';};
@@ -632,7 +477,6 @@ function advanceToBuilder(){
   const desc=document.getElementById('describeInput').value.trim();
   if(!obj){alert('Please enter the object you see in the image.');return;}
   if(!desc){alert('Please describe the task being completed.');return;}
-  // reset builder state
   selectedActions=[];selectedState='on';selectedLocations=[];actionCount=1;
   updateActionSlots();updateActionGrid();updateLocationChips();
   document.querySelectorAll('#locationScroll .loc-chip').forEach(c=>{c.classList.remove('loc-stop-1','loc-stop-2','loc-stop-3');c.querySelectorAll('.stop-badge').forEach(b=>b.remove());});
@@ -659,27 +503,14 @@ function setSaveStatus(state,msg){
   el.className=state;el.textContent=msg;el.style.display='block';
   if(state==='saved')setTimeout(()=>{el.style.display='none';},4000);
 }
-
 function saveInstructionData(){
   if(!fbReady||!fbDb){setSaveStatus('error','⚠ Firebase not ready — data not saved.');return;}
   const task=items[lockedIndex];
-  const payload={
-    type:'cb42_instruction_v2',
-    taskTitle:task.title,
-    taskCaption:task.caption,
-    objectSeen:document.getElementById('objectInput').value.trim(),
-    taskDescription:document.getElementById('describeInput').value.trim(),
-    actions:selectedActions.map(a=>a.label),
-    count:actionCount,
-    state:selectedState,
-    locations:selectedLocations.map(l=>l.label),
-    instruction:lastInstruction,
-    ts:firebase.database.ServerValue.TIMESTAMP
-  };
+  const payload={type:'cb42_instruction_v2',taskTitle:task.title,taskCaption:task.caption,objectSeen:document.getElementById('objectInput').value.trim(),taskDescription:document.getElementById('describeInput').value.trim(),actions:selectedActions.map(a=>a.label),count:actionCount,state:selectedState,locations:selectedLocations.map(l=>l.label),instruction:lastInstruction,ts:firebase.database.ServerValue.TIMESTAMP};
   setSaveStatus('saving','✦ Saving to dashboard…');
   fbDb.ref('cb42Instructions').push(payload)
-    .then(()=>{console.log('cb42 saved ✓');setSaveStatus('saved','✦ Saved to dashboard ✓');})
-    .catch(e=>{console.error('cb42 save failed:',e);setSaveStatus('error','⚠ Save failed: '+(e.code||e.message));});
+    .then(()=>{setSaveStatus('saved','✦ Saved to dashboard ✓');})
+    .catch(e=>{setSaveStatus('error','⚠ Save failed: '+(e.code||e.message));});
 }
 
 function doReset(){
@@ -689,7 +520,9 @@ function doReset(){
   document.getElementById('saveStatus').style.display='none';
   document.getElementById('hint').style.display='block';
   order=makeOrder(items.length);currentIndex=Math.floor(Math.random()*items.length);
-  lastSwitch=0;loop();
+  lastSwitch=0;
+  // restart p5 loop — find the p5 instance
+  if(window._p5inst) window._p5inst.loop();
   window.scrollTo({top:0,behavior:'smooth'});
 }
 
@@ -705,13 +538,10 @@ function buildDiagram(){
   const actionsText=selectedActions.map((a,i)=>`(${i+1}) ${a.label}`).join(', ');
   const locsText=selectedLocations.map((l,i)=>`Stop ${i+1}: ${l.label}`).join(' → ');
   const stateWord=selectedState==='on'?'active / switched on':'passive / switched off';
-
   lastInstruction=`Object: ${objSeen}. Task: ${desc}. Perform the following sequence, each ${times}: ${actionsText}. Movement path — ${locsText}. Object should remain ${stateWord} throughout.`;
-
-  const sub=`Robot task context: "${task.title}". Stage is 7 ft × 7 ft. Follow the movement path precisely in order.`;
   document.getElementById('diagramTitle').textContent=`${selectedActions[0].label} → ${selectedActions[1].label} → … via ${selectedLocations[0].label}`;
   document.getElementById('instructionText').textContent=lastInstruction;
-  document.getElementById('instructionSub').textContent=sub;
+  document.getElementById('instructionSub').textContent=`Robot task context: "${task.title}". Stage is 7 ft × 7 ft. Follow the movement path precisely in order.`;
   renderStageSVG(selectedLocations,selectedActions,objSeen,actionCount,selectedState);
 }
 
@@ -719,60 +549,36 @@ function renderStageSVG(locs,actions,desc,count,state){
   const svg=document.getElementById('stageSvg');
   const W=440,H=440,PAD=40,GRID=W-PAD*2;
   const toSVG=(nx,ny)=>({x:PAD+nx*GRID,y:PAD+ny*GRID});
-
-  const posMap={
-    center:{nx:.5,ny:.5},front_left:{nx:.15,ny:.85},front_right:{nx:.85,ny:.85},
-    back_left:{nx:.15,ny:.15},back_right:{nx:.85,ny:.15},front_center:{nx:.5,ny:.85},
-    back_center:{nx:.5,ny:.15},mid_left:{nx:.15,ny:.5},mid_right:{nx:.85,ny:.5}
-  };
-
+  const posMap={center:{nx:.5,ny:.5},front_left:{nx:.15,ny:.85},front_right:{nx:.85,ny:.85},back_left:{nx:.15,ny:.15},back_right:{nx:.85,ny:.15},front_center:{nx:.5,ny:.85},back_center:{nx:.5,ny:.15},mid_left:{nx:.15,ny:.5},mid_right:{nx:.85,ny:.5}};
   function getLocPos(loc){
     const id=loc.id;
     if(posMap[id]){const p=posMap[id];return toSVG(p.nx,p.ny);}
     if(id.startsWith('on_')){const objId=id.replace('on_','');const obj=STAGE_OBJECTS.find(o=>o.id===objId);if(obj){const sv=toSVG(obj.x,obj.y);return{x:sv.x+14,y:sv.y-14};}}
     return{x:W/2,y:H/2};
   }
-
   const stops=locs.map(getLocPos);
   const robotStart={x:W/2,y:H/2};
-
   let html='';
-  // BG
   html+=`<rect x="0" y="0" width="${W}" height="${H}" rx="12" fill="#0a0006"/>`;
   html+=`<rect x="${PAD}" y="${PAD}" width="${GRID}" height="${GRID}" rx="8" fill="rgba(100,0,30,.35)" stroke="rgba(255,80,140,.3)" stroke-width="1.5"/>`;
-  // Grid lines
   for(let i=1;i<7;i++){const x=PAD+(GRID/7)*i,y=PAD+(GRID/7)*i;html+=`<line x1="${x}" y1="${PAD}" x2="${x}" y2="${PAD+GRID}" stroke="rgba(255,80,140,.08)" stroke-width=".8"/>`;html+=`<line x1="${PAD}" y1="${y}" x2="${PAD+GRID}" y2="${y}" stroke="rgba(255,80,140,.08)" stroke-width=".8"/>`;}
-  // Labels
   html+=`<text x="${W/2}" y="${PAD-8}" text-anchor="middle" font-family="DM Mono,monospace" font-size="9" fill="rgba(255,133,179,.5)" letter-spacing=".12em">7 ft</text>`;
   html+=`<text x="${PAD-10}" y="${H/2}" text-anchor="middle" font-family="DM Mono,monospace" font-size="9" fill="rgba(255,133,179,.5)" transform="rotate(-90 ${PAD-10} ${H/2})" letter-spacing=".12em">7 ft</text>`;
   html+=`<text x="${W/2}" y="${PAD+GRID+16}" text-anchor="middle" font-family="Quicksand,sans-serif" font-size="9" fill="rgba(255,133,179,.35)" letter-spacing=".12em">AUDIENCE →</text>`;
-
-  // Stage objects
   STAGE_OBJECTS.forEach(obj=>{
-    const p=toSVG(obj.x,obj.y);
-    const isStop=locs.some(l=>l.id==='on_'+obj.id);
+    const p=toSVG(obj.x,obj.y);const isStop=locs.some(l=>l.id==='on_'+obj.id);
     html+=`<circle cx="${p.x}" cy="${p.y}" r="${isStop?13:9}" fill="${isStop?'rgba(255,45,107,.5)':'rgba(180,0,60,.35)'}" stroke="${isStop?'#ff85b3':'rgba(255,80,140,.4)'}" stroke-width="${isStop?2:1}"/>`;
     html+=`<text x="${p.x}" y="${p.y+4}" text-anchor="middle" font-size="${isStop?12:10}" font-family="sans-serif">${obj.emoji}</text>`;
     html+=`<text x="${p.x}" y="${p.y+20}" text-anchor="middle" font-family="Quicksand,sans-serif" font-size="7" fill="rgba(255,180,210,.55)">${obj.label.replace('Laundry basket','Bkt').replace('Watering can','Can')}</text>`;
   });
-
-  // Path: robot → stop1 → stop2 → stop3
   const pathPoints=[robotStart,...stops];
   const stopColors=['rgba(255,45,107,.8)','rgba(200,0,80,.75)','rgba(140,0,50,.7)'];
-
-  // Draw connecting arrows
   for(let i=0;i<pathPoints.length-1;i++){
-    const s=pathPoints[i],e=pathPoints[i+1];
-    const dx=e.x-s.x,dy=e.y-s.y,d=Math.sqrt(dx*dx+dy*dy);
-    if(d<2)continue;
-    const nx=dx/d,ny=dy/d;
-    const x1=s.x+nx*22,y1=s.y+ny*22,x2=e.x-nx*22,y2=e.y-ny*22;
+    const s=pathPoints[i],e=pathPoints[i+1];const dx=e.x-s.x,dy=e.y-s.y,d=Math.sqrt(dx*dx+dy*dy);if(d<2)continue;
+    const nx=dx/d,ny=dy/d,x1=s.x+nx*22,y1=s.y+ny*22,x2=e.x-nx*22,y2=e.y-ny*22;
     html+=`<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${stopColors[i]||'rgba(255,80,120,.5)'}" stroke-width="2" stroke-dasharray="7 4"/>`;
     html+=`<polygon points="${x2},${y2} ${x2-nx*8+ny*5},${y2-ny*8-nx*5} ${x2-nx*8-ny*5},${y2-ny*8+nx*5}" fill="${stopColors[i]||'rgba(255,80,120,.6)'}"/>`;
   }
-
-  // Draw stop markers
-  const stopEmojis=['1️⃣','2️⃣','3️⃣'];
   const stopLabels=['①','②','③'];
   stops.forEach((s,i)=>{
     html+=`<circle cx="${s.x}" cy="${s.y}" r="20" fill="rgba(255,45,107,.18)" stroke="${['#ff2d6b','#c4005a','#8b0030'][i]}" stroke-width="2" stroke-dasharray="5 3"/>`;
@@ -780,22 +586,15 @@ function renderStageSVG(locs,actions,desc,count,state){
     const lname=locs[i].label.replace('On: ','');
     html+=`<text x="${s.x}" y="${s.y+33}" text-anchor="middle" font-family="Quicksand,sans-serif" font-size="8" fill="rgba(255,180,210,.7)">${lname.length>14?lname.slice(0,13)+'…':lname}</text>`;
   });
-
-  // Robot at center
   html+=`<circle cx="${robotStart.x}" cy="${robotStart.y}" r="18" fill="rgba(255,45,107,.25)" stroke="#ff85b3" stroke-width="1.5"/>`;
   html+=`<text x="${robotStart.x}" y="${robotStart.y+6}" text-anchor="middle" font-size="18" font-family="sans-serif">🤖</text>`;
   html+=`<text x="${robotStart.x}" y="${robotStart.y+28}" text-anchor="middle" font-family="Quicksand,sans-serif" font-size="7" fill="rgba(255,180,210,.6)">START</text>`;
-
-  // Action legend bottom
   const actionStr=actions.slice(0,4).map((a,i)=>`${i+1}.${a.label.slice(0,10)}`).join('  ');
   html+=`<rect x="${PAD}" y="${H-PAD-22}" width="${GRID}" height="18" rx="4" fill="rgba(0,0,0,.5)" stroke="rgba(255,80,140,.2)" stroke-width="1"/>`;
   html+=`<text x="${W/2}" y="${H-PAD-10}" text-anchor="middle" font-family="DM Mono,monospace" font-size="7.5" fill="rgba(255,200,220,.7)">${actionStr.slice(0,72)}</text>`;
-
-  // State badge
   const stateCol=state==='on'?'rgba(255,200,80,.8)':'rgba(180,180,180,.6)';
   html+=`<rect x="${W-PAD-34}" y="${PAD+4}" width="32" height="18" rx="4" fill="rgba(0,0,0,.4)" stroke="rgba(255,80,140,.3)" stroke-width="1"/>`;
   html+=`<text x="${W-PAD-18}" y="${PAD+16}" text-anchor="middle" font-family="DM Mono,monospace" font-size="9" fill="${stateCol}" font-weight="700">${state==='on'?'ON':'OFF'}</text>`;
-
   svg.innerHTML=html;
 }
 
@@ -808,9 +607,7 @@ function speakInstruction(){
   u.rate=0.9;u.pitch=1.05;u.lang='en-US';
   const trySpeak=()=>{
     const voices=window.speechSynthesis.getVoices();
-    const fv=voices.find(v=>v.lang==='en-US'&&/zira|samantha|aria|jenny|michelle|jane|emma|female|woman/i.test(v.name))
-      ||voices.find(v=>v.lang==='en-US'&&!/male|david|mark|richard|guy|james/i.test(v.name))
-      ||voices.find(v=>v.lang==='en-US')||voices[0];
+    const fv=voices.find(v=>v.lang==='en-US'&&/zira|samantha|aria|jenny|michelle|jane|emma|female|woman/i.test(v.name))||voices.find(v=>v.lang==='en-US'&&!/male|david|mark|richard|guy|james/i.test(v.name))||voices.find(v=>v.lang==='en-US')||voices[0];
     if(fv)u.voice=fv;
     window.speechSynthesis.speak(u);
   };

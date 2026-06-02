@@ -67,11 +67,9 @@
   @keyframes textPulse{0%,100%{filter:drop-shadow(0 0 24px rgba(255,45,107,.5))}50%{filter:drop-shadow(0 0 44px rgba(255,45,107,.85)) drop-shadow(0 0 80px rgba(255,30,128,.3))}}
   .reward-label{font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--text-dim);margin-top:-6px;}
 
-  /* worker badge shown after auth */
   .worker-badge{display:flex;align-items:center;gap:7px;padding:5px 13px;border-radius:999px;background:rgba(255,45,107,.08);border:1px solid var(--card-border-bright);font-size:11px;letter-spacing:.1em;color:var(--text-dim);font-family:'Nunito',sans-serif;font-weight:800;}
   .worker-badge span{color:var(--blush);}
 
-  /* message card */
   .message-card{background:rgba(14,0,8,.72);border:1.5px solid var(--card-border-bright);border-radius:22px;box-shadow:var(--soft-glow),inset 0 1px 0 rgba(255,160,200,.07);backdrop-filter:blur(20px) saturate(1.4);padding:clamp(18px,3.5vmin,28px) clamp(24px,4.5vmin,40px);width:100%;position:relative;overflow:hidden;}
   .message-card::before{content:'';position:absolute;top:0;left:10%;right:10%;height:1.5px;background:linear-gradient(90deg,transparent,var(--candy) 35%,var(--hot) 50%,var(--candy) 65%,transparent);box-shadow:0 0 14px var(--candy);border-radius:999px;}
   .message-heading{font-family:'Nunito',sans-serif;font-weight:900;font-size:clamp(18px,3.5vw,24px);background:linear-gradient(120deg,var(--blush) 20%,var(--fuchsia) 60%,var(--candy) 90%);-webkit-background-clip:text;background-clip:text;color:transparent;margin-bottom:8px;line-height:1.2;}
@@ -81,18 +79,15 @@
   .chip{padding:5px 12px;border-radius:999px;background:rgba(255,45,107,.1);border:1px solid rgba(255,100,160,.24);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--text-dim);display:inline-flex;align-items:center;gap:5px;}
   .chip-dot{width:4px;height:4px;border-radius:50%;background:var(--rose);}
 
-  /* emotion reaction panel */
   .react-panel{background:rgba(14,0,8,.72);border:1.5px solid var(--card-border-bright);border-radius:22px;box-shadow:var(--soft-glow);backdrop-filter:blur(20px);padding:clamp(16px,3vmin,24px) clamp(20px,4vmin,32px);width:100%;position:relative;overflow:hidden;}
   .react-panel::before{content:'';position:absolute;top:0;left:10%;right:10%;height:1.5px;background:linear-gradient(90deg,transparent,var(--candy) 35%,var(--hot) 50%,var(--candy) 65%,transparent);box-shadow:0 0 10px var(--candy);border-radius:999px;}
   .react-eyebrow{font-size:9px;letter-spacing:.22em;text-transform:uppercase;color:var(--text-dim);margin-bottom:10px;font-weight:800;}
   .react-question{font-family:'Nunito',sans-serif;font-weight:800;font-size:clamp(14px,2.5vw,16px);color:var(--blush);margin-bottom:14px;line-height:1.4;}
-
   .etag-group{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px;}
   .etag{padding:7px 14px;border-radius:999px;cursor:pointer;background:rgba(255,45,107,.07);border:1.5px solid rgba(255,45,107,.2);font-size:12px;color:var(--text-dim);transition:all .15s;user-select:none;font-weight:700;font-family:'Nunito',sans-serif;}
   .etag:hover{background:rgba(255,45,107,.15);border-color:var(--card-border-bright);color:var(--blush);}
   .etag.selected{background:linear-gradient(135deg,rgba(255,45,107,.32),rgba(196,0,90,.32));border-color:var(--hot);color:var(--cream);box-shadow:0 0 10px rgba(255,45,107,.25);}
   .etag.selected::before{content:'✦ ';}
-
   .react-save-row{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;}
   .react-saved{font-size:10px;color:rgba(100,255,160,.7);letter-spacing:.1em;min-height:14px;}
   .react-direction{display:none;margin-top:14px;padding:16px 18px;background:linear-gradient(135deg,rgba(255,45,107,.14),rgba(196,0,90,.1));border:1.5px solid var(--card-border-bright);border-radius:14px;font-family:'Nunito',sans-serif;font-weight:800;font-size:clamp(13px,2.5vw,15px);color:var(--blush);line-height:1.6;text-align:center;}
@@ -101,13 +96,11 @@
   .react-direction.visible{display:block;animation:dirIn .45s cubic-bezier(.34,1.4,.64,1) forwards;}
   @keyframes dirIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
 
-  /* buttons */
   .btn{appearance:none;font-family:'Nunito',sans-serif;font-weight:900;font-size:13px;letter-spacing:.05em;color:var(--cream);display:inline-flex;align-items:center;gap:6px;padding:10px 20px;border-radius:13px;border:1.5px solid var(--card-border-bright);cursor:pointer;transition:all .2s cubic-bezier(.34,1.56,.64,1);background:none;}
   .btn-primary{background:linear-gradient(135deg,var(--hot),var(--berry));box-shadow:0 4px 18px rgba(255,45,107,.35);}
   .btn-primary:hover{transform:translateY(-2px);box-shadow:0 6px 24px rgba(255,45,107,.5);}
   .btn:active{transform:scale(.97)!important;}
 
-  /* CTA */
   .cta-btn{appearance:none;font-family:'Nunito',sans-serif;font-weight:900;font-size:clamp(14px,2.5vw,18px);letter-spacing:.04em;color:var(--cream);cursor:pointer;text-decoration:none;border:none;display:inline-flex;align-items:center;justify-content:center;gap:10px;padding:clamp(13px,2.2vmin,17px) clamp(28px,5.5vmin,48px);border-radius:18px;width:100%;background:linear-gradient(135deg,var(--hot) 0%,var(--berry) 55%,var(--maroon) 100%);border:1.5px solid var(--hot);box-shadow:0 6px 32px rgba(255,45,107,.45),inset 0 1px 0 rgba(255,255,255,.12);transition:all .22s cubic-bezier(.34,1.56,.64,1);position:relative;overflow:hidden;animation:ctaPulse 2.8s ease-in-out infinite;}
   .cta-btn::before{content:'';position:absolute;inset:0;border-radius:inherit;background:linear-gradient(135deg,rgba(255,255,255,.12),transparent 55%);pointer-events:none;}
   @keyframes ctaPulse{0%,100%{box-shadow:0 6px 32px rgba(255,45,107,.45),inset 0 1px 0 rgba(255,255,255,.12)}50%{box-shadow:0 10px 52px rgba(255,45,107,.7),0 0 80px rgba(255,30,128,.22),inset 0 1px 0 rgba(255,255,255,.12)}}
@@ -143,8 +136,9 @@
     </div>
   </div>
 
-  <!-- ══ REWARD SCREEN (hidden until Worker ID confirmed) ══ -->
-  <div id="rewardScreen" style="display:none;width:100%;display:none;flex-direction:column;align-items:center;gap:16px;">
+  <!-- ══ REWARD SCREEN ══ -->
+  <!-- FIX: removed duplicate display:none — only one display property in inline style -->
+  <div id="rewardScreen" style="display:none;width:100%;flex-direction:column;align-items:center;gap:16px;">
 
     <div class="top-bar">
       <div class="mascot">
@@ -158,20 +152,15 @@
     </div>
 
     <div class="hero">
-
       <div class="reward-ring">
         <div class="reward-ring-outer"></div>
         <div class="reward-ring-inner">💰</div>
       </div>
-
       <div>
         <div class="reward-amount">$0.01</div>
         <div class="reward-label">✦ earned · task complete ✦</div>
       </div>
-
-      <!-- worker id badge -->
       <div class="worker-badge">Worker ID: <span id="workerBadgeId">—</span></div>
-
       <div class="message-card">
         <div class="message-heading">Great work! ✦</div>
         <div class="message-sub">
@@ -185,7 +174,6 @@
         </div>
       </div>
 
-      <!-- EMOTION REACTION PANEL -->
       <div class="react-panel">
         <div class="react-eyebrow">✦ CAREBOT-07 · Quick Research Question</div>
         <div class="react-question">When you saw <em style="color:var(--hot);">$0.01</em> — what was your first reaction?</div>
@@ -211,13 +199,12 @@
       </div>
 
       <a class="cta-btn" id="ctaBtn" href="hit.html">✦ Click for more work! ✦</a>
-
     </div>
 
     <div class="wordmark">✦ carebot-07 / caretech research system · microtask labor · v2.0 ✦</div>
   </div>
 
-</div><!-- .screen -->
+</div>
 
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
@@ -237,28 +224,15 @@ try{firebase.initializeApp(FB_CONFIG);db=firebase.database();}catch(e){useFireba
 
 /* ── WORKER ID GATE ── */
 const STORAGE_KEY = 'caretech_worker_id';
-
-function getStoredWorkerId(){
-  try{ return localStorage.getItem(STORAGE_KEY) || ''; }catch(e){ return ''; }
-}
-function storeWorkerId(id){
-  try{ localStorage.setItem(STORAGE_KEY, id); }catch(e){}
-}
+function getStoredWorkerId(){try{return localStorage.getItem(STORAGE_KEY)||'';}catch(e){return '';}}
+function storeWorkerId(id){try{localStorage.setItem(STORAGE_KEY,id);}catch(e){}}
 
 function submitWorkerId(){
-  const raw = document.getElementById('workerIdInput').value.trim();
-  const errorEl = document.getElementById('gateError');
-  if(!raw){
-    errorEl.textContent = 'Please enter your Worker ID to continue.';
-    document.getElementById('workerIdInput').focus();
-    return;
-  }
-  // Basic sanity: MTurk IDs are alphanumeric, typically 14 chars, but we just require ≥3
-  if(raw.length < 3){
-    errorEl.textContent = 'Worker ID looks too short — please check and try again.';
-    return;
-  }
-  errorEl.textContent = '';
+  const raw=document.getElementById('workerIdInput').value.trim();
+  const errorEl=document.getElementById('gateError');
+  if(!raw){errorEl.textContent='Please enter your Worker ID to continue.';document.getElementById('workerIdInput').focus();return;}
+  if(raw.length<3){errorEl.textContent='Worker ID looks too short — please check and try again.';return;}
+  errorEl.textContent='';
   storeWorkerId(raw);
   revealRewardScreen(raw);
 }
@@ -267,18 +241,12 @@ function announceWorker(wid){
   if(!window.speechSynthesis)return;
   const spelled=wid.split('').join(' ');
   const msg=new SpeechSynthesisUtterance(`Please pay worker number ${spelled} one cent.`);
-  msg.rate=0.88;
-  msg.pitch=1.05;
-  msg.volume=1;
+  msg.rate=0.88;msg.pitch=1.05;msg.volume=1;
   function speak(){
     const voices=window.speechSynthesis.getVoices();
-    // 1. American English female by name
     const female=voices.find(v=>v.lang==='en-US'&&/zira|samantha|aria|jenny|michelle|jane|linda|betty|emma|woman|female/i.test(v.name))
-      // 2. Any en-US voice that isn't explicitly male
       ||voices.find(v=>v.lang==='en-US'&&!/male|david|mark|richard|guy|james/i.test(v.name))
-      // 3. Any en-US voice
       ||voices.find(v=>v.lang==='en-US')
-      // 4. Fallback: any English female
       ||voices.find(v=>v.lang.startsWith('en')&&!/male/i.test(v.name))
       ||voices[0];
     if(female)msg.voice=female;
@@ -291,39 +259,30 @@ function announceWorker(wid){
 }
 
 function revealRewardScreen(workerId){
-  document.getElementById('workerGate').style.display = 'none';
-  const rs = document.getElementById('rewardScreen');
-  rs.style.display = 'flex';
-  document.getElementById('workerBadgeId').textContent = workerId;
-  const cta = document.getElementById('ctaBtn');
-  const base = cta.getAttribute('href').split('?')[0];
-  cta.href = base + '?wid=' + encodeURIComponent(workerId);
-  setTimeout(()=>announceWorker(workerId), 400);
-  // save payment record immediately on ID confirmation
-  // so worker appears on dashboard even if they skip the emotion panel
-  if(useFirebase && db){
+  document.getElementById('workerGate').style.display='none';
+  const rs=document.getElementById('rewardScreen');
+  rs.style.display='flex';
+  document.getElementById('workerBadgeId').textContent=workerId;
+  const cta=document.getElementById('ctaBtn');
+  const base=cta.getAttribute('href').split('?')[0];
+  cta.href=base+'?wid='+encodeURIComponent(workerId);
+  setTimeout(()=>announceWorker(workerId),400);
+  if(useFirebase&&db){
     db.ref('microtaskReactions').push({
-      workerId: workerId,
-      sessionId: SESSION_ID,
-      emotions: [],
-      paymentConfirmed: true,
-      timestamp: firebase.database.ServerValue.TIMESTAMP
+      workerId:workerId,sessionId:SESSION_ID,emotions:[],
+      paymentConfirmed:true,timestamp:firebase.database.ServerValue.TIMESTAMP
     }).catch(e=>console.warn('Payment record save failed:',e));
   }
 }
 
-// Always show the gate — worker must enter ID every time
-// (pre-fill the input if they've been here before, but don't skip)
+// Pre-fill stored ID but always show gate
 (function(){
-  const stored = getStoredWorkerId();
-  if(stored){
-    document.getElementById('workerIdInput').value = stored;
-  }
+  const stored=getStoredWorkerId();
+  if(stored){document.getElementById('workerIdInput').value=stored;}
 })();
 
-// Allow Enter key to submit
-document.getElementById('workerIdInput').addEventListener('keydown', function(e){
-  if(e.key === 'Enter') submitWorkerId();
+document.getElementById('workerIdInput').addEventListener('keydown',function(e){
+  if(e.key==='Enter')submitWorkerId();
 });
 
 /* ── CLOCK ── */
@@ -343,13 +302,13 @@ document.getElementById('etagGroup').addEventListener('click',e=>{
 function saveReaction(){
   const emotions=[...document.querySelectorAll('.etag.selected')].map(t=>t.dataset.val);
   if(!emotions.length){document.getElementById('reactSaved').textContent='Select at least one reaction.';return;}
-  const workerId = getStoredWorkerId();
+  const workerId=getStoredWorkerId();
   const payload={emotions,sessionId:SESSION_ID,workerId,timestamp:useFirebase?firebase.database.ServerValue.TIMESTAMP:Date.now()};
   if(useFirebase&&db){
     db.ref('microtaskReactions').push(payload)
       .then(()=>{document.getElementById('reactSaved').textContent='✦ Saved — thank you.';setTimeout(()=>document.getElementById('reactSaved').textContent='',3000);document.getElementById('reactDirection').classList.add('visible');})
       .catch(()=>document.getElementById('reactSaved').textContent='Saved locally.');
-  } else {
+  }else{
     document.getElementById('reactSaved').textContent='Saved locally.';
     document.getElementById('reactDirection').classList.add('visible');
   }
