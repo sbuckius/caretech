@@ -5,8 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
 <title>✦ CAREBOT-42 ✦ Data for Domestic & Presentation Work</title>
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Quicksand:wght@500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
-<!-- FIX 1: Firebase scripts moved to bottom of body -->
-<!-- FIX 2: p5.js moved to bottom of body -->
 <style>
 :root{
   --rose:#ff5c8a;--hot:#ff2d6b;--candy:#ff85b3;--blush:#ffb3cf;
@@ -46,7 +44,7 @@ html,body{height:100%;min-height:100%;font-family:var(--fb);font-weight:600;colo
 .frame-wrap{width:min(100%,460px);position:relative;}
 .frame-wrap::before{content:'';position:absolute;inset:-2px;border-radius:28px;background:linear-gradient(135deg,var(--hot),var(--berry),var(--crimson),var(--maroon),var(--berry),var(--hot));background-size:300% 300%;animation:borderShimmer 6s linear infinite;z-index:0;filter:blur(1px);}
 @keyframes borderShimmer{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
-.frame{width:100%;aspect-ratio:2/3;position:relative;border-radius:26px;overflow:hidden;box-shadow:var(--pop-glow);z-index:1;background:var(--maroon);display:block;}
+.frame{width:100%;aspect-ratio:3/2;position:relative;border-radius:26px;overflow:hidden;box-shadow:var(--pop-glow);z-index:1;background:var(--maroon);display:block;}
 #defaultCanvas0{display:block;position:absolute;inset:0;width:100%!important;height:100%!important;z-index:1;}
 .hint{position:absolute;top:12px;left:50%;transform:translateX(-50%);z-index:3;font-family:var(--fb);font-weight:700;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,200,220,.75);background:rgba(255,45,107,.12);border:1px solid rgba(255,100,160,.28);padding:6px 14px;border-radius:999px;white-space:nowrap;}
 .step-panel{display:none;width:min(100%,500px);background:rgba(12,0,7,.95);border:1.5px solid var(--border2);border-radius:22px;padding:20px;position:relative;overflow:hidden;animation:slideUp .38s cubic-bezier(.34,1.4,.64,1);}
@@ -238,14 +236,12 @@ html,body{height:100%;min-height:100%;font-family:var(--fb);font-weight:600;colo
   <div class="wordmark">✦ carebot-42 · data for domestic &amp; presentation work · caretech ✦</div>
 </div>
 
-<!-- FIX 1: Firebase loaded at bottom so DOM is ready -->
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
-<!-- FIX 2: p5.js loaded at bottom, BEFORE the sketch script -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.0/p5.min.js"></script>
 
 <script>
-/* ── FIX 3: roundRect polyfill for Safari < 15.4 and older browsers ── */
+/* ── roundRect polyfill for Safari < 15.4 ── */
 if (!CanvasRenderingContext2D.prototype.roundRect) {
   CanvasRenderingContext2D.prototype.roundRect = function(x, y, w, h, r) {
     r = Math.min(r, w / 2, h / 2);
@@ -279,7 +275,7 @@ try{
 
 /* ── DATA ── */
 const ASSET_BASE='./images';
-const IMAGE_SIZE=160,SWITCH_MS=30;
+const SWITCH_MS=30;
 
 const OBJECT_OPTIONS=['Ironing board','Watering can','Vacuum','Covers','Laundry basket','Typewriter','Money case','Tea kettle','Dustpan','Broom','Brush','Wig','Sunglasses','Pink washing towels','Trash can','Rolling stand','Clothes hanger','Rolling desk'];
 const TASK_OPTIONS=['Fold laundry','Iron','Get in a closet','Put trash in a laundry basket','Put on a wig','Wear sunglasses','Sweep','Brush the floor','Pour some tea','Type a sentence','Put laundry in the laundry basket','Hold a dustpan and brush','Vacuum','Water a plant','Hang up clothes','Cover the objects','Pour tea','Iron with the ironing board'];
@@ -370,8 +366,7 @@ function changeCount(d){actionCount=Math.max(1,Math.min(10,actionCount+d));docum
 function selectState(s){selectedState=s;document.getElementById('stateOn').classList.toggle('active',s==='on');document.getElementById('stateOff').classList.toggle('active',s==='off');}
 
 /* ── P5 SKETCH ── */
-/* FIX 4: Use p5 instance mode to avoid global timing issues entirely */
-let imgs=[],currentIndex=0,order=[],lastSwitch=0,lockedIndex_p5=-1;
+let imgs=[],currentIndex=0,order=[],lastSwitch=0;
 
 new p5(function(p) {
   p.preload = function() {
@@ -381,10 +376,10 @@ new p5(function(p) {
       const cands = exts.map(e => `${ASSET_BASE}/robot${it.idx}${e}`);
       const attempt = k => {
         if(k >= cands.length){
-          const pg = p.createGraphics(IMAGE_SIZE, IMAGE_SIZE);
+          const pg = p.createGraphics(200, 200);
           pg.background(20, 0, 10); pg.fill(255, 150, 180);
           pg.textAlign(p.CENTER, p.CENTER); pg.textSize(11);
-          pg.text(`robot${it.idx}`, IMAGE_SIZE/2, IMAGE_SIZE/2);
+          pg.text(`robot${it.idx}`, 100, 100);
           imgs[ix] = pg; return;
         }
         p.loadImage(cands[k], img => { imgs[ix]=img; items[ix].resolvedSrc=cands[k]; }, () => attempt(k+1));
@@ -403,11 +398,19 @@ new p5(function(p) {
     lastSwitch = p.millis();
   };
 
+  /* ── LAYOUT: image fills the full card box ── */
   function getLayout() {
-    const boxX=p.width/2, boxY=p.height*.38, boxW=p.width-28, boxH=Math.min(230,p.height*.38);
-    const boxLeft=boxX-boxW/2, leftColW=IMAGE_SIZE+100;
-    const imgX=boxLeft+leftColW/2, imgY=boxY, textPad=16, textX=boxLeft+leftColW+textPad;
-    return{boxX,boxY,boxW,boxH,imgX,imgY,textX,textY:imgY-IMAGE_SIZE/2+4,textW:Math.max(100,(boxX+boxW/2)-textX-textPad)};
+    const PAD = 14;
+    const boxW = p.width - PAD * 2;
+    // Short pill shape — height is 1/3 of width to match aspect-ratio:3/1
+    const boxH = Math.max(80, p.height - PAD * 2);
+    const boxX = p.width / 2;
+    const boxY = p.height / 2;
+    // Image fills the full interior of the box (with a small inset for the border)
+    const inset = 3;
+    const imgW = boxW - inset * 2;
+    const imgH = boxH - inset * 2;
+    return { boxX, boxY, boxW, boxH, imgW, imgH, PAD };
   }
 
   p.draw = function() {
@@ -416,35 +419,59 @@ new p5(function(p) {
       currentIndex = (currentIndex + 1 + Math.floor(Math.random()*4)) % items.length;
       lastSwitch = p.millis();
     }
-    const L=getLayout(), showIdx=order[currentIndex], img=imgs[showIdx], task=items[showIdx];
+    const L = getLayout();
+    const showIdx = order[currentIndex];
+    const img = imgs[showIdx];
+    const task = items[showIdx];
     const ctx = p.drawingContext;
+
+    // Card background
     p.push();
-    const grad = ctx.createLinearGradient(L.boxX-L.boxW/2, L.boxY-L.boxH/2, L.boxX+L.boxW/2, L.boxY+L.boxH/2);
+    const grad = ctx.createLinearGradient(L.boxX - L.boxW/2, L.boxY - L.boxH/2, L.boxX + L.boxW/2, L.boxY + L.boxH/2);
     grad.addColorStop(0,'rgba(140,0,45,.95)'); grad.addColorStop(.5,'rgba(100,0,32,.98)'); grad.addColorStop(1,'rgba(70,0,22,.98)');
     ctx.save(); ctx.fillStyle=grad; ctx.beginPath(); ctx.roundRect(L.boxX-L.boxW/2, L.boxY-L.boxH/2, L.boxW, L.boxH, 18); ctx.fill(); ctx.restore();
+
+    // Top shimmer line
     const sh = ctx.createLinearGradient(L.boxX-L.boxW/2,0,L.boxX+L.boxW/2,0);
     sh.addColorStop(0,'rgba(255,90,140,0)'); sh.addColorStop(.35,'rgba(255,133,179,.7)'); sh.addColorStop(.5,'rgba(255,45,107,.9)'); sh.addColorStop(.65,'rgba(255,133,179,.7)'); sh.addColorStop(1,'rgba(255,90,140,0)');
     ctx.save(); ctx.fillStyle=sh; ctx.fillRect(L.boxX-L.boxW/2+12, L.boxY-L.boxH/2, L.boxW-24, 1.5); ctx.restore();
+
+    // Card border
     ctx.save(); ctx.strokeStyle='rgba(255,100,155,.4)'; ctx.lineWidth=1.5; ctx.beginPath(); ctx.roundRect(L.boxX-L.boxW/2, L.boxY-L.boxH/2, L.boxW, L.boxH, 18); ctx.stroke(); ctx.restore();
+
+    // Image — full-bleed inside the card with rounded clip
     if(img && img.width > 0){
-      ctx.save(); ctx.beginPath(); ctx.roundRect(L.imgX-IMAGE_SIZE/2, L.imgY-IMAGE_SIZE/2, IMAGE_SIZE, IMAGE_SIZE, 14); ctx.clip();
-      p.image(img, L.imgX, L.imgY, IMAGE_SIZE, IMAGE_SIZE); ctx.restore();
-      ctx.save(); ctx.strokeStyle='rgba(255,133,179,.5)'; ctx.lineWidth=2; ctx.beginPath(); ctx.roundRect(L.imgX-IMAGE_SIZE/2, L.imgY-IMAGE_SIZE/2, IMAGE_SIZE, IMAGE_SIZE, 14); ctx.stroke(); ctx.restore();
+      const ix = L.boxX, iy = L.boxY;
+      const iw = L.imgW, ih = L.imgH;
+      ctx.save();
+      ctx.beginPath();
+      ctx.roundRect(ix - iw/2, iy - ih/2, iw, ih, 14);
+      ctx.clip();
+      p.image(img, ix, iy, iw, ih);
+      ctx.restore();
+      // Inner border over image
+      ctx.save(); ctx.strokeStyle='rgba(255,133,179,.5)'; ctx.lineWidth=2; ctx.beginPath(); ctx.roundRect(ix-iw/2, iy-ih/2, iw, ih, 14); ctx.stroke(); ctx.restore();
     } else {
-      p.fill(255,255,255,20); p.rectMode(p.CENTER); p.rect(L.imgX, L.imgY, IMAGE_SIZE, IMAGE_SIZE, 14);
-      p.fill(255,160,200); p.textAlign(p.CENTER, p.CENTER); p.textSize(13); p.text('Loading…', L.imgX, L.imgY);
+      p.fill(255,255,255,20); p.rectMode(p.CENTER); p.rect(L.boxX, L.boxY, L.imgW, L.imgH, 14);
+      p.fill(255,160,200); p.textAlign(p.CENTER, p.CENTER); p.textSize(13); p.text('Loading…', L.boxX, L.boxY);
     }
     p.pop();
+
+    // Bottom hint label
     p.push(); p.fill(255,150,190,80); p.textAlign(p.CENTER, p.BOTTOM); p.textSize(10);
     p.text(lockedIndex===-1?'✦ tap image to select ✦':'✦ selected — see below ✦', p.width/2, p.height-10);
     p.pop();
+
     if(lockedIndex !== -1) p.noLoop();
   };
 
   p.mousePressed = function() {
     if(lockedIndex !== -1) return;
-    const L = getLayout(), h = IMAGE_SIZE/2;
-    if(p.mouseX>=L.imgX-h && p.mouseX<=L.imgX+h && p.mouseY>=L.imgY-h && p.mouseY<=L.imgY+h){
+    const L = getLayout();
+    if(
+      p.mouseX >= L.boxX - L.imgW/2 && p.mouseX <= L.boxX + L.imgW/2 &&
+      p.mouseY >= L.boxY - L.imgH/2 && p.mouseY <= L.boxY + L.imgH/2
+    ){
       lockedIndex = order[currentIndex];
       showIdentify(lockedIndex);
     }
@@ -521,8 +548,6 @@ function doReset(){
   document.getElementById('hint').style.display='block';
   order=makeOrder(items.length);currentIndex=Math.floor(Math.random()*items.length);
   lastSwitch=0;
-  // restart p5 loop — find the p5 instance
-  if(window._p5inst) window._p5inst.loop();
   window.scrollTo({top:0,behavior:'smooth'});
 }
 
