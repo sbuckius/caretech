@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
-<title>✦ CAREBOT-45 ✦ Media Headlines · Classification Task</title>
+<title>✦ CAREBOT-30 ✦ Media Headlines · Classification Task</title>
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
 
 <script type="module">
@@ -165,7 +165,7 @@ input[type=range].val-slider{width:100%;accent-color:var(--hot);height:5px;curso
     <div class="mascot">
       <div class="bot-face">📰</div>
       <div>
-        <div class="bot-name">CAREBOT-45 ✦</div>
+        <div class="bot-name">CAREBOT-30 ✦</div>
         <div class="bot-sub">Media Archive · Headline Classification · Online</div>
       </div>
     </div>
@@ -173,7 +173,7 @@ input[type=range].val-slider{width:100%;accent-color:var(--hot);height:5px;curso
   </div>
 
   <div class="agenda-banner">
-    <div class="agenda-eyebrow">✦ CAREBOT-45 · Classification Task</div>
+    <div class="agenda-eyebrow">✦ CAREBOT-30 · Classification Task</div>
     <div class="agenda-title">Help me classify real media headlines about a major technology story.</div>
     <div class="agenda-body">
       I am collecting data on how media covers a particular group of people in relation to a new technology — whether the coverage frames them as <strong>at risk</strong>, <strong>left behind</strong>, <strong>empowered</strong>, or <strong>to blame</strong>.<br><br>
@@ -609,24 +609,24 @@ function showCompletion(){
   if(hFair!=null&&gFair!=null){
     lines.push(`You rated <strong>${hFair>gFair?'harm':'gap'} headlines</strong> as fairer to their subject (${Math.max(hFair,gFair).toFixed(1)}/10 vs ${Math.min(hFair,gFair).toFixed(1)}/10).`);
   }
-  patternNote=lines.length?lines.join(' '):'Your classifications are recorded. CAREBOT-45 will analyze the patterns as more participants respond.';
+  patternNote=lines.length?lines.join(' '):'Your classifications are recorded. CAREBOT-30 will analyze the patterns as more participants respond.';
 
   const d=document.createElement('div');
   d.id='final-card45';d.className='completion-card';
   d.innerHTML=`
-    <div class="c-eyebrow">✦ CAREBOT-45 · Classifications Recorded</div>
+    <div class="c-eyebrow">✦ CAREBOT-30 · Classifications Recorded</div>
     <h2>Your readings are now training data. 📰</h2>
     <p>You classified ${HEADLINE_CATALOG.length} real headlines. Your most-used tags: <strong>${topTags||'—'}</strong></p>
     <div class="pattern-note">
-      ✦ <strong>What CAREBOT-45 sees in your data:</strong><br><br>
+      ✦ <strong>What CAREBOT-30 sees in your data:</strong><br><br>
       ${patternNote}<br><br>
-      All ${HEADLINE_CATALOG.length} headlines are about the same subject: <strong>women and AI</strong>. Some frame women as laggards who need to adopt faster. Others document AI as a weapon used against women at scale. Others show that the jobs women hold are the most likely to be automated — and that women were disproportionately laid off in the same tech wave companies blamed on AI. <em>These facts coexist in the same media landscape.</em> The paradox — women are blamed for not using a technology that simultaneously threatens their jobs, their safety, and their livelihoods — is almost never named in a single article. <strong>CAREBOT-45 is trained to name it.</strong>
+      All ${HEADLINE_CATALOG.length} headlines are about the same subject: <strong>women and AI</strong>. Some frame women as laggards who need to adopt faster. Others document AI as a weapon used against women at scale. Others show that the jobs women hold are the most likely to be automated — and that women were disproportionately laid off in the same tech wave companies blamed on AI. <em>These facts coexist in the same media landscape.</em> The paradox — women are blamed for not using a technology that simultaneously threatens their jobs, their safety, and their livelihoods — is almost never named in a single article. <strong>CAREBOT-30 is trained to name it.</strong>
     </div>
     <a class="btn primary"
        href="carebot45-bot.html"
        target="_blank" rel="noopener"
        style="margin:0 auto;text-decoration:none;display:inline-flex;">
-      Talk to CAREBOT-45 about what you found ✦
+      Talk to CAREBOT-30 about what you found ✦
     </a>`;
   slot.appendChild(d);
 }
