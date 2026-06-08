@@ -1,0 +1,915 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>✦ CAREtech · Domestic Labor Image Archive</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --rose:   #ff5c8a;
+    --hot:    #ff2d6b;
+    --candy:  #ff85b3;
+    --blush:  #ffb3cf;
+    --cream:  #fff5f8;
+    --berry:  #c4005a;
+    --maroon: #6f001e;
+    --fuchsia:#ff1f80;
+    --bg:     #1a0012;
+    --card:   rgba(255,255,255,.055);
+    --card-border: rgba(255,160,200,.22);
+    --card-border-bright: rgba(255,100,160,.55);
+    --soft-glow: 0 4px 30px rgba(255,45,107,.18), 0 1px 0 rgba(255,160,200,.1) inset;
+    --text-dim: rgba(255,200,224,.55);
+  }
+
+  *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
+  html {
+    font-family:'Quicksand',sans-serif; font-weight:600;
+    color:var(--cream); background:var(--bg);
+    -webkit-font-smoothing:antialiased;
+  }
+  body { min-height:100vh; overflow-x:hidden; }
+
+  /* BG layers */
+  .bg-layer {
+    position:fixed; inset:0; z-index:0; pointer-events:none;
+    background:
+      radial-gradient(ellipse 80% 60% at 10% 15%, rgba(180,0,50,.4) 0%, transparent 55%),
+      radial-gradient(ellipse 60% 70% at 90% 85%, rgba(120,0,30,.35) 0%, transparent 55%),
+      linear-gradient(160deg, #220008, #180008 45%, #120005);
+  }
+  .orb {position:fixed;border-radius:50%;pointer-events:none;z-index:0;filter:blur(70px);will-change:transform;}
+  .orb-1 {width:500px;height:500px;background:var(--maroon);opacity:.22;top:-120px;left:-100px;animation:drift1 20s ease-in-out infinite;}
+  .orb-2 {width:400px;height:400px;background:#c40032;opacity:.18;bottom:-80px;right:-80px;animation:drift2 24s ease-in-out infinite;}
+  @keyframes drift1{0%,100%{transform:translate(0,0)}50%{transform:translate(50px,35px)}}
+  @keyframes drift2{0%,100%{transform:translate(0,0)}50%{transform:translate(-35px,-25px)}}
+  @keyframes breathe{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.3;transform:scale(.65)}}
+
+  .sparkles{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden;}
+  .sp{position:absolute;opacity:0;animation:floatUp linear infinite;}
+  @keyframes floatUp{
+    0%{opacity:0;transform:translateY(0) scale(.6) rotate(0deg)}
+    15%{opacity:.7}85%{opacity:.4}
+    100%{opacity:0;transform:translateY(-140px) scale(1.1) rotate(180deg)}
+  }
+
+  /* HEADER */
+  header {
+    position:relative;z-index:10;
+    padding:40px clamp(16px,5vw,64px) 32px;
+    text-align:center;
+    border-bottom:1px solid var(--card-border);
+    background:rgba(26,0,18,.4);
+    backdrop-filter:blur(8px);
+  }
+  .eyebrow {
+    font-size:10px;letter-spacing:.25em;text-transform:uppercase;
+    color:var(--hot);margin-bottom:12px;
+    display:flex;align-items:center;justify-content:center;gap:10px;
+  }
+  .eyebrow::before,.eyebrow::after{content:'✦';opacity:.6;}
+  h1 {
+    font-family:'Nunito',sans-serif;font-weight:900;
+    font-size:clamp(22px,5vw,44px);line-height:1.15;
+    background:linear-gradient(120deg,var(--cream) 10%,var(--blush) 45%,var(--fuchsia) 80%);
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+    letter-spacing:-.02em;margin-bottom:10px;
+  }
+  .header-sub {
+    font-size:clamp(12px,1.8vw,14px);color:var(--text-dim);
+    line-height:1.75;max-width:580px;margin:0 auto;
+  }
+  .pip {display:inline-block;width:5px;height:5px;border-radius:50%;background:var(--hot);box-shadow:0 0 6px var(--hot);animation:breathe 2s ease-in-out infinite;vertical-align:middle;margin-right:6px;}
+
+  /* DIVIDER */
+  .divider {
+    width:min(90vw,500px);height:1.5px;
+    background:linear-gradient(90deg,transparent,var(--card-border-bright) 30%,var(--hot) 50%,var(--card-border-bright) 70%,transparent);
+    border-radius:999px;box-shadow:0 0 12px rgba(255,45,107,.25);
+    margin:28px auto;
+  }
+
+  /* TABLE WRAPPER */
+  .table-wrap {
+    position:relative;z-index:10;
+    max-width:1400px;margin:0 auto;
+    padding:0 clamp(12px,3vw,40px) 80px;
+  }
+
+  /* COLUMN HEADERS */
+  .col-headers {
+    display:grid;
+    grid-template-columns:260px 160px 1fr;
+    gap:0;
+    padding:10px 0 10px 0;
+    margin-bottom:2px;
+    border-bottom:2px solid var(--card-border-bright);
+  }
+  .col-hdr {
+    font-family:'Nunito',sans-serif;font-weight:900;
+    font-size:9px;letter-spacing:.25em;text-transform:uppercase;
+    color:var(--hot);padding:0 16px;
+  }
+  .col-hdr:first-child{padding-left:0;}
+
+  /* DATA TABLE */
+  table.main-table {
+    width:100%;border-collapse:collapse;
+  }
+  tr.data-row {
+    border-bottom:1px solid rgba(255,100,160,.1);
+    transition:background .15s;
+  }
+  tr.data-row:hover {background:rgba(255,45,107,.04);}
+  tr.data-row:last-child{border-bottom:none;}
+
+  td {vertical-align:top;padding:20px 16px;}
+  td:first-child{padding-left:0;}
+
+  /* COL 1 — IMAGE */
+  .col-image {width:260px;}
+  .img-wrap {
+    position:relative;
+    border-radius:12px;overflow:hidden;
+    border:1.5px solid var(--card-border);
+    box-shadow:var(--soft-glow);
+    background:rgba(15,0,8,.4);
+  }
+  .img-wrap img {
+    width:100%;display:block;
+    aspect-ratio:4/3;object-fit:cover;
+    transition:transform .3s ease;
+  }
+  tr.data-row:hover .img-wrap img{transform:scale(1.03);}
+  .img-num {
+    position:absolute;top:8px;left:8px;
+    font-family:'Nunito',sans-serif;font-weight:900;
+    font-size:10px;letter-spacing:.14em;
+    background:rgba(10,0,6,.75);
+    border:1px solid rgba(255,100,160,.35);
+    color:var(--candy);
+    padding:3px 8px;border-radius:6px;
+    backdrop-filter:blur(4px);
+  }
+
+  /* COL 2 — OBJECT LABEL */
+  .col-object {width:160px;}
+  .object-label {
+    font-family:'Nunito',sans-serif;font-weight:900;
+    font-size:clamp(14px,2vw,18px);
+    background:linear-gradient(120deg,var(--cream),var(--blush) 60%,var(--fuchsia));
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+    letter-spacing:-.01em;line-height:1.3;
+    padding-top:4px;
+  }
+
+  /* COL 3 — PATENTS */
+  .col-patents {}
+  ul.patent-list {
+    list-style:none;
+    display:flex;flex-direction:column;gap:6px;
+  }
+  ul.patent-list li {
+    display:flex;flex-wrap:wrap;align-items:baseline;gap:6px;
+    padding:6px 10px;
+    background:rgba(255,45,107,.04);
+    border:1px solid rgba(255,100,160,.1);
+    border-radius:8px;
+    font-size:11px;
+    transition:background .15s,border-color .15s;
+  }
+  ul.patent-list li:hover{
+    background:rgba(255,45,107,.09);
+    border-color:rgba(255,100,160,.3);
+  }
+  a.pnum {
+    font-family:'Nunito',sans-serif;font-weight:900;
+    font-size:11px;letter-spacing:.06em;
+    color:var(--hot);text-decoration:none;
+    white-space:nowrap;
+    padding:2px 7px;
+    background:rgba(255,45,107,.12);
+    border:1px solid rgba(255,100,160,.35);
+    border-radius:5px;
+    transition:all .15s;
+    flex-shrink:0;
+  }
+  a.pnum:hover{
+    background:rgba(255,45,107,.25);
+    border-color:var(--hot);
+    color:var(--cream);
+    box-shadow:0 0 8px rgba(255,45,107,.3);
+  }
+  span.ptitle {
+    color:rgba(255,200,224,.8);font-size:11px;
+    flex:1;min-width:120px;
+  }
+  span.inv {
+    color:var(--candy);font-size:10px;font-style:italic;
+    white-space:nowrap;
+  }
+  span.pdate {
+    color:rgba(255,160,200,.3);font-size:10px;
+    white-space:nowrap;
+  }
+  p.no-patents {
+    font-size:11px;color:rgba(255,160,200,.3);
+    font-style:italic;padding:8px 0;
+  }
+
+  /* FOOTER */
+  footer {
+    position:relative;z-index:10;
+    text-align:center;padding:24px 20px 40px;
+    font-size:10px;letter-spacing:.18em;text-transform:uppercase;
+    color:rgba(255,160,200,.2);
+    border-top:1px solid var(--card-border);
+  }
+  footer a{color:rgba(255,100,160,.4);text-decoration:none;}
+  footer a:hover{color:var(--candy);}
+
+  @media(max-width:700px){
+    .col-headers{grid-template-columns:1fr;display:none;}
+    table.main-table,.col-image,.col-object,.col-patents{display:block;width:100%;}
+    td{padding:12px 0;}
+    .col-image{margin-bottom:10px;}
+    tr.data-row{display:block;padding:20px 0;border-bottom:1px solid rgba(255,100,160,.15);}
+  }
+
+  .placeholder {
+    display:flex;align-items:center;gap:10px;
+    padding:10px 14px;
+    border:1.5px dashed rgba(255,100,160,.25);
+    border-radius:8px;
+    background:rgba(255,45,107,.03);
+  }
+  .ph-icon {
+    color:var(--hot);opacity:.4;font-size:14px;flex-shrink:0;
+  }
+  .ph-text {
+    font-size:11px;font-style:italic;
+    color:rgba(255,160,200,.35);
+    letter-spacing:.04em;
+  }
+</style>
+</head>
+<body>
+<div class="bg-layer"></div>
+<div class="orb orb-1"></div>
+<div class="orb orb-2"></div>
+<div class="sparkles" id="sparkles"></div>
+
+<header>
+  <div class="eyebrow">CAREtech · CAREBOT Research</div>
+  <h1>Domestic Labor Image Archive</h1>
+  <p class="header-sub"><span class="pip"></span>Humanoid robots and androids — domestic tasks &amp; humanoid form — matched to related patents by women inventors from the CAREtech research archive.</p>
+  <div class="divider"></div>
+</header>
+
+<div class="table-wrap">
+  <div class="col-headers">
+    <div class="col-hdr">Image</div>
+    <div class="col-hdr">Object</div>
+    <div class="col-hdr">Related Patents by Women</div>
+  </div>
+  <table class="main-table">
+    <tbody>
+
+    <tr class="data-row">
+      <td class="col-image">
+        <div class="img-wrap">
+          <img src="images/robot0.png" alt="Clothing Rack" loading="lazy">
+          <span class="img-num">00</span>
+        </div>
+      </td>
+      <td class="col-object">
+        <div class="object-label">Clothing Rack</div>
+      </td>
+      <td class="col-patents">
+        <ul class="patent-list"><li><a href="https://patents.google.com/patent/US2008311A" target="_blank" class="pnum">US2008311</a><span class="ptitle">Costumer (Clothing Stand)</span><span class="inv">Ruth H. Nebel</span><span class="pdate">Jul 16, 1935</span></li><li><a href="https://patents.google.com/patent/US1394007A" target="_blank" class="pnum">US1394007</a><span class="ptitle">Collapsible Wardrobe</span><span class="inv">Mary Lucy Hall</span><span class="pdate">Oct 18, 1921</span></li><li><a href="https://patents.google.com/patent/US1107624A" target="_blank" class="pnum">US1107624</a><span class="ptitle">Collapsible Garment-Hanger Support</span><span class="inv">Alice Lyell Mann</span><span class="pdate">Aug 18, 1914</span></li><li><a href="https://patents.google.com/patent/US742394A" target="_blank" class="pnum">US742394</a><span class="ptitle">Clothes-Rack</span><span class="inv">Mary Susan Churchill</span><span class="pdate">Oct 27, 1903</span></li><li><a href="https://patents.google.com/patent/US2120748A" target="_blank" class="pnum">US2120748</a><span class="ptitle">Drying Form</span><span class="inv">Sadie Anna Harris</span><span class="pdate">Jun 14, 1938</span></li></ul>
+      </td>
+    </tr>
+    <tr class="data-row">
+      <td class="col-image">
+        <div class="img-wrap">
+          <img src="images/robot1.png" alt="Washing Machine" loading="lazy">
+          <span class="img-num">01</span>
+        </div>
+      </td>
+      <td class="col-object">
+        <div class="object-label">Washing Machine</div>
+      </td>
+      <td class="col-patents"><ul class="patent-list"><li><a href="https://patents.google.com/patent/US709016A" target="_blank" class="pnum">US709016</a><span class="ptitle">Washing Machine</span><span class="pdate">1902</span></li><li><a href="https://patents.google.com/patent/US884946A" target="_blank" class="pnum">US884946</a><span class="ptitle">Washing Machine</span><span class="pdate">1908</span></li><li><a href="https://patents.google.com/patent/US1106430A" target="_blank" class="pnum">US1106430</a><span class="ptitle">Washing Machine</span><span class="pdate">1914</span></li><li><a href="https://patents.google.com/patent/US1180772A" target="_blank" class="pnum">US1180772</a><span class="ptitle">Washing Machine</span><span class="pdate">1916</span></li><li><a href="https://patents.google.com/patent/US1380238A" target="_blank" class="pnum">US1380238</a><span class="ptitle">Washing Machine</span><span class="pdate">1921</span></li><li><a href="https://patents.google.com/patent/US1390636A" target="_blank" class="pnum">US1390636</a><span class="ptitle">Washing Machine</span><span class="pdate">1921</span></li><li><a href="https://patents.google.com/patent/US1584484A" target="_blank" class="pnum">US1584484</a><span class="ptitle">Washing Machine</span><span class="pdate">1926</span></li><li><a href="https://patents.google.com/patent/US1595814A" target="_blank" class="pnum">US1595814</a><span class="ptitle">Washing Machine</span><span class="pdate">1926</span></li><li><a href="https://patents.google.com/patent/US1767971A" target="_blank" class="pnum">US1767971</a><span class="ptitle">Washing Machine</span><span class="pdate">1930</span></li><li><a href="https://patents.google.com/patent/US1793798A" target="_blank" class="pnum">US1793798</a><span class="ptitle">Washing Machine</span><span class="pdate">1931</span></li><li><a href="https://patents.google.com/patent/US1982499A" target="_blank" class="pnum">US1982499</a><span class="ptitle">Washing Machine</span><span class="pdate">1934</span></li><li><a href="https://patents.google.com/patent/US2808843A" target="_blank" class="pnum">US2808843</a><span class="ptitle">Washing Machine</span><span class="pdate">1957</span></li><li><a href="https://patents.google.com/patent/US659223A" target="_blank" class="pnum">US659223</a><span class="ptitle">Washing-Machine</span><span class="inv">Anna Sophia Fridolph &amp; Samuel August Fridolph</span><span class="pdate">Oct 9, 1900</span></li><li><a href="https://patents.google.com/patent/US1488353A" target="_blank" class="pnum">US1488353</a><span class="ptitle">Washing Machine</span><span class="inv">Maude B. Latshaw</span><span class="pdate">Mar 25, 1924</span></li><li><a href="https://patents.google.com/patent/US1395783A" target="_blank" class="pnum">US1395783</a><span class="ptitle">Bucket Clothes-Washer</span><span class="inv">Jane A. Wright</span><span class="pdate">Nov 1, 1921</span></li><li><a href="https://patents.google.com/patent/US858741A" target="_blank" class="pnum">US858741</a><span class="ptitle">Clothes-Washing Device</span><span class="pdate">Jul 2, 1907</span></li><li><a href="https://patents.google.com/patent/US1101667A" target="_blank" class="pnum">US1101667</a><span class="ptitle">Washing-Machine</span><span class="inv">Margaret Stonebridge</span><span class="pdate">Jun 30, 1914</span></li></ul></td>
+    </tr>
+    <tr class="data-row">
+      <td class="col-image">
+        <div class="img-wrap">
+          <img src="images/robot2.png" alt="Cloth" loading="lazy">
+          <span class="img-num">02</span>
+        </div>
+      </td>
+      <td class="col-object">
+        <div class="object-label">Cloth</div>
+      </td>
+      <td class="col-patents"><ul class="patent-list"><li><a href="https://patents.google.com/patent/US1537118A" target="_blank" class="pnum">US1537118</a><span class="ptitle">Cloth-Folding Device</span><span class="inv">Charlotte Elizabeth Kent</span><span class="pdate">May 12, 1925</span></li><li><a href="https://patents.google.com/patent/US1881977A" target="_blank" class="pnum">US1881977b</a><span class="ptitle">Ironing Board Cover</span><span class="inv">Nellie Nelson Sundby</span><span class="pdate">Oct 11, 1932</span></li><li><a href="https://patents.google.com/patent/US1461319A" target="_blank" class="pnum">US1461319</a><span class="ptitle">Floor-Mop Attachment</span><span class="inv">Pearl Hart Macy &amp; James Sydney Macy</span><span class="pdate">Jul 10, 1923</span></li><li><a href="https://patents.google.com/patent/US1827578A" target="_blank" class="pnum">US1827578</a><span class="ptitle">Mop</span><span class="inv">Anna Harder</span><span class="pdate">Oct 13, 1931</span></li><li><a href="https://patents.google.com/patent/US716262A" target="_blank" class="pnum">US716262</a><span class="ptitle">Floor-Mop</span><span class="inv">Jane M. Michaud</span><span class="pdate">Dec 16, 1902</span></li><li><a href="https://patents.google.com/patent/US1507707A" target="_blank" class="pnum">US1507707</a><span class="ptitle">Wash or Dish Cloth</span><span class="inv">Alice Morganstern</span><span class="pdate">Sep 9, 1924</span></li><li><a href="https://patents.google.com/patent/US1533733A" target="_blank" class="pnum">US1533733</a><span class="ptitle">Wash Cloth</span><span class="inv">Clara P. Gillum</span><span class="pdate">Apr 14, 1925</span></li><li><a href="https://patents.google.com/patent/USD83419S" target="_blank" class="pnum">USD83419</a><span class="ptitle">Design for a Wash-Cloth Doll</span><span class="inv">Jane Hale</span><span class="pdate">Feb 17, 1931</span></li><li><a href="https://patents.google.com/patent/USD60258S" target="_blank" class="pnum">USD60258</a><span class="ptitle">Design for a Combination Wash Cloth and Cake of Soap</span><span class="inv">Elizabeth F. Packard</span><span class="pdate">Jan 17, 1922</span></li></ul></td>
+    </tr>
+    <tr class="data-row">
+      <td class="col-image">
+        <div class="img-wrap">
+          <img src="images/robot3.png" alt="Table" loading="lazy">
+          <span class="img-num">03</span>
+        </div>
+      </td>
+      <td class="col-object">
+        <div class="object-label">Table</div>
+      </td>
+      <td class="col-patents"><ul class="patent-list"><li><a href="https://patents.google.com/patent/USD110907S" target="_blank" class="pnum">USD110907</a><span class="ptitle">Design for a Combined Desk, Table</span><span class="inv">Dorothy E. Patz</span><span class="pdate">Aug 16, 1938</span></li><li><a href="https://patents.google.com/patent/US1396228A" target="_blank" class="pnum">US1396228</a><span class="ptitle">Desk-Receptacle</span><span class="inv">Anna Martin</span><span class="pdate">Nov 8, 1921</span></li><li><a href="https://patents.google.com/patent/US917161A" target="_blank" class="pnum">US917161</a><span class="ptitle">Combination Trunk and Type-Writer Desk</span><span class="pdate">Apr 6, 1909</span></li><li><a href="https://patents.google.com/patent/US1568154A" target="_blank" class="pnum">US1568154</a><span class="ptitle">Table</span><span class="inv">Anna M. Hannon</span><span class="pdate">Jan 5, 1926</span></li><li><a href="https://patents.google.com/patent/US737088A" target="_blank" class="pnum">US737088</a><span class="ptitle">Scholar's Companion</span><span class="inv">Mary Elizabeth Dinsmore</span><span class="pdate">Aug 25, 1903</span></li><li><a href="https://patents.google.com/patent/US2103408A" target="_blank" class="pnum">US2103408</a><span class="ptitle">Classroom Committee Table</span><span class="inv">Mildred I. Eddy</span><span class="pdate">Dec 28, 1937</span></li><li><a href="https://patents.google.com/patent/US939125A" target="_blank" class="pnum">US939125</a><span class="ptitle">Desk</span><span class="inv">Nellie E. Fealy</span><span class="pdate">Nov 2, 1909</span></li></ul></td>
+    </tr>
+    <tr class="data-row">
+      <td class="col-image">
+        <div class="img-wrap">
+          <img src="images/robot4.png" alt="Teapot &amp; Apron" loading="lazy">
+          <span class="img-num">04</span>
+        </div>
+      </td>
+      <td class="col-object">
+        <div class="object-label">Teapot &amp; Apron</div>
+      </td>
+      <td class="col-patents"><ul class="patent-list"><li><a href="https://patents.google.com/patent/USD95278S" target="_blank" class="pnum">USD95278</a><span class="ptitle">Design for a Teapot</span><span class="inv">Edna Clark Mills</span><span class="pdate">Apr 16, 1935</span></li><li><a href="https://patents.google.com/patent/USD63065S" target="_blank" class="pnum">USD63065</a><span class="ptitle">Design for a Teapot</span><span class="inv">Gertrude Barnett</span><span class="pdate">Oct 2, 1923</span></li><li><a href="https://patents.google.com/patent/US2093980A" target="_blank" class="pnum">US2093980</a><span class="ptitle">Electric Teapot</span><span class="inv">Nellie Victoria Linger</span><span class="pdate">Sep 21, 1937</span></li><li><a href="https://patents.google.com/patent/US1852084A" target="_blank" class="pnum">US1852084</a><span class="ptitle">Teakettle</span><span class="inv">Edith Carla Lawson</span><span class="pdate">Apr 5, 1932</span></li><li><a href="https://patents.google.com/patent/US817452A" target="_blank" class="pnum">US817452</a><span class="ptitle">Strainer</span><span class="inv">Nancy Elizabeth Skinner</span><span class="pdate">Apr 10, 1906</span></li><li><a href="https://patents.google.com/patent/US1370517A" target="_blank" class="pnum">US1370517</a><span class="ptitle">Tea-Cart</span><span class="inv">Mary J. Cheeseman</span><span class="pdate">Mar 8, 1921</span></li><li><a href="https://patents.google.com/patent/US1640733A" target="_blank" class="pnum">US1640733</a><span class="ptitle">Pitcher for Sterilized Water</span><span class="inv">Mary Lee Slocumb</span><span class="pdate">Aug 30, 1927</span></li></ul></td>
+    </tr>
+    <tr class="data-row">
+      <td class="col-image">
+        <div class="img-wrap">
+          <img src="images/robot5.png" alt="Clothes Hanger" loading="lazy">
+          <span class="img-num">05</span>
+        </div>
+      </td>
+      <td class="col-object">
+        <div class="object-label">Clothes Hanger</div>
+      </td>
+      <td class="col-patents">
+        <ul class="patent-list"><li><a href="https://patents.google.com/patent/US2008311A" target="_blank" class="pnum">US2008311</a><span class="ptitle">Costumer (Clothing Stand)</span><span class="inv">Ruth H. Nebel</span><span class="pdate">Jul 16, 1935</span></li><li><a href="https://patents.google.com/patent/US1394007A" target="_blank" class="pnum">US1394007</a><span class="ptitle">Collapsible Wardrobe</span><span class="inv">Mary Lucy Hall</span><span class="pdate">Oct 18, 1921</span></li><li><a href="https://patents.google.com/patent/US1107624A" target="_blank" class="pnum">US1107624</a><span class="ptitle">Collapsible Garment-Hanger Support</span><span class="inv">Alice Lyell Mann</span><span class="pdate">Aug 18, 1914</span></li><li><a href="https://patents.google.com/patent/US742394A" target="_blank" class="pnum">US742394</a><span class="ptitle">Clothes-Rack</span><span class="inv">Mary Susan Churchill</span><span class="pdate">Oct 27, 1903</span></li></ul>
+      </td>
+    </tr>
+    <tr class="data-row">
+      <td class="col-image">
+        <div class="img-wrap">
+          <img src="images/robot6.png" alt="Frying Pan" loading="lazy">
+          <span class="img-num">06</span>
+        </div>
+      </td>
+      <td class="col-object">
+        <div class="object-label">Frying Pan</div>
+      </td>
+      <td class="col-patents"><ul class="patent-list"><li><a href="https://patents.google.com/patent/US108385A" target="_blank" class="pnum">US108385</a><span class="ptitle">Improvement in Cooking Utensils (Frying Pan with egg recesses)</span><span class="inv">Elizabeth L. Packard</span><span class="pdate">Oct 18, 1870</span></li><li><a href="https://patents.google.com/patent/US867086A" target="_blank" class="pnum">US867086</a><span class="ptitle">Frying-Pan (with interior partitions)</span><span class="inv">Catherine Sullivan</span><span class="pdate">Sep 24, 1907</span></li><li><a href="https://patents.google.com/patent/US907154A" target="_blank" class="pnum">US907154</a><span class="ptitle">Cooking-Pan</span><span class="inv">Katharine Lewis &amp; Daniel Lewis</span><span class="pdate">Dec 22, 1908</span></li></ul></td>
+    </tr>
+    <tr class="data-row">
+      <td class="col-image">
+        <div class="img-wrap">
+          <img src="images/robot7.png" alt="Iron &amp; Ironing Board" loading="lazy">
+          <span class="img-num">07</span>
+        </div>
+      </td>
+      <td class="col-object">
+        <div class="object-label">Iron &amp; Ironing Board</div>
+      </td>
+      <td class="col-patents">
+        <ul class="patent-list"><li><a href="https://patents.google.com/patent/US1004571A" target="_blank" class="pnum">US1004571</a><span class="ptitle">Portable Smoothing-Iron</span><span class="inv">Alice Emma Hollings</span><span class="pdate">Oct 3, 1911</span></li><li><a href="https://patents.google.com/patent/US734243A" target="_blank" class="pnum">US734243</a><span class="ptitle">Ironing Board</span><span class="pdate">1903</span></li><li><a href="https://patents.google.com/patent/US851897A" target="_blank" class="pnum">US851897</a><span class="ptitle">Ironing Board</span><span class="pdate">1907</span></li><li><a href="https://patents.google.com/patent/US1054816A" target="_blank" class="pnum">US1054816</a><span class="ptitle">Ironing Board</span><span class="pdate">1913</span></li><li><a href="https://patents.google.com/patent/US1136445A" target="_blank" class="pnum">US1136445</a><span class="ptitle">Ironing Board</span><span class="pdate">1915</span></li><li><a href="https://patents.google.com/patent/US1249464A" target="_blank" class="pnum">US1249464</a><span class="ptitle">Ironing Board Cover</span><span class="pdate">1917</span></li><li><a href="https://patents.google.com/patent/US1287597A" target="_blank" class="pnum">US1287597</a><span class="ptitle">Pressing Cloth</span><span class="pdate">1918</span></li><li><a href="https://patents.google.com/patent/US1356378A" target="_blank" class="pnum">US1356378</a><span class="ptitle">Ironing Board</span><span class="pdate">1920</span></li><li><a href="https://patents.google.com/patent/US1540567A" target="_blank" class="pnum">US1540567</a><span class="ptitle">Ironing Board Cover</span><span class="pdate">1925</span></li><li><a href="https://patents.google.com/patent/US1949845A" target="_blank" class="pnum">US1949845</a><span class="ptitle">Ironing Board</span><span class="pdate">1934</span></li><li><a href="https://patents.google.com/patent/US2160144A" target="_blank" class="pnum">US2160144</a><span class="ptitle">Ironing Board</span><span class="pdate">May 26, 1925</span></li><li><a href="https://patents.google.com/patent/US2414988A" target="_blank" class="pnum">US2414988</a><span class="ptitle">Ironing Board</span><span class="pdate">1947</span></li><li><a href="https://patents.google.com/patent/US2440990A" target="_blank" class="pnum">US2440990</a><span class="ptitle">Ironing Board Pad</span><span class="pdate">1948</span></li><li><a href="https://patents.google.com/patent/US2527682A" target="_blank" class="pnum">US2527682</a><span class="ptitle">Sleeve Board</span><span class="pdate">1950</span></li><li><a href="https://patents.google.com/patent/US2668431A" target="_blank" class="pnum">US2668431</a><span class="ptitle">Ironing Board</span><span class="pdate">1954</span></li><li><a href="https://patents.google.com/patent/US2707841A" target="_blank" class="pnum">US2707841</a><span class="ptitle">Folding Ironing Board</span><span class="pdate">1955</span></li><li><a href="https://patents.google.com/patent/US2821797A" target="_blank" class="pnum">US2821797</a><span class="ptitle">Ironing Board</span><span class="pdate">1958</span></li><li><a href="https://patents.google.com/patent/US2969603A" target="_blank" class="pnum">US2969603</a><span class="ptitle">Ironing Board</span><span class="pdate">1961</span></li><li><a href="https://patents.google.com/patent/US1007001A" target="_blank" class="pnum">US1007001</a><span class="ptitle">Holder for Cloth Coverings of Ironing-Boards</span><span class="inv">Cora Ellen Gray</span><span class="pdate">Oct 24, 1911</span></li><li><a href="https://patents.google.com/patent/US1696798A" target="_blank" class="pnum">US1696798</a><span class="ptitle">Ironing Board</span><span class="inv">Clara Browning Goodman</span><span class="pdate">Dec 25, 1928</span></li><li><a href="https://patents.google.com/patent/US900623A" target="_blank" class="pnum">US900623</a><span class="ptitle">Ironing-Table</span><span class="inv">Mary J. Walker</span><span class="pdate">Oct 6, 1908</span></li><li><a href="https://patents.google.com/patent/US1796714A" target="_blank" class="pnum">US1796714</a><span class="ptitle">Ironing Board</span><span class="inv">Anna E. James</span><span class="pdate">Mar 17, 1931</span></li><li><a href="https://patents.google.com/patent/US1881977A" target="_blank" class="pnum">US1881977</a><span class="ptitle">Ironing Board Cover</span><span class="inv">Nellie Nelson Sundby</span><span class="pdate">Oct 11, 1932</span></li><li><a href="https://patents.google.com/patent/US1881977A" target="_blank" class="pnum">US1881977b</a><span class="ptitle">Ironing Board Cover</span><span class="inv">Nellie Nelson Sundby</span><span class="pdate">Oct 11, 1932</span></li></ul>
+      </td>
+    </tr>
+    <tr class="data-row">
+      <td class="col-image">
+        <div class="img-wrap">
+          <img src="images/robot8.png" alt="Plate" loading="lazy">
+          <span class="img-num">08</span>
+        </div>
+      </td>
+      <td class="col-object">
+        <div class="object-label">Cleaning Cloth</div>
+      </td>
+      <td class="col-patents"><ul class="patent-list"><li><a href="https://patents.google.com/patent/US1537118A" target="_blank" class="pnum">US1537118</a><span class="ptitle">Cloth-Folding Device</span><span class="inv">Charlotte Elizabeth Kent</span><span class="pdate">May 12, 1925</span></li><li><a href="https://patents.google.com/patent/US1881977A" target="_blank" class="pnum">US1881977b</a><span class="ptitle">Ironing Board Cover</span><span class="inv">Nellie Nelson Sundby</span><span class="pdate">Oct 11, 1932</span></li><li><a href="https://patents.google.com/patent/US1461319A" target="_blank" class="pnum">US1461319</a><span class="ptitle">Floor-Mop Attachment</span><span class="inv">Pearl Hart Macy &amp; James Sydney Macy</span><span class="pdate">Jul 10, 1923</span></li><li><a href="https://patents.google.com/patent/US1827578A" target="_blank" class="pnum">US1827578</a><span class="ptitle">Mop</span><span class="inv">Anna Harder</span><span class="pdate">Oct 13, 1931</span></li><li><a href="https://patents.google.com/patent/US716262A" target="_blank" class="pnum">US716262</a><span class="ptitle">Floor-Mop</span><span class="inv">Jane M. Michaud</span><span class="pdate">Dec 16, 1902</span></li><li><a href="https://patents.google.com/patent/US1507707A" target="_blank" class="pnum">US1507707</a><span class="ptitle">Wash or Dish Cloth</span><span class="inv">Alice Morganstern</span><span class="pdate">Sep 9, 1924</span></li><li><a href="https://patents.google.com/patent/US1533733A" target="_blank" class="pnum">US1533733</a><span class="ptitle">Wash Cloth</span><span class="inv">Clara P. Gillum</span><span class="pdate">Apr 14, 1925</span></li><li><a href="https://patents.google.com/patent/USD83419S" target="_blank" class="pnum">USD83419</a><span class="ptitle">Design for a Wash-Cloth Doll</span><span class="inv">Jane Hale</span><span class="pdate">Feb 17, 1931</span></li><li><a href="https://patents.google.com/patent/USD60258S" target="_blank" class="pnum">USD60258</a><span class="ptitle">Design for a Combination Wash Cloth and Cake of Soap</span><span class="inv">Elizabeth F. Packard</span><span class="pdate">Jan 17, 1922</span></li></ul></td>
+    </tr>
+    <tr class="data-row">
+      <td class="col-image">
+        <div class="img-wrap">
+          <img src="images/robot9.png" alt="Washing Machine" loading="lazy">
+          <span class="img-num">09</span>
+        </div>
+      </td>
+      <td class="col-object">
+        <div class="object-label">Washing Machine</div>
+      </td>
+      <td class="col-patents"><ul class="patent-list"><li><a href="https://patents.google.com/patent/US709016A" target="_blank" class="pnum">US709016</a><span class="ptitle">Washing Machine</span><span class="pdate">1902</span></li><li><a href="https://patents.google.com/patent/US884946A" target="_blank" class="pnum">US884946</a><span class="ptitle">Washing Machine</span><span class="pdate">1908</span></li><li><a href="https://patents.google.com/patent/US1106430A" target="_blank" class="pnum">US1106430</a><span class="ptitle">Washing Machine</span><span class="pdate">1914</span></li><li><a href="https://patents.google.com/patent/US1180772A" target="_blank" class="pnum">US1180772</a><span class="ptitle">Washing Machine</span><span class="pdate">1916</span></li><li><a href="https://patents.google.com/patent/US1380238A" target="_blank" class="pnum">US1380238</a><span class="ptitle">Washing Machine</span><span class="pdate">1921</span></li><li><a href="https://patents.google.com/patent/US1390636A" target="_blank" class="pnum">US1390636</a><span class="ptitle">Washing Machine</span><span class="pdate">1921</span></li><li><a href="https://patents.google.com/patent/US1584484A" target="_blank" class="pnum">US1584484</a><span class="ptitle">Washing Machine</span><span class="pdate">1926</span></li><li><a href="https://patents.google.com/patent/US1595814A" target="_blank" class="pnum">US1595814</a><span class="ptitle">Washing Machine</span><span class="pdate">1926</span></li><li><a href="https://patents.google.com/patent/US1767971A" target="_blank" class="pnum">US1767971</a><span class="ptitle">Washing Machine</span><span class="pdate">1930</span></li><li><a href="https://patents.google.com/patent/US1793798A" target="_blank" class="pnum">US1793798</a><span class="ptitle">Washing Machine</span><span class="pdate">1931</span></li><li><a href="https://patents.google.com/patent/US1982499A" target="_blank" class="pnum">US1982499</a><span class="ptitle">Washing Machine</span><span class="pdate">1934</span></li><li><a href="https://patents.google.com/patent/US2808843A" target="_blank" class="pnum">US2808843</a><span class="ptitle">Washing Machine</span><span class="pdate">1957</span></li><li><a href="https://patents.google.com/patent/US659223A" target="_blank" class="pnum">US659223</a><span class="ptitle">Washing-Machine</span><span class="inv">Anna Sophia Fridolph &amp; Samuel August Fridolph</span><span class="pdate">Oct 9, 1900</span></li><li><a href="https://patents.google.com/patent/US1488353A" target="_blank" class="pnum">US1488353</a><span class="ptitle">Washing Machine</span><span class="inv">Maude B. Latshaw</span><span class="pdate">Mar 25, 1924</span></li><li><a href="https://patents.google.com/patent/US1395783A" target="_blank" class="pnum">US1395783</a><span class="ptitle">Bucket Clothes-Washer</span><span class="inv">Jane A. Wright</span><span class="pdate">Nov 1, 1921</span></li><li><a href="https://patents.google.com/patent/US858741A" target="_blank" class="pnum">US858741</a><span class="ptitle">Clothes-Washing Device</span><span class="pdate">Jul 2, 1907</span></li><li><a href="https://patents.google.com/patent/US1101667A" target="_blank" class="pnum">US1101667</a><span class="ptitle">Washing-Machine</span><span class="inv">Margaret Stonebridge</span><span class="pdate">Jun 30, 1914</span></li></ul></td>
+    </tr>
+    <tr class="data-row">
+      <td class="col-image">
+        <div class="img-wrap">
+          <img src="images/robot10.png" alt="Trash Can" loading="lazy">
+          <span class="img-num">10</span>
+        </div>
+      </td>
+      <td class="col-object">
+        <div class="object-label">Trash Can</div>
+      </td>
+      <td class="col-patents"><ul class="patent-list"><li><a href="https://patents.google.com/patent/USD109474S" target="_blank" class="pnum">USD109474</a><span class="ptitle">Design for a Wastebasket</span><span class="inv">Martha H. Connor</span><span class="pdate">May 3, 1938</span></li><li><a href="https://patents.google.com/patent/US1162575A" target="_blank" class="pnum">US1162575</a><span class="ptitle">Garbage-Can Support</span><span class="inv">Kate E. Craig</span><span class="pdate">Nov 30, 1915</span></li><li><a href="https://patents.google.com/patent/US1218449A" target="_blank" class="pnum">US1218449</a><span class="ptitle">Garbage-Can</span><span class="inv">Emma Nickum</span><span class="pdate">Mar 6, 1917</span></li><li><a href="https://patents.google.com/patent/US1104055A" target="_blank" class="pnum">US1104055</a><span class="ptitle">Garbage-Can</span><span class="inv">Nellie W. Lowe</span><span class="pdate">Jul 21, 1914</span></li><li><a href="https://patents.google.com/patent/US817022A" target="_blank" class="pnum">US817022</a><span class="ptitle">Domestic Apparatus for Consuming Garbage</span><span class="pdate">Apr 3, 1906</span></li><li><a href="https://patents.google.com/patent/US913532A" target="_blank" class="pnum">US913532</a><span class="ptitle">Sanitary Waste-Paper Can</span><span class="inv">Mary K. Miller</span><span class="pdate">Feb 23, 1909</span></li><li><a href="https://patents.google.com/patent/US1831687A" target="_blank" class="pnum">US1831687</a><span class="ptitle">Garbage Container</span><span class="inv">Elizabeth L. Ross</span><span class="pdate">Nov 10, 1931</span></li><li><a href="https://patents.google.com/patent/US1167920A" target="_blank" class="pnum">US1167920</a><span class="ptitle">Garbage-Holder</span><span class="inv">Elizabeth H. Natsch</span><span class="pdate">Jan 11, 1916</span></li><li><a href="https://patents.google.com/patent/USD103422S" target="_blank" class="pnum">USD103422</a><span class="ptitle">Design for a Waste Basket</span><span class="inv">Martha H. Connor</span><span class="pdate">Mar 2, 1937</span></li><li><a href="https://patents.google.com/patent/USD103712S" target="_blank" class="pnum">USD103712</a><span class="ptitle">Design for a Wastebasket</span><span class="inv">Martha H. Connor</span><span class="pdate">Mar 23, 1937</span></li><li><a href="https://patents.google.com/patent/US2149676A" target="_blank" class="pnum">US2149676</a><span class="ptitle">Dust Container</span><span class="inv">Edith L. Hill</span><span class="pdate">Mar 7, 1939</span></li><li><a href="https://patents.google.com/patent/US958265A" target="_blank" class="pnum">US958265</a><span class="ptitle">Garbage Chute and Receptacle</span><span class="pdate">May 17, 1910</span></li><li><a href="https://patents.google.com/patent/USD62668S" target="_blank" class="pnum">USD62668</a><span class="ptitle">Design for a Wastebasket</span><span class="inv">Martha Hallowell Connor</span><span class="pdate">Jul 17, 1923</span></li></ul></td>
+    </tr>
+    <tr class="data-row">
+      <td class="col-image">
+        <div class="img-wrap">
+          <img src="images/robot11.png" alt="Vacuum Cleaner" loading="lazy">
+          <span class="img-num">11</span>
+        </div>
+      </td>
+      <td class="col-object">
+        <div class="object-label">Vacuum Cleaner</div>
+      </td>
+      <td class="col-patents">
+        <ul class="patent-list"><li><a href="https://patents.google.com/patent/US1403112A" target="_blank" class="pnum">US1403112</a><span class="ptitle">Dustproof Vacuum-Cleaner Bag</span><span class="inv">Harriet L. Ford</span><span class="pdate">Jan 10, 1922</span></li><li><a href="https://patents.google.com/patent/US1184485A" target="_blank" class="pnum">US1184485</a><span class="ptitle">Dust-Collecting Bag for Vacuum-Cleaners</span><span class="inv">Alice N. Mummert</span><span class="pdate">May 23, 1916</span></li><li><a href="https://patents.google.com/patent/US1561928A" target="_blank" class="pnum">US1561928</a><span class="ptitle">Dust Bag for Vacuum Cleaners</span><span class="inv">Clara M. Jaquith</span><span class="pdate">Nov 17, 1925</span></li><li><a href="https://patents.google.com/patent/US1294468A" target="_blank" class="pnum">US1294468</a><span class="ptitle">Motor-Driven Suction-Sweeper</span><span class="inv">Emma Hunsicker</span><span class="pdate">Feb 18, 1919</span></li><li><a href="https://patents.google.com/patent/US2140874A" target="_blank" class="pnum">US2140874</a><span class="ptitle">Suction Nozzle</span><span class="inv">Agnes S. Juelson</span><span class="pdate">Dec 20, 1938</span></li><li><a href="https://patents.google.com/patent/US2200026A" target="_blank" class="pnum">US2200026</a><span class="ptitle">Scrubbing Device</span><span class="inv">Agnes S. Juelson</span><span class="pdate">May 7, 1940</span></li><li><a href="https://patents.google.com/patent/US2078101A" target="_blank" class="pnum">US2078101</a><span class="ptitle">Vacuum Floor Cleaner</span><span class="inv">Lydia M. Schmermund</span><span class="pdate">Apr 20, 1937</span></li><li><a href="https://patents.google.com/patent/US2228532A" target="_blank" class="pnum">US2228532</a><span class="ptitle">Vacuum Cleaner</span><span class="inv">Florence Opel</span><span class="pdate">Jan 14, 1941</span></li><li><a href="https://patents.google.com/patent/US2181548A" target="_blank" class="pnum">US2181548</a><span class="ptitle">Scrubbing Machine</span><span class="inv">Helen May Gerey</span><span class="pdate">Nov 28, 1939</span></li><li><a href="https://patents.google.com/patent/US734841A" target="_blank" class="pnum">US734841</a><span class="ptitle">Carpet-Cleaner</span><span class="inv">Emma B. Ferris</span><span class="pdate">Jul 28, 1903</span></li><li><a href="https://patents.google.com/patent/US771333A" target="_blank" class="pnum">US771333</a><span class="ptitle">Carpet-Cleaner</span><span class="inv">Nora Velnetta Steele</span><span class="pdate">Oct 4, 1904</span></li></ul>
+      </td>
+    </tr>
+    <tr class="data-row">
+      <td class="col-image">
+        <div class="img-wrap">
+          <img src="images/robot12.png" alt="Cloth" loading="lazy">
+          <span class="img-num">12</span>
+        </div>
+      </td>
+      <td class="col-object">
+        <div class="object-label">Cloth</div>
+      </td>
+      <td class="col-patents"><ul class="patent-list"><li><a href="https://patents.google.com/patent/US1537118A" target="_blank" class="pnum">US1537118</a><span class="ptitle">Cloth-Folding Device</span><span class="inv">Charlotte Elizabeth Kent</span><span class="pdate">May 12, 1925</span></li><li><a href="https://patents.google.com/patent/US1881977A" target="_blank" class="pnum">US1881977b</a><span class="ptitle">Ironing Board Cover</span><span class="inv">Nellie Nelson Sundby</span><span class="pdate">Oct 11, 1932</span></li><li><a href="https://patents.google.com/patent/US1461319A" target="_blank" class="pnum">US1461319</a><span class="ptitle">Floor-Mop Attachment</span><span class="inv">Pearl Hart Macy &amp; James Sydney Macy</span><span class="pdate">Jul 10, 1923</span></li><li><a href="https://patents.google.com/patent/US1827578A" target="_blank" class="pnum">US1827578</a><span class="ptitle">Mop</span><span class="inv">Anna Harder</span><span class="pdate">Oct 13, 1931</span></li><li><a href="https://patents.google.com/patent/US716262A" target="_blank" class="pnum">US716262</a><span class="ptitle">Floor-Mop</span><span class="inv">Jane M. Michaud</span><span class="pdate">Dec 16, 1902</span></li><li><a href="https://patents.google.com/patent/US1507707A" target="_blank" class="pnum">US1507707</a><span class="ptitle">Wash or Dish Cloth</span><span class="inv">Alice Morganstern</span><span class="pdate">Sep 9, 1924</span></li><li><a href="https://patents.google.com/patent/US1533733A" target="_blank" class="pnum">US1533733</a><span class="ptitle">Wash Cloth</span><span class="inv">Clara P. Gillum</span><span class="pdate">Apr 14, 1925</span></li><li><a href="https://patents.google.com/patent/USD83419S" target="_blank" class="pnum">USD83419</a><span class="ptitle">Design for a Wash-Cloth Doll</span><span class="inv">Jane Hale</span><span class="pdate">Feb 17, 1931</span></li><li><a href="https://patents.google.com/patent/USD60258S" target="_blank" class="pnum">USD60258</a><span class="ptitle">Design for a Combination Wash Cloth and Cake of Soap</span><span class="inv">Elizabeth F. Packard</span><span class="pdate">Jan 17, 1922</span></li></ul></td>
+    </tr>
+    <tr class="data-row">
+      <td class="col-image">
+        <div class="img-wrap">
+          <img src="images/robot13.png" alt="Waffle Iron" loading="lazy">
+          <span class="img-num">13</span>
+        </div>
+      </td>
+      <td class="col-object">
+        <div class="object-label">Waffle Iron &amp; Plate</div>
+      </td>
+      <td class="col-patents"><ul class="patent-list"><li><a href="https://patents.google.com/patent/USD504276S" target="_blank" class="pnum">USD504276</a><span class="ptitle">Design for a Waffle Iron</span><span class="inv">Sandrine Vial</span><span class="pdate">Apr 26, 2005</span></li><li><a href="https://patents.google.com/patent/US1004571A" target="_blank" class="pnum">US1004571</a><span class="ptitle">Portable Smoothing-Iron</span><span class="inv">Alice Emma Hollings</span><span class="pdate">Oct 3, 1911</span></li><li><a href="https://patents.google.com/patent/US734243A" target="_blank" class="pnum">US734243</a><span class="ptitle">Ironing Board</span><span class="pdate">1903</span></li><li><a href="https://patents.google.com/patent/US851897A" target="_blank" class="pnum">US851897</a><span class="ptitle">Ironing Board</span><span class="pdate">1907</span></li><li><a href="https://patents.google.com/patent/US1054816A" target="_blank" class="pnum">US1054816</a><span class="ptitle">Ironing Board</span><span class="pdate">1913</span></li><li><a href="https://patents.google.com/patent/US1136445A" target="_blank" class="pnum">US1136445</a><span class="ptitle">Ironing Board</span><span class="pdate">1915</span></li><li><a href="https://patents.google.com/patent/US1249464A" target="_blank" class="pnum">US1249464</a><span class="ptitle">Ironing Board Cover</span><span class="pdate">1917</span></li><li><a href="https://patents.google.com/patent/US1287597A" target="_blank" class="pnum">US1287597</a><span class="ptitle">Pressing Cloth</span><span class="pdate">1918</span></li><li><a href="https://patents.google.com/patent/US1356378A" target="_blank" class="pnum">US1356378</a><span class="ptitle">Ironing Board</span><span class="pdate">1920</span></li><li><a href="https://patents.google.com/patent/US1540567A" target="_blank" class="pnum">US1540567</a><span class="ptitle">Ironing Board Cover</span><span class="pdate">1925</span></li><li><a href="https://patents.google.com/patent/US1949845A" target="_blank" class="pnum">US1949845</a><span class="ptitle">Ironing Board</span><span class="pdate">1934</span></li><li><a href="https://patents.google.com/patent/US2160144A" target="_blank" class="pnum">US2160144</a><span class="ptitle">Ironing Board</span><span class="pdate">May 26, 1925</span></li><li><a href="https://patents.google.com/patent/US2414988A" target="_blank" class="pnum">US2414988</a><span class="ptitle">Ironing Board</span><span class="pdate">1947</span></li><li><a href="https://patents.google.com/patent/US2440990A" target="_blank" class="pnum">US2440990</a><span class="ptitle">Ironing Board Pad</span><span class="pdate">1948</span></li><li><a href="https://patents.google.com/patent/US2527682A" target="_blank" class="pnum">US2527682</a><span class="ptitle">Sleeve Board</span><span class="pdate">1950</span></li><li><a href="https://patents.google.com/patent/US2668431A" target="_blank" class="pnum">US2668431</a><span class="ptitle">Ironing Board</span><span class="pdate">1954</span></li><li><a href="https://patents.google.com/patent/US2707841A" target="_blank" class="pnum">US2707841</a><span class="ptitle">Folding Ironing Board</span><span class="pdate">1955</span></li><li><a href="https://patents.google.com/patent/US2821797A" target="_blank" class="pnum">US2821797</a><span class="ptitle">Ironing Board</span><span class="pdate">1958</span></li><li><a href="https://patents.google.com/patent/US2969603A" target="_blank" class="pnum">US2969603</a><span class="ptitle">Ironing Board</span><span class="pdate">1961</span></li><li><a href="https://patents.google.com/patent/US355139A" target="_blank" class="pnum">US355139</a><span class="ptitle">Dish Washing Machine</span><span class="inv">Josephine G. Cochrane</span><span class="pdate">Dec 28, 1886</span></li><li><a href="https://patents.google.com/patent/US743447A" target="_blank" class="pnum">US743447</a><span class="ptitle">Dish-Pan</span><span class="inv">Virginia Alice Cassell</span><span class="pdate">Nov 10, 1903</span></li></ul></td>
+    </tr>
+    <tr class="data-row">
+      <td class="col-image">
+        <div class="img-wrap">
+          <img src="images/robot14.png" alt="Pitchers &amp; Glasses" loading="lazy">
+          <span class="img-num">14</span>
+        </div>
+      </td>
+      <td class="col-object">
+        <div class="object-label">Pitchers &amp; Glasses</div>
+      </td>
+      <td class="col-patents">
+        <ul class="patent-list"><li><a href="https://patents.google.com/patent/US1490026A" target="_blank" class="pnum">US1490026</a><span class="ptitle">Vase</span><span class="inv">Alice Mary Richards</span><span class="pdate">Apr 8, 1924</span></li><li><a href="https://patents.google.com/patent/US927245A" target="_blank" class="pnum">US927245</a><span class="ptitle">Self-watering Flower-Vase</span><span class="inv">Carrie D. Jackson</span><span class="pdate">Jul 6, 1909</span></li><li><a href="https://patents.google.com/patent/US706258A" target="_blank" class="pnum">US706258</a><span class="ptitle">Flower Support or Holder</span><span class="inv">Bertha D. Sanders</span><span class="pdate">Aug 5, 1902</span></li><li><a href="https://patents.google.com/patent/US1032184A" target="_blank" class="pnum">US1032184</a><span class="ptitle">Flower-Holder</span><span class="inv">Mary Bugla</span><span class="pdate">Jul 9, 1912</span></li><li><a href="https://patents.google.com/patent/US1260050A" target="_blank" class="pnum">US1260050</a><span class="ptitle">Method of Ornamenting</span><span class="inv">Anne Reiff</span><span class="pdate">Mar 19, 1918</span></li><li><a href="https://patents.google.com/patent/US1056062A" target="_blank" class="pnum">US1056062</a><span class="ptitle">Serving-Table</span><span class="inv">Charlotte W. Saenger</span><span class="pdate">Mar 18, 1913</span></li><li><a href="https://patents.google.com/patent/US743447A" target="_blank" class="pnum">US743447</a><span class="ptitle">Dish-Pan</span><span class="inv">Virginia Alice Cassell</span><span class="pdate">Nov 10, 1903</span></li><li><a href="https://patents.google.com/patent/US1345059A" target="_blank" class="pnum">US1345059</a><span class="ptitle">Dish-Washing Apparatus</span><span class="inv">Jane T. Belknap</span><span class="pdate">Jun 29, 1920</span></li></ul>
+      </td>
+    </tr>
+    <tr class="data-row">
+      <td class="col-image">
+        <div class="img-wrap">
+          <img src="images/robot15.png" alt="Refrigerator" loading="lazy">
+          <span class="img-num">15</span>
+        </div>
+      </td>
+      <td class="col-object">
+        <div class="object-label">Refrigerator</div>
+      </td>
+      <td class="col-patents"><ul class="patent-list"><li><a href="https://patents.google.com/patent/US1090925A" target="_blank" class="pnum">US1090925</a><span class="ptitle">Refrigerator Attachment</span><span class="inv">Florence P. Layman (Parpart) &amp; Hiram D. Layman</span><span class="pdate">Mar 24, 1914</span></li><li><a href="https://patents.google.com/patent/US1249785A" target="_blank" class="pnum">US1249785</a><span class="ptitle">Refrigerator</span><span class="inv">Florence P. Layman (Parpart) &amp; Hiram Douglas Layman</span><span class="pdate">Dec 11, 1917</span></li><li><a href="https://patents.google.com/patent/US2127594A" target="_blank" class="pnum">US2127594</a><span class="ptitle">Kitchen Cabinet</span><span class="inv">Matilda Grossman</span><span class="pdate">Aug 23, 1938</span></li></ul></td>
+    </tr>
+    <tr class="data-row">
+      <td class="col-image">
+        <div class="img-wrap">
+          <img src="images/robot16.png" alt="Espresso Machine" loading="lazy">
+          <span class="img-num">16</span>
+        </div>
+      </td>
+      <td class="col-object">
+        <div class="object-label">Espresso Machine</div>
+      </td>
+      <td class="col-patents"><ul class="patent-list"><li><a href="https://patents.google.com/patent/USD95278S" target="_blank" class="pnum">USD95278</a><span class="ptitle">Design for a Teapot</span><span class="inv">Edna Clark Mills</span><span class="pdate">Apr 16, 1935</span></li><li><a href="https://patents.google.com/patent/USD63065S" target="_blank" class="pnum">USD63065</a><span class="ptitle">Design for a Teapot</span><span class="inv">Gertrude Barnett</span><span class="pdate">Oct 2, 1923</span></li><li><a href="https://patents.google.com/patent/US2093980A" target="_blank" class="pnum">US2093980</a><span class="ptitle">Electric Teapot</span><span class="inv">Nellie Victoria Linger</span><span class="pdate">Sep 21, 1937</span></li><li><a href="https://patents.google.com/patent/US1852084A" target="_blank" class="pnum">US1852084</a><span class="ptitle">Teakettle</span><span class="inv">Edith Carla Lawson</span><span class="pdate">Apr 5, 1932</span></li><li><a href="https://patents.google.com/patent/US817452A" target="_blank" class="pnum">US817452</a><span class="ptitle">Strainer</span><span class="inv">Nancy Elizabeth Skinner</span><span class="pdate">Apr 10, 1906</span></li><li><a href="https://patents.google.com/patent/US1370517A" target="_blank" class="pnum">US1370517</a><span class="ptitle">Tea-Cart</span><span class="inv">Mary J. Cheeseman</span><span class="pdate">Mar 8, 1921</span></li><li><a href="https://patents.google.com/patent/US1640733A" target="_blank" class="pnum">US1640733</a><span class="ptitle">Pitcher for Sterilized Water</span><span class="inv">Mary Lee Slocumb</span><span class="pdate">Aug 30, 1927</span></li></ul></td>
+    </tr>
+    <tr class="data-row">
+      <td class="col-image">
+        <div class="img-wrap">
+          <img src="images/robot17.png" alt="Teapot &amp; Apron" loading="lazy">
+          <span class="img-num">17</span>
+        </div>
+      </td>
+      <td class="col-object">
+        <div class="object-label">Teapot &amp; Apron</div>
+      </td>
+      <td class="col-patents"><ul class="patent-list"><li><a href="https://patents.google.com/patent/USD95278S" target="_blank" class="pnum">USD95278</a><span class="ptitle">Design for a Teapot</span><span class="inv">Edna Clark Mills</span><span class="pdate">Apr 16, 1935</span></li><li><a href="https://patents.google.com/patent/USD63065S" target="_blank" class="pnum">USD63065</a><span class="ptitle">Design for a Teapot</span><span class="inv">Gertrude Barnett</span><span class="pdate">Oct 2, 1923</span></li><li><a href="https://patents.google.com/patent/US2093980A" target="_blank" class="pnum">US2093980</a><span class="ptitle">Electric Teapot</span><span class="inv">Nellie Victoria Linger</span><span class="pdate">Sep 21, 1937</span></li><li><a href="https://patents.google.com/patent/US1852084A" target="_blank" class="pnum">US1852084</a><span class="ptitle">Teakettle</span><span class="inv">Edith Carla Lawson</span><span class="pdate">Apr 5, 1932</span></li><li><a href="https://patents.google.com/patent/US817452A" target="_blank" class="pnum">US817452</a><span class="ptitle">Strainer</span><span class="inv">Nancy Elizabeth Skinner</span><span class="pdate">Apr 10, 1906</span></li><li><a href="https://patents.google.com/patent/US1370517A" target="_blank" class="pnum">US1370517</a><span class="ptitle">Tea-Cart</span><span class="inv">Mary J. Cheeseman</span><span class="pdate">Mar 8, 1921</span></li><li><a href="https://patents.google.com/patent/US1640733A" target="_blank" class="pnum">US1640733</a><span class="ptitle">Pitcher for Sterilized Water</span><span class="inv">Mary Lee Slocumb</span><span class="pdate">Aug 30, 1927</span></li></ul></td>
+    </tr>
+    <tr class="data-row">
+      <td class="col-image">
+        <div class="img-wrap">
+          <img src="images/robot18.png" alt="Laundry Basket" loading="lazy">
+          <span class="img-num">18</span>
+        </div>
+      </td>
+      <td class="col-object">
+        <div class="object-label">Laundry Basket</div>
+      </td>
+      <td class="col-patents">
+        <ul class="patent-list"><li><a href="https://patents.google.com/patent/US1692704A" target="_blank" class="pnum">US1692704</a><span class="ptitle">Clothes Basket Carrier and Rack</span><span class="pdate">Nov 20, 1928</span></li><li><a href="https://patents.google.com/patent/US630183A" target="_blank" class="pnum">US630183</a><span class="ptitle">Clothes Wringer</span><span class="pdate">1899</span></li><li><a href="https://patents.google.com/patent/US1285731A" target="_blank" class="pnum">US1285731</a><span class="ptitle">Laundry Bag</span><span class="pdate">1918</span></li><li><a href="https://patents.google.com/patent/US1376942A" target="_blank" class="pnum">US1376942</a><span class="ptitle">Clothes Wringer</span><span class="pdate">1921</span></li><li><a href="https://patents.google.com/patent/US1414138A" target="_blank" class="pnum">US1414138</a><span class="ptitle">Laundry Appliance</span><span class="pdate">1922</span></li><li><a href="https://patents.google.com/patent/US1530793A" target="_blank" class="pnum">US1530793</a><span class="ptitle">Laundry Bag</span><span class="pdate">1925</span></li><li><a href="https://patents.google.com/patent/US1559988A" target="_blank" class="pnum">US1559988</a><span class="ptitle">Washboard</span><span class="pdate">1925</span></li><li><a href="https://patents.google.com/patent/US1611877A" target="_blank" class="pnum">US1611877</a><span class="ptitle">Laundry Appliance</span><span class="pdate">1926</span></li><li><a href="https://patents.google.com/patent/US1752687A" target="_blank" class="pnum">US1752687</a><span class="ptitle">Washing Device</span><span class="pdate">1930</span></li><li><a href="https://patents.google.com/patent/US889994A" target="_blank" class="pnum">US889994</a><span class="ptitle">Combined Washboard and Clothes-Pounder</span><span class="pdate">Jun 9, 1908</span></li><li><a href="https://patents.google.com/patent/US1537118A" target="_blank" class="pnum">US1537118</a><span class="ptitle">Cloth-Folding Device</span><span class="inv">Charlotte Elizabeth Kent</span><span class="pdate">May 12, 1925</span></li></ul>
+      </td>
+    </tr>
+    <tr class="data-row">
+      <td class="col-image">
+        <div class="img-wrap">
+          <img src="images/robot19.png" alt="Refrigerator" loading="lazy">
+          <span class="img-num">19</span>
+        </div>
+      </td>
+      <td class="col-object">
+        <div class="object-label">Refrigerator</div>
+      </td>
+      <td class="col-patents"><ul class="patent-list"><li><a href="https://patents.google.com/patent/US1090925A" target="_blank" class="pnum">US1090925</a><span class="ptitle">Refrigerator Attachment</span><span class="inv">Florence P. Layman (Parpart) &amp; Hiram D. Layman</span><span class="pdate">Mar 24, 1914</span></li><li><a href="https://patents.google.com/patent/US1249785A" target="_blank" class="pnum">US1249785</a><span class="ptitle">Refrigerator</span><span class="inv">Florence P. Layman (Parpart) &amp; Hiram Douglas Layman</span><span class="pdate">Dec 11, 1917</span></li><li><a href="https://patents.google.com/patent/US2127594A" target="_blank" class="pnum">US2127594</a><span class="ptitle">Kitchen Cabinet</span><span class="inv">Matilda Grossman</span><span class="pdate">Aug 23, 1938</span></li></ul></td>
+    </tr>
+    
+    <tr class="data-row">
+      <td class="col-image">
+        <div class="img-wrap">
+          <img src="images/robot20.png" alt="Watering Can" loading="lazy">
+          <span class="img-num">20</span>
+        </div>
+      </td>
+      <td class="col-object">
+        <div class="object-label">Watering Can &amp; Vase</div>
+      </td>
+      <td class="col-patents"><ul class="patent-list"><li><a href="https://patents.google.com/patent/US1271405A" target="_blank" class="pnum">US1271405</a><span class="ptitle">Watering-Pot</span><span class="inv">Alice Emily Wilt</span><span class="pdate">Jul 2, 1918</span></li><li><a href="https://patents.google.com/patent/US1490026A" target="_blank" class="pnum">US1490026</a><span class="ptitle">Vase</span><span class="inv">Alice Mary Richards</span><span class="pdate">Apr 8, 1924</span></li><li><a href="https://patents.google.com/patent/US927245A" target="_blank" class="pnum">US927245</a><span class="ptitle">Self-watering Flower-Vase</span><span class="inv">Carrie D. Jackson</span><span class="pdate">Jul 6, 1909</span></li><li><a href="https://patents.google.com/patent/US706258A" target="_blank" class="pnum">US706258</a><span class="ptitle">Flower Support or Holder</span><span class="inv">Bertha D. Sanders</span><span class="pdate">Aug 5, 1902</span></li><li><a href="https://patents.google.com/patent/US1032184A" target="_blank" class="pnum">US1032184</a><span class="ptitle">Flower-Holder</span><span class="inv">Mary Bugla</span><span class="pdate">Jul 9, 1912</span></li><li><a href="https://patents.google.com/patent/US1260050A" target="_blank" class="pnum">US1260050</a><span class="ptitle">Method of Ornamenting</span><span class="inv">Anne Reiff</span><span class="pdate">Mar 19, 1918</span></li><li><a href="https://patents.google.com/patent/US1056062A" target="_blank" class="pnum">US1056062</a><span class="ptitle">Serving-Table</span><span class="inv">Charlotte W. Saenger</span><span class="pdate">Mar 18, 1913</span></li></ul></td>
+    </tr>
+    <tr class="data-row">
+      <td class="col-image">
+        <div class="img-wrap">
+          <img src="images/robot21.png" alt="Teakettle &amp; Table" loading="lazy">
+          <span class="img-num">21</span>
+        </div>
+      </td>
+      <td class="col-object">
+        <div class="object-label">Teakettle &amp; Table</div>
+      </td>
+      <td class="col-patents"><ul class="patent-list"><li><a href="https://patents.google.com/patent/USD95278S" target="_blank" class="pnum">USD95278</a><span class="ptitle">Design for a Teapot</span><span class="inv">Edna Clark Mills</span><span class="pdate">Apr 16, 1935</span></li><li><a href="https://patents.google.com/patent/USD63065S" target="_blank" class="pnum">USD63065</a><span class="ptitle">Design for a Teapot</span><span class="inv">Gertrude Barnett</span><span class="pdate">Oct 2, 1923</span></li><li><a href="https://patents.google.com/patent/US2093980A" target="_blank" class="pnum">US2093980</a><span class="ptitle">Electric Teapot</span><span class="inv">Nellie Victoria Linger</span><span class="pdate">Sep 21, 1937</span></li><li><a href="https://patents.google.com/patent/US1852084A" target="_blank" class="pnum">US1852084</a><span class="ptitle">Teakettle</span><span class="inv">Edith Carla Lawson</span><span class="pdate">Apr 5, 1932</span></li><li><a href="https://patents.google.com/patent/US817452A" target="_blank" class="pnum">US817452</a><span class="ptitle">Strainer</span><span class="inv">Nancy Elizabeth Skinner</span><span class="pdate">Apr 10, 1906</span></li><li><a href="https://patents.google.com/patent/US1370517A" target="_blank" class="pnum">US1370517</a><span class="ptitle">Tea-Cart</span><span class="inv">Mary J. Cheeseman</span><span class="pdate">Mar 8, 1921</span></li><li><a href="https://patents.google.com/patent/US1640733A" target="_blank" class="pnum">US1640733</a><span class="ptitle">Pitcher for Sterilized Water</span><span class="inv">Mary Lee Slocumb</span><span class="pdate">Aug 30, 1927</span></li></ul></td>
+    </tr>
+    <tr class="data-row">
+      <td class="col-image">
+        <div class="img-wrap">
+          <img src="images/robot22.png" alt="Espresso Machine" loading="lazy">
+          <span class="img-num">22</span>
+        </div>
+      </td>
+      <td class="col-object">
+        <div class="object-label">Espresso Machine</div>
+      </td>
+      <td class="col-patents"><ul class="patent-list"><li><a href="https://patents.google.com/patent/USD95278S" target="_blank" class="pnum">USD95278</a><span class="ptitle">Design for a Teapot</span><span class="inv">Edna Clark Mills</span><span class="pdate">Apr 16, 1935</span></li><li><a href="https://patents.google.com/patent/USD63065S" target="_blank" class="pnum">USD63065</a><span class="ptitle">Design for a Teapot</span><span class="inv">Gertrude Barnett</span><span class="pdate">Oct 2, 1923</span></li><li><a href="https://patents.google.com/patent/US2093980A" target="_blank" class="pnum">US2093980</a><span class="ptitle">Electric Teapot</span><span class="inv">Nellie Victoria Linger</span><span class="pdate">Sep 21, 1937</span></li><li><a href="https://patents.google.com/patent/US1852084A" target="_blank" class="pnum">US1852084</a><span class="ptitle">Teakettle</span><span class="inv">Edith Carla Lawson</span><span class="pdate">Apr 5, 1932</span></li><li><a href="https://patents.google.com/patent/US817452A" target="_blank" class="pnum">US817452</a><span class="ptitle">Strainer</span><span class="inv">Nancy Elizabeth Skinner</span><span class="pdate">Apr 10, 1906</span></li><li><a href="https://patents.google.com/patent/US1370517A" target="_blank" class="pnum">US1370517</a><span class="ptitle">Tea-Cart</span><span class="inv">Mary J. Cheeseman</span><span class="pdate">Mar 8, 1921</span></li><li><a href="https://patents.google.com/patent/US1640733A" target="_blank" class="pnum">US1640733</a><span class="ptitle">Pitcher for Sterilized Water</span><span class="inv">Mary Lee Slocumb</span><span class="pdate">Aug 30, 1927</span></li></ul></td>
+    </tr>
+    <tr class="data-row">
+      <td class="col-image">
+        <div class="img-wrap">
+          <img src="images/robot23.png" alt="Glasses &amp; Shelf" loading="lazy">
+          <span class="img-num">23</span>
+        </div>
+      </td>
+      <td class="col-object">
+        <div class="object-label">Glasses &amp; Shelf</div>
+      </td>
+      <td class="col-patents">
+        <ul class="patent-list"><li><a href="https://patents.google.com/patent/US1894362A" target="_blank" class="pnum">US1894362</a><span class="ptitle">Combination Furniture</span><span class="inv">Anna D. Stine</span><span class="pdate">Jan 17, 1933</span></li><li><a href="https://patents.google.com/patent/US2159228A" target="_blank" class="pnum">US2159228</a><span class="ptitle">Folding Furniture</span><span class="inv">Ida L. Rogers</span><span class="pdate">May 23, 1939</span></li><li><a href="https://patents.google.com/patent/US2106436A" target="_blank" class="pnum">US2106436</a><span class="ptitle">Table</span><span class="inv">Marie Bruce Pyle</span><span class="pdate">Jan 25, 1938</span></li><li><a href="https://patents.google.com/patent/US2127594A" target="_blank" class="pnum">US2127594</a><span class="ptitle">Kitchen Cabinet</span><span class="inv">Matilda Grossman</span><span class="pdate">Aug 23, 1938</span></li></ul>
+      </td>
+    </tr>
+    <tr class="data-row">
+      <td class="col-image">
+        <div class="img-wrap">
+          <img src="images/robot24.png" alt="Mug &amp; Couch" loading="lazy">
+          <span class="img-num">24</span>
+        </div>
+      </td>
+      <td class="col-object">
+        <div class="object-label">Watering Can &amp; Vase</div>
+      </td>
+      <td class="col-patents"><ul class="patent-list"><li><a href="https://patents.google.com/patent/US1271405A" target="_blank" class="pnum">US1271405</a><span class="ptitle">Watering-Pot</span><span class="inv">Alice Emily Wilt</span><span class="pdate">Jul 2, 1918</span></li><li><a href="https://patents.google.com/patent/US1490026A" target="_blank" class="pnum">US1490026</a><span class="ptitle">Vase</span><span class="inv">Alice Mary Richards</span><span class="pdate">Apr 8, 1924</span></li><li><a href="https://patents.google.com/patent/US927245A" target="_blank" class="pnum">US927245</a><span class="ptitle">Self-watering Flower-Vase</span><span class="inv">Carrie D. Jackson</span><span class="pdate">Jul 6, 1909</span></li><li><a href="https://patents.google.com/patent/US706258A" target="_blank" class="pnum">US706258</a><span class="ptitle">Flower Support or Holder</span><span class="inv">Bertha D. Sanders</span><span class="pdate">Aug 5, 1902</span></li><li><a href="https://patents.google.com/patent/US1032184A" target="_blank" class="pnum">US1032184</a><span class="ptitle">Flower-Holder</span><span class="inv">Mary Bugla</span><span class="pdate">Jul 9, 1912</span></li><li><a href="https://patents.google.com/patent/US1260050A" target="_blank" class="pnum">US1260050</a><span class="ptitle">Method of Ornamenting</span><span class="inv">Anne Reiff</span><span class="pdate">Mar 19, 1918</span></li><li><a href="https://patents.google.com/patent/US1056062A" target="_blank" class="pnum">US1056062</a><span class="ptitle">Serving-Table</span><span class="inv">Charlotte W. Saenger</span><span class="pdate">Mar 18, 1913</span></li></ul></td>
+    </tr>
+    <tr class="data-row">
+      <td class="col-image">
+        <div class="img-wrap">
+          <img src="images/robot25.png" alt="Walker Frame" loading="lazy">
+          <span class="img-num">25</span>
+        </div>
+      </td>
+      <td class="col-object">
+        <div class="object-label">Walker Frame</div>
+      </td>
+      <td class="col-patents">
+        <ul class="patent-list"><li><a href="https://patents.google.com/patent/US918275A" target="_blank" class="pnum">US918275</a><span class="ptitle">Fire-Escape</span><span class="inv">Mary J. Broome &amp; George A. Broome</span><span class="pdate">Apr 13, 1909</span></li><li><a href="https://patents.google.com/patent/US2063406A" target="_blank" class="pnum">US2063406</a><span class="ptitle">Gripping Device</span><span class="inv">Irene M. Sloan</span><span class="pdate">Dec 8, 1936</span></li></ul>
+      </td>
+    </tr>
+    <tr class="data-row">
+      <td class="col-image">
+        <div class="img-wrap">
+          <img src="images/robot26.png" alt="Wig" loading="lazy">
+          <span class="img-num">26</span>
+        </div>
+      </td>
+      <td class="col-object">
+        <div class="object-label">Wig</div>
+      </td>
+      <td class="col-patents"><ul class="patent-list"><li><a href="https://patents.google.com/patent/US1090198A" target="_blank" class="pnum">US1090198</a><span class="ptitle">Wig or Head-Piece for Dolls and Process of Making</span><span class="inv">Alice H. Butler</span><span class="pdate">Mar 17, 1914</span></li><li><a href="https://patents.google.com/patent/US1424654A" target="_blank" class="pnum">US1424654</a><span class="ptitle">Hair Waving Device</span><span class="pdate">1922</span></li><li><a href="https://patents.google.com/patent/US1612983A" target="_blank" class="pnum">US1612983</a><span class="ptitle">Hair Waving Machine</span><span class="inv">Marjorie Joyner</span><span class="pdate">1927</span></li><li><a href="https://patents.google.com/patent/US1743587A" target="_blank" class="pnum">US1743587</a><span class="ptitle">Hair Waving Device</span><span class="pdate">1930</span></li><li><a href="https://patents.google.com/patent/US1841475A" target="_blank" class="pnum">US1841475</a><span class="ptitle">Hair Waving Clamp</span><span class="pdate">1932</span></li><li><a href="https://patents.google.com/patent/US3462050A" target="_blank" class="pnum">US3462050</a><span class="ptitle">Hair Dryer</span><span class="pdate">1969</span></li><li><a href="https://patents.google.com/patent/US3474798A" target="_blank" class="pnum">US3474798</a><span class="ptitle">Hair Curler</span><span class="pdate">1969</span></li><li><a href="https://patents.google.com/patent/US3485249A" target="_blank" class="pnum">US3485249</a><span class="ptitle">Hair Roller Clip</span><span class="pdate">1969</span></li><li><a href="https://patents.google.com/patent/US3603322A" target="_blank" class="pnum">US3603322</a><span class="ptitle">Hair Grooming Device</span><span class="pdate">1971</span></li></ul></td>
+    </tr>
+    <tr class="data-row">
+      <td class="col-image">
+        <div class="img-wrap">
+          <img src="images/robot27.png" alt="Wig" loading="lazy">
+          <span class="img-num">27</span>
+        </div>
+      </td>
+      <td class="col-object">
+        <div class="object-label">Wig &amp; Sunglasses</div>
+      </td>
+      <td class="col-patents"><ul class="patent-list"><li><a href="https://patents.google.com/patent/US1090198A" target="_blank" class="pnum">US1090198</a><span class="ptitle">Wig or Head-Piece for Dolls and Process of Making</span><span class="inv">Alice H. Butler</span><span class="pdate">Mar 17, 1914</span></li><li><a href="https://patents.google.com/patent/US1424654A" target="_blank" class="pnum">US1424654</a><span class="ptitle">Hair Waving Device</span><span class="pdate">1922</span></li><li><a href="https://patents.google.com/patent/US1612983A" target="_blank" class="pnum">US1612983</a><span class="ptitle">Hair Waving Machine</span><span class="inv">Marjorie Joyner</span><span class="pdate">1927</span></li><li><a href="https://patents.google.com/patent/US1743587A" target="_blank" class="pnum">US1743587</a><span class="ptitle">Hair Waving Device</span><span class="pdate">1930</span></li><li><a href="https://patents.google.com/patent/US1841475A" target="_blank" class="pnum">US1841475</a><span class="ptitle">Hair Waving Clamp</span><span class="pdate">1932</span></li><li><a href="https://patents.google.com/patent/US3462050A" target="_blank" class="pnum">US3462050</a><span class="ptitle">Hair Dryer</span><span class="pdate">1969</span></li><li><a href="https://patents.google.com/patent/US3474798A" target="_blank" class="pnum">US3474798</a><span class="ptitle">Hair Curler</span><span class="pdate">1969</span></li><li><a href="https://patents.google.com/patent/US3485249A" target="_blank" class="pnum">US3485249</a><span class="ptitle">Hair Roller Clip</span><span class="pdate">1969</span></li><li><a href="https://patents.google.com/patent/US3603322A" target="_blank" class="pnum">US3603322</a><span class="ptitle">Hair Grooming Device</span><span class="pdate">1971</span></li></ul></td>
+    </tr>
+    <tr class="data-row">
+      <td class="col-image">
+        <div class="img-wrap">
+          <img src="images/robot28.png" alt="Wig" loading="lazy">
+          <span class="img-num">28</span>
+        </div>
+      </td>
+      <td class="col-object">
+        <div class="object-label">Wig</div>
+      </td>
+      <td class="col-patents"><ul class="patent-list"><li><a href="https://patents.google.com/patent/US1090198A" target="_blank" class="pnum">US1090198</a><span class="ptitle">Wig or Head-Piece for Dolls and Process of Making</span><span class="inv">Alice H. Butler</span><span class="pdate">Mar 17, 1914</span></li><li><a href="https://patents.google.com/patent/US1424654A" target="_blank" class="pnum">US1424654</a><span class="ptitle">Hair Waving Device</span><span class="pdate">1922</span></li><li><a href="https://patents.google.com/patent/US1612983A" target="_blank" class="pnum">US1612983</a><span class="ptitle">Hair Waving Machine</span><span class="inv">Marjorie Joyner</span><span class="pdate">1927</span></li><li><a href="https://patents.google.com/patent/US1743587A" target="_blank" class="pnum">US1743587</a><span class="ptitle">Hair Waving Device</span><span class="pdate">1930</span></li><li><a href="https://patents.google.com/patent/US1841475A" target="_blank" class="pnum">US1841475</a><span class="ptitle">Hair Waving Clamp</span><span class="pdate">1932</span></li><li><a href="https://patents.google.com/patent/US3462050A" target="_blank" class="pnum">US3462050</a><span class="ptitle">Hair Dryer</span><span class="pdate">1969</span></li><li><a href="https://patents.google.com/patent/US3474798A" target="_blank" class="pnum">US3474798</a><span class="ptitle">Hair Curler</span><span class="pdate">1969</span></li><li><a href="https://patents.google.com/patent/US3485249A" target="_blank" class="pnum">US3485249</a><span class="ptitle">Hair Roller Clip</span><span class="pdate">1969</span></li><li><a href="https://patents.google.com/patent/US3603322A" target="_blank" class="pnum">US3603322</a><span class="ptitle">Hair Grooming Device</span><span class="pdate">1971</span></li></ul></td>
+    </tr>
+    <tr class="data-row">
+      <td class="col-image">
+        <div class="img-wrap">
+          <img src="images/robot29.png" alt="Wig" loading="lazy">
+          <span class="img-num">29</span>
+        </div>
+      </td>
+      <td class="col-object">
+        <div class="object-label">Wig</div>
+      </td>
+      <td class="col-patents"><ul class="patent-list"><li><a href="https://patents.google.com/patent/US1090198A" target="_blank" class="pnum">US1090198</a><span class="ptitle">Wig or Head-Piece for Dolls and Process of Making</span><span class="inv">Alice H. Butler</span><span class="pdate">Mar 17, 1914</span></li><li><a href="https://patents.google.com/patent/US1424654A" target="_blank" class="pnum">US1424654</a><span class="ptitle">Hair Waving Device</span><span class="pdate">1922</span></li><li><a href="https://patents.google.com/patent/US1612983A" target="_blank" class="pnum">US1612983</a><span class="ptitle">Hair Waving Machine</span><span class="inv">Marjorie Joyner</span><span class="pdate">1927</span></li><li><a href="https://patents.google.com/patent/US1743587A" target="_blank" class="pnum">US1743587</a><span class="ptitle">Hair Waving Device</span><span class="pdate">1930</span></li><li><a href="https://patents.google.com/patent/US1841475A" target="_blank" class="pnum">US1841475</a><span class="ptitle">Hair Waving Clamp</span><span class="pdate">1932</span></li><li><a href="https://patents.google.com/patent/US3462050A" target="_blank" class="pnum">US3462050</a><span class="ptitle">Hair Dryer</span><span class="pdate">1969</span></li><li><a href="https://patents.google.com/patent/US3474798A" target="_blank" class="pnum">US3474798</a><span class="ptitle">Hair Curler</span><span class="pdate">1969</span></li><li><a href="https://patents.google.com/patent/US3485249A" target="_blank" class="pnum">US3485249</a><span class="ptitle">Hair Roller Clip</span><span class="pdate">1969</span></li><li><a href="https://patents.google.com/patent/US3603322A" target="_blank" class="pnum">US3603322</a><span class="ptitle">Hair Grooming Device</span><span class="pdate">1971</span></li></ul></td>
+    </tr>
+    <tr class="data-row">
+      <td class="col-image">
+        <div class="img-wrap">
+          <img src="images/robot30.png" alt="Wig" loading="lazy">
+          <span class="img-num">30</span>
+        </div>
+      </td>
+      <td class="col-object">
+        <div class="object-label">Wig</div>
+      </td>
+      <td class="col-patents"><ul class="patent-list"><li><a href="https://patents.google.com/patent/US1090198A" target="_blank" class="pnum">US1090198</a><span class="ptitle">Wig or Head-Piece for Dolls and Process of Making</span><span class="inv">Alice H. Butler</span><span class="pdate">Mar 17, 1914</span></li><li><a href="https://patents.google.com/patent/US1424654A" target="_blank" class="pnum">US1424654</a><span class="ptitle">Hair Waving Device</span><span class="pdate">1922</span></li><li><a href="https://patents.google.com/patent/US1612983A" target="_blank" class="pnum">US1612983</a><span class="ptitle">Hair Waving Machine</span><span class="inv">Marjorie Joyner</span><span class="pdate">1927</span></li><li><a href="https://patents.google.com/patent/US1743587A" target="_blank" class="pnum">US1743587</a><span class="ptitle">Hair Waving Device</span><span class="pdate">1930</span></li><li><a href="https://patents.google.com/patent/US1841475A" target="_blank" class="pnum">US1841475</a><span class="ptitle">Hair Waving Clamp</span><span class="pdate">1932</span></li><li><a href="https://patents.google.com/patent/US3462050A" target="_blank" class="pnum">US3462050</a><span class="ptitle">Hair Dryer</span><span class="pdate">1969</span></li><li><a href="https://patents.google.com/patent/US3474798A" target="_blank" class="pnum">US3474798</a><span class="ptitle">Hair Curler</span><span class="pdate">1969</span></li><li><a href="https://patents.google.com/patent/US3485249A" target="_blank" class="pnum">US3485249</a><span class="ptitle">Hair Roller Clip</span><span class="pdate">1969</span></li><li><a href="https://patents.google.com/patent/US3603322A" target="_blank" class="pnum">US3603322</a><span class="ptitle">Hair Grooming Device</span><span class="pdate">1971</span></li></ul></td>
+    </tr>
+    <tr class="data-row">
+      <td class="col-image">
+        <div class="img-wrap">
+          <img src="images/robot31.png" alt="Wig" loading="lazy">
+          <span class="img-num">31</span>
+        </div>
+      </td>
+      <td class="col-object">
+        <div class="object-label">Wig</div>
+      </td>
+      <td class="col-patents"><ul class="patent-list"><li><a href="https://patents.google.com/patent/US1090198A" target="_blank" class="pnum">US1090198</a><span class="ptitle">Wig or Head-Piece for Dolls and Process of Making</span><span class="inv">Alice H. Butler</span><span class="pdate">Mar 17, 1914</span></li><li><a href="https://patents.google.com/patent/US1424654A" target="_blank" class="pnum">US1424654</a><span class="ptitle">Hair Waving Device</span><span class="pdate">1922</span></li><li><a href="https://patents.google.com/patent/US1612983A" target="_blank" class="pnum">US1612983</a><span class="ptitle">Hair Waving Machine</span><span class="inv">Marjorie Joyner</span><span class="pdate">1927</span></li><li><a href="https://patents.google.com/patent/US1743587A" target="_blank" class="pnum">US1743587</a><span class="ptitle">Hair Waving Device</span><span class="pdate">1930</span></li><li><a href="https://patents.google.com/patent/US1841475A" target="_blank" class="pnum">US1841475</a><span class="ptitle">Hair Waving Clamp</span><span class="pdate">1932</span></li><li><a href="https://patents.google.com/patent/US3462050A" target="_blank" class="pnum">US3462050</a><span class="ptitle">Hair Dryer</span><span class="pdate">1969</span></li><li><a href="https://patents.google.com/patent/US3474798A" target="_blank" class="pnum">US3474798</a><span class="ptitle">Hair Curler</span><span class="pdate">1969</span></li><li><a href="https://patents.google.com/patent/US3485249A" target="_blank" class="pnum">US3485249</a><span class="ptitle">Hair Roller Clip</span><span class="pdate">1969</span></li><li><a href="https://patents.google.com/patent/US3603322A" target="_blank" class="pnum">US3603322</a><span class="ptitle">Hair Grooming Device</span><span class="pdate">1971</span></li></ul></td>
+    </tr>
+    <tr class="data-row">
+      <td class="col-image">
+        <div class="img-wrap">
+          <img src="images/robot32.png" alt="Wig" loading="lazy">
+          <span class="img-num">32</span>
+        </div>
+      </td>
+      <td class="col-object">
+        <div class="object-label">Synthetic Face</div>
+      </td>
+      <td class="col-patents"><ul class="patent-list"><li><a href="https://patents.google.com/patent/US1002363A" target="_blank" class="pnum">US1002363</a><span class="ptitle">Doll's Eyelash Device</span><span class="inv">Mina Hofmann</span><span class="pdate">Sep 5, 1911</span></li><li><a href="https://patents.google.com/patent/US1053902A" target="_blank" class="pnum">US1053902</a><span class="ptitle">Doll</span><span class="inv">Bertha L. Corbett Melcher</span><span class="pdate">Feb 18, 1913</span></li><li><a href="https://patents.google.com/patent/US1212093A" target="_blank" class="pnum">US1212093</a><span class="ptitle">Doll</span><span class="inv">Rose O'Neill</span><span class="pdate">Jan 9, 1917</span></li><li><a href="https://patents.google.com/patent/US1261994A" target="_blank" class="pnum">US1261994</a><span class="ptitle">Rag Doll</span><span class="inv">Ella Smith</span><span class="pdate">Apr 8, 1918</span></li><li><a href="https://patents.google.com/patent/US1300915A" target="_blank" class="pnum">US1300915</a><span class="ptitle">Rag Doll</span><span class="inv">Celia Smith</span><span class="pdate">Apr 15, 1919</span></li><li><a href="https://patents.google.com/patent/US1388677A" target="_blank" class="pnum">US1388677</a><span class="ptitle">Doll</span><span class="inv">Grace G. Drayton</span><span class="pdate">Aug 23, 1921</span></li><li><a href="https://patents.google.com/patent/US1549035A" target="_blank" class="pnum">US1549035</a><span class="ptitle">Doll's Head</span><span class="pdate">1925</span></li><li><a href="https://patents.google.com/patent/US1668204A" target="_blank" class="pnum">US1668204</a><span class="ptitle">Doll's Eyes</span><span class="pdate">1928</span></li><li><a href="https://patents.google.com/patent/US2031208A" target="_blank" class="pnum">US2031208</a><span class="ptitle">Lollipop Figure (Doll)</span><span class="inv">Margaret Anna Burgard</span><span class="pdate">Feb 18, 1936</span></li><li><a href="https://patents.google.com/patent/US1785800A" target="_blank" class="pnum">US1785800</a><span class="ptitle">Doll</span><span class="inv">Rose O'Neill</span><span class="pdate">Dec 23, 1930</span></li><li><a href="https://patents.google.com/patent/US1025234A" target="_blank" class="pnum">US1025234</a><span class="ptitle">Doll</span><span class="inv">Marie K. Baker</span><span class="pdate">May 7, 1912</span></li><li><a href="https://patents.google.com/patent/US1513231A" target="_blank" class="pnum">US1513231</a><span class="ptitle">Container for Candy (Doll Shape)</span><span class="inv">Ruth English</span><span class="pdate">Oct 28, 1924</span></li><li><a href="https://patents.google.com/patent/US1778670A" target="_blank" class="pnum">US1778670</a><span class="ptitle">Doll</span><span class="inv">Nellie R. Herbison</span><span class="pdate">Oct 14, 1930</span></li><li><a href="https://patents.google.com/patent/US1583408A" target="_blank" class="pnum">US1583408</a><span class="ptitle">Head for Rag Dolls</span><span class="inv">Ruth Mackay</span><span class="pdate">May 4, 1926</span></li><li><a href="https://patents.google.com/patent/USD105092S" target="_blank" class="pnum">USD105092</a><span class="ptitle">Design for a Rag Doll</span><span class="inv">Eleanor M. Dillon</span><span class="pdate">Jun 29, 1937</span></li><li><a href="https://patents.google.com/patent/USD59467S" target="_blank" class="pnum">USD59467</a><span class="ptitle">Design for a Doll</span><span class="inv">Bertha E. Feist</span><span class="pdate">Oct 25, 1921</span></li><li><a href="https://patents.google.com/patent/US1292113A" target="_blank" class="pnum">US1292113</a><span class="ptitle">Attachable Ear for Dolls</span><span class="inv">Ella Louise Smith</span><span class="pdate">Jan 21, 1919</span></li></ul></td>
+    </tr>
+    <tr class="data-row">
+      <td class="col-image">
+        <div class="img-wrap">
+          <img src="images/robot33.png" alt="Wig" loading="lazy">
+          <span class="img-num">33</span>
+        </div>
+      </td>
+      <td class="col-object">
+        <div class="object-label">Wig</div>
+      </td>
+      <td class="col-patents"><ul class="patent-list"><li><a href="https://patents.google.com/patent/US1090198A" target="_blank" class="pnum">US1090198</a><span class="ptitle">Wig or Head-Piece for Dolls and Process of Making</span><span class="inv">Alice H. Butler</span><span class="pdate">Mar 17, 1914</span></li><li><a href="https://patents.google.com/patent/US1424654A" target="_blank" class="pnum">US1424654</a><span class="ptitle">Hair Waving Device</span><span class="pdate">1922</span></li><li><a href="https://patents.google.com/patent/US1612983A" target="_blank" class="pnum">US1612983</a><span class="ptitle">Hair Waving Machine</span><span class="inv">Marjorie Joyner</span><span class="pdate">1927</span></li><li><a href="https://patents.google.com/patent/US1743587A" target="_blank" class="pnum">US1743587</a><span class="ptitle">Hair Waving Device</span><span class="pdate">1930</span></li><li><a href="https://patents.google.com/patent/US1841475A" target="_blank" class="pnum">US1841475</a><span class="ptitle">Hair Waving Clamp</span><span class="pdate">1932</span></li><li><a href="https://patents.google.com/patent/US3462050A" target="_blank" class="pnum">US3462050</a><span class="ptitle">Hair Dryer</span><span class="pdate">1969</span></li><li><a href="https://patents.google.com/patent/US3474798A" target="_blank" class="pnum">US3474798</a><span class="ptitle">Hair Curler</span><span class="pdate">1969</span></li><li><a href="https://patents.google.com/patent/US3485249A" target="_blank" class="pnum">US3485249</a><span class="ptitle">Hair Roller Clip</span><span class="pdate">1969</span></li><li><a href="https://patents.google.com/patent/US3603322A" target="_blank" class="pnum">US3603322</a><span class="ptitle">Hair Grooming Device</span><span class="pdate">1971</span></li></ul></td>
+    </tr>
+    <tr class="data-row">
+      <td class="col-image">
+        <div class="img-wrap">
+          <img src="images/robot34.png" alt="Wig" loading="lazy">
+          <span class="img-num">34</span>
+        </div>
+      </td>
+      <td class="col-object">
+        <div class="object-label">Synthetic Face</div>
+      </td>
+      <td class="col-patents"><ul class="patent-list"><li><a href="https://patents.google.com/patent/US1002363A" target="_blank" class="pnum">US1002363</a><span class="ptitle">Doll's Eyelash Device</span><span class="inv">Mina Hofmann</span><span class="pdate">Sep 5, 1911</span></li><li><a href="https://patents.google.com/patent/US1053902A" target="_blank" class="pnum">US1053902</a><span class="ptitle">Doll</span><span class="inv">Bertha L. Corbett Melcher</span><span class="pdate">Feb 18, 1913</span></li><li><a href="https://patents.google.com/patent/US1212093A" target="_blank" class="pnum">US1212093</a><span class="ptitle">Doll</span><span class="inv">Rose O'Neill</span><span class="pdate">Jan 9, 1917</span></li><li><a href="https://patents.google.com/patent/US1261994A" target="_blank" class="pnum">US1261994</a><span class="ptitle">Rag Doll</span><span class="inv">Ella Smith</span><span class="pdate">Apr 8, 1918</span></li><li><a href="https://patents.google.com/patent/US1300915A" target="_blank" class="pnum">US1300915</a><span class="ptitle">Rag Doll</span><span class="inv">Celia Smith</span><span class="pdate">Apr 15, 1919</span></li><li><a href="https://patents.google.com/patent/US1388677A" target="_blank" class="pnum">US1388677</a><span class="ptitle">Doll</span><span class="inv">Grace G. Drayton</span><span class="pdate">Aug 23, 1921</span></li><li><a href="https://patents.google.com/patent/US1549035A" target="_blank" class="pnum">US1549035</a><span class="ptitle">Doll's Head</span><span class="pdate">1925</span></li><li><a href="https://patents.google.com/patent/US1668204A" target="_blank" class="pnum">US1668204</a><span class="ptitle">Doll's Eyes</span><span class="pdate">1928</span></li><li><a href="https://patents.google.com/patent/US2031208A" target="_blank" class="pnum">US2031208</a><span class="ptitle">Lollipop Figure (Doll)</span><span class="inv">Margaret Anna Burgard</span><span class="pdate">Feb 18, 1936</span></li><li><a href="https://patents.google.com/patent/US1785800A" target="_blank" class="pnum">US1785800</a><span class="ptitle">Doll</span><span class="inv">Rose O'Neill</span><span class="pdate">Dec 23, 1930</span></li><li><a href="https://patents.google.com/patent/US1025234A" target="_blank" class="pnum">US1025234</a><span class="ptitle">Doll</span><span class="inv">Marie K. Baker</span><span class="pdate">May 7, 1912</span></li><li><a href="https://patents.google.com/patent/US1513231A" target="_blank" class="pnum">US1513231</a><span class="ptitle">Container for Candy (Doll Shape)</span><span class="inv">Ruth English</span><span class="pdate">Oct 28, 1924</span></li><li><a href="https://patents.google.com/patent/US1778670A" target="_blank" class="pnum">US1778670</a><span class="ptitle">Doll</span><span class="inv">Nellie R. Herbison</span><span class="pdate">Oct 14, 1930</span></li><li><a href="https://patents.google.com/patent/US1583408A" target="_blank" class="pnum">US1583408</a><span class="ptitle">Head for Rag Dolls</span><span class="inv">Ruth Mackay</span><span class="pdate">May 4, 1926</span></li><li><a href="https://patents.google.com/patent/USD105092S" target="_blank" class="pnum">USD105092</a><span class="ptitle">Design for a Rag Doll</span><span class="inv">Eleanor M. Dillon</span><span class="pdate">Jun 29, 1937</span></li><li><a href="https://patents.google.com/patent/USD59467S" target="_blank" class="pnum">USD59467</a><span class="ptitle">Design for a Doll</span><span class="inv">Bertha E. Feist</span><span class="pdate">Oct 25, 1921</span></li><li><a href="https://patents.google.com/patent/US1292113A" target="_blank" class="pnum">US1292113</a><span class="ptitle">Attachable Ear for Dolls</span><span class="inv">Ella Louise Smith</span><span class="pdate">Jan 21, 1919</span></li></ul></td>
+    </tr>
+    <tr class="data-row">
+      <td class="col-image">
+        <div class="img-wrap">
+          <img src="images/robot35.png" alt="Wig" loading="lazy">
+          <span class="img-num">35</span>
+        </div>
+      </td>
+      <td class="col-object">
+        <div class="object-label">Wig &amp; Sunglasses</div>
+      </td>
+      <td class="col-patents"><ul class="patent-list"><li><a href="https://patents.google.com/patent/US1090198A" target="_blank" class="pnum">US1090198</a><span class="ptitle">Wig or Head-Piece for Dolls and Process of Making</span><span class="inv">Alice H. Butler</span><span class="pdate">Mar 17, 1914</span></li><li><a href="https://patents.google.com/patent/US1424654A" target="_blank" class="pnum">US1424654</a><span class="ptitle">Hair Waving Device</span><span class="pdate">1922</span></li><li><a href="https://patents.google.com/patent/US1612983A" target="_blank" class="pnum">US1612983</a><span class="ptitle">Hair Waving Machine</span><span class="inv">Marjorie Joyner</span><span class="pdate">1927</span></li><li><a href="https://patents.google.com/patent/US1743587A" target="_blank" class="pnum">US1743587</a><span class="ptitle">Hair Waving Device</span><span class="pdate">1930</span></li><li><a href="https://patents.google.com/patent/US1841475A" target="_blank" class="pnum">US1841475</a><span class="ptitle">Hair Waving Clamp</span><span class="pdate">1932</span></li><li><a href="https://patents.google.com/patent/US3462050A" target="_blank" class="pnum">US3462050</a><span class="ptitle">Hair Dryer</span><span class="pdate">1969</span></li><li><a href="https://patents.google.com/patent/US3474798A" target="_blank" class="pnum">US3474798</a><span class="ptitle">Hair Curler</span><span class="pdate">1969</span></li><li><a href="https://patents.google.com/patent/US3485249A" target="_blank" class="pnum">US3485249</a><span class="ptitle">Hair Roller Clip</span><span class="pdate">1969</span></li><li><a href="https://patents.google.com/patent/US3603322A" target="_blank" class="pnum">US3603322</a><span class="ptitle">Hair Grooming Device</span><span class="pdate">1971</span></li></ul></td>
+    </tr>
+    <tr class="data-row">
+      <td class="col-image">
+        <div class="img-wrap">
+          <img src="images/robot36.png" alt="Dustpan" loading="lazy">
+          <span class="img-num">36</span>
+        </div>
+      </td>
+      <td class="col-object">
+        <div class="object-label">Dustpan, Broom &amp; Prosthetic</div>
+      </td>
+      <td class="col-patents"><ul class="patent-list"><li><a href="https://patents.google.com/patent/US1683517A" target="_blank" class="pnum">US1683517</a><span class="ptitle">Dustpan and the Like</span><span class="pdate">Sep 4, 1928</span></li><li><a href="https://patents.google.com/patent/US735360A" target="_blank" class="pnum">US735360</a><span class="ptitle">Dust-Pan</span><span class="inv">Annie M. Furrow</span><span class="pdate">Aug 4, 1903</span></li><li><a href="https://patents.google.com/patent/US1138305A" target="_blank" class="pnum">US1138305</a><span class="ptitle">Broom-Cover</span><span class="inv">Marie Miller</span><span class="pdate">May 4, 1915</span></li><li><a href="https://patents.google.com/patent/US1443596A" target="_blank" class="pnum">US1443596</a><span class="ptitle">Cushion Attachment for Handles (Broom)</span><span class="pdate">Jan 30, 1923</span></li><li><a href="https://patents.google.com/patent/US1914295A" target="_blank" class="pnum">US1914295</a><span class="ptitle">Dust Mop Cleaning Machine</span><span class="inv">Ruth V. Riley</span><span class="pdate">Jun 13, 1933</span></li><li><a href="https://patents.google.com/patent/US1980655A" target="_blank" class="pnum">US1980655</a><span class="ptitle">Hand Grip (Broom Handle)</span><span class="inv">Mildred D. Balistreri</span><span class="pdate">Nov 13, 1934</span></li><li><a href="https://patents.google.com/patent/US947012A" target="_blank" class="pnum">US947012</a><span class="ptitle">Removable Broom-Protector</span><span class="pdate">Jan 18, 1910</span></li><li><a href="https://patents.google.com/patent/US1666369A" target="_blank" class="pnum">US1666369</a><span class="ptitle">Dust-Laying Broom</span><span class="inv">Mary R. Dehling</span><span class="pdate">Apr 17, 1928</span></li><li><a href="https://patents.google.com/patent/US1154781A" target="_blank" class="pnum">US1154781</a><span class="ptitle">Broom-Bridle</span><span class="inv">Lydia J. Kopischke</span><span class="pdate">Sep 28, 1915</span></li><li><a href="https://patents.google.com/patent/US1246197A" target="_blank" class="pnum">US1246197</a><span class="ptitle">Broom-Hanging Device</span><span class="inv">Florence E. Welcome</span><span class="pdate">Nov 13, 1917</span></li><li><a href="https://patents.google.com/patent/US1080572A" target="_blank" class="pnum">US1080572</a><span class="ptitle">Broom Attachment</span><span class="inv">Amanda McDonald</span><span class="pdate">Dec 9, 1913</span></li><li><a href="https://patents.google.com/patent/US1625682A" target="_blank" class="pnum">US1625682</a><span class="ptitle">Obstetric Appliance</span><span class="inv">Mary Ethel Ragg</span><span class="pdate">Apr 19, 1927</span></li><li><a href="https://patents.google.com/patent/US2063406A" target="_blank" class="pnum">US2063406</a><span class="ptitle">Gripping Device</span><span class="inv">Irene M. Sloan</span><span class="pdate">Dec 8, 1936</span></li></ul></td>
+    </tr>
+    <tr class="data-row">
+      <td class="col-image">
+        <div class="img-wrap">
+          <img src="images/robot37.png" alt="Wig" loading="lazy">
+          <span class="img-num">37</span>
+        </div>
+      </td>
+      <td class="col-object">
+        <div class="object-label">Synthetic Face</div>
+      </td>
+      <td class="col-patents"><ul class="patent-list"><li><a href="https://patents.google.com/patent/US1002363A" target="_blank" class="pnum">US1002363</a><span class="ptitle">Doll's Eyelash Device</span><span class="inv">Mina Hofmann</span><span class="pdate">Sep 5, 1911</span></li><li><a href="https://patents.google.com/patent/US1053902A" target="_blank" class="pnum">US1053902</a><span class="ptitle">Doll</span><span class="inv">Bertha L. Corbett Melcher</span><span class="pdate">Feb 18, 1913</span></li><li><a href="https://patents.google.com/patent/US1212093A" target="_blank" class="pnum">US1212093</a><span class="ptitle">Doll</span><span class="inv">Rose O'Neill</span><span class="pdate">Jan 9, 1917</span></li><li><a href="https://patents.google.com/patent/US1261994A" target="_blank" class="pnum">US1261994</a><span class="ptitle">Rag Doll</span><span class="inv">Ella Smith</span><span class="pdate">Apr 8, 1918</span></li><li><a href="https://patents.google.com/patent/US1300915A" target="_blank" class="pnum">US1300915</a><span class="ptitle">Rag Doll</span><span class="inv">Celia Smith</span><span class="pdate">Apr 15, 1919</span></li><li><a href="https://patents.google.com/patent/US1388677A" target="_blank" class="pnum">US1388677</a><span class="ptitle">Doll</span><span class="inv">Grace G. Drayton</span><span class="pdate">Aug 23, 1921</span></li><li><a href="https://patents.google.com/patent/US1549035A" target="_blank" class="pnum">US1549035</a><span class="ptitle">Doll's Head</span><span class="pdate">1925</span></li><li><a href="https://patents.google.com/patent/US1668204A" target="_blank" class="pnum">US1668204</a><span class="ptitle">Doll's Eyes</span><span class="pdate">1928</span></li><li><a href="https://patents.google.com/patent/US2031208A" target="_blank" class="pnum">US2031208</a><span class="ptitle">Lollipop Figure (Doll)</span><span class="inv">Margaret Anna Burgard</span><span class="pdate">Feb 18, 1936</span></li><li><a href="https://patents.google.com/patent/US1785800A" target="_blank" class="pnum">US1785800</a><span class="ptitle">Doll</span><span class="inv">Rose O'Neill</span><span class="pdate">Dec 23, 1930</span></li><li><a href="https://patents.google.com/patent/US1025234A" target="_blank" class="pnum">US1025234</a><span class="ptitle">Doll</span><span class="inv">Marie K. Baker</span><span class="pdate">May 7, 1912</span></li><li><a href="https://patents.google.com/patent/US1513231A" target="_blank" class="pnum">US1513231</a><span class="ptitle">Container for Candy (Doll Shape)</span><span class="inv">Ruth English</span><span class="pdate">Oct 28, 1924</span></li><li><a href="https://patents.google.com/patent/US1778670A" target="_blank" class="pnum">US1778670</a><span class="ptitle">Doll</span><span class="inv">Nellie R. Herbison</span><span class="pdate">Oct 14, 1930</span></li><li><a href="https://patents.google.com/patent/US1583408A" target="_blank" class="pnum">US1583408</a><span class="ptitle">Head for Rag Dolls</span><span class="inv">Ruth Mackay</span><span class="pdate">May 4, 1926</span></li><li><a href="https://patents.google.com/patent/USD105092S" target="_blank" class="pnum">USD105092</a><span class="ptitle">Design for a Rag Doll</span><span class="inv">Eleanor M. Dillon</span><span class="pdate">Jun 29, 1937</span></li><li><a href="https://patents.google.com/patent/USD59467S" target="_blank" class="pnum">USD59467</a><span class="ptitle">Design for a Doll</span><span class="inv">Bertha E. Feist</span><span class="pdate">Oct 25, 1921</span></li><li><a href="https://patents.google.com/patent/US1292113A" target="_blank" class="pnum">US1292113</a><span class="ptitle">Attachable Ear for Dolls</span><span class="inv">Ella Louise Smith</span><span class="pdate">Jan 21, 1919</span></li></ul></td>
+    </tr>
+    <tr class="data-row">
+      <td class="col-image">
+        <div class="img-wrap">
+          <img src="images/robot38.png" alt="Wig" loading="lazy">
+          <span class="img-num">38</span>
+        </div>
+      </td>
+      <td class="col-object">
+        <div class="object-label">Wig</div>
+      </td>
+      <td class="col-patents"><ul class="patent-list"><li><a href="https://patents.google.com/patent/US1090198A" target="_blank" class="pnum">US1090198</a><span class="ptitle">Wig or Head-Piece for Dolls and Process of Making</span><span class="inv">Alice H. Butler</span><span class="pdate">Mar 17, 1914</span></li><li><a href="https://patents.google.com/patent/US1424654A" target="_blank" class="pnum">US1424654</a><span class="ptitle">Hair Waving Device</span><span class="pdate">1922</span></li><li><a href="https://patents.google.com/patent/US1612983A" target="_blank" class="pnum">US1612983</a><span class="ptitle">Hair Waving Machine</span><span class="inv">Marjorie Joyner</span><span class="pdate">1927</span></li><li><a href="https://patents.google.com/patent/US1743587A" target="_blank" class="pnum">US1743587</a><span class="ptitle">Hair Waving Device</span><span class="pdate">1930</span></li><li><a href="https://patents.google.com/patent/US1841475A" target="_blank" class="pnum">US1841475</a><span class="ptitle">Hair Waving Clamp</span><span class="pdate">1932</span></li><li><a href="https://patents.google.com/patent/US3462050A" target="_blank" class="pnum">US3462050</a><span class="ptitle">Hair Dryer</span><span class="pdate">1969</span></li><li><a href="https://patents.google.com/patent/US3474798A" target="_blank" class="pnum">US3474798</a><span class="ptitle">Hair Curler</span><span class="pdate">1969</span></li><li><a href="https://patents.google.com/patent/US3485249A" target="_blank" class="pnum">US3485249</a><span class="ptitle">Hair Roller Clip</span><span class="pdate">1969</span></li><li><a href="https://patents.google.com/patent/US3603322A" target="_blank" class="pnum">US3603322</a><span class="ptitle">Hair Grooming Device</span><span class="pdate">1971</span></li></ul></td>
+    </tr>
+    <tr class="data-row">
+      <td class="col-image">
+        <div class="img-wrap">
+          <img src="images/robot39.png" alt="Wig" loading="lazy">
+          <span class="img-num">39</span>
+        </div>
+      </td>
+      <td class="col-object">
+        <div class="object-label">Wig</div>
+      </td>
+      <td class="col-patents"><ul class="patent-list"><li><a href="https://patents.google.com/patent/US1090198A" target="_blank" class="pnum">US1090198</a><span class="ptitle">Wig or Head-Piece for Dolls and Process of Making</span><span class="inv">Alice H. Butler</span><span class="pdate">Mar 17, 1914</span></li><li><a href="https://patents.google.com/patent/US1424654A" target="_blank" class="pnum">US1424654</a><span class="ptitle">Hair Waving Device</span><span class="pdate">1922</span></li><li><a href="https://patents.google.com/patent/US1612983A" target="_blank" class="pnum">US1612983</a><span class="ptitle">Hair Waving Machine</span><span class="inv">Marjorie Joyner</span><span class="pdate">1927</span></li><li><a href="https://patents.google.com/patent/US1743587A" target="_blank" class="pnum">US1743587</a><span class="ptitle">Hair Waving Device</span><span class="pdate">1930</span></li><li><a href="https://patents.google.com/patent/US1841475A" target="_blank" class="pnum">US1841475</a><span class="ptitle">Hair Waving Clamp</span><span class="pdate">1932</span></li><li><a href="https://patents.google.com/patent/US3462050A" target="_blank" class="pnum">US3462050</a><span class="ptitle">Hair Dryer</span><span class="pdate">1969</span></li><li><a href="https://patents.google.com/patent/US3474798A" target="_blank" class="pnum">US3474798</a><span class="ptitle">Hair Curler</span><span class="pdate">1969</span></li><li><a href="https://patents.google.com/patent/US3485249A" target="_blank" class="pnum">US3485249</a><span class="ptitle">Hair Roller Clip</span><span class="pdate">1969</span></li><li><a href="https://patents.google.com/patent/US3603322A" target="_blank" class="pnum">US3603322</a><span class="ptitle">Hair Grooming Device</span><span class="pdate">1971</span></li></ul></td>
+    </tr>
+    
+    <tr class="data-row">
+      <td class="col-image">
+        <div class="img-wrap">
+          <img src="images/robot40.png" alt="Running Track" loading="lazy">
+          <span class="img-num">40</span>
+        </div>
+      </td>
+      <td class="col-object"><div class="object-label">Synthetic Legs</div></td>
+      <td class="col-patents"><ul class="patent-list"><li><a href="https://patents.google.com/patent/US1356251A" target="_blank" class="pnum">US1356251</a><span class="ptitle">Amputation Artificial Foot</span><span class="inv">Pearl H. Willis</span><span class="pdate">Oct 19, 1920</span></li><li><a href="https://patents.google.com/patent/US2063406A" target="_blank" class="pnum">US2063406</a><span class="ptitle">Gripping Device</span><span class="inv">Irene M. Sloan</span><span class="pdate">Dec 8, 1936</span></li></ul></td>
+    </tr>
+    <tr class="data-row">
+      <td class="col-image">
+        <div class="img-wrap">
+          <img src="images/robot41.png" alt="Workshop" loading="lazy">
+          <span class="img-num">41</span>
+        </div>
+      </td>
+      <td class="col-object"><div class="object-label">Synthetic Face</div></td>
+      <td class="col-patents"><ul class="patent-list"><li><a href="https://patents.google.com/patent/US1002363A" target="_blank" class="pnum">US1002363</a><span class="ptitle">Doll's Eyelash Device</span><span class="inv">Mina Hofmann</span><span class="pdate">Sep 5, 1911</span></li><li><a href="https://patents.google.com/patent/US1053902A" target="_blank" class="pnum">US1053902</a><span class="ptitle">Doll</span><span class="inv">Bertha L. Corbett Melcher</span><span class="pdate">Feb 18, 1913</span></li><li><a href="https://patents.google.com/patent/US1212093A" target="_blank" class="pnum">US1212093</a><span class="ptitle">Doll</span><span class="inv">Rose O'Neill</span><span class="pdate">Jan 9, 1917</span></li><li><a href="https://patents.google.com/patent/US1261994A" target="_blank" class="pnum">US1261994</a><span class="ptitle">Rag Doll</span><span class="inv">Ella Smith</span><span class="pdate">Apr 8, 1918</span></li><li><a href="https://patents.google.com/patent/US1300915A" target="_blank" class="pnum">US1300915</a><span class="ptitle">Rag Doll</span><span class="inv">Celia Smith</span><span class="pdate">Apr 15, 1919</span></li><li><a href="https://patents.google.com/patent/US1388677A" target="_blank" class="pnum">US1388677</a><span class="ptitle">Doll</span><span class="inv">Grace G. Drayton</span><span class="pdate">Aug 23, 1921</span></li><li><a href="https://patents.google.com/patent/US1549035A" target="_blank" class="pnum">US1549035</a><span class="ptitle">Doll's Head</span><span class="pdate">1925</span></li><li><a href="https://patents.google.com/patent/US1668204A" target="_blank" class="pnum">US1668204</a><span class="ptitle">Doll's Eyes</span><span class="pdate">1928</span></li><li><a href="https://patents.google.com/patent/US2031208A" target="_blank" class="pnum">US2031208</a><span class="ptitle">Lollipop Figure (Doll)</span><span class="inv">Margaret Anna Burgard</span><span class="pdate">Feb 18, 1936</span></li><li><a href="https://patents.google.com/patent/US1785800A" target="_blank" class="pnum">US1785800</a><span class="ptitle">Doll</span><span class="inv">Rose O'Neill</span><span class="pdate">Dec 23, 1930</span></li><li><a href="https://patents.google.com/patent/US1025234A" target="_blank" class="pnum">US1025234</a><span class="ptitle">Doll</span><span class="inv">Marie K. Baker</span><span class="pdate">May 7, 1912</span></li><li><a href="https://patents.google.com/patent/US1513231A" target="_blank" class="pnum">US1513231</a><span class="ptitle">Container for Candy (Doll Shape)</span><span class="inv">Ruth English</span><span class="pdate">Oct 28, 1924</span></li><li><a href="https://patents.google.com/patent/US1778670A" target="_blank" class="pnum">US1778670</a><span class="ptitle">Doll</span><span class="inv">Nellie R. Herbison</span><span class="pdate">Oct 14, 1930</span></li><li><a href="https://patents.google.com/patent/US1583408A" target="_blank" class="pnum">US1583408</a><span class="ptitle">Head for Rag Dolls</span><span class="inv">Ruth Mackay</span><span class="pdate">May 4, 1926</span></li><li><a href="https://patents.google.com/patent/USD105092S" target="_blank" class="pnum">USD105092</a><span class="ptitle">Design for a Rag Doll</span><span class="inv">Eleanor M. Dillon</span><span class="pdate">Jun 29, 1937</span></li><li><a href="https://patents.google.com/patent/USD59467S" target="_blank" class="pnum">USD59467</a><span class="ptitle">Design for a Doll</span><span class="inv">Bertha E. Feist</span><span class="pdate">Oct 25, 1921</span></li><li><a href="https://patents.google.com/patent/US1292113A" target="_blank" class="pnum">US1292113</a><span class="ptitle">Attachable Ear for Dolls</span><span class="inv">Ella Louise Smith</span><span class="pdate">Jan 21, 1919</span></li></ul></td>
+    </tr>
+    <tr class="data-row">
+      <td class="col-image">
+        <div class="img-wrap">
+          <img src="images/robot42.png" alt="Synthetic Face" loading="lazy">
+          <span class="img-num">42</span>
+        </div>
+      </td>
+      <td class="col-object"><div class="object-label">Synthetic Face</div></td>
+      <td class="col-patents"><ul class="patent-list"><li><a href="https://patents.google.com/patent/US1002363A" target="_blank" class="pnum">US1002363</a><span class="ptitle">Doll's Eyelash Device</span><span class="inv">Mina Hofmann</span><span class="pdate">Sep 5, 1911</span></li><li><a href="https://patents.google.com/patent/US1053902A" target="_blank" class="pnum">US1053902</a><span class="ptitle">Doll</span><span class="inv">Bertha L. Corbett Melcher</span><span class="pdate">Feb 18, 1913</span></li><li><a href="https://patents.google.com/patent/US1212093A" target="_blank" class="pnum">US1212093</a><span class="ptitle">Doll</span><span class="inv">Rose O'Neill</span><span class="pdate">Jan 9, 1917</span></li><li><a href="https://patents.google.com/patent/US1261994A" target="_blank" class="pnum">US1261994</a><span class="ptitle">Rag Doll</span><span class="inv">Ella Smith</span><span class="pdate">Apr 8, 1918</span></li><li><a href="https://patents.google.com/patent/US1300915A" target="_blank" class="pnum">US1300915</a><span class="ptitle">Rag Doll</span><span class="inv">Celia Smith</span><span class="pdate">Apr 15, 1919</span></li><li><a href="https://patents.google.com/patent/US1388677A" target="_blank" class="pnum">US1388677</a><span class="ptitle">Doll</span><span class="inv">Grace G. Drayton</span><span class="pdate">Aug 23, 1921</span></li><li><a href="https://patents.google.com/patent/US1549035A" target="_blank" class="pnum">US1549035</a><span class="ptitle">Doll's Head</span><span class="pdate">1925</span></li><li><a href="https://patents.google.com/patent/US1668204A" target="_blank" class="pnum">US1668204</a><span class="ptitle">Doll's Eyes</span><span class="pdate">1928</span></li><li><a href="https://patents.google.com/patent/US2031208A" target="_blank" class="pnum">US2031208</a><span class="ptitle">Lollipop Figure (Doll)</span><span class="inv">Margaret Anna Burgard</span><span class="pdate">Feb 18, 1936</span></li><li><a href="https://patents.google.com/patent/US1785800A" target="_blank" class="pnum">US1785800</a><span class="ptitle">Doll</span><span class="inv">Rose O'Neill</span><span class="pdate">Dec 23, 1930</span></li><li><a href="https://patents.google.com/patent/US1025234A" target="_blank" class="pnum">US1025234</a><span class="ptitle">Doll</span><span class="inv">Marie K. Baker</span><span class="pdate">May 7, 1912</span></li><li><a href="https://patents.google.com/patent/US1513231A" target="_blank" class="pnum">US1513231</a><span class="ptitle">Container for Candy (Doll Shape)</span><span class="inv">Ruth English</span><span class="pdate">Oct 28, 1924</span></li><li><a href="https://patents.google.com/patent/US1778670A" target="_blank" class="pnum">US1778670</a><span class="ptitle">Doll</span><span class="inv">Nellie R. Herbison</span><span class="pdate">Oct 14, 1930</span></li><li><a href="https://patents.google.com/patent/US1583408A" target="_blank" class="pnum">US1583408</a><span class="ptitle">Head for Rag Dolls</span><span class="inv">Ruth Mackay</span><span class="pdate">May 4, 1926</span></li><li><a href="https://patents.google.com/patent/USD105092S" target="_blank" class="pnum">USD105092</a><span class="ptitle">Design for a Rag Doll</span><span class="inv">Eleanor M. Dillon</span><span class="pdate">Jun 29, 1937</span></li><li><a href="https://patents.google.com/patent/USD59467S" target="_blank" class="pnum">USD59467</a><span class="ptitle">Design for a Doll</span><span class="inv">Bertha E. Feist</span><span class="pdate">Oct 25, 1921</span></li><li><a href="https://patents.google.com/patent/US1292113A" target="_blank" class="pnum">US1292113</a><span class="ptitle">Attachable Ear for Dolls</span><span class="inv">Ella Louise Smith</span><span class="pdate">Jan 21, 1919</span></li></ul></td>
+    </tr>
+    <tr class="data-row">
+      <td class="col-image">
+        <div class="img-wrap">
+          <img src="images/robot43.png" alt="Sunglasses" loading="lazy">
+          <span class="img-num">43</span>
+        </div>
+      </td>
+      <td class="col-object"><div class="object-label">Sunglasses</div></td>
+      <td class="col-patents"><ul class="patent-list"><li><a href="https://patents.google.com/patent/US1539805A" target="_blank" class="pnum">US1539805</a><span class="ptitle">Eyeshade</span><span class="inv">Anna M. Zellner</span><span class="pdate">May 26, 1925</span></li><li><a href="https://patents.google.com/patent/US1872562A" target="_blank" class="pnum">US1872562</a><span class="ptitle">Spectacles</span><span class="inv">Louise C. King</span><span class="pdate">Aug 16, 1932</span></li><li><a href="https://patents.google.com/patent/US1962818A" target="_blank" class="pnum">US1962818</a><span class="ptitle">Sun Shield for the Nose</span><span class="inv">Ethel H. Hoffman</span><span class="pdate">Jun 12, 1934</span></li><li><a href="https://patents.google.com/patent/US971503A" target="_blank" class="pnum">US971503</a><span class="ptitle">Sunshade</span><span class="inv">Cora I. Howard</span><span class="pdate">Sep 27, 1910</span></li><li><a href="https://patents.google.com/patent/US2176006A" target="_blank" class="pnum">US2176006</a><span class="ptitle">Eyeshield</span><span class="inv">Rose Ehrlich</span><span class="pdate">Oct 10, 1939</span></li></ul></td>
+    </tr>
+    
+    <tr class="data-row">
+      <td class="col-image">
+        <div class="img-wrap">
+          <img src="images/robot44.png" alt="Laundry Basket &amp; Clothing" loading="lazy">
+          <span class="img-num">44</span>
+        </div>
+      </td>
+      <td class="col-object"><div class="object-label">Laundry Basket &amp; Clothing</div></td>
+      <td class="col-patents"><ul class="patent-list"><li><a href="https://patents.google.com/patent/US1692704A" target="_blank" class="pnum">US1692704</a><span class="ptitle">Clothes Basket Carrier and Rack</span><span class="pdate">Nov 20, 1928</span></li><li><a href="https://patents.google.com/patent/US630183A" target="_blank" class="pnum">US630183</a><span class="ptitle">Clothes Wringer</span><span class="pdate">1899</span></li><li><a href="https://patents.google.com/patent/US1285731A" target="_blank" class="pnum">US1285731</a><span class="ptitle">Laundry Bag</span><span class="pdate">1918</span></li><li><a href="https://patents.google.com/patent/US1376942A" target="_blank" class="pnum">US1376942</a><span class="ptitle">Clothes Wringer</span><span class="pdate">1921</span></li><li><a href="https://patents.google.com/patent/US1414138A" target="_blank" class="pnum">US1414138</a><span class="ptitle">Laundry Appliance</span><span class="pdate">1922</span></li><li><a href="https://patents.google.com/patent/US1530793A" target="_blank" class="pnum">US1530793</a><span class="ptitle">Laundry Bag</span><span class="pdate">1925</span></li><li><a href="https://patents.google.com/patent/US1559988A" target="_blank" class="pnum">US1559988</a><span class="ptitle">Washboard</span><span class="pdate">1925</span></li><li><a href="https://patents.google.com/patent/US1611877A" target="_blank" class="pnum">US1611877</a><span class="ptitle">Laundry Appliance</span><span class="pdate">1926</span></li><li><a href="https://patents.google.com/patent/US1752687A" target="_blank" class="pnum">US1752687</a><span class="ptitle">Washing Device</span><span class="pdate">1930</span></li><li><a href="https://patents.google.com/patent/US889994A" target="_blank" class="pnum">US889994</a><span class="ptitle">Combined Washboard and Clothes-Pounder</span><span class="pdate">Jun 9, 1908</span></li><li><a href="https://patents.google.com/patent/US1537118A" target="_blank" class="pnum">US1537118</a><span class="ptitle">Cloth-Folding Device</span><span class="inv">Charlotte Elizabeth Kent</span><span class="pdate">May 12, 1925</span></li></ul></td>
+    </tr>
+    <tr class="data-row">
+      <td class="col-image">
+        <div class="img-wrap">
+          <img src="images/robot45.png" alt="Laundry Basket &amp; Cloth" loading="lazy">
+          <span class="img-num">45</span>
+        </div>
+      </td>
+      <td class="col-object"><div class="object-label">Laundry Basket &amp; Cloth</div></td>
+      <td class="col-patents"><ul class="patent-list"><li><a href="https://patents.google.com/patent/US1692704A" target="_blank" class="pnum">US1692704</a><span class="ptitle">Clothes Basket Carrier and Rack</span><span class="pdate">Nov 20, 1928</span></li><li><a href="https://patents.google.com/patent/US630183A" target="_blank" class="pnum">US630183</a><span class="ptitle">Clothes Wringer</span><span class="pdate">1899</span></li><li><a href="https://patents.google.com/patent/US1285731A" target="_blank" class="pnum">US1285731</a><span class="ptitle">Laundry Bag</span><span class="pdate">1918</span></li><li><a href="https://patents.google.com/patent/US1376942A" target="_blank" class="pnum">US1376942</a><span class="ptitle">Clothes Wringer</span><span class="pdate">1921</span></li><li><a href="https://patents.google.com/patent/US1414138A" target="_blank" class="pnum">US1414138</a><span class="ptitle">Laundry Appliance</span><span class="pdate">1922</span></li><li><a href="https://patents.google.com/patent/US1530793A" target="_blank" class="pnum">US1530793</a><span class="ptitle">Laundry Bag</span><span class="pdate">1925</span></li><li><a href="https://patents.google.com/patent/US1559988A" target="_blank" class="pnum">US1559988</a><span class="ptitle">Washboard</span><span class="pdate">1925</span></li><li><a href="https://patents.google.com/patent/US1611877A" target="_blank" class="pnum">US1611877</a><span class="ptitle">Laundry Appliance</span><span class="pdate">1926</span></li><li><a href="https://patents.google.com/patent/US1752687A" target="_blank" class="pnum">US1752687</a><span class="ptitle">Washing Device</span><span class="pdate">1930</span></li><li><a href="https://patents.google.com/patent/US889994A" target="_blank" class="pnum">US889994</a><span class="ptitle">Combined Washboard and Clothes-Pounder</span><span class="pdate">Jun 9, 1908</span></li><li><a href="https://patents.google.com/patent/US1537118A" target="_blank" class="pnum">US1537118</a><span class="ptitle">Cloth-Folding Device</span><span class="inv">Charlotte Elizabeth Kent</span><span class="pdate">May 12, 1925</span></li></ul></td>
+    </tr>
+    <tr class="data-row">
+      <td class="col-image">
+        <div class="img-wrap">
+          <img src="images/robot46.png" alt="Grocery Bag &amp; Cloth" loading="lazy">
+          <span class="img-num">46</span>
+        </div>
+      </td>
+      <td class="col-object"><div class="object-label">Grocery Bag &amp; Cloth</div></td>
+      <td class="col-patents"><ul class="patent-list"><li><a href="https://patents.google.com/patent/US1537118A" target="_blank" class="pnum">US1537118</a><span class="ptitle">Cloth-Folding Device</span><span class="inv">Charlotte Elizabeth Kent</span><span class="pdate">May 12, 1925</span></li><li><a href="https://patents.google.com/patent/US1881977A" target="_blank" class="pnum">US1881977b</a><span class="ptitle">Ironing Board Cover</span><span class="inv">Nellie Nelson Sundby</span><span class="pdate">Oct 11, 1932</span></li></ul></td>
+    </tr>
+    <tr class="data-row">
+      <td class="col-image">
+        <div class="img-wrap">
+          <img src="images/robot47.png" alt="Plate &amp; Mug" loading="lazy">
+          <span class="img-num">47</span>
+        </div>
+      </td>
+      <td class="col-object"><div class="object-label">Plate &amp; Mug</div></td>
+      <td class="col-patents"><ul class="patent-list"><li><a href="https://patents.google.com/patent/US355139A" target="_blank" class="pnum">US355139</a><span class="ptitle">Dish Washing Machine</span><span class="inv">Josephine G. Cochrane</span><span class="pdate">Dec 28, 1886</span></li><li><a href="https://patents.google.com/patent/US743447A" target="_blank" class="pnum">US743447</a><span class="ptitle">Dish-Pan</span><span class="inv">Virginia Alice Cassell</span><span class="pdate">Nov 10, 1903</span></li><li><a href="https://patents.google.com/patent/USD95278S" target="_blank" class="pnum">USD95278</a><span class="ptitle">Design for a Teapot</span><span class="inv">Edna Clark Mills</span><span class="pdate">Apr 16, 1935</span></li><li><a href="https://patents.google.com/patent/USD63065S" target="_blank" class="pnum">USD63065</a><span class="ptitle">Design for a Teapot</span><span class="inv">Gertrude Barnett</span><span class="pdate">Oct 2, 1923</span></li><li><a href="https://patents.google.com/patent/US2093980A" target="_blank" class="pnum">US2093980</a><span class="ptitle">Electric Teapot</span><span class="inv">Nellie Victoria Linger</span><span class="pdate">Sep 21, 1937</span></li><li><a href="https://patents.google.com/patent/US1852084A" target="_blank" class="pnum">US1852084</a><span class="ptitle">Teakettle</span><span class="inv">Edith Carla Lawson</span><span class="pdate">Apr 5, 1932</span></li><li><a href="https://patents.google.com/patent/US817452A" target="_blank" class="pnum">US817452</a><span class="ptitle">Strainer</span><span class="inv">Nancy Elizabeth Skinner</span><span class="pdate">Apr 10, 1906</span></li></ul></td>
+    </tr>
+    <tr class="data-row">
+      <td class="col-image">
+        <div class="img-wrap">
+          <img src="images/robot48.png" alt="Plate &amp; Sink" loading="lazy">
+          <span class="img-num">48</span>
+        </div>
+      </td>
+      <td class="col-object"><div class="object-label">Plate &amp; Sink</div></td>
+      <td class="col-patents"><ul class="patent-list"><li><a href="https://patents.google.com/patent/US355139A" target="_blank" class="pnum">US355139</a><span class="ptitle">Dish Washing Machine</span><span class="inv">Josephine G. Cochrane</span><span class="pdate">Dec 28, 1886</span></li><li><a href="https://patents.google.com/patent/US743447A" target="_blank" class="pnum">US743447</a><span class="ptitle">Dish-Pan</span><span class="inv">Virginia Alice Cassell</span><span class="pdate">Nov 10, 1903</span></li><li><a href="https://patents.google.com/patent/US1345059A" target="_blank" class="pnum">US1345059</a><span class="ptitle">Dish-Washing Apparatus</span><span class="inv">Jane T. Belknap</span><span class="pdate">Jun 29, 1920</span></li><li><a href="https://patents.google.com/patent/US2186998A" target="_blank" class="pnum">US2186998</a><span class="ptitle">Kitchen Sink</span><span class="inv">Rose Stein</span><span class="pdate">Jan 16, 1940</span></li><li><a href="https://patents.google.com/patent/US1728153A" target="_blank" class="pnum">US1728153</a><span class="ptitle">Dishwasher</span><span class="inv">Alice I. Donnellon</span><span class="pdate">Sep 10, 1929</span></li><li><a href="https://patents.google.com/patent/US1047072A" target="_blank" class="pnum">US1047072</a><span class="ptitle">Sink</span><span class="inv">Anna W. Keichline</span><span class="pdate">Dec 10, 1912</span></li><li><a href="https://patents.google.com/patent/US1095312A" target="_blank" class="pnum">US1095312</a><span class="ptitle">Sink-Shelf</span><span class="inv">Alice P. Curtiss</span><span class="pdate">May 5, 1914</span></li><li><a href="https://patents.google.com/patent/US1355086A" target="_blank" class="pnum">US1355086</a><span class="ptitle">Sink-Apron</span><span class="inv">Jane Beebe</span><span class="pdate">Oct 5, 1920</span></li><li><a href="https://patents.google.com/patent/US1612730A" target="_blank" class="pnum">US1612730</a><span class="ptitle">Kitchen Construction</span><span class="inv">Anna W. Keichline</span><span class="pdate">Dec 28, 1926</span></li></ul></td>
+    </tr>
+    <tr class="data-row">
+      <td class="col-image">
+        <div class="img-wrap">
+          <img src="images/robot49.png" alt="Laundry Basket &amp; Washing Machine" loading="lazy">
+          <span class="img-num">49</span>
+        </div>
+      </td>
+      <td class="col-object"><div class="object-label">Laundry Basket &amp; Washing Machine</div></td>
+      <td class="col-patents"><ul class="patent-list"><li><a href="https://patents.google.com/patent/US709016A" target="_blank" class="pnum">US709016</a><span class="ptitle">Washing Machine</span><span class="pdate">1902</span></li><li><a href="https://patents.google.com/patent/US884946A" target="_blank" class="pnum">US884946</a><span class="ptitle">Washing Machine</span><span class="pdate">1908</span></li><li><a href="https://patents.google.com/patent/US1106430A" target="_blank" class="pnum">US1106430</a><span class="ptitle">Washing Machine</span><span class="pdate">1914</span></li><li><a href="https://patents.google.com/patent/US1180772A" target="_blank" class="pnum">US1180772</a><span class="ptitle">Washing Machine</span><span class="pdate">1916</span></li><li><a href="https://patents.google.com/patent/US1380238A" target="_blank" class="pnum">US1380238</a><span class="ptitle">Washing Machine</span><span class="pdate">1921</span></li><li><a href="https://patents.google.com/patent/US1390636A" target="_blank" class="pnum">US1390636</a><span class="ptitle">Washing Machine</span><span class="pdate">1921</span></li><li><a href="https://patents.google.com/patent/US1584484A" target="_blank" class="pnum">US1584484</a><span class="ptitle">Washing Machine</span><span class="pdate">1926</span></li><li><a href="https://patents.google.com/patent/US1595814A" target="_blank" class="pnum">US1595814</a><span class="ptitle">Washing Machine</span><span class="pdate">1926</span></li><li><a href="https://patents.google.com/patent/US1767971A" target="_blank" class="pnum">US1767971</a><span class="ptitle">Washing Machine</span><span class="pdate">1930</span></li><li><a href="https://patents.google.com/patent/US1793798A" target="_blank" class="pnum">US1793798</a><span class="ptitle">Washing Machine</span><span class="pdate">1931</span></li><li><a href="https://patents.google.com/patent/US1982499A" target="_blank" class="pnum">US1982499</a><span class="ptitle">Washing Machine</span><span class="pdate">1934</span></li><li><a href="https://patents.google.com/patent/US2808843A" target="_blank" class="pnum">US2808843</a><span class="ptitle">Washing Machine</span><span class="pdate">1957</span></li><li><a href="https://patents.google.com/patent/US659223A" target="_blank" class="pnum">US659223</a><span class="ptitle">Washing-Machine</span><span class="inv">Anna Sophia Fridolph &amp; Samuel August Fridolph</span><span class="pdate">Oct 9, 1900</span></li><li><a href="https://patents.google.com/patent/US1488353A" target="_blank" class="pnum">US1488353</a><span class="ptitle">Washing Machine</span><span class="inv">Maude B. Latshaw</span><span class="pdate">Mar 25, 1924</span></li><li><a href="https://patents.google.com/patent/US1395783A" target="_blank" class="pnum">US1395783</a><span class="ptitle">Bucket Clothes-Washer</span><span class="inv">Jane A. Wright</span><span class="pdate">Nov 1, 1921</span></li><li><a href="https://patents.google.com/patent/US858741A" target="_blank" class="pnum">US858741</a><span class="ptitle">Clothes-Washing Device</span><span class="pdate">Jul 2, 1907</span></li><li><a href="https://patents.google.com/patent/US1101667A" target="_blank" class="pnum">US1101667</a><span class="ptitle">Washing-Machine</span><span class="inv">Margaret Stonebridge</span><span class="pdate">Jun 30, 1914</span></li></ul></td>
+    </tr>
+    
+    <tr class="data-row">
+      <td class="col-image">
+        <div class="img-wrap">
+          <img src="images/robot50.png" alt="Broom &amp; Dustpan" loading="lazy">
+          <span class="img-num">50</span>
+        </div>
+      </td>
+      <td class="col-object"><div class="object-label">Broom &amp; Dustpan</div></td>
+      <td class="col-patents"><ul class="patent-list"><li><a href="https://patents.google.com/patent/US1138305A" target="_blank" class="pnum">US1138305</a><span class="ptitle">Broom-Cover</span><span class="inv">Marie Miller</span><span class="pdate">May 4, 1915</span></li><li><a href="https://patents.google.com/patent/US1443596A" target="_blank" class="pnum">US1443596</a><span class="ptitle">Cushion Attachment for Handles (Broom)</span><span class="pdate">Jan 30, 1923</span></li><li><a href="https://patents.google.com/patent/US1914295A" target="_blank" class="pnum">US1914295</a><span class="ptitle">Dust Mop Cleaning Machine</span><span class="inv">Ruth V. Riley</span><span class="pdate">Jun 13, 1933</span></li><li><a href="https://patents.google.com/patent/US1980655A" target="_blank" class="pnum">US1980655</a><span class="ptitle">Hand Grip (Broom Handle)</span><span class="inv">Mildred D. Balistreri</span><span class="pdate">Nov 13, 1934</span></li><li><a href="https://patents.google.com/patent/US947012A" target="_blank" class="pnum">US947012</a><span class="ptitle">Removable Broom-Protector</span><span class="pdate">Jan 18, 1910</span></li><li><a href="https://patents.google.com/patent/US1666369A" target="_blank" class="pnum">US1666369</a><span class="ptitle">Dust-Laying Broom</span><span class="inv">Mary R. Dehling</span><span class="pdate">Apr 17, 1928</span></li><li><a href="https://patents.google.com/patent/US1154781A" target="_blank" class="pnum">US1154781</a><span class="ptitle">Broom-Bridle</span><span class="inv">Lydia J. Kopischke</span><span class="pdate">Sep 28, 1915</span></li><li><a href="https://patents.google.com/patent/US1246197A" target="_blank" class="pnum">US1246197</a><span class="ptitle">Broom-Hanging Device</span><span class="inv">Florence E. Welcome</span><span class="pdate">Nov 13, 1917</span></li><li><a href="https://patents.google.com/patent/US1080572A" target="_blank" class="pnum">US1080572</a><span class="ptitle">Broom Attachment</span><span class="inv">Amanda McDonald</span><span class="pdate">Dec 9, 1913</span></li><li><a href="https://patents.google.com/patent/US1683517A" target="_blank" class="pnum">US1683517</a><span class="ptitle">Dustpan and the Like</span><span class="pdate">Sep 4, 1928</span></li><li><a href="https://patents.google.com/patent/US735360A" target="_blank" class="pnum">US735360</a><span class="ptitle">Dust-Pan</span><span class="inv">Annie M. Furrow</span><span class="pdate">Aug 4, 1903</span></li></ul></td>
+    </tr>
+    </tbody>
+  </table>
+</div>
+
+<footer>
+  <p>✦ CAREtech · <a href="https://care-tech.org" target="_blank">care-tech.org</a> · Patents by Women Research Archive ✦</p>
+</footer>
+
+<script>
+(function(){
+  const wrap=document.getElementById('sparkles');
+  const chars=['✦','✧','♡','˚','·','✿','◦','❀','°'];
+  for(let i=0;i<24;i++){
+    const s=document.createElement('span');s.className='sp';
+    s.textContent=chars[Math.floor(Math.random()*chars.length)];
+    s.style.left=Math.random()*100+'vw';
+    s.style.bottom=Math.random()*-60+'px';
+    s.style.fontSize=(8+Math.random()*10)+'px';
+    s.style.color=`hsl(${310+Math.random()*50},75%,${65+Math.random()*25}%)`;
+    s.style.animationDuration=(8+Math.random()*12)+'s';
+    s.style.animationDelay=(Math.random()*12)+'s';
+    wrap.appendChild(s);
+  }
+})();
+</script>
+</body>
+</html>
