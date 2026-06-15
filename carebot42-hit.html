@@ -26,6 +26,7 @@ html,body{height:100%;min-height:100%;font-family:var(--fb);font-weight:600;colo
 @keyframes d1{0%,100%{transform:translate(0,0)}50%{transform:translate(38px,26px)}}
 @keyframes d2{0%,100%{transform:translate(0,0)}50%{transform:translate(-28px,-20px)}}
 @keyframes breathe{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.3;transform:scale(.65)}}
+
 .screen{position:relative;z-index:2;min-height:100%;display:flex;flex-direction:column;align-items:center;padding:max(16px,env(safe-area-inset-top)) clamp(12px,4vmin,24px) calc(44px + env(safe-area-inset-bottom));gap:14px;}
 .topbar{width:100%;max-width:500px;display:flex;align-items:center;justify-content:space-between;}
 .mascot{display:flex;align-items:center;gap:10px;}
@@ -35,6 +36,38 @@ html,body{height:100%;min-height:100%;font-family:var(--fb);font-weight:600;colo
 .bot-sub{font-size:9px;letter-spacing:.15em;text-transform:uppercase;color:var(--muted);margin-top:1px;}
 .time-badge{display:flex;align-items:center;gap:6px;padding:5px 11px;border-radius:999px;background:rgba(255,255,255,.04);border:1px solid var(--border);font-size:10px;letter-spacing:.1em;color:var(--muted);}
 .time-pip{width:5px;height:5px;border-radius:50%;background:var(--hot);animation:breathe 2s ease-in-out infinite;}
+
+/* ── WORKER ID GATE ── */
+#workerGate{width:min(100%,500px);background:rgba(12,0,7,.97);border:2px solid var(--border2);border-radius:22px;padding:26px 22px 22px;position:relative;overflow:hidden;animation:slideUp .4s cubic-bezier(.34,1.4,.64,1);}
+#workerGate::before{content:'';position:absolute;top:0;left:8%;right:8%;height:2px;background:linear-gradient(90deg,transparent,var(--candy) 30%,var(--hot) 50%,var(--candy) 70%,transparent);box-shadow:0 0 14px var(--candy);border-radius:999px;}
+.gate-icon{font-size:30px;text-align:center;margin-bottom:10px;}
+.gate-title{font-family:var(--fh);font-weight:900;font-size:clamp(16px,4vw,20px);background:linear-gradient(90deg,var(--blush),var(--fuchsia) 55%,var(--candy));-webkit-background-clip:text;background-clip:text;color:transparent;text-align:center;margin-bottom:8px;line-height:1.3;}
+.gate-sub{font-size:12px;line-height:1.75;color:rgba(255,215,230,.7);text-align:center;margin-bottom:20px;}
+.gate-sub strong{color:var(--candy);}
+.gate-label{font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);margin-bottom:7px;display:block;}
+.gate-input-wrap{position:relative;margin-bottom:8px;}
+.gate-input{width:100%;padding:13px 44px 13px 16px;background:rgba(255,255,255,.06);border:2px solid rgba(255,80,150,.35);border-radius:13px;font-family:var(--fm);font-weight:500;font-size:15px;color:var(--cream);outline:none;transition:border-color .2s,box-shadow .2s;letter-spacing:.08em;}
+.gate-input:focus{border-color:var(--hot);box-shadow:0 0 0 4px rgba(255,45,107,.14);}
+.gate-input::placeholder{color:rgba(255,180,210,.22);font-family:var(--fb);letter-spacing:.03em;font-size:13px;}
+.gate-input.valid{border-color:rgba(80,220,140,.6);box-shadow:0 0 0 3px rgba(80,220,140,.08);}
+.gate-valid-mark{position:absolute;right:14px;top:50%;transform:translateY(-50%);font-size:16px;color:rgba(80,220,140,.85);display:none;}
+.gate-hint{font-size:10px;color:rgba(255,180,210,.38);margin-bottom:18px;line-height:1.65;}
+.gate-hint strong{color:rgba(255,180,210,.6);}
+@keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-8px)}40%{transform:translateX(8px)}60%{transform:translateX(-5px)}80%{transform:translateX(5px)}}
+.gate-input.shake{animation:shake .35s ease-in-out;border-color:rgba(255,80,80,.75)!important;}
+
+/* ── WORKER BADGE (persistent after login) ── */
+.wid-badge{width:min(100%,500px);display:none;align-items:center;gap:12px;padding:10px 16px;background:rgba(255,45,107,.07);border:1.5px solid rgba(255,80,150,.3);border-radius:13px;}
+.wid-pip{width:7px;height:7px;border-radius:50%;background:rgba(80,220,140,.8);flex-shrink:0;box-shadow:0 0 6px rgba(80,220,140,.5);}
+.wid-inner{flex:1;min-width:0;}
+.wid-label{font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);}
+.wid-value{font-family:var(--fm);font-size:13px;color:var(--candy);word-break:break-all;margin-top:1px;}
+.wid-change{font-size:10px;color:rgba(255,180,210,.38);cursor:pointer;text-decoration:underline;text-underline-offset:2px;transition:color .15s;white-space:nowrap;flex-shrink:0;}
+.wid-change:hover{color:var(--blush);}
+
+/* ── TASK CONTENT (hidden until Worker ID entered) ── */
+#taskContent{display:contents;}
+
 .card{width:min(100%,500px);background:rgba(255,45,107,.07);border:1.5px solid var(--border2);border-radius:20px;padding:18px 20px 16px;position:relative;overflow:hidden;}
 .card::before{content:'';position:absolute;top:0;left:8%;right:8%;height:1.5px;background:linear-gradient(90deg,transparent,var(--candy) 30%,var(--hot) 50%,var(--candy) 70%,transparent);box-shadow:0 0 8px var(--candy);border-radius:999px;}
 .eyebrow{font-size:9px;letter-spacing:.22em;text-transform:uppercase;color:var(--muted);margin-bottom:7px;}
@@ -130,114 +163,146 @@ html,body{height:100%;min-height:100%;font-family:var(--fb);font-weight:600;colo
     <div class="time-badge"><div class="time-pip"></div><span id="sysTime">--:--</span></div>
   </div>
 
-  <div class="card" style="background:linear-gradient(135deg,rgba(111,0,30,.88),rgba(50,0,15,.95));border-color:rgba(255,60,80,.4);">
-    <div class="eyebrow">✦ CAREBOT-42 · Data for Domestic &amp; Presentation Work</div>
-    <div class="card-title">You will direct a robot to perform work done by humanoid robots — domestic labor or presentation labor.</div>
-    <div class="card-body">
-      Right now humans are wearing cameras on their heads and getting paid to film themselves doing domestic work in order to <strong>train the robots of the future</strong>.<br><br>
-      The instruction you build is saved as data. It is visible on the <a href="http://care-tech.org/caretech-results-dashboard.html" target="_blank" style="color:var(--candy);">CAREtech live results dashboard</a>. The data feeds the system.
+  <!-- ══ WORKER ID GATE ══ -->
+  <div id="workerGate">
+    <div class="gate-icon">🪪</div>
+    <div class="gate-title">Enter your Worker ID to begin</div>
+    <div class="gate-sub">
+      Your Worker ID links your instruction to the live dashboard and confirms your payment.<br>
+      <strong>You will not be paid without a valid Worker ID.</strong>
+    </div>
+    <label class="gate-label" for="workerIdInput">MTurk Worker ID <span style="color:rgba(255,180,210,.3);font-size:9px;text-transform:none;letter-spacing:.03em;">— from your HIT assignment page</span></label>
+    <div class="gate-input-wrap">
+      <input class="gate-input" id="workerIdInput" type="text" autocomplete="off" autocorrect="off" autocapitalize="none" spellcheck="false" placeholder="e.g. A3XKZQ1234ABCD" maxlength="80">
+      <span class="gate-valid-mark" id="gateValidMark">✓</span>
+    </div>
+    <div class="gate-hint">Worker IDs are typically <strong>14–21 characters</strong>, starting with the letter A. Enter it exactly as shown in your MTurk dashboard — it is case-sensitive.</div>
+    <div class="btn-row" style="margin-top:0;">
+      <button class="btn primary" id="gateSubmitBtn" onclick="submitWorkerId()">✦ Begin task →</button>
     </div>
   </div>
 
-  <div class="card">
-    <div class="eyebrow">✦ How this works</div>
-    <div class="card-title" style="font-size:14px;">Build the instruction. The data is saved. You are done. The robot performs. You get paid.</div>
-    <div class="card-body">
-      <strong>Step 1:</strong> Tap the spinning image to select a robot from the performance.<br>
-      <strong>Step 2:</strong> Type the name of the object you see in the image.<br>
-      <strong>Step 3:</strong> Describe the task being completed in the image.<br>
-      <strong>Step 4:</strong> Build the instruction — choose 4 actions, how many times, 3 locations to move within the 7 ft × 7 ft square, and whether the object is on or off.<br>
-      <strong>Step 5:</strong> A diagram of the movements and spoken instruction are generated. Your instruction is <strong>saved as data</strong> to the live dashboard.
+  <!-- ══ WORKER ID BADGE (visible after login) ══ -->
+  <div class="wid-badge" id="widBadge">
+    <div class="wid-pip"></div>
+    <div class="wid-inner">
+      <div class="wid-label">Worker ID</div>
+      <div class="wid-value" id="widBadgeValue">—</div>
     </div>
+    <span class="wid-change" onclick="resetWorkerId()">change ID</span>
   </div>
 
-  <div class="frame-wrap">
-    <div class="frame" id="game-frame">
-      <div class="hint" id="hint">✦ Tap the image to select</div>
-    </div>
-  </div>
+  <!-- ══ ALL TASK CONTENT — hidden until Worker ID entered ══ -->
+  <div id="taskContent" style="display:contents;visibility:hidden;pointer-events:none;">
 
-  <div style="width:min(100%,460px);display:flex;justify-content:flex-end;">
-    <button class="btn soft" id="resetBtn" onclick="doReset()" style="font-size:11px;padding:7px 14px;">↺ New image</button>
-  </div>
+    <div class="card" style="background:linear-gradient(135deg,rgba(111,0,30,.88),rgba(50,0,15,.95));border-color:rgba(255,60,80,.4);">
+      <div class="eyebrow">✦ CAREBOT-42 · Data for Domestic &amp; Presentation Work</div>
+      <div class="card-title">You will direct a robot to perform work done by humanoid robots — domestic labor or presentation labor.</div>
+      <div class="card-body">
+        Right now humans are wearing cameras on their heads and getting paid to film themselves doing domestic work in order to <strong>train the robots of the future</strong>.<br><br>
+        The instruction you build is saved as data. It is visible on the <a href="http://care-tech.org/caretech-results-dashboard.html" target="_blank" style="color:var(--candy);">CAREtech live results dashboard</a>. The data feeds the system.
+      </div>
+    </div>
 
-  <div class="step-panel" id="stepIdentify">
-    <div class="eyebrow">✦ Step 1 of 4 · Identify the image</div>
-    <div style="display:flex;gap:12px;align-items:center;margin-bottom:14px;">
-      <img id="identifyImg" style="width:80px;height:80px;border-radius:10px;object-fit:cover;border:1.5px solid var(--border2);flex-shrink:0;" src="" alt="">
+    <div class="card">
+      <div class="eyebrow">✦ How this works</div>
+      <div class="card-title" style="font-size:14px;">Build the instruction. The data is saved. You are done. The robot performs. You get paid.</div>
+      <div class="card-body">
+        <strong>Step 1:</strong> Tap the spinning image to select a robot from the performance.<br>
+        <strong>Step 2:</strong> Type the name of the object you see in the image.<br>
+        <strong>Step 3:</strong> Describe the task being completed in the image.<br>
+        <strong>Step 4:</strong> Build the instruction — choose 4 actions, how many times, 3 locations to move within the 7 ft × 7 ft square, and whether the object is on or off.<br>
+        <strong>Step 5:</strong> A diagram of the movements and spoken instruction are generated. Your instruction is <strong>saved as data</strong> to the live dashboard.
+      </div>
     </div>
-    <label class="field-label" style="color:var(--blush);font-size:12px;letter-spacing:.1em;">What object do you see in this image?<span class="sublabel" style="color:rgba(255,180,210,.55);">tap an example or type your own</span></label>
-    <input class="text-input" type="text" id="objectInput" placeholder="e.g. ironing board, vacuum, laundry basket…" autocomplete="off">
-    <div class="example-chips" id="objectChips"></div>
-    <label class="field-label" style="color:var(--blush);font-size:12px;letter-spacing:.1em;margin-top:14px;">Describe the task being completed<span class="sublabel" style="color:rgba(255,180,210,.55);">tap an example or type your own</span></label>
-    <input class="text-input" type="text" id="describeInput" placeholder="e.g. fold laundry, pour some tea, sweep the floor…" autocomplete="off">
-    <div class="example-chips" id="taskChips"></div>
-    <div class="btn-row" style="margin-top:14px;">
-      <button class="btn primary" onclick="advanceToBuilder()">✦ Continue to builder →</button>
-    </div>
-  </div>
 
-  <div class="step-panel" id="stepBuilder">
-    <div class="eyebrow">✦ Step 2 of 4 · Build the instruction</div>
-    <div class="card-title">Choose 4 actions. Set count, state, and 3 movement locations.</div>
-    <label class="field-label">Choose 4 actions <span class="sublabel" id="actionCountLabel">0 of 4 chosen</span></label>
-    <div class="action-slots" id="actionSlots">
-      <div class="action-slot" id="slot0">Action 1 — not chosen</div>
-      <div class="action-slot" id="slot1">Action 2 — not chosen</div>
-      <div class="action-slot" id="slot2">Action 3 — not chosen</div>
-      <div class="action-slot" id="slot3">Action 4 — not chosen</div>
+    <div class="frame-wrap">
+      <div class="frame" id="game-frame">
+        <div class="hint" id="hint">✦ Tap the image to select</div>
+      </div>
     </div>
-    <div class="select-grid cols3" id="actionGrid" style="margin-top:10px;"></div>
-    <label class="field-label" style="margin-top:16px;">How many times per action?</label>
-    <div class="count-row">
-      <button class="count-btn" onclick="changeCount(-1)">−</button>
-      <div class="count-display" id="countDisplay">1</div>
-      <button class="count-btn" onclick="changeCount(1)">+</button>
-      <div class="count-label">times each</div>
-    </div>
-    <label class="field-label" style="margin-top:16px;">Object state</label>
-    <div class="select-grid cols2" id="stateGrid">
-      <button class="sel-btn active" id="stateOn" onclick="selectState('on')">⚡ On / Active</button>
-      <button class="sel-btn" id="stateOff" onclick="selectState('off')">⬜ Off / Passive</button>
-    </div>
-    <label class="field-label" style="margin-top:16px;">Movement path — choose 3 locations <span class="sublabel" id="locCountLabel">0 of 3 chosen</span></label>
-    <div class="loc-scroll" id="locationScroll"></div>
-    <div class="path-summary" id="pathSummary">No locations chosen yet.</div>
-    <div class="btn-row" style="margin-top:16px;">
-      <button class="btn primary" onclick="generateInstruction()">✦ Generate instruction &amp; diagram →</button>
-    </div>
-  </div>
 
-  <div id="saveStatus"></div>
+    <div style="width:min(100%,460px);display:flex;justify-content:flex-end;">
+      <button class="btn soft" id="resetBtn" onclick="doReset()" style="font-size:11px;padding:7px 14px;">↺ New image</button>
+    </div>
 
-  <div id="diagramWrap">
-    <div class="diagram-card">
-      <div class="diagram-eyebrow">✦ Step 3 of 4 · Instruction generated — saved to dashboard</div>
-      <div class="diagram-title" id="diagramTitle">—</div>
-      <svg id="stageSvg" viewBox="0 0 440 440" xmlns="http://www.w3.org/2000/svg"></svg>
-      <div class="instruction-box">
-        <div class="instruction-text" id="instructionText">—</div>
-        <div class="instruction-sub" id="instructionSub">—</div>
-        <div style="margin-top:10px;padding-top:10px;border-top:1px solid rgba(255,80,150,.15);font-size:11px;color:var(--muted);line-height:1.65;">
-          ✦ This instruction has been saved as data. You do not deliver it.<br>
-          View it on the <a href="http://care-tech.org/caretech-results-dashboard.html" target="_blank" style="color:var(--candy);text-decoration:none;">CAREtech live results dashboard ↗</a>
+    <div class="step-panel" id="stepIdentify">
+      <div class="eyebrow">✦ Step 1 of 4 · Identify the image</div>
+      <div style="display:flex;gap:12px;align-items:center;margin-bottom:14px;">
+        <img id="identifyImg" style="width:80px;height:80px;border-radius:10px;object-fit:cover;border:1.5px solid var(--border2);flex-shrink:0;" src="" alt="">
+      </div>
+      <label class="field-label" style="color:var(--blush);font-size:12px;letter-spacing:.1em;">What object do you see in this image?<span class="sublabel" style="color:rgba(255,180,210,.55);">tap an example or type your own</span></label>
+      <input class="text-input" type="text" id="objectInput" placeholder="e.g. ironing board, vacuum, laundry basket…" autocomplete="off">
+      <div class="example-chips" id="objectChips"></div>
+      <label class="field-label" style="color:var(--blush);font-size:12px;letter-spacing:.1em;margin-top:14px;">Describe the task being completed<span class="sublabel" style="color:rgba(255,180,210,.55);">tap an example or type your own</span></label>
+      <input class="text-input" type="text" id="describeInput" placeholder="e.g. fold laundry, pour some tea, sweep the floor…" autocomplete="off">
+      <div class="example-chips" id="taskChips"></div>
+      <div class="btn-row" style="margin-top:14px;">
+        <button class="btn primary" onclick="advanceToBuilder()">✦ Continue to builder →</button>
+      </div>
+    </div>
+
+    <div class="step-panel" id="stepBuilder">
+      <div class="eyebrow">✦ Step 2 of 4 · Build the instruction</div>
+      <div class="card-title">Choose 4 actions. Set count, state, and 3 movement locations.</div>
+      <label class="field-label">Choose 4 actions <span class="sublabel" id="actionCountLabel">0 of 4 chosen</span></label>
+      <div class="action-slots" id="actionSlots">
+        <div class="action-slot" id="slot0">Action 1 — not chosen</div>
+        <div class="action-slot" id="slot1">Action 2 — not chosen</div>
+        <div class="action-slot" id="slot2">Action 3 — not chosen</div>
+        <div class="action-slot" id="slot3">Action 4 — not chosen</div>
+      </div>
+      <div class="select-grid cols3" id="actionGrid" style="margin-top:10px;"></div>
+      <label class="field-label" style="margin-top:16px;">How many times per action?</label>
+      <div class="count-row">
+        <button class="count-btn" onclick="changeCount(-1)">−</button>
+        <div class="count-display" id="countDisplay">1</div>
+        <button class="count-btn" onclick="changeCount(1)">+</button>
+        <div class="count-label">times each</div>
+      </div>
+      <label class="field-label" style="margin-top:16px;">Object state</label>
+      <div class="select-grid cols2" id="stateGrid">
+        <button class="sel-btn active" id="stateOn" onclick="selectState('on')">⚡ On / Active</button>
+        <button class="sel-btn" id="stateOff" onclick="selectState('off')">⬜ Off / Passive</button>
+      </div>
+      <label class="field-label" style="margin-top:16px;">Movement path — choose 3 locations <span class="sublabel" id="locCountLabel">0 of 3 chosen</span></label>
+      <div class="loc-scroll" id="locationScroll"></div>
+      <div class="path-summary" id="pathSummary">No locations chosen yet.</div>
+      <div class="btn-row" style="margin-top:16px;">
+        <button class="btn primary" onclick="generateInstruction()">✦ Generate instruction &amp; diagram →</button>
+      </div>
+    </div>
+
+    <div id="saveStatus"></div>
+
+    <div id="diagramWrap">
+      <div class="diagram-card">
+        <div class="diagram-eyebrow">✦ Step 3 of 4 · Instruction generated — saved to dashboard</div>
+        <div class="diagram-title" id="diagramTitle">—</div>
+        <svg id="stageSvg" viewBox="0 0 440 440" xmlns="http://www.w3.org/2000/svg"></svg>
+        <div class="instruction-box">
+          <div class="instruction-text" id="instructionText">—</div>
+          <div class="instruction-sub" id="instructionSub">—</div>
+          <div style="margin-top:10px;padding-top:10px;border-top:1px solid rgba(255,80,150,.15);font-size:11px;color:var(--muted);line-height:1.65;">
+            ✦ This instruction has been saved as data. You do not deliver it.<br>
+            View it on the <a href="http://care-tech.org/caretech-results-dashboard.html" target="_blank" style="color:var(--candy);text-decoration:none;">CAREtech live results dashboard ↗</a>
+          </div>
+        </div>
+        <div class="btn-row">
+          <button class="btn speak" onclick="speakInstruction()">🔊 Read instruction aloud</button>
+          <button class="btn soft" onclick="doReset()">↺ Start over</button>
+        </div>
+        <div class="btn-row" style="margin-top:6px;">
+          <a class="btn primary" href="https://care-tech.org/hit.html">✦ Advance to next task</a>
         </div>
       </div>
-      <div class="btn-row">
-        <button class="btn speak" onclick="speakInstruction()">🔊 Read instruction aloud</button>
-        <button class="btn soft" onclick="doReset()">↺ Start over</button>
-      </div>
-      <div class="btn-row" style="margin-top:6px;">
-        <a class="btn primary" href="https://care-tech.org/hit.html">✦ Advance to next task</a>
-      </div>
     </div>
-  </div>
+
+  </div><!-- /taskContent -->
 
   <div class="wordmark">✦ carebot-42 · data for domestic &amp; presentation work · caretech ✦</div>
 </div>
 
-<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.0/p5.min.js"></script>
 
 <script>
@@ -264,14 +329,127 @@ if (!CanvasRenderingContext2D.prototype.roundRect) {
 function updateClock(){const n=new Date(),p=v=>String(v).padStart(2,'0');document.getElementById('sysTime').textContent=p(n.getHours())+':'+p(n.getMinutes());}
 setInterval(updateClock,1000);updateClock();
 
-/* ── FIREBASE INIT ── */
-let fbReady=false,fbDb=null;
-try{
-  const FB_CFG={apiKey:"AIzaSyCZFDU-WlSmHqjXTs1Ox0nf9xeJU_xbaX0",authDomain:"collaborativemashup.firebaseapp.com",databaseURL:"https://collaborativemashup-default-rtdb.firebaseio.com",projectId:"collaborativemashup",storageBucket:"collaborativemashup.firebasestorage.app",messagingSenderId:"562437984610",appId:"1:562437984610:web:9f3711c26e097bc8ef9c3b"};
-  const fbApp=firebase.apps.length?firebase.app():firebase.initializeApp(FB_CFG);
-  fbDb=firebase.database(fbApp);
-  fbReady=true;
-}catch(e){console.error('Firebase init failed:',e);}
+/* ═══════════════════════════════════════
+   WORKER ID GATE
+═══════════════════════════════════════ */
+const WORKER_KEY = 'caretech_worker_id';
+let currentWorkerId = '';
+let sketchStarted = false;
+
+function getStoredWorkerId() {
+  try {
+    // 1. MTurk URL param (injected by assignment page)
+    const params = new URLSearchParams(location.search);
+    const urlWid = params.get('workerId') || params.get('wid') || params.get('worker_id');
+    if (urlWid && urlWid.trim().length >= 3) return urlWid.trim();
+    // 2. localStorage fallback
+    const stored = localStorage.getItem(WORKER_KEY);
+    if (stored && stored.trim().length >= 3) return stored.trim();
+  } catch(e) {}
+  return '';
+}
+
+function submitWorkerId() {
+  const raw = (document.getElementById('workerIdInput').value || '').trim();
+  if (!raw || raw.length < 3) {
+    const inp = document.getElementById('workerIdInput');
+    inp.classList.remove('shake');
+    void inp.offsetWidth; // reflow to restart animation
+    inp.classList.add('shake');
+    setTimeout(() => inp.classList.remove('shake'), 400);
+    return;
+  }
+  currentWorkerId = raw;
+  try { localStorage.setItem(WORKER_KEY, raw); } catch(e) {}
+  unlockTask(raw);
+}
+
+function unlockTask(wid) {
+  currentWorkerId = wid;
+  // hide gate, show badge
+  document.getElementById('workerGate').style.display = 'none';
+  const badge = document.getElementById('widBadge');
+  badge.style.display = 'flex';
+  document.getElementById('widBadgeValue').textContent = wid;
+  // reveal task content
+  const tc = document.getElementById('taskContent');
+  tc.style.visibility = 'visible';
+  tc.style.pointerEvents = '';
+  // init p5 now that canvas container is visible
+  if (!sketchStarted) initSketch();
+}
+
+function resetWorkerId() {
+  currentWorkerId = '';
+  try { localStorage.removeItem(WORKER_KEY); } catch(e) {}
+  document.getElementById('widBadge').style.display = 'none';
+  const tc = document.getElementById('taskContent');
+  tc.style.visibility = 'hidden';
+  tc.style.pointerEvents = 'none';
+  document.getElementById('workerIdInput').value = '';
+  document.getElementById('gateValidMark').style.display = 'none';
+  document.getElementById('workerGate').style.display = 'block';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// live validation feedback on input
+(function() {
+  const inp = document.getElementById('workerIdInput');
+  const mark = document.getElementById('gateValidMark');
+  inp.addEventListener('input', () => {
+    const ok = inp.value.trim().length >= 3;
+    inp.classList.toggle('valid', ok);
+    mark.style.display = ok ? 'block' : 'none';
+  });
+  inp.addEventListener('keydown', e => { if (e.key === 'Enter') submitWorkerId(); });
+})();
+
+// auto-unlock if Worker ID already stored or in URL
+(function() {
+  const stored = getStoredWorkerId();
+  if (stored) {
+    document.getElementById('workerIdInput').value = stored;
+    // tiny delay so layout paints first
+    setTimeout(() => unlockTask(stored), 40);
+  }
+})();
+
+/* ── FIREBASE INIT (dynamic loader — SDKs injected on demand) ── */
+let fbReady=false,fbDb=null,fbInitPromise=null;
+const FB_CFG={apiKey:"AIzaSyCZFDU-WlSmHqjXTs1Ox0nf9xeJU_xbaX0",authDomain:"collaborativemashup.firebaseapp.com",databaseURL:"https://collaborativemashup-default-rtdb.firebaseio.com",projectId:"collaborativemashup",storageBucket:"collaborativemashup.firebasestorage.app",messagingSenderId:"562437984610",appId:"1:562437984610:web:9f3711c26e097bc8ef9c3b"};
+const FB_SDKS=[
+  'https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js',
+  'https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js'
+];
+
+function loadScript(src){
+  return new Promise((resolve,reject)=>{
+    if(document.querySelector(`script[src="${src}"]`)){resolve();return;}
+    const s=document.createElement('script');
+    s.src=src; s.async=false;
+    s.onload=resolve;
+    s.onerror=()=>reject(new Error('Failed to load: '+src));
+    document.head.appendChild(s);
+  });
+}
+
+function ensureFirebase(){
+  if(fbReady)return Promise.resolve(true);
+  if(fbInitPromise)return fbInitPromise;
+  fbInitPromise=FB_SDKS.reduce((chain,src)=>chain.then(()=>loadScript(src)),Promise.resolve())
+    .then(()=>{
+      const fbApp=firebase.apps.length?firebase.app():firebase.initializeApp(FB_CFG);
+      fbDb=firebase.database(fbApp);
+      fbReady=true;
+      return true;
+    })
+    .catch(e=>{
+      fbInitPromise=null; // allow retry
+      console.error('Firebase load failed:',e);
+      return false;
+    });
+  return fbInitPromise;
+}
 
 /* ── DATA ── */
 const ASSET_BASE='./images';
@@ -367,123 +545,119 @@ function selectState(s){selectedState=s;document.getElementById('stateOn').class
 
 /* ── P5 SKETCH ── */
 let imgs=[],currentIndex=0,order=[],lastSwitch=0;
+let p5Instance=null;
 
-new p5(function(p) {
-  p.preload = function() {
-    const exts=['.jpg','.jpeg','.png','.JPG','.JPEG','.PNG'];
-    imgs = new Array(items.length);
-    items.forEach((it, ix) => {
-      const cands = exts.map(e => `${ASSET_BASE}/robot${it.idx}${e}`);
-      const attempt = k => {
-        if(k >= cands.length){
-          const pg = p.createGraphics(200, 200);
-          pg.background(20, 0, 10); pg.fill(255, 150, 180);
-          pg.textAlign(p.CENTER, p.CENTER); pg.textSize(11);
-          pg.text(`robot${it.idx}`, 100, 100);
-          imgs[ix] = pg; return;
-        }
-        p.loadImage(cands[k], img => { imgs[ix]=img; items[ix].resolvedSrc=cands[k]; }, () => attempt(k+1));
-      };
-      attempt(0);
-    });
-  };
+function initSketch(){
+  if(sketchStarted)return;
+  sketchStarted=true;
 
-  p.setup = function() {
-    const frame = document.getElementById('game-frame');
-    const c = p.createCanvas(frame.clientWidth || 400, frame.clientHeight || 600);
-    c.parent('game-frame');
-    p.imageMode(p.CENTER); p.noStroke();
-    order = makeOrder(items.length);
-    currentIndex = Math.floor(Math.random() * items.length);
-    lastSwitch = p.millis();
-  };
+  p5Instance=new p5(function(p) {
+    p.preload = function() {
+      const exts=['.jpg','.jpeg','.png','.JPG','.JPEG','.PNG'];
+      imgs = new Array(items.length);
+      items.forEach((it, ix) => {
+        const cands = exts.map(e => `${ASSET_BASE}/robot${it.idx}${e}`);
+        const attempt = k => {
+          if(k >= cands.length){
+            const pg = p.createGraphics(200, 200);
+            pg.background(20, 0, 10); pg.fill(255, 150, 180);
+            pg.textAlign(p.CENTER, p.CENTER); pg.textSize(11);
+            pg.text(`robot${it.idx}`, 100, 100);
+            imgs[ix] = pg; return;
+          }
+          p.loadImage(cands[k], img => { imgs[ix]=img; items[ix].resolvedSrc=cands[k]; }, () => attempt(k+1));
+        };
+        attempt(0);
+      });
+    };
 
-  /* ── LAYOUT: image fills the full card box ── */
-  function getLayout() {
-    const PAD = 14;
-    const boxW = p.width - PAD * 2;
-    // Short pill shape — height is 1/3 of width to match aspect-ratio:3/1
-    const boxH = Math.max(80, p.height - PAD * 2);
-    const boxX = p.width / 2;
-    const boxY = p.height / 2;
-    // Image fills the full interior of the box (with a small inset for the border)
-    const inset = 3;
-    const imgW = boxW - inset * 2;
-    const imgH = boxH - inset * 2;
-    return { boxX, boxY, boxW, boxH, imgW, imgH, PAD };
-  }
-
-  p.draw = function() {
-    p.background(14, 0, 8);
-    if(lockedIndex === -1 && p.millis() - lastSwitch > SWITCH_MS){
-      currentIndex = (currentIndex + 1 + Math.floor(Math.random()*4)) % items.length;
+    p.setup = function() {
+      const frame = document.getElementById('game-frame');
+      const c = p.createCanvas(frame.clientWidth || 400, frame.clientHeight || 600);
+      c.parent('game-frame');
+      p.imageMode(p.CENTER); p.noStroke();
+      order = makeOrder(items.length);
+      currentIndex = Math.floor(Math.random() * items.length);
       lastSwitch = p.millis();
+    };
+
+    function getLayout() {
+      const PAD = 14;
+      const boxW = p.width - PAD * 2;
+      const boxH = Math.max(80, p.height - PAD * 2);
+      const boxX = p.width / 2;
+      const boxY = p.height / 2;
+      const inset = 3;
+      const imgW = boxW - inset * 2;
+      const imgH = boxH - inset * 2;
+      return { boxX, boxY, boxW, boxH, imgW, imgH, PAD };
     }
-    const L = getLayout();
-    const showIdx = order[currentIndex];
-    const img = imgs[showIdx];
-    const task = items[showIdx];
-    const ctx = p.drawingContext;
 
-    // Card background
-    p.push();
-    const grad = ctx.createLinearGradient(L.boxX - L.boxW/2, L.boxY - L.boxH/2, L.boxX + L.boxW/2, L.boxY + L.boxH/2);
-    grad.addColorStop(0,'rgba(140,0,45,.95)'); grad.addColorStop(.5,'rgba(100,0,32,.98)'); grad.addColorStop(1,'rgba(70,0,22,.98)');
-    ctx.save(); ctx.fillStyle=grad; ctx.beginPath(); ctx.roundRect(L.boxX-L.boxW/2, L.boxY-L.boxH/2, L.boxW, L.boxH, 18); ctx.fill(); ctx.restore();
+    p.draw = function() {
+      p.background(14, 0, 8);
+      if(lockedIndex === -1 && p.millis() - lastSwitch > SWITCH_MS){
+        currentIndex = (currentIndex + 1 + Math.floor(Math.random()*4)) % items.length;
+        lastSwitch = p.millis();
+      }
+      const L = getLayout();
+      const showIdx = order[currentIndex];
+      const img = imgs[showIdx];
+      const ctx = p.drawingContext;
 
-    // Top shimmer line
-    const sh = ctx.createLinearGradient(L.boxX-L.boxW/2,0,L.boxX+L.boxW/2,0);
-    sh.addColorStop(0,'rgba(255,90,140,0)'); sh.addColorStop(.35,'rgba(255,133,179,.7)'); sh.addColorStop(.5,'rgba(255,45,107,.9)'); sh.addColorStop(.65,'rgba(255,133,179,.7)'); sh.addColorStop(1,'rgba(255,90,140,0)');
-    ctx.save(); ctx.fillStyle=sh; ctx.fillRect(L.boxX-L.boxW/2+12, L.boxY-L.boxH/2, L.boxW-24, 1.5); ctx.restore();
+      p.push();
+      const grad = ctx.createLinearGradient(L.boxX - L.boxW/2, L.boxY - L.boxH/2, L.boxX + L.boxW/2, L.boxY + L.boxH/2);
+      grad.addColorStop(0,'rgba(140,0,45,.95)'); grad.addColorStop(.5,'rgba(100,0,32,.98)'); grad.addColorStop(1,'rgba(70,0,22,.98)');
+      ctx.save(); ctx.fillStyle=grad; ctx.beginPath(); ctx.roundRect(L.boxX-L.boxW/2, L.boxY-L.boxH/2, L.boxW, L.boxH, 18); ctx.fill(); ctx.restore();
 
-    // Card border
-    ctx.save(); ctx.strokeStyle='rgba(255,100,155,.4)'; ctx.lineWidth=1.5; ctx.beginPath(); ctx.roundRect(L.boxX-L.boxW/2, L.boxY-L.boxH/2, L.boxW, L.boxH, 18); ctx.stroke(); ctx.restore();
+      const sh = ctx.createLinearGradient(L.boxX-L.boxW/2,0,L.boxX+L.boxW/2,0);
+      sh.addColorStop(0,'rgba(255,90,140,0)'); sh.addColorStop(.35,'rgba(255,133,179,.7)'); sh.addColorStop(.5,'rgba(255,45,107,.9)'); sh.addColorStop(.65,'rgba(255,133,179,.7)'); sh.addColorStop(1,'rgba(255,90,140,0)');
+      ctx.save(); ctx.fillStyle=sh; ctx.fillRect(L.boxX-L.boxW/2+12, L.boxY-L.boxH/2, L.boxW-24, 1.5); ctx.restore();
 
-    // Image — full-bleed inside the card with rounded clip
-    if(img && img.width > 0){
-      const ix = L.boxX, iy = L.boxY;
-      const iw = L.imgW, ih = L.imgH;
-      ctx.save();
-      ctx.beginPath();
-      ctx.roundRect(ix - iw/2, iy - ih/2, iw, ih, 14);
-      ctx.clip();
-      p.image(img, ix, iy, iw, ih);
-      ctx.restore();
-      // Inner border over image
-      ctx.save(); ctx.strokeStyle='rgba(255,133,179,.5)'; ctx.lineWidth=2; ctx.beginPath(); ctx.roundRect(ix-iw/2, iy-ih/2, iw, ih, 14); ctx.stroke(); ctx.restore();
-    } else {
-      p.fill(255,255,255,20); p.rectMode(p.CENTER); p.rect(L.boxX, L.boxY, L.imgW, L.imgH, 14);
-      p.fill(255,160,200); p.textAlign(p.CENTER, p.CENTER); p.textSize(13); p.text('Loading…', L.boxX, L.boxY);
-    }
-    p.pop();
+      ctx.save(); ctx.strokeStyle='rgba(255,100,155,.4)'; ctx.lineWidth=1.5; ctx.beginPath(); ctx.roundRect(L.boxX-L.boxW/2, L.boxY-L.boxH/2, L.boxW, L.boxH, 18); ctx.stroke(); ctx.restore();
 
-    // Bottom hint label
-    p.push(); p.fill(255,150,190,80); p.textAlign(p.CENTER, p.BOTTOM); p.textSize(10);
-    p.text(lockedIndex===-1?'✦ tap image to select ✦':'✦ selected — see below ✦', p.width/2, p.height-10);
-    p.pop();
+      if(img && img.width > 0){
+        const ix = L.boxX, iy = L.boxY;
+        const iw = L.imgW, ih = L.imgH;
+        ctx.save();
+        ctx.beginPath();
+        ctx.roundRect(ix - iw/2, iy - ih/2, iw, ih, 14);
+        ctx.clip();
+        p.image(img, ix, iy, iw, ih);
+        ctx.restore();
+        ctx.save(); ctx.strokeStyle='rgba(255,133,179,.5)'; ctx.lineWidth=2; ctx.beginPath(); ctx.roundRect(ix-iw/2, iy-ih/2, iw, ih, 14); ctx.stroke(); ctx.restore();
+      } else {
+        p.fill(255,255,255,20); p.rectMode(p.CENTER); p.rect(L.boxX, L.boxY, L.imgW, L.imgH, 14);
+        p.fill(255,160,200); p.textAlign(p.CENTER, p.CENTER); p.textSize(13); p.text('Loading…', L.boxX, L.boxY);
+      }
+      p.pop();
 
-    if(lockedIndex !== -1) p.noLoop();
-  };
+      p.push(); p.fill(255,150,190,80); p.textAlign(p.CENTER, p.BOTTOM); p.textSize(10);
+      p.text(lockedIndex===-1?'✦ tap image to select ✦':'✦ selected — see below ✦', p.width/2, p.height-10);
+      p.pop();
 
-  p.mousePressed = function() {
-    if(lockedIndex !== -1) return;
-    const L = getLayout();
-    if(
-      p.mouseX >= L.boxX - L.imgW/2 && p.mouseX <= L.boxX + L.imgW/2 &&
-      p.mouseY >= L.boxY - L.imgH/2 && p.mouseY <= L.boxY + L.imgH/2
-    ){
-      lockedIndex = order[currentIndex];
-      showIdentify(lockedIndex);
-    }
-  };
+      if(lockedIndex !== -1) p.noLoop();
+    };
 
-  p.touchStarted = function(e) {
-    const cnv = document.getElementById('defaultCanvas0'); if(!cnv) return;
-    const rect = cnv.getBoundingClientRect(), t = (e.touches&&e.touches[0])||(e.changedTouches&&e.changedTouches[0]); if(!t) return;
-    if(t.clientX<rect.left||t.clientX>rect.right||t.clientY<rect.top||t.clientY>rect.bottom) return;
-    p.mousePressed();
-  };
-});
+    p.mousePressed = function() {
+      if(lockedIndex !== -1) return;
+      const L = getLayout();
+      if(
+        p.mouseX >= L.boxX - L.imgW/2 && p.mouseX <= L.boxX + L.imgW/2 &&
+        p.mouseY >= L.boxY - L.imgH/2 && p.mouseY <= L.boxY + L.imgH/2
+      ){
+        lockedIndex = order[currentIndex];
+        showIdentify(lockedIndex);
+      }
+    };
+
+    p.touchStarted = function(e) {
+      const cnv = document.getElementById('defaultCanvas0'); if(!cnv) return;
+      const rect = cnv.getBoundingClientRect(), t = (e.touches&&e.touches[0])||(e.changedTouches&&e.changedTouches[0]); if(!t) return;
+      if(t.clientX<rect.left||t.clientX>rect.right||t.clientY<rect.top||t.clientY>rect.bottom) return;
+      p.mousePressed();
+    };
+  });
+}
 
 function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}}
 function makeOrder(n){const a=Array.from({length:n},(_,i)=>i);shuffle(a);return a;}
@@ -524,16 +698,31 @@ function generateInstruction(){
   saveInstructionData();
 }
 
-/* ── SAVE ── */
+/* ── SAVE — now includes workerId ── */
 function setSaveStatus(state,msg){
   const el=document.getElementById('saveStatus');
   el.className=state;el.textContent=msg;el.style.display='block';
   if(state==='saved')setTimeout(()=>{el.style.display='none';},4000);
 }
-function saveInstructionData(){
-  if(!fbReady||!fbDb){setSaveStatus('error','⚠ Firebase not ready — data not saved.');return;}
+async function saveInstructionData(){
+  setSaveStatus('saving','✦ Connecting to dashboard…');
+  const ok=await ensureFirebase();
+  if(!ok||!fbDb){setSaveStatus('error','⚠ Could not reach Firebase — check your connection.');return;}
   const task=items[lockedIndex];
-  const payload={type:'cb42_instruction_v2',taskTitle:task.title,taskCaption:task.caption,objectSeen:document.getElementById('objectInput').value.trim(),taskDescription:document.getElementById('describeInput').value.trim(),actions:selectedActions.map(a=>a.label),count:actionCount,state:selectedState,locations:selectedLocations.map(l=>l.label),instruction:lastInstruction,ts:firebase.database.ServerValue.TIMESTAMP};
+  const payload={
+    type:'cb42_instruction_v2',
+    workerId: currentWorkerId || 'anonymous',
+    taskTitle:task.title,
+    taskCaption:task.caption,
+    objectSeen:document.getElementById('objectInput').value.trim(),
+    taskDescription:document.getElementById('describeInput').value.trim(),
+    actions:selectedActions.map(a=>a.label),
+    count:actionCount,
+    state:selectedState,
+    locations:selectedLocations.map(l=>l.label),
+    instruction:lastInstruction,
+    ts:firebase.database.ServerValue.TIMESTAMP
+  };
   setSaveStatus('saving','✦ Saving to dashboard…');
   fbDb.ref('cb42Instructions').push(payload)
     .then(()=>{setSaveStatus('saved','✦ Saved to dashboard ✓');})
@@ -548,6 +737,7 @@ function doReset(){
   document.getElementById('hint').style.display='block';
   order=makeOrder(items.length);currentIndex=Math.floor(Math.random()*items.length);
   lastSwitch=0;
+  if(p5Instance)p5Instance.loop();
   window.scrollTo({top:0,behavior:'smooth'});
 }
 
