@@ -4,9 +4,9 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <title>✦ CAREBOT-24 ✦ Technology Work</title>
-<script src="https://cdn.jsdelivr.net/npm/p5@1.9.2/lib/p5.min.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/p5@1.9.2/lib/p5.min.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
 <style>
   :root {
@@ -243,8 +243,32 @@ let discovering=true;
 const sessionStart=new Date().toISOString();
 fbSaveSession({startedAt:sessionStart,status:'started',totalImages:0,totalBoxes:0});
 
-function loadImageAsync(p){return new Promise((res,rej)=>{const im=loadImage(p,()=>res(im),()=>rej(new Error('load-failed')));});}
-async function discoverImages(){let i=0;try{for(;i<MAX_ATTEMPTS;i++){const img=await loadImageAsync(FOLDER_PATH+FILE_PREFIX+i+FILE_EXT);imgs.push(img);imgMeta.push({boxes:[]});}}catch(e){}finally{discovering=false;fbSaveSession({totalImages:imgs.length});}}
+/* Discover images via HEAD requests (no p5 dependency), then load with p5 loadImage inside setup */
+async function discoverImages(){
+  const urls=[];
+  try{
+    for(let i=0;i<MAX_ATTEMPTS;i++){
+      const path=FOLDER_PATH+FILE_PREFIX+i+FILE_EXT;
+      const resp=await fetch(path,{method:'HEAD'});
+      if(!resp.ok)break;
+      urls.push(path);
+    }
+  }catch(e){}
+  if(urls.length===0){discovering=false;fbSaveSession({totalImages:0});return;}
+  imgs=new Array(urls.length).fill(null);
+  imgMeta=urls.map(()=>({boxes:[]}));
+  let loaded=0;
+  urls.forEach((path,idx)=>{
+    loadImage(path,img=>{
+      imgs[idx]=img;
+      loaded++;
+      if(loaded===urls.length){discovering=false;updateScaleInfo();fbSaveSession({totalImages:imgs.length});}
+    },()=>{
+      loaded++;
+      if(loaded===urls.length){discovering=false;updateScaleInfo();fbSaveSession({totalImages:imgs.length});}
+    });
+  });
+}
 
 function calcTotalBoxArea(){let t=0;for(let i=0;i<imgMeta.length;i++)for(const r of imgMeta[i].boxes)t+=r.w*r.h;return t;}
 function calcTotalImageArea(){let t=0;for(const img of imgs)if(img)t+=img.width*img.height;return t;}
@@ -281,7 +305,7 @@ function draw(){
 }
 
 function drawGrad(a,b,c){const ctx=drawingContext,g=ctx.createLinearGradient(0,0,0,height);g.addColorStop(0,toRGBA(a));g.addColorStop(.5,toRGBA(b));g.addColorStop(1,toRGBA(c));ctx.save();ctx.fillStyle=g;ctx.fillRect(0,0,width,height);ctx.restore();}
-function toRGBA(col){return'rgba('+red(col)|0+','+green(col)|0+','+blue(col)|0+','+(alpha(col)/255)+')';}
+function toRGBA(col){return'rgba('+(red(col)|0)+','+(green(col)|0)+','+(blue(col)|0)+','+(alpha(col)/255)+')';}
 function drawMsg(m){push();fill(0,0,100);noStroke();textAlign(CENTER,CENTER);textSize(16);text(m,width/2,height/2);pop();}
 function drawCompletion(){push();noStroke();fill(0,0,100,.7);textAlign(CENTER,CENTER);textSize(18);text('Task complete! See your results below ✦',width/2,height/2);pop();if(!document.getElementById('final-link'))injectCompletionCard();}
 
