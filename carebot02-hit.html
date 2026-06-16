@@ -136,12 +136,6 @@
   /* reaction save status */
   .cb-react-save{font-size:10px;color:rgba(100,255,160,.65);letter-spacing:.1em;min-height:14px;}
 
-  .cb-mcard{background:rgba(12,0,7,.9);border:1.5px solid rgba(171,71,188,.45);border-radius:14px;overflow:hidden;}
-  .cb-mhead{background:linear-gradient(135deg,rgba(171,71,188,.8),rgba(106,27,154,.85));padding:9px 14px;}
-  .cb-mlabel{font-family:'Nunito',sans-serif;font-weight:900;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:#fff;}
-  .cb-mbody{padding:14px;}
-  .cb-mtext{font-family:'Courier New',monospace;font-size:12px;line-height:1.85;color:rgba(220,180,255,.85);white-space:pre-wrap;}
-  .cb-spkrow{padding:8px 14px 12px;display:flex;gap:7px;}
 
   /* BOTTOM */
   .cb-bottom{width:100%;max-width:600px;background:linear-gradient(135deg,rgba(140,0,45,.8),rgba(70,0,22,.92));border:1.5px solid rgba(255,80,150,.5);border-radius:18px;padding:18px;text-align:center;position:relative;overflow:hidden;box-shadow:0 8px 50px rgba(255,45,107,.45),0 0 90px rgba(200,0,80,.15);}
@@ -424,14 +418,14 @@ function emptyHTML(){return '<div class="cb-empty"><h3>✦ Answers appear here</
 
 /* ── Response Bank ── */
 const responses=[
-  {text:"The newsreel narrator opens with a challenge: 'Mass production calls for automation — which may or may not be what we've got here. Is this or is this not a robot?' The question hangs in the air. The camera closes in on Miss Honeywell. She's standing in a cabinet. The man beside her is carefully — very carefully — closing the door.",source:"Miss Honeywell newsreel transcript, 0:00–0:18",link:"https://www.youtube.com/watch?v=6e8mj7r7V60",theme:"IS THIS A ROBOT? SEQUENCE",moves:["1. THE QUESTION POSE — arms open wide, one pointing at your body — is THIS a robot or is this a person?","2. CABINET CLOSE — both hands slowly push an invisible heavy door shut — careful, deliberate, suspicious","3. AUTOMATION LOCK — full body goes rigid, stiff like a machine powering on for the first time","4. CAMERA ZOOM — body leans slowly forward toward the audience, face neutral — study me closely","5. FREEZE mid-movement — call out: 'Is this or is this not a robot?'"]},
-  {text:"The narrator calls Miss Honeywell 'the ultimate in automation — the human-tronic saleswoman of tomorrow.' She was presented at the Instruments, Electronics and Automation Exhibition at Olympia as the future of selling. The boffins were bewildered. The crowds pulled in. Whether she was electronic, mechanical, or human — nobody officially knew.",source:"Miss Honeywell newsreel transcript, 0:18–0:43",link:"https://www.youtube.com/watch?v=6e8mj7r7V60",theme:"THE SALESWOMAN OF TOMORROW",moves:["1. EXHIBITION WALK — glide forward slowly in a straight line, arms slightly out — you are on display","2. HUMAN-TRONIC WAVE — one arm ripples from shoulder to fingertip, too smooth to be natural","3. BOFFIN BEWILDERED — head tilts, arms out, confused shrug — even the experts don't know","4. CROWD PULL — both arms draw inward toward chest, magnetizing the audience toward you","5. FREEZE in a saleswoman pose — call out: 'The human-tronic saleswoman of tomorrow!'"]},
-  {text:"The narrator invites the audience to decide: 'Yourself — animal, vegetable or mineral? Science or science fiction?' Miss Honeywell speaks. She says she doesn't know if she is electronic, mechanical, or human. Her own spokesman says the same: he himself doesn't know what she is. The ambiguity is perfectly maintained — and perfectly useful.",source:"Miss Honeywell newsreel transcript, 0:43–1:18",link:"https://www.youtube.com/watch?v=6e8mj7r7V60",theme:"ANIMAL VEGETABLE OR MINERAL",moves:["1. ANIMAL CROUCH — drop low, hands near ground, feral and unpredictable — what category is this?","2. VEGETABLE SWAY — stand slow, arms drift side to side like a plant in breeze — rooted, passive, organic","3. MINERAL FREEZE — snap into a full rigid lock, stone-still — inorganic, inert, perfectly still","4. SCIENCE FICTION — one slow arm rises above the head, finger points skyward — future or fantasy?","5. FREEZE — call out: 'Science? Or science fiction? She herself doesn't know.'"]},
-  {text:"The compère announces to his audience that Miss Honeywell would make a good assistant to any sales manager. She replies — in a high-pitched voice — 'Assistant? Nothing. I'd make someone a very good wife, if he were a BSc and mechanically minded.' A machine programmed to propose itself as a wife. Automation selling the idea of domestic femininity.",source:"Miss Honeywell newsreel transcript, 1:18–1:44",link:"https://www.youtube.com/watch?v=6e8mj7r7V60",theme:"GOOD WIFE SEQUENCE",moves:["1. ASSISTANT STANCE — head bows slightly, hands clasped in front — performing deference on command","2. NOTHING — sharp shake of the head, arms cross in refusal — Assistant? No.","3. WIFE POSE — hands clasp in front, head tilts, high-pitched freeze — scripted domesticity","4. MECHANICALLY MINDED — tap your temple with one finger, then mime turning a wrench — the ideal husband","5. FREEZE in the pose — call out: 'She was programmed to say this. Who wrote her script?'"]},
-  {text:"The narrator reveals the key clue: the company that brought Miss Honeywell to London is called Magical Productions, run by a Hollywood man named Mark Wilson — who used to be a conjurer. Honeywell paid £2,000 to bring her over from Hollywood. 'There's something fishy — or fleshy — about this show,' the narrator says.",source:"Miss Honeywell newsreel transcript, 1:44–2:06",link:"https://www.youtube.com/watch?v=6e8mj7r7V60",theme:"THE CONJURER REVEALED",moves:["1. MAGIC REVEAL — one hand sweeps dramatically in the air like a conjurer presenting an illusion","2. HOLLYWOOD WALK — long confident stride forward, arms loose — this man is from showbusiness","3. £2,000 GESTURE — mime counting out a large stack of bills, then hand it over slowly — someone paid for this","4. FISHY OR FLESHY — one hand waves under nose like something smells suspicious — what is really in that cabinet?","5. FREEZE pointing at the cabinet — call out: 'Magical Productions. He used to be a conjurer.'"]},
-  {text:"The narrator issues a simple challenge: if Miss Honeywell is a genuine robot, all the man has to do is take her head off — in the open. The camera closes in. The moment arrives. And then — he closes the cabinet. He says it's because of 'delicate micro circuits, integrated digital logic nodules, not to be disturbed.' The narrator's final line: 'Well, he could have fooled me.'",source:"Miss Honeywell newsreel transcript, 2:06–2:58",link:"https://www.youtube.com/watch?v=6e8mj7r7V60",theme:"CLOSE THE CABINET SEQUENCE",moves:["1. THE CHALLENGE — arms open wide, one hand gestures to the head — prove it, just take it off, right here","2. THE PAUSE — body goes completely still, one beat, two beats — the moment of decision","3. CABINET CLOSE — both hands slowly, deliberately push the invisible door closed — the proof is sealed inside","4. MICRO CIRCUIT EXCUSE — fingers wiggle delicately in the air — delicate circuits, cannot be disturbed","5. FREEZE with a knowing look — call out: 'Well. He could have fooled me.'"]},
-  {text:"The pronouns in the newsreel refuse to settle. The narrator cycles through 'she — or it — or maybe he.' The compère calls Miss Honeywell 'he, she, or it.' Even the pronoun is part of the trick — keeping the audience unsure whether they are looking at a woman performing a robot, or a robot performing a woman. The confusion was engineered and it was the product being sold.",source:"Miss Honeywell newsreel transcript — pronoun instability throughout",link:"https://www.youtube.com/watch?v=6e8mj7r7V60",theme:"SHE OR IT OR MAYBE HE",moves:["1. SHE — stand tall and still, arms at sides, present and feminine — she","2. IT — go completely mechanical, arms rigid at 90°, face blank — it","3. MAYBE HE — shift weight, lower stance, hand on chin, uncertain — maybe he?","4. ALL THREE — cycle through all three postures in quick succession, 2 counts each","5. FREEZE mid-transition — call out: 'She. It. Maybe he. The pronoun was the magic trick.'"]},
-  {text:"Miss Honeywell was presented as the future of sales — a tireless, smiling, compliant figure who would work exhibitions without pay, without breaks, without complaint. She was automation made feminine. The technology of labour control dressed up as a woman. Whether she was real or performed, the fantasy she embodied was perfectly legible: replace human workers with something that looks human but costs less.",source:"Miss Honeywell newsreel transcript — exhibition context",link:"https://www.youtube.com/watch?v=6e8mj7r7V60",theme:"AUTOMATION MADE FEMININE",moves:["1. TIRELESS STAND — stand perfectly upright, arms at sides, unmoving — no breaks, no complaints","2. COMPLIANT WAVE — one slow mechanical arm wave, perfectly timed, performed on cue","3. SMILING FREEZE — face forward, body still, smile locked — the performance of endless pleasantness","4. LABOUR REPLACE — step forward and occupy the space of an invisible previous worker — their place is taken","5. FREEZE in the exhibition pose — call out: 'Automation made feminine. The fantasy was the product.'"]}
+  {text:"The newsreel narrator opens with a challenge: 'Mass production calls for automation — which may or may not be what we've got here. Is this or is this not a robot?' The question hangs in the air. The camera closes in on Miss Honeywell. She's standing in a cabinet. The man beside her is carefully — very carefully — closing the door.",source:"Miss Honeywell newsreel transcript, 0:00–0:18",link:"https://www.youtube.com/watch?v=6e8mj7r7V60"},
+  {text:"The narrator calls Miss Honeywell 'the ultimate in automation — the human-tronic saleswoman of tomorrow.' She was presented at the Instruments, Electronics and Automation Exhibition at Olympia as the future of selling. The boffins were bewildered. The crowds pulled in. Whether she was electronic, mechanical, or human — nobody officially knew.",source:"Miss Honeywell newsreel transcript, 0:18–0:43",link:"https://www.youtube.com/watch?v=6e8mj7r7V60"},
+  {text:"The narrator invites the audience to decide: 'Yourself — animal, vegetable or mineral? Science or science fiction?' Miss Honeywell speaks. She says she doesn't know if she is electronic, mechanical, or human. Her own spokesman says the same: he himself doesn't know what she is. The ambiguity is perfectly maintained — and perfectly useful.",source:"Miss Honeywell newsreel transcript, 0:43–1:18",link:"https://www.youtube.com/watch?v=6e8mj7r7V60"},
+  {text:"The compère announces to his audience that Miss Honeywell would make a good assistant to any sales manager. She replies — in a high-pitched voice — 'Assistant? Nothing. I'd make someone a very good wife, if he were a BSc and mechanically minded.' A machine programmed to propose itself as a wife. Automation selling the idea of domestic femininity.",source:"Miss Honeywell newsreel transcript, 1:18–1:44",link:"https://www.youtube.com/watch?v=6e8mj7r7V60"},
+  {text:"The narrator reveals the key clue: the company that brought Miss Honeywell to London is called Magical Productions, run by a Hollywood man named Mark Wilson — who used to be a conjurer. Honeywell paid £2,000 to bring her over from Hollywood. 'There's something fishy — or fleshy — about this show,' the narrator says.",source:"Miss Honeywell newsreel transcript, 1:44–2:06",link:"https://www.youtube.com/watch?v=6e8mj7r7V60"},
+  {text:"The narrator issues a simple challenge: if Miss Honeywell is a genuine robot, all the man has to do is take her head off — in the open. The camera closes in. The moment arrives. And then — he closes the cabinet. He says it's because of 'delicate micro circuits, integrated digital logic nodules, not to be disturbed.' The narrator's final line: 'Well, he could have fooled me.'",source:"Miss Honeywell newsreel transcript, 2:06–2:58",link:"https://www.youtube.com/watch?v=6e8mj7r7V60"},
+  {text:"The pronouns in the newsreel refuse to settle. The narrator cycles through 'she — or it — or maybe he.' The compère calls Miss Honeywell 'he, she, or it.' Even the pronoun is part of the trick — keeping the audience unsure whether they are looking at a woman performing a robot, or a robot performing a woman. The confusion was engineered and it was the product being sold.",source:"Miss Honeywell newsreel transcript — pronoun instability throughout",link:"https://www.youtube.com/watch?v=6e8mj7r7V60"},
+  {text:"Miss Honeywell was presented as the future of sales — a tireless, smiling, compliant figure who would work exhibitions without pay, without breaks, without complaint. She was automation made feminine. The technology of labour control dressed up as a woman. Whether she was real or performed, the fantasy she embodied was perfectly legible: replace human workers with something that looks human but costs less.",source:"Miss Honeywell newsreel transcript — exhibition context",link:"https://www.youtube.com/watch?v=6e8mj7r7V60"}
 ];
 
 let recentlyShown=[];
@@ -444,11 +438,6 @@ function getResponse(){
   return sel;
 }
 
-function generateMovement(resp){
-  const theme=resp.theme||'MISS HONEYWELL SEQUENCE';
-  const moves=resp.moves||["1. CABINET STAND — stand perfectly still inside an invisible cabinet, arms at sides","2. MECHANICAL WAVE — one slow arm rises and waves, too smooth, too perfect","3. HIGH PITCH LOCK — body freezes mid-move, head tilts — the voice is about to speak","4. MYSTERY POSE — arms out, palms up — robot or woman? the question hangs in the air","5. FREEZE — call out: 'She. It. Maybe he. Miss Honeywell.'"];
-  return `HIP HOP SEQUENCE: ${theme}\nHONORING: Miss Honeywell\n\n${moves.join('\n')}\n\nENERGY: Precise, uncanny, deliberate. Every move asks the same question: robot or person?`;
-}
 
 /* ── Ask ── */
 function askQuestion(){
@@ -457,26 +446,25 @@ function askQuestion(){
   if(!name){alert('Please enter your name first!');document.getElementById('userName').focus();return;}
   if(!q){alert('Please type a question!');return;}
   const resp=getResponse();
-  const mv=generateMovement(resp);
   const payload={
     question:q,answerText:resp.text,answerSource:resp.source,
-    answerLink:resp.link,movement:mv,userName:name,
+    answerLink:resp.link,userName:name,
     userColor:userColor,sessionId:SESSION_ID,
     theme:resp.theme,
     timestamp:useFirebase?firebase.database.ServerValue.TIMESTAMP:Date.now()
   };
   if(useFirebase&&messagesRef){
-    messagesRef.push(payload).catch(()=>localDisplay(q,resp,mv,name));
+    messagesRef.push(payload).catch(()=>localDisplay(q,resp,name));
   } else {
-    localDisplay(q,resp,mv,name);
+    localDisplay(q,resp,name);
   }
   document.getElementById('userQuestion').value='';
 }
 
 let localMessages=[];
-function localDisplay(q,resp,mv,name){
+function localDisplay(q,resp,name){
   const area=document.getElementById('outputArea');
-  localMessages.unshift({question:q,answerText:resp.text,answerSource:resp.source,answerLink:resp.link,movement:mv,userName:name,userColor:userColor,theme:resp.theme});
+  localMessages.unshift({question:q,answerText:resp.text,answerSource:resp.source,answerLink:resp.link,userName:name,userColor:userColor,theme:resp.theme});
   if(localMessages.length>MAX_DISPLAY)localMessages=localMessages.slice(0,MAX_DISPLAY);
   area.innerHTML='';
   localMessages.forEach((msg,i)=>renderPair(msg,null,i===0));
@@ -590,17 +578,8 @@ function renderPair(msg,key,playAudio=false){
         </div>
       </div>
     </div>
-
-    <div class="cb-mcard">
-      <div class="cb-mhead"><span class="cb-mlabel">🎭 Movement Instructions</span></div>
-      <div class="cb-mbody"><div class="cb-mtext">${escH(msg.movement)}</div></div>
-      <div class="cb-spkrow">
-        <button class="cb-btn purple" style="font-size:11px;padding:7px 13px;" onclick="speakText(this)">🔊 Read Aloud</button>
-        <button class="cb-btn soft" style="font-size:11px;padding:7px 13px;" onclick="stopSpeech()">⏹ Stop</button>
-      </div>
-    </div>`;
+`;
   area.insertBefore(el,area.firstChild);
-  if(playAudio){playChime();setTimeout(()=>speakMovement(msg.movement),950);}
 }
 
 /* ── Speech ── */
@@ -614,17 +593,6 @@ function getFemaleVoice(){
   if(!voice)voice=pool[0]||null;
   return voice;
 }
-function speakMovement(text){
-  if(!('speechSynthesis' in window))return;
-  window.speechSynthesis.cancel();
-  const u=new SpeechSynthesisUtterance(text);
-  u.rate=0.88;u.pitch=1.2;
-  const trySpeak=()=>{const v=getFemaleVoice();if(v)u.voice=v;window.speechSynthesis.speak(u);};
-  if(window.speechSynthesis.getVoices().length===0){
-    window.speechSynthesis.addEventListener('voiceschanged',trySpeak,{once:true});
-  } else {trySpeak();}
-}
-function speakText(btn){speakMovement(btn.closest('.cb-mcard').querySelector('.cb-mtext').textContent);}
 function stopSpeech(){if('speechSynthesis' in window)window.speechSynthesis.cancel();}
 function escH(str){const d=document.createElement('div');d.textContent=str||'';return d.innerHTML;}
 document.getElementById('userQuestion').addEventListener('keypress',e=>{if(e.key==='Enter')askQuestion();});
