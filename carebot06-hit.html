@@ -103,12 +103,6 @@
 
   .cb-react-save{font-size:10px;color:rgba(100,255,160,.65);letter-spacing:.1em;min-height:14px;}
 
-  .cb-mcard{background:rgba(12,0,7,.9);border:1.5px solid rgba(171,71,188,.45);border-radius:14px;overflow:hidden;}
-  .cb-mhead{background:linear-gradient(135deg,rgba(171,71,188,.8),rgba(106,27,154,.85));padding:9px 14px;}
-  .cb-mlabel{font-family:'Nunito',sans-serif;font-weight:900;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:#fff;}
-  .cb-mbody{padding:14px;}
-  .cb-mtext{font-family:'Courier New',monospace;font-size:12px;line-height:1.85;color:rgba(220,180,255,.85);white-space:pre-wrap;}
-  .cb-spkrow{padding:8px 14px 12px;display:flex;gap:7px;}
 
   /* reflection */
   .cb-reflect-card{width:100%;max-width:600px;background:rgba(12,0,7,.92);border:1.5px solid rgba(255,80,150,.5);border-radius:18px;padding:18px;position:relative;overflow:hidden;}
@@ -202,7 +196,7 @@
 
   <div class="cb-bottom">
     <div class="cb-btitle">✦ Task Complete · Ready for your next task?</div>
-    <a class="cb-link" href="hit.html" target="_blank" rel="noopener">✦ Advance to next task</a>
+    <a class="cb-link" href="carebot07-hit.html" target="_blank" rel="noopener">✦ Advance to next task</a>
   </div>
 
   <div class="cb-wmark">✦ carebot-06 / caretech research system · women inventors archive · v2.0 ✦</div>
@@ -285,21 +279,21 @@ document.getElementById('userName').addEventListener('change',function(){current
 function emptyHTML(){return '<div class="cb-empty"><h3>✦ Answers appear here</h3><p>Type a question above and tap Ask</p></div>';}
 
 const responses=[
-  {text:"Katherine G. Johnson co-authored NASA Technical Note D-233 in 1960, presenting mathematical expressions for determining satellite trajectories and orbital mechanics. Her calculations were critical for placing satellites over selected Earth positions—work that helped launch America into space!",source:"NASA Technical Note D-233 (1960)",link:"https://ntrs.nasa.gov/citations/19980227091",inventor:"Katherine Johnson",theme:"ZERO GRAVITY FLOW",moves:["1. SATELLITE ORBIT — one arm sweeps a wide slow arc overhead like a satellite circling Earth","2. TRAJECTORY POP — body leans forward like a rocket launch, then snaps upright with a chest pop","3. CALCULATE & LOCK — mime writing equations fast with one hand, then freeze both arms at 90°","4. EARTH SPIN — pivot one full slow turn on the spot, arms out like the globe rotating","5. FREEZE pointing at the sky — call out: 'Katherine Johnson sent us to space!'"]},
-  {text:"Mary E. Winter patented an adding machine on May 23, 1882 (Patent No. 258,518). Her sophisticated mechanical calculator used ratchet wheels, pawls, and operating keys numbered 1–10 to perform addition up to 600.",source:"U.S. Patent No. 258,518 (1882)",link:"https://patents.google.com/patent/US258518",inventor:"Mary Winter",theme:"ADDING MACHINE SEQUENCE",moves:["1. ADDING MACHINE KEYS — jab each finger into the air one by one, ten sharp pops like pressing number keys 1 through 10","2. RATCHET CRANK — both wrists crank in small tight circles like turning the ratchet wheels inside the adding machine","3. ADDING MACHINE WAVE — arms ripple outward as the machine counts up, slow then speeding up to 600","4. MECHANICAL LOCK — freeze mid-move like a gear stuck in place, full body rigid for 4 counts","5. FREEZE arms at 90° — call out: 'Mary Winter built the adding machine!'"]},
-  {text:"Ancient tradition credits Isis of Egypt with inventing bread-making and founding agriculture. Before her time, Egyptians lived on uncooked roots and herbs. She also taught the art of healing, manufacture of flax, and laid the foundations of Egyptian literature!",source:"Woman as an Inventor by Matilda Joslyn Gage (1883)",link:"https://archive.org/details/jstor-25118326",inventor:"Isis",theme:"HARVEST FLOW",moves:["1. BREAD KNEAD — fists press and roll forward like kneading dough, slow and powerful, 8 counts","2. HARVEST SWEEP — arms swing wide and low like gathering grain from the field for bread-making","3. FLAX WEAVE — one arm ripples from shoulder to fingertip like flax blowing in the wind","4. HEALING HANDS — one palm faces outward slow and steady, the other cradles beneath it","5. FREEZE arms raised like a goddess — call out: 'Isis invented bread — mother of civilization!'"]},
-  {text:"The invention of silk is attributed to Si-ling-chi, wife of Emperor Hoang-ti, four thousand years before Christ. She is known as Sien Tshan, goddess of silkworms, and is still worshiped today. For ages, the secret of silk was kept from other nations.",source:"Woman as an Inventor by Matilda Joslyn Gage (1883)",link:"https://archive.org/details/jstor-25118326",inventor:"Si-ling-chi",theme:"SILK & SILKWORM FLOW",moves:["1. SILK UNROLL — arms ripple outward from chest like unrolling a bolt of silk, 8 slow counts","2. SILKWORM WAVE — body undulates head to hip like a silkworm spinning silk inside its cocoon","3. SILK THREAD — arms alternate crossing and opening like pulling silk thread from the cocoon","4. SILK FLOAT — arms rise and fall in a gentle wave as if a silk fabric is floating on air","5. FREEZE draped like silk — call out: 'Si-ling-chi gave the world silk!'"]},
-  {text:"Edith Clarke patented an Electrical Calculator on September 1, 1925 (Patent No. 1,552,113). She was the first woman to earn an M.S. in electrical engineering from MIT and became the first female professor of electrical engineering in the United States!",source:"U.S. Patent No. 1,552,113 (1925)",link:"https://patents.google.com/patent/US1552113",inventor:"Edith Clarke",theme:"ELECTRICAL CALCULATOR SEQUENCE",moves:["1. ELECTRICAL CURRENT — arms shoot outward fast like a jolt of electricity through the calculator circuit","2. CALCULATOR DIAL — one hand mimes turning the large dial on the electrical calculator, slow and precise","3. CIRCUIT WAVE — electric wave travels from one hand through the chest and out the other hand","4. ENGINEERING LOCK — snap into sharp tutting pose, rigid 90° angles like an electrical engineering diagram","5. FREEZE arms crossed like a professor — call out: 'Edith Clarke — electrical calculator pioneer!'"]},
-  {text:"Evelyn Berezin patented Control Means for an Electronic Calculator in 1961 (Patent No. 2,973,141). She later designed the first true word processor and founded the Redactron Corporation, earning the title 'mother of the word processor'!",source:"U.S. Patent No. 2,973,141 (1961)",link:"https://patents.google.com/patent/US2973141",inventor:"Evelyn Berezin",theme:"WORD PROCESSOR WAVE",moves:["1. OLD TYPEWRITER TO WORD PROCESSOR — start with stiff typewriter jabs, then transition into smooth flowing typing","2. DELETE & RETYPE — sharp wipe gesture left like deleting text on the word processor, then quick jabs forward","3. WORD PROCESSOR SCROLL — one arm scrolls slowly upward like text flowing up a word processor screen","4. REDACTRON CORPORATION LOCK — freeze mid-type, one hand raised like founding a company","5. FREEZE in a power pose — call out: 'Evelyn Berezin — mother of the word processor!'"]},
-  {text:"Sarah Boone, an African American inventor, patented an improved Ironing-Board on April 26, 1892 (Patent No. 473,653). Her design was specifically shaped to iron the sleeves and bodies of ladies' garments more effectively—an innovation we still use today!",source:"U.S. Patent No. 473,653 (1892)",link:"https://patents.google.com/patent/US473653",inventor:"Sarah Boone",theme:"IRONING BOARD SEQUENCE",moves:["1. IRONING BOARD SETUP — mime unfolding an ironing board with two hands, then snap it into place","2. IRON GLIDE — flat palm presses down firm on the ironing board, then glides outward smooth across a sleeve","3. SLEEVE SHAPE — one arm curves and narrows like shaping a garment sleeve on the ironing board","4. PRESS & POP — sharp downward iron press, hold 2 counts, then lift with a full chest pop","5. FREEZE mid-press — call out: 'Sarah Boone perfected the ironing board!'"]},
-  {text:"Miss Maggie Knight invented the machine for manufacturing satchel-bottom paper bags—the kind we still use today. The Commissioner of Patents complimented her on its entire originality. She refused fifty thousand dollars for her patent shortly after receiving it!",source:"Woman as an Inventor by Matilda Joslyn Gage (1883)",link:"https://archive.org/details/jstor-25118326",inventor:"Maggie Knight",theme:"PAPER BAG MACHINE FLOW",moves:["1. BAG FOLD — hands press flat together, crease sharply left then right like folding a satchel-bottom paper bag","2. SATCHEL BOTTOM — arms frame a square at waist level, two sharp pops forming the paper bag base","3. BAG MACHINE CRANK — one arm cranks in a circle like feeding paper through the bag-making machine","4. FIFTY THOUSAND NO — arms cross in a firm X then push outward — she turned down the money!","5. FREEZE arms wide — call out: 'Maggie Knight made the paper bag machine!'"]},
-  {text:"Mrs. Mary E. Walton invented a method for deadening the noise of elevated railroads after Edison and others had tried unsuccessfully for six months. Her device was immediately adopted by major New York railways, benefiting the health of thousands of city residents!",source:"Woman as an Inventor by Matilda Joslyn Gage (1883)",link:"https://archive.org/details/jstor-25118326",inventor:"Mary Walton",theme:"SILENT RAILROAD FLOW",moves:["1. RAILROAD TOPROCK — feet shuffle along invisible elevated railroad tracks, arms pump like train pistons","2. NOISE POP — big loud arm pop outward, then land completely silent — the railroad noise is deadened","3. ELEVATED RAIL GLIDE — feet slide smoothly along the elevated railroad track, body low and steady","4. ELEVATED RISE — rise up slow onto toes like the elevated railroad above the street, arms out at full span","5. SILENT LANDING — drop back down with zero sound — call out: 'Mary Walton silenced the railroad!'"]},
-  {text:"Phoebe Sarah Marks (Hertha Ayrton) patented a Draftsman's Dividing-Instrument on January 6, 1885 (Patent No. 310,450). This tool allowed users to divide any line into equal parts without calculation—just simple manipulation!",source:"U.S. Patent No. 310,450 (1885)",link:"https://patents.google.com/patent/US310450",inventor:"Hertha Ayrton",theme:"DIVIDING INSTRUMENT SEQUENCE",moves:["1. DIVIDING INSTRUMENT — both arms extend fully, then one hand slides to the exact midpoint and locks","2. EQUAL SPLITS — step out left then right in perfectly equal distances, sharp lock at each endpoint","3. LINE DRAW — one arm sweeps a long slow horizontal line through the air like the dividing instrument","4. MEASUREMENT POP — hand marks equal intervals along an invisible line with sharp finger pops","5. FREEZE at center — call out: 'Hertha Ayrton invented the dividing instrument!'"]},
-  {text:"The cotton-gin was conceived by Catharine Littlefield Greene, widow of Revolutionary General Greene. When wooden teeth failed, she suggested using wire—Whitney had wanted to give up. Within ten days of her suggestion, a perfect model was completed!",source:"Woman as an Inventor by Matilda Joslyn Gage (1883)",link:"https://archive.org/details/jstor-25118326",inventor:"Catharine Greene",theme:"COTTON GIN FLOW",moves:["1. COTTON PULL — both hands grip and yank downward repeatedly like pulling cotton through the cotton gin","2. WOODEN TEETH FAIL — arms jab forward then drop limp — the wooden gin teeth broke!","3. WIRE SWITCH — arms pull apart taut and firm like stretching wire to replace the broken cotton gin teeth","4. COTTON GIN CRANK — one arm cranks a big circle like the cotton gin finally working perfectly","5. FREEZE in a victory lock — call out: 'Catharine Greene made the cotton gin work!'"]},
-  {text:"Why didn't more women take out patents in their own names? To do so would expose them to ridicule and contempt and a loss of social position. Many patents in men's names are actually due to women's inventions!",source:"Woman as an Inventor by Matilda Joslyn Gage (1883)",link:"https://archive.org/details/jstor-25118326",inventor:"Women Inventors",theme:"RECLAIM THE PATENT",moves:["1. HIDDEN HANDS — arms pull back and hide behind the body, then slowly push forward into the open","2. RIDICULE BLOCK — sharp forearm cross in front of face blocks the contempt, then push both arms out defiantly","3. PATENT STAMP — big arm arc overhead, then STOMP down hard like stamping a patent in your own name","4. NAME CLAIM — point firmly forward with both hands — this invention belongs to a woman!","5. FREEZE arms raised — call out: 'Women invented this — and the world will know it!'"]},
-  {text:"Mary Phelps Jacob patented the modern Brassiere on November 3, 1914 (Patent No. 1,115,674). She created it from two silk handkerchiefs and ribbon as a more comfortable alternative to the restrictive corset, revolutionizing women's undergarments!",source:"U.S. Patent No. 1,115,674 (1914)",link:"https://patents.google.com/patent/US1115674",inventor:"Mary Phelps Jacob",theme:"BRASSIERE LIBERATION FLOW",moves:["1. CORSET BREAK — arms wrap tight around body then burst open wide — freedom from the corset!","2. SILK HANDKERCHIEF UNFOLD — arms open from chest outward like unfolding two silk handkerchiefs","3. RIBBON TIE — one hand loops an invisible ribbon around the wrist of the other, then pulls free","4. BRASSIERE COMFORT WAVE — full body rolls through a slow comfortable wave, relaxed and free-flowing","5. FREEZE arms open wide — call out: 'Mary Phelps Jacob — she invented the brassiere!'"]},
-  {text:"Beulah Louise Henry, known as 'Lady Edison,' held 49 patents and had over 110 inventions to her name. Among them was a Typewriter patented in 1959 (Patent No. 2,897,944) featuring innovative improvements to the typing mechanism.",source:"U.S. Patent No. 2,897,944 (1959)",link:"https://patents.google.com/patent/US2897944",inventor:"Beulah Henry",theme:"TYPEWRITER SEQUENCE",moves:["1. TYPEWRITER TAP — fingers punch the air left to right across an invisible typewriter keyboard, sharp and rhythmic","2. CARRIAGE RETURN — one arm sweeps wide left like slamming the typewriter carriage back to start","3. TYPEWRITER KEY JAM — all fingers lock up mid-tap on the typewriter keys, then snap free with a full body pop","4. 49 PATENTS COUNT — count 1 to 8 twice with finger pops — honoring her 49 typewriter-era patents","5. FREEZE mid-type — call out: 'Beulah Henry — Lady Edison with 49 patents!'"]},
-  {text:"Harriet Hosmer invented a process for producing artificial marble from limestone that closely simulates the finest antique varieties—a process the Italian Government had long sought without success. Her permanent magnet invention was deemed one of the most important of the century!",source:"Woman as an Inventor by Matilda Joslyn Gage (1883)",link:"https://archive.org/details/jstor-25118326",inventor:"Harriet Hosmer",theme:"MARBLE & MAGNET FLOW",moves:["1. MARBLE CARVE — rise from a low crouch into a full standing lock, slow as a sculptor carving marble","2. LIMESTONE PRESS — fists push together from both sides like compressing limestone into artificial marble","3. MAGNETIC PULL — arms reach toward each other slow and trembling like permanent magnets attracting","4. MARBLE WAVE — one hand traces a smooth curve through the air like shaping a marble sculpture","5. FREEZE stiff as marble — call out: 'Harriet Hosmer turned limestone into marble!'"]}
+  {text:"Katherine G. Johnson co-authored NASA Technical Note D-233 in 1960, presenting mathematical expressions for determining satellite trajectories and orbital mechanics. Her calculations were critical for placing satellites over selected Earth positions—work that helped launch America into space!",source:"NASA Technical Note D-233 (1960)",link:"https://ntrs.nasa.gov/citations/19980227091",inventor:"Katherine Johnson"},
+  {text:"Mary E. Winter patented an adding machine on May 23, 1882 (Patent No. 258,518). Her sophisticated mechanical calculator used ratchet wheels, pawls, and operating keys numbered 1–10 to perform addition up to 600.",source:"U.S. Patent No. 258,518 (1882)",link:"https://patents.google.com/patent/US258518",inventor:"Mary Winter"},
+  {text:"Ancient tradition credits Isis of Egypt with inventing bread-making and founding agriculture. Before her time, Egyptians lived on uncooked roots and herbs. She also taught the art of healing, manufacture of flax, and laid the foundations of Egyptian literature!",source:"Woman as an Inventor by Matilda Joslyn Gage (1883)",link:"https://archive.org/details/jstor-25118326",inventor:"Isis"},
+  {text:"The invention of silk is attributed to Si-ling-chi, wife of Emperor Hoang-ti, four thousand years before Christ. She is known as Sien Tshan, goddess of silkworms, and is still worshiped today. For ages, the secret of silk was kept from other nations.",source:"Woman as an Inventor by Matilda Joslyn Gage (1883)",link:"https://archive.org/details/jstor-25118326",inventor:"Si-ling-chi"},
+  {text:"Edith Clarke patented an Electrical Calculator on September 1, 1925 (Patent No. 1,552,113). She was the first woman to earn an M.S. in electrical engineering from MIT and became the first female professor of electrical engineering in the United States!",source:"U.S. Patent No. 1,552,113 (1925)",link:"https://patents.google.com/patent/US1552113",inventor:"Edith Clarke"},
+  {text:"Evelyn Berezin patented Control Means for an Electronic Calculator in 1961 (Patent No. 2,973,141). She later designed the first true word processor and founded the Redactron Corporation, earning the title 'mother of the word processor'!",source:"U.S. Patent No. 2,973,141 (1961)",link:"https://patents.google.com/patent/US2973141",inventor:"Evelyn Berezin"},
+  {text:"Sarah Boone, an African American inventor, patented an improved Ironing-Board on April 26, 1892 (Patent No. 473,653). Her design was specifically shaped to iron the sleeves and bodies of ladies' garments more effectively—an innovation we still use today!",source:"U.S. Patent No. 473,653 (1892)",link:"https://patents.google.com/patent/US473653",inventor:"Sarah Boone"},
+  {text:"Miss Maggie Knight invented the machine for manufacturing satchel-bottom paper bags—the kind we still use today. The Commissioner of Patents complimented her on its entire originality. She refused fifty thousand dollars for her patent shortly after receiving it!",source:"Woman as an Inventor by Matilda Joslyn Gage (1883)",link:"https://archive.org/details/jstor-25118326",inventor:"Maggie Knight"},
+  {text:"Mrs. Mary E. Walton invented a method for deadening the noise of elevated railroads after Edison and others had tried unsuccessfully for six months. Her device was immediately adopted by major New York railways, benefiting the health of thousands of city residents!",source:"Woman as an Inventor by Matilda Joslyn Gage (1883)",link:"https://archive.org/details/jstor-25118326",inventor:"Mary Walton"},
+  {text:"Phoebe Sarah Marks (Hertha Ayrton) patented a Draftsman's Dividing-Instrument on January 6, 1885 (Patent No. 310,450). This tool allowed users to divide any line into equal parts without calculation—just simple manipulation!",source:"U.S. Patent No. 310,450 (1885)",link:"https://patents.google.com/patent/US310450",inventor:"Hertha Ayrton"},
+  {text:"The cotton-gin was conceived by Catharine Littlefield Greene, widow of Revolutionary General Greene. When wooden teeth failed, she suggested using wire—Whitney had wanted to give up. Within ten days of her suggestion, a perfect model was completed!",source:"Woman as an Inventor by Matilda Joslyn Gage (1883)",link:"https://archive.org/details/jstor-25118326",inventor:"Catharine Greene"},
+  {text:"Why didn't more women take out patents in their own names? To do so would expose them to ridicule and contempt and a loss of social position. Many patents in men's names are actually due to women's inventions!",source:"Woman as an Inventor by Matilda Joslyn Gage (1883)",link:"https://archive.org/details/jstor-25118326",inventor:"Women Inventors"},
+  {text:"Mary Phelps Jacob patented the modern Brassiere on November 3, 1914 (Patent No. 1,115,674). She created it from two silk handkerchiefs and ribbon as a more comfortable alternative to the restrictive corset, revolutionizing women's undergarments!",source:"U.S. Patent No. 1,115,674 (1914)",link:"https://patents.google.com/patent/US1115674",inventor:"Mary Phelps Jacob"},
+  {text:"Beulah Louise Henry, known as 'Lady Edison,' held 49 patents and had over 110 inventions to her name. Among them was a Typewriter patented in 1959 (Patent No. 2,897,944) featuring innovative improvements to the typing mechanism.",source:"U.S. Patent No. 2,897,944 (1959)",link:"https://patents.google.com/patent/US2897944",inventor:"Beulah Henry"},
+  {text:"Harriet Hosmer invented a process for producing artificial marble from limestone that closely simulates the finest antique varieties—a process the Italian Government had long sought without success. Her permanent magnet invention was deemed one of the most important of the century!",source:"Woman as an Inventor by Matilda Joslyn Gage (1883)",link:"https://archive.org/details/jstor-25118326",inventor:"Harriet Hosmer"}
 ];
 
 let recentlyShown=[];
@@ -312,12 +306,6 @@ function getResponse(){
   return sel;
 }
 
-function generateMovement(resp){
-  const inv=resp.inventor||'the Inventor';
-  const theme=resp.theme||'LOCK & POP';
-  const moves=resp.moves||["1. OPENING POP — chest pop entry, arms lock to 90°","2. LOCKING SIGNATURE — draw the inventor's name BIG in the air","3. LIGHTBULB LOCK — fist rises slow above head, opens into a sharp lock","4. BODY WAVE head to hip — slow and controlled, 4 full counts",`5. FREEZE — call out: '${inv}!'`];
-  return `HIP HOP SEQUENCE: ${theme}\nHONORING: ${inv}\n\n${moves.join('\n')}\n\nENERGY: Sharp pops, clean locks, smooth waves. Respect the legacy!`;
-}
 
 /* save reaction */
 function saveReaction(prefix,inventor){
@@ -351,17 +339,16 @@ function askQuestion(){
   if(!name){alert('Please enter your name first!');document.getElementById('userName').focus();return;}
   if(!q){alert('Please type a question!');return;}
   const resp=getResponse();
-  const mv=generateMovement(resp);
-  const payload={question:q,answerText:resp.text,answerSource:resp.source,answerLink:resp.link,movement:mv,inventor:resp.inventor,userName:name,userColor:userColor,sessionId:SESSION_ID,timestamp:useFirebase?firebase.database.ServerValue.TIMESTAMP:Date.now()};
-  if(useFirebase&&messagesRef){messagesRef.push(payload).catch(()=>localDisplay(q,resp,mv,name));}
-  else{localDisplay(q,resp,mv,name);}
+  const payload={question:q,answerText:resp.text,answerSource:resp.source,answerLink:resp.link,inventor:resp.inventor,userName:name,userColor:userColor,sessionId:SESSION_ID,timestamp:useFirebase?firebase.database.ServerValue.TIMESTAMP:Date.now()};
+  if(useFirebase&&messagesRef){messagesRef.push(payload).catch(()=>localDisplay(q,resp,name));}
+  else{localDisplay(q,resp,name);}
   document.getElementById('userQuestion').value='';
 }
 
 let localMessages=[];
-function localDisplay(q,resp,mv,name){
+function localDisplay(q,resp,name){
   const area=document.getElementById('outputArea');
-  localMessages.unshift({question:q,answerText:resp.text,answerSource:resp.source,answerLink:resp.link,movement:mv,inventor:resp.inventor,userName:name,userColor:userColor});
+  localMessages.unshift({question:q,answerText:resp.text,answerSource:resp.source,answerLink:resp.link,inventor:resp.inventor,userName:name,userColor:userColor});
   if(localMessages.length>MAX_DISPLAY)localMessages=localMessages.slice(0,MAX_DISPLAY);
   area.innerHTML='';
   localMessages.forEach((msg,i)=>renderPair(msg,null,i===0));
@@ -439,18 +426,9 @@ function renderPair(msg,key,playAudio=false){
         </div>
       </div>
     </div>
-
-    <div class="cb-mcard">
-      <div class="cb-mhead"><span class="cb-mlabel">🎭 Movement Instructions</span></div>
-      <div class="cb-mbody"><div class="cb-mtext">${escH(msg.movement)}</div></div>
-      <div class="cb-spkrow">
-        <button class="cb-btn purple" style="font-size:11px;padding:7px 13px;" onclick="speakText(this)">🔊 Read Aloud</button>
-        <button class="cb-btn soft" style="font-size:11px;padding:7px 13px;" onclick="stopSpeech()">⏹ Stop</button>
-      </div>
-    </div>`;
+`;
 
   area.insertBefore(el,area.firstChild);
-  if(playAudio){playChime();setTimeout(()=>speakMovement(msg.movement),950);}
 }
 
 function getFemaleVoice(){
@@ -462,14 +440,6 @@ function getFemaleVoice(){
   let voice=pool.find(v=>kw.some(k=>v.name.toLowerCase().includes(k)));
   if(!voice)voice=pool[0]||null;return voice;
 }
-function speakMovement(text){
-  if(!('speechSynthesis' in window))return;
-  window.speechSynthesis.cancel();
-  const u=new SpeechSynthesisUtterance(text);u.rate=0.88;u.pitch=1.2;
-  const trySpeak=()=>{const v=getFemaleVoice();if(v)u.voice=v;window.speechSynthesis.speak(u);};
-  if(window.speechSynthesis.getVoices().length===0){window.speechSynthesis.addEventListener('voiceschanged',trySpeak,{once:true});}else{trySpeak();}
-}
-function speakText(btn){speakMovement(btn.closest('.cb-mcard').querySelector('.cb-mtext').textContent);}
 function stopSpeech(){if('speechSynthesis' in window)window.speechSynthesis.cancel();}
 function escH(str){const d=document.createElement('div');d.textContent=str||'';return d.innerHTML;}
 document.getElementById('userQuestion').addEventListener('keypress',e=>{if(e.key==='Enter')askQuestion();});
