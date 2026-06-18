@@ -1,306 +1,494 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
-<title>✦ CAREBOT-04 ✦ Robot Picker</title>
-<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.0/p5.min.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>✦ CAREBOT-01 ✦ Threads & Circuits</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;900&family=Quicksand:wght@500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --rose:#ff5c8a; --hot:#ff2d6b; --candy:#ff85b3; --blush:#ffb3cf;
-    --cream:#fff5f8; --berry:#c4005a; --crimson:#8b0030; --maroon:#4a001a;
-    --fuchsia:#ff1f80; --bg:#0e0008;
-    --card-border:rgba(255,140,185,.25);
-    --card-border-bright:rgba(255,80,150,.6);
-    --soft-glow:0 4px 30px rgba(255,45,107,.2);
-    --pop-glow:0 8px 50px rgba(255,45,107,.45),0 0 90px rgba(200,0,80,.15);
-    --text-dim:rgba(255,190,220,.5);
-  }
-  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
-  html,body{
-    height:100%;min-height:100%;
-    font-family:'Quicksand',sans-serif;font-weight:600;
-    color:var(--cream);background:var(--bg);
-    -webkit-overflow-scrolling:touch;-webkit-font-smoothing:antialiased;
-    cursor:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 20 20'%3E%3Ccircle cx='10' cy='10' r='4' fill='%23ff2d6b' opacity='.9'/%3E%3Ccircle cx='10' cy='10' r='7' stroke='%23ff85b3' stroke-width='1.5' fill='none' opacity='.6'/%3E%3C/svg%3E") 10 10,default;
-  }
-  .bg-layer{position:fixed;inset:0;z-index:0;pointer-events:none;background:radial-gradient(ellipse 75% 55% at 5% 90%,rgba(180,0,60,.38) 0%,transparent 58%),radial-gradient(ellipse 60% 65% at 95% 10%,rgba(120,0,35,.32) 0%,transparent 58%),radial-gradient(ellipse 50% 40% at 50% 50%,rgba(255,30,100,.06) 0%,transparent 65%),linear-gradient(155deg,#160008,#0e0005 50%,#080003);}
-  .orb{position:fixed;border-radius:50%;pointer-events:none;z-index:0;filter:blur(65px);}
-  .orb-1{width:380px;height:380px;background:var(--crimson);opacity:.2;bottom:-80px;left:-70px;animation:drift1 21s ease-in-out infinite;}
-  .orb-2{width:300px;height:300px;background:var(--berry);opacity:.18;top:-60px;right:-60px;animation:drift2 25s ease-in-out infinite;}
-  .orb-3{width:200px;height:200px;background:var(--hot);opacity:.1;top:42%;left:55%;animation:drift3 17s ease-in-out infinite;}
-  @keyframes drift1{0%,100%{transform:translate(0,0)}50%{transform:translate(38px,26px)}}
-  @keyframes drift2{0%,100%{transform:translate(0,0)}50%{transform:translate(-28px,-20px)}}
-  @keyframes drift3{0%,100%{transform:translate(0,0)}33%{transform:translate(-16px,12px)}66%{transform:translate(12px,-9px)}}
-  .sparkles{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden;}
-  .sp{position:absolute;opacity:0;animation:floatUp linear infinite;}
-  @keyframes floatUp{0%{opacity:0;transform:translateY(0) scale(.6) rotate(0deg)}15%{opacity:.6}85%{opacity:.35}100%{opacity:0;transform:translateY(-130px) scale(1.1) rotate(180deg)}}
-
-  .screen{position:relative;z-index:2;min-height:100%;display:flex;flex-direction:column;align-items:center;padding:max(16px,env(safe-area-inset-top)) clamp(12px,4vmin,24px) calc(32px + env(safe-area-inset-bottom)) clamp(12px,4vmin,24px);gap:14px;}
-
-  /* mascot */
-  .mascot-bar{width:100%;max-width:500px;display:flex;align-items:center;justify-content:space-between;}
-  .mascot{display:flex;align-items:center;gap:10px;}
-  .bot-face{width:42px;height:42px;border-radius:13px;background:linear-gradient(135deg,rgba(255,45,107,.22),rgba(180,0,60,.32));border:1.5px solid var(--card-border-bright);box-shadow:var(--soft-glow);display:flex;align-items:center;justify-content:center;font-size:20px;animation:wobble 4s ease-in-out infinite;flex-shrink:0;}
-  @keyframes wobble{0%,100%{transform:rotate(-2deg) scale(1)}25%{transform:rotate(1deg) scale(1.04)}50%{transform:rotate(-1deg) scale(1)}75%{transform:rotate(2deg) scale(1.03)}}
-  .bot-name{font-family:'Nunito',sans-serif;font-weight:900;font-size:15px;letter-spacing:.04em;background:linear-gradient(90deg,var(--blush),var(--fuchsia) 55%,var(--candy));-webkit-background-clip:text;background-clip:text;color:transparent;}
-  .bot-sub{font-size:9px;letter-spacing:.15em;text-transform:uppercase;color:var(--text-dim);margin-top:1px;}
-  .time-badge{display:flex;align-items:center;gap:6px;padding:5px 11px;border-radius:999px;background:rgba(255,255,255,.04);border:1px solid var(--card-border);font-size:10px;letter-spacing:.1em;color:var(--text-dim);}
-  .time-pip{width:5px;height:5px;border-radius:50%;background:var(--hot);box-shadow:0 0 6px var(--hot);animation:breathe 2s ease-in-out infinite;}
-  @keyframes breathe{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.3;transform:scale(.65)}}
-
-  /* instruction card */
-  .intro-card{width:min(100%,500px);background:rgba(255,45,107,.07);border:1.5px solid var(--card-border-bright);border-radius:20px;padding:18px 20px 16px;position:relative;overflow:hidden;box-shadow:var(--soft-glow),inset 0 1px 0 rgba(255,180,210,.06);backdrop-filter:blur(14px);}
-  .intro-card::before{content:'';position:absolute;top:0;left:8%;right:8%;height:1.5px;background:linear-gradient(90deg,transparent,var(--candy) 30%,var(--hot) 50%,var(--candy) 70%,transparent);box-shadow:0 0 8px var(--candy);border-radius:999px;}
-  .intro-eyebrow{font-size:9px;letter-spacing:.22em;text-transform:uppercase;color:var(--text-dim);margin-bottom:7px;}
-  .intro-title{font-family:'Nunito',sans-serif;font-weight:900;font-size:clamp(15px,3.8vw,20px);background:linear-gradient(90deg,var(--blush) 10%,var(--fuchsia) 55%,var(--candy));-webkit-background-clip:text;background-clip:text;color:transparent;margin-bottom:12px;line-height:1.35;}
-  .intro-steps{list-style:none;display:flex;flex-direction:column;gap:9px;}
-  .intro-steps li{display:flex;gap:9px;align-items:flex-start;}
-  .i-num{flex-shrink:0;width:21px;height:21px;border-radius:50%;background:linear-gradient(135deg,var(--hot),var(--berry));display:flex;align-items:center;justify-content:center;font-family:'Nunito',sans-serif;font-weight:900;font-size:10px;color:#fff;box-shadow:0 2px 8px rgba(255,45,107,.4);margin-top:2px;}
-  .i-text{font-size:clamp(12px,2.9vw,14px);color:rgba(255,215,230,.85);line-height:1.65;}
-  .i-text strong{color:var(--candy);}
-
-  /* canvas frame */
-  .frame-wrap{width:min(100%,460px);position:relative;}
-  .frame-wrap::before{content:'';position:absolute;inset:-2px;border-radius:28px;background:linear-gradient(135deg,var(--hot),var(--berry),var(--crimson),var(--maroon),var(--berry),var(--hot));background-size:300% 300%;animation:borderShimmer 6s linear infinite;z-index:0;filter:blur(1px);}
-  @keyframes borderShimmer{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
-  .frame{width:100%;aspect-ratio:2/3;position:relative;border-radius:26px;overflow:hidden;box-shadow:var(--pop-glow);z-index:1;background:var(--maroon);display:block;}
-  #defaultCanvas0{display:block;position:absolute;inset:0;width:100% !important;height:100% !important;z-index:1;}
-  .hint{position:absolute;top:12px;left:50%;transform:translateX(-50%);z-index:3;font-family:'Quicksand',sans-serif;font-weight:700;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,200,220,.75);background:rgba(255,45,107,.12);border:1px solid rgba(255,100,160,.28);padding:6px 14px;border-radius:999px;backdrop-filter:blur(8px);white-space:nowrap;}
-
-  /* task instructions panel */
-  #instructionsPanel{display:none;width:min(100%,460px);background:rgba(12,0,7,.9);border:1.5px solid var(--card-border-bright);border-radius:22px;padding:22px 20px 20px;box-shadow:var(--pop-glow),inset 0 1px 0 rgba(255,140,185,.07);backdrop-filter:blur(18px);position:relative;overflow:hidden;animation:slideUp .38s cubic-bezier(.34,1.4,.64,1);}
-  @keyframes slideUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
-  #instructionsPanel::before{content:'';position:absolute;top:0;left:10%;right:10%;height:1.5px;background:linear-gradient(90deg,transparent,var(--candy) 35%,var(--hot) 50%,var(--candy) 65%,transparent);box-shadow:0 0 10px var(--candy);border-radius:999px;}
-  .panel-eyebrow{font-size:9px;letter-spacing:.22em;text-transform:uppercase;color:var(--text-dim);margin-bottom:8px;}
-  .panel-task-title{font-family:'Nunito',sans-serif;font-weight:900;font-size:clamp(16px,4vw,22px);background:linear-gradient(90deg,var(--blush) 20%,var(--fuchsia) 55%,var(--candy));-webkit-background-clip:text;background-clip:text;color:transparent;margin-bottom:16px;line-height:1.3;}
-  .panel-img-row{display:flex;gap:14px;align-items:flex-start;margin-bottom:18px;}
-  .panel-img{width:88px;height:88px;border-radius:12px;object-fit:cover;flex-shrink:0;border:1.5px solid var(--card-border-bright);box-shadow:0 4px 18px rgba(255,45,107,.3);}
-  .panel-img-meta{display:flex;flex-direction:column;gap:5px;padding-top:2px;}
-  .panel-img-label{font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--text-dim);}
-  .panel-img-caption{font-size:12px;color:rgba(255,215,235,.75);line-height:1.5;}
-  .steps-heading{font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--text-dim);margin-bottom:10px;}
-  .steps-list{list-style:none;display:flex;flex-direction:column;gap:10px;margin-bottom:20px;}
-  .steps-list li{display:flex;gap:10px;align-items:flex-start;}
-  .step-num{flex-shrink:0;width:22px;height:22px;border-radius:50%;background:linear-gradient(135deg,var(--hot),var(--berry));display:flex;align-items:center;justify-content:center;font-family:'Nunito',sans-serif;font-weight:900;font-size:10px;color:#fff;box-shadow:0 2px 8px rgba(255,45,107,.4);margin-top:2px;}
-  .step-text{font-size:clamp(12px,2.8vw,14px);color:rgba(255,215,230,.85);line-height:1.65;}
-  .panel-btn-row{display:flex;gap:8px;flex-wrap:wrap;}
-  .btn{appearance:none;font-family:'Nunito',sans-serif;font-weight:800;font-size:12px;letter-spacing:.05em;color:var(--cream);text-decoration:none;display:inline-flex;align-items:center;justify-content:center;gap:5px;padding:10px 18px;border-radius:13px;min-height:38px;border:1.5px solid var(--card-border);cursor:pointer;transition:all .2s cubic-bezier(.34,1.56,.64,1);-webkit-tap-highlight-color:transparent;position:relative;overflow:hidden;}
-  .btn::before{content:'';position:absolute;inset:0;border-radius:inherit;background:linear-gradient(135deg,rgba(255,255,255,.1),transparent);pointer-events:none;}
-  .btn.primary{background:linear-gradient(135deg,var(--hot),var(--berry),var(--crimson));border-color:var(--hot);box-shadow:0 4px 20px rgba(255,45,107,.35),inset 0 1px 0 rgba(255,255,255,.1);flex:1;}
-  .btn.primary:hover{transform:translateY(-2px) scale(1.03);box-shadow:0 8px 28px rgba(255,45,107,.5);}
-  .btn.soft{background:rgba(255,255,255,.05);border-color:rgba(255,140,185,.2);color:var(--text-dim);}
-  .btn.soft:hover{background:rgba(255,45,107,.15);border-color:var(--card-border-bright);color:var(--blush);transform:translateY(-2px) scale(1.03);}
-  .btn:active{transform:translateY(0) scale(.97) !important;}
-  .wordmark{font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,140,185,.18);}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --bg:#0e0008;--pink:#ff2d6b;--candy:#ff85b3;--blush:#ffb3cf;
+  --cream:#fff5f8;--berry:#c4005a;--maroon:#6f001e;
+  --muted:rgba(255,190,220,.5);--muted2:rgba(255,210,228,.75);
+  --border:rgba(255,80,150,.22);--border2:rgba(255,60,120,.5);
+  --surface:rgba(20,0,10,.97);
+  --weave:#c084fc;--circuit:#67e8f9;
+  --fh:'Nunito',sans-serif;--fb:'Quicksand',sans-serif;--fm:'DM Mono',monospace;
+}
+html,body{min-height:100%;font-family:var(--fb);font-weight:600;color:var(--cream);background:var(--bg);-webkit-font-smoothing:antialiased;}
+::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px}
+.bg-layer{position:fixed;inset:0;z-index:0;pointer-events:none;background:radial-gradient(ellipse 65% 50% at 8% 88%,rgba(180,0,50,.28) 0%,transparent 58%),radial-gradient(ellipse 55% 45% at 92% 8%,rgba(80,0,60,.22) 0%,transparent 58%),linear-gradient(155deg,#160008,#0e0008 50%,#080005);}
+.orb{position:fixed;border-radius:50%;pointer-events:none;z-index:0;filter:blur(65px);}
+.orb-1{width:380px;height:380px;background:#7a0028;opacity:.22;bottom:-80px;left:-70px;animation:d1 21s ease-in-out infinite;}
+.orb-2{width:300px;height:300px;background:#3d0060;opacity:.18;top:-60px;right:-60px;animation:d2 25s ease-in-out infinite;}
+@keyframes d1{0%,100%{transform:translate(0,0)}50%{transform:translate(38px,26px)}}
+@keyframes d2{0%,100%{transform:translate(0,0)}50%{transform:translate(-28px,-20px)}}
+@keyframes breathe{0%,100%{opacity:1}50%{opacity:.2}}
+.screen{position:relative;z-index:2;min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:max(16px,env(safe-area-inset-top)) clamp(12px,4vmin,22px) calc(44px + env(safe-area-inset-bottom));gap:13px;}
+.cb-topbar{width:100%;max-width:720px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:7px;}
+.cb-logo{display:flex;align-items:center;gap:10px;}
+.cb-icon{width:40px;height:40px;border-radius:12px;background:rgba(192,132,252,.16);border:1.5px solid rgba(192,132,252,.5);display:flex;align-items:center;justify-content:center;font-size:18px;}
+.cb-name{font-family:var(--fh);font-weight:900;font-size:12px;background:linear-gradient(90deg,var(--weave),var(--pink) 55%,var(--candy));-webkit-background-clip:text;background-clip:text;color:transparent;}
+.cb-sub{font-size:9px;letter-spacing:.15em;text-transform:uppercase;color:var(--muted);margin-top:1px;}
+.cb-badges{display:flex;gap:6px;align-items:center;flex-wrap:wrap;}
+.cb-badge{font-size:10px;padding:4px 10px;border-radius:999px;background:rgba(255,255,255,.04);border:1px solid var(--border);color:var(--muted);display:flex;align-items:center;gap:5px;}
+.cb-pip{display:inline-block;width:5px;height:5px;border-radius:50%;background:var(--weave);animation:breathe 2s ease-in-out infinite;}
+.stats-bar{width:100%;max-width:720px;display:flex;align-items:center;gap:.6rem;flex-wrap:wrap;padding:.5rem .9rem;background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:13px;}
+.stat-chip{display:flex;align-items:center;gap:.3rem;font-size:.62rem;font-weight:700;color:var(--muted);letter-spacing:.06em;text-transform:uppercase;background:rgba(255,60,120,.06);border:1px solid rgba(255,60,120,.13);border-radius:999px;padding:.18rem .6rem;}
+.stat-chip strong{color:var(--candy);}
+/* CONTEXT CARD */
+.irony-card{width:100%;max-width:720px;background:linear-gradient(135deg,rgba(60,0,40,.88),rgba(20,0,10,.95));border:1.5px solid rgba(192,132,252,.35);border-radius:18px;padding:18px;position:relative;overflow:hidden;}
+.irony-card::before{content:'';position:absolute;top:0;left:10%;right:10%;height:1.5px;background:linear-gradient(90deg,transparent,var(--weave) 35%,var(--candy) 50%,var(--weave) 65%,transparent);box-shadow:0 0 10px var(--weave);border-radius:999px;}
+.irony-eyebrow{font-size:9px;letter-spacing:.22em;text-transform:uppercase;color:rgba(192,132,252,.55);margin-bottom:6px;}
+.irony-title{font-family:var(--fh);font-weight:900;font-size:clamp(14px,3vw,18px);color:#e8ccff;margin-bottom:10px;line-height:1.3;}
+.irony-body{font-size:12.5px;line-height:1.78;color:rgba(230,200,255,.82);}
+.irony-body strong{color:#e8ccff;}
+.irony-body em{color:var(--candy);}
+/* TIMELINE */
+.history-section{width:100%;max-width:720px;}
+.section-title{font-family:var(--fh);font-weight:900;font-size:14px;background:linear-gradient(90deg,var(--weave),var(--pink));-webkit-background-clip:text;background-clip:text;color:transparent;margin-bottom:4px;}
+.section-sub{font-size:11px;color:var(--muted);margin-bottom:12px;line-height:1.6;}
+.timeline{display:flex;flex-direction:column;gap:0;}
+.tl-item{display:grid;grid-template-columns:80px 1fr;gap:0;}
+.tl-year{font-family:var(--fh);font-weight:900;font-size:13px;color:var(--weave);padding:12px 14px 12px 0;border-right:2px solid rgba(192,132,252,.25);text-align:right;position:relative;}
+.tl-year::after{content:'';position:absolute;right:-5px;top:50%;transform:translateY(-50%);width:8px;height:8px;border-radius:50%;background:var(--weave);box-shadow:0 0 8px var(--weave);}
+.tl-content{padding:12px 0 12px 18px;font-size:11.5px;line-height:1.7;color:var(--muted2);}
+.tl-content strong{color:var(--cream);}
+.tl-content em{color:var(--candy);}
+/* OBJECT GRID */
+.irony-grid{width:100%;max-width:720px;display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+@media(max-width:540px){.irony-grid{grid-template-columns:1fr;}}
+.irony-tile{border-radius:14px;padding:14px;border:1.5px solid rgba(192,132,252,.28);background:rgba(192,132,252,.07);position:relative;overflow:hidden;}
+.irony-tile::before{content:'';position:absolute;top:0;left:8%;right:8%;height:1px;background:linear-gradient(90deg,transparent,var(--weave) 50%,transparent);border-radius:999px;}
+.tile-eyebrow{font-size:9px;letter-spacing:.16em;text-transform:uppercase;font-weight:700;margin-bottom:6px;color:var(--weave);}
+.tile-object{font-family:var(--fh);font-weight:900;font-size:15px;color:var(--cream);margin-bottom:6px;line-height:1.2;}
+.tile-body{font-size:11px;line-height:1.7;color:var(--muted2);}
+.tile-body strong{color:var(--cream);}
+.tile-stat{margin-top:8px;padding:6px 9px;border-radius:8px;background:rgba(255,255,255,.04);font-size:10px;line-height:1.55;color:var(--muted2);}
+.tile-stat strong{color:var(--weave);}
+/* DATA MODULE */
+.mod-card{width:100%;max-width:720px;background:var(--surface);border:1.5px solid var(--border2);border-radius:18px;overflow:hidden;position:relative;box-shadow:0 4px 28px rgba(255,45,107,.15);}
+.mod-card::before{content:'';position:absolute;top:0;left:10%;right:10%;height:1.5px;background:linear-gradient(90deg,transparent,var(--candy) 35%,var(--pink) 50%,var(--candy) 65%,transparent);box-shadow:0 0 10px var(--candy);border-radius:999px;}
+.mod-header{padding:14px 17px 11px;border-bottom:1px solid var(--border);}
+.mod-eyebrow{font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);margin-bottom:5px;}
+.mod-title{font-family:var(--fh);font-weight:900;font-size:14px;background:linear-gradient(90deg,var(--weave),var(--pink));-webkit-background-clip:text;background-clip:text;color:transparent;line-height:1.3;}
+.mod-sub{font-size:11px;color:var(--muted);margin-top:4px;line-height:1.6;}
+.mod-body{padding:14px 17px;}
+.open-label{font-size:11px;color:var(--cream);font-weight:700;margin-bottom:6px;margin-top:12px;line-height:1.5;}
+.open-label:first-child{margin-top:0;}
+.open-q{width:100%;padding:9px 13px;background:rgba(255,255,255,.05);border:1.5px solid var(--border);border-radius:11px;font-family:var(--fb);font-weight:600;font-size:12px;color:var(--cream);outline:none;transition:border-color .2s;resize:vertical;min-height:68px;}
+.open-q:focus{border-color:var(--candy);}
+.open-q::placeholder{color:var(--muted);}
+.rate-row{display:flex;gap:7px;margin-bottom:10px;flex-wrap:wrap;}
+.rate-btn{appearance:none;font-family:var(--fb);font-weight:700;font-size:11px;padding:6px 13px;border-radius:8px;cursor:pointer;border:1.5px solid var(--border);background:rgba(255,255,255,.04);color:var(--muted);transition:all .15s;}
+.rate-btn:hover{background:rgba(192,132,252,.12);border-color:rgba(192,132,252,.5);color:var(--blush);}
+.rate-btn.active{background:rgba(192,132,252,.22);border-color:var(--weave);color:var(--cream);}
+.mod-footer{padding:10px 15px 14px;display:flex;gap:8px;align-items:center;border-top:1px solid var(--border);}
+.mod-progress{font-size:10px;color:var(--muted);font-weight:700;flex:1;}
+.mod-submit{appearance:none;font-family:var(--fh);font-weight:900;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--cream);background:linear-gradient(135deg,var(--pink),var(--berry));border:none;border-radius:10px;padding:9px 18px;cursor:pointer;transition:all .2s;}
+.mod-submit:disabled{opacity:.4;cursor:not-allowed;}
+.mod-submit.done{background:linear-gradient(135deg,rgba(100,200,100,.4),rgba(60,160,60,.5));cursor:default;}
+/* Q&A */
+.cb-card{width:100%;max-width:720px;background:var(--surface);border:1.5px solid var(--border2);border-radius:18px;padding:17px;position:relative;overflow:hidden;}
+.cb-card::before{content:'';position:absolute;top:0;left:10%;right:10%;height:1.5px;background:linear-gradient(90deg,transparent,var(--candy) 35%,var(--pink) 50%,var(--candy) 65%,transparent);box-shadow:0 0 10px var(--candy);border-radius:999px;}
+.cb-eyebrow{font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);margin-bottom:10px;}
+.cb-row{display:flex;gap:8px;flex-wrap:wrap;}
+.cb-input{flex:1;padding:9px 13px;background:rgba(255,255,255,.05);border:1.5px solid var(--border);border-radius:11px;font-family:var(--fb);font-weight:600;font-size:13px;color:var(--cream);outline:none;min-width:0;}
+.cb-input:focus{border-color:var(--candy);}
+.cb-input::placeholder{color:var(--muted);}
+.cb-name-in{max-width:148px;flex:0 0 148px;}
+.cb-btn{font-family:var(--fh);font-weight:900;font-size:12px;color:var(--cream);display:inline-flex;align-items:center;gap:5px;padding:9px 17px;border-radius:11px;border:1.5px solid var(--border2);cursor:pointer;transition:all .2s;white-space:nowrap;appearance:none;}
+.cb-btn.primary{background:linear-gradient(135deg,var(--pink),var(--berry));box-shadow:0 4px 16px rgba(255,60,120,.28);}
+.cb-btn.primary:hover{transform:translateY(-2px);}
+.cb-btn.soft{background:rgba(255,255,255,.04);color:var(--muted);border-color:var(--border);font-size:11px;}
+.cb-btn.soft:hover{background:rgba(192,132,252,.12);color:var(--weave);}
+.cb-msgs{width:100%;max-width:720px;display:flex;flex-direction:column;gap:13px;}
+.cb-empty{text-align:center;padding:42px 18px;color:var(--muted);}
+.cb-empty h3{font-family:var(--fh);font-weight:900;font-size:16px;background:linear-gradient(90deg,var(--weave),var(--pink));-webkit-background-clip:text;background-clip:text;color:transparent;margin-bottom:7px;}
+.cb-pair{animation:slideUp .35s ease-out;}
+@keyframes slideUp{from{opacity:0;transform:translateY(13px)}to{opacity:1;transform:translateY(0)}}
+.cb-meta{font-size:11px;color:var(--muted);margin-bottom:5px;}
+.cb-qbubble{display:inline-block;background:linear-gradient(135deg,var(--weave),rgba(150,0,100,.8));color:#fff;padding:9px 14px;border-radius:16px 16px 16px 3px;font-size:13px;margin-bottom:11px;max-width:88%;line-height:1.5;}
+.cb-pcard{background:rgba(12,0,7,.9);border:1.5px solid rgba(192,132,252,.38);border-radius:13px;overflow:hidden;margin-bottom:7px;}
+.cb-phead{background:linear-gradient(135deg,rgba(120,60,180,.78),rgba(80,0,120,.84));padding:8px 13px;}
+.cb-plabel{font-family:var(--fh);font-weight:900;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:#fff;}
+.cb-pbody{padding:13px;}
+.cb-ptext{font-size:13px;line-height:1.7;color:rgba(230,200,255,.88);}
+.cb-psrc{margin-top:9px;padding-top:9px;border-top:1px solid rgba(192,132,252,.1);font-size:11px;color:var(--muted);}
+.cb-psrc a{color:var(--candy);text-decoration:none;}
+.cb-mcard{background:rgba(12,0,7,.9);border:1.5px solid rgba(255,60,120,.3);border-radius:13px;overflow:hidden;}
+.cb-mhead{background:linear-gradient(135deg,rgba(200,0,80,.6),rgba(120,0,50,.7));padding:8px 13px;}
+.cb-mlabel{font-family:var(--fh);font-weight:900;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:#fff;}
+.cb-mbody{padding:13px;}
+.cb-mtext{font-family:var(--fm);font-size:11.5px;line-height:1.85;color:rgba(255,180,210,.85);white-space:pre-wrap;}
+.cb-spkrow{padding:7px 13px 11px;display:flex;gap:7px;}
+.cb-bottom{width:100%;max-width:720px;background:linear-gradient(135deg,rgba(60,0,40,.8),rgba(20,0,10,.92));border:1.5px solid var(--border2);border-radius:18px;padding:17px;text-align:center;position:relative;overflow:hidden;}
+.cb-bottom::before{content:'';position:absolute;top:0;left:10%;right:10%;height:1.5px;background:linear-gradient(90deg,transparent,var(--candy) 35%,var(--pink) 50%,var(--candy) 65%,transparent);border-radius:999px;}
+.cb-btitle{font-family:var(--fh);font-weight:900;font-size:15px;background:linear-gradient(90deg,var(--weave),var(--pink),var(--candy));-webkit-background-clip:text;background-clip:text;color:transparent;margin-bottom:11px;}
+.cb-link{display:inline-flex;align-items:center;gap:5px;font-family:var(--fh);font-weight:900;font-size:13px;color:var(--cream);background:linear-gradient(135deg,var(--pink),var(--berry));padding:11px 23px;border-radius:13px;text-decoration:none;box-shadow:0 4px 18px rgba(255,60,120,.32);transition:all .2s;}
+.cb-link:hover{transform:translateY(-2px);}
+.cb-modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:999;align-items:center;justify-content:center;}
+.cb-modal.open{display:flex;}
+.cb-mbox{background:rgba(14,0,8,.97);border:1.5px solid var(--border2);border-radius:18px;padding:24px 22px;max-width:340px;width:90%;position:relative;}
+.cb-mbox::before{content:'';position:absolute;top:0;left:10%;right:10%;height:1.5px;background:linear-gradient(90deg,transparent,var(--candy) 35%,var(--pink) 50%,var(--candy) 65%,transparent);border-radius:999px;}
+.cb-mtitle{font-family:var(--fh);font-weight:900;font-size:16px;color:var(--blush);margin-bottom:9px;}
+.cb-mbodytxt{font-size:12px;color:var(--muted);line-height:1.6;margin-bottom:15px;}
+.cb-mbtns{display:flex;gap:9px;}
+.cb-err{font-size:11px;color:var(--pink);margin-top:6px;min-height:16px;}
+.cb-wmark{font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:rgba(192,132,252,.1);padding-bottom:8px;text-align:center;}
 </style>
 </head>
 <body>
-<div class="bg-layer"></div>
-<div class="orb orb-1"></div><div class="orb orb-2"></div><div class="orb orb-3"></div>
-<div class="sparkles" id="sparkles"></div>
-
+<div class="bg-layer"></div><div class="orb orb-1"></div><div class="orb orb-2"></div>
 <div class="screen">
 
-  <div class="mascot-bar">
-    <div class="mascot">
-      <div class="bot-face">🤖</div>
+  <div class="cb-topbar">
+    <div class="cb-logo">
+      <div class="cb-icon">🧵</div>
       <div>
-        <div class="bot-name">CAREBOT-04 ✦</div>
-        <div class="bot-sub">Robot Picker · Online</div>
+        <div class="cb-name">CAREBOT-01 ✦ THREADS & CIRCUITS</div>
+        <div class="cb-sub">Textile Industry · Computing History · Binary Weaving · Labor · CAREtech</div>
       </div>
     </div>
-    <div class="time-badge">
-      <div class="time-pip"></div>
-      <span id="sysTime">--:--:--</span>
+    <div class="cb-badges">
+      <div class="cb-badge" id="onlineCount"><span class="cb-pip"></span>Connecting…</div>
+      <div class="cb-badge" id="sysTime">--:--</div>
     </div>
   </div>
 
-  <!-- ★ HOW TO DO THIS TASK -->
-  <div class="intro-card">
-    <div class="intro-eyebrow">✦ CAREBOT-04 · Worker Instructions</div>
-    <div class="intro-title">How to complete this task</div>
-    <ul class="intro-steps">
-      <li><div class="i-num">1</div><div class="i-text"><strong>Pick a robot image</strong> — tap the spinning image below when you see a robot you want to work with.</div></li>
-      <li><div class="i-num">2</div><div class="i-text"><strong>Read the task list</strong> that appears — it shows step-by-step instructions for a human task.</div></li>
-      <li><div class="i-num">3</div><div class="i-text"><strong>Go up to a humanoid robot</strong> and <strong>tell the robot to perform these tasks</strong>, following the steps exactly as described.</div></li>
-      <li><div class="i-num">4</div><div class="i-text">When done, tap <strong>Advance to next task</strong> to continue.</div></li>
-    </ul>
+  <div class="stats-bar">
+    <div class="stat-chip">Responses <strong id="st-r">—</strong></div>
+    <div class="stat-chip">Online <strong id="st-o">—</strong></div>
+    <div class="stat-chip">Knew Jacquard <strong id="st-j">—</strong></div>
+    <div class="stat-chip">Knew Ada <strong id="st-a">—</strong></div>
   </div>
 
-  <div class="frame-wrap">
-    <div class="frame" id="game-frame">
-      <div class="hint" id="hint">✦ Tap the image to select</div>
+  <!-- CONTEXT CARD -->
+  <div class="irony-card">
+    <div class="irony-eyebrow">✦ CAREBOT-01 · The Connection</div>
+    <div class="irony-title">The Jacquard loom (1804) was the first binary input device. Holes in a card meant raise the thread. Solid meant lower it. Charles Babbage saw this and built the punch card into his Analytical Engine. Ada Lovelace wrote programs for that machine — making her the first programmer. Every computer you have ever used runs on logic invented by a weaver.</div>
+    <div class="irony-body">
+      The textile industry and the computer industry are the same industry, separated by 150 years. Both ran on <strong>the labor of women whose names we rarely learn.</strong> The Lowell Mill Girls were the first industrial labor force in America. The ENIAC programmers were called "computers" before the machine was. The rope mothers supervised fiber factories using the same binary twist logic — Z-twist / S-twist, over / under, 1 / 0 — that now runs your phone. <em>The thread and the circuit are the same logic. The labor that built both was the same labor. The erasure was the same erasure.</em>
     </div>
   </div>
 
-  <div id="instructionsPanel">
-    <div class="panel-eyebrow">✦ CAREBOT-04 · Tell the robot to perform this task</div>
-    <div class="panel-task-title" id="panelTitle">—</div>
-    <div class="panel-img-row">
-      <img id="panelImg" class="panel-img" src="" alt="selected robot" />
-      <div class="panel-img-meta">
-        <div class="panel-img-label">Selected robot</div>
-        <div class="panel-img-caption" id="panelCaption">—</div>
+  <!-- TIMELINE -->
+  <div class="history-section">
+    <div class="section-title">✦ The Thread That Connects</div>
+    <div class="section-sub">A timeline of the relationship between fiber, labor, and computing — from looms to algorithms.</div>
+    <div class="timeline">
+      <div class="tl-item">
+        <div class="tl-year">100,000<br>BCE</div>
+        <div class="tl-content"><strong>The first use of fiber.</strong> Evidence from Neanderthal sites suggests twisted plant cordage — string, sinew, bark fiber — predates modern humans. The ability to twist two strands together to create something stronger than either alone is one of the foundational cognitive leaps in human history. String enables nets, bags, clothing, shelter. <em>Civilization is, in one sense, a species that learned to twist fiber.</em></div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-year">36,000<br>BCE</div>
+        <div class="tl-content"><strong>Flax fibers processed in Dzudzuana Cave, Georgia.</strong> Colored and twisted wild flax fibers — some dyed pink, violet, turquoise — found preserved in a cave in the Caucasus. These are not raw fibers. They are processed, selected for color, and twisted into thread. <strong>Textile production at this date implies specialized knowledge, division of labor, and aesthetic intention.</strong> Someone chose the color. Someone knew the process. That someone is statistically likely to have been a woman.</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-year">27,000<br>BCE</div>
+        <div class="tl-content"><strong>The first woven fibers.</strong> Archaeological evidence from the Dzudzuana Cave in Georgia (country) shows twisted plant fibers — the earliest known textile technology. Humans are spinning and interlacing materials <em>before pottery, before agriculture, before writing.</em> The logic of over and under, twist and counter-twist, is one of the oldest technologies our species possesses.</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-year">5000<br>BCE</div>
+        <div class="tl-content"><strong>Weaving looms appear across multiple civilizations simultaneously.</strong> In Egypt, Mesopotamia, China, and the Andes — independently, without contact — humans develop the loom. The warp threads are fixed; the weft threads pass over and under. Over, under. Over, under. <strong>This is binary logic.</strong> Every civilization that weaves discovers the same fundamental computational structure. The loom is not a metaphor for computing. It is computing, performed by hand.</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-year">3000<br>BCE</div>
+        <div class="tl-content"><strong>Textile production is women's work across most of the ancient world.</strong> In Mesopotamia, temple records document thousands of female textile workers — weavers, spinners, fullers — paid in rations of grain and oil. In ancient Greece, weaving is the defining female virtue: Penelope weaves and unweaves to hold off her suitors; Athena, goddess of wisdom, is also goddess of weaving. <em>The connection between women, craft knowledge, and intelligent pattern-making is ancient and consistent. The erasure of that connection is more recent.</em></div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-year">1200s</div>
+        <div class="tl-content"><strong>The horizontal treadle loom spreads across Europe.</strong> Foot pedals (treadles) control the raising and lowering of warp threads, freeing both hands to pass the shuttle. The loom becomes faster, more complex patterns become possible. Guild systems form — and immediately exclude women from the most skilled and highest-paid weaving work. Women continue to spin, to card, to finish. Men control the looms. <strong>The technology advances. The gendering of who operates it is imposed, not natural.</strong></div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-year">1700s</div>
+        <div class="tl-content"><strong>The drawloom enables complex patterned silk weaving</strong> — brocades, damasks, tapestries. A second worker, the "draw boy," pulls cords above the loom to raise specific warp threads for each row of the pattern. This is manual programming: someone reads the pattern, selects the correct threads, executes one row, repeats. The draw boy is often a child. The pattern designer is often not credited. <em>The labor of translating a visual pattern into thread-by-thread instructions is the same labor Ada Lovelace will perform for Babbage's machine 100 years later.</em></div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-year">1000s–<br>1500s</div>
+        <div class="tl-content"><strong>The wool trade builds medieval Europe.</strong> Wool textiles from England, Flanders, and Florence are the most valuable traded commodity in Europe — the oil of the medieval economy. Entire cities exist to produce, finish, and trade cloth. The Medici bank begins as a wool trading operation. Edward III of England weaponizes wool export as economic warfare. <strong>Thread is currency. Textile knowledge is power.</strong> The women who spin the raw wool — spinsters — are so central to the economy that their job title becomes the legal term for an unmarried woman.</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-year">1500s–<br>1600s</div>
+        <div class="tl-content"><strong>Cotton arrives in Europe from India and the Americas.</strong> The East India Company trades in Indian cotton cloth — calico, muslin, chintz — so successfully that English and French wool merchants petition their governments to ban it. Cotton is lighter, cheaper, washable, and printable. The textile industry fractures between old wool interests and new cotton capital. <em>The battle over fiber is also a battle over empire, labor, and whose knowledge counts.</em></div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-year">1733</div>
+        <div class="tl-content"><strong>The flying shuttle doubles weaving speed</strong> — and immediately creates a bottleneck. Weavers can now consume thread faster than spinners can produce it. The demand for faster spinning drives the invention of the spinning jenny (1764), the water frame (1769), and the spinning mule (1779). <strong>One mechanical innovation triggers a cascade.</strong> The Industrial Revolution begins not with steam but with thread — with the problem of keeping up with a faster loom. Every step is powered by women's labor rendered newly mechanical.</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-year">1764–<br>1779</div>
+        <div class="tl-content"><strong>The spinning jenny, water frame, and spinning mule mechanize spinning.</strong> James Hargreaves, Richard Arkwright, Samuel Crompton — three men credited with inventions that displaced thousands of female hand-spinners. The domestic spinning wheel, tended by women in their homes for income, is made obsolete in a generation. <em>The word "spinster" — from the women who spun — becomes a term of social failure.</em> The work that built the medieval economy is automated away. The women who performed it are not compensated, retrained, or remembered.</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-year">1790s</div>
+        <div class="tl-content"><strong>The first textile factories in America.</strong> Samuel Slater smuggles British mill designs to Rhode Island and builds the first American cotton mill in 1793. Child labor — children as young as seven — operates the machinery. The American textile industry is built on the same model as the British: extract maximum labor at minimum cost from those with the least power. Within a generation, the workforce shifts to young women. <strong>The factory system and the gendering of textile labor arrive together.</strong></div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-year">1804</div>
+        <div class="tl-content"><strong>Joseph Marie Jacquard invents the programmable loom.</strong> Punched cards control which threads rise and fall — holes = 1, solid = 0. The first binary input device. Pattern complexity is now limited only by the number of cards, not the skill of the weaver. The textile industry is automated. Thousands of weavers lose their livelihoods.</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-year">1811</div>
+        <div class="tl-content"><strong>The Luddites.</strong> Skilled textile workers in England smash power looms and stocking frames. They are not anti-technology — they are protesting the use of machinery to destroy craft labor and wage protections. They are framed as technophobes. <em>The framing holds to this day.</em> Their actual argument — that technology should serve workers, not replace them — has never been answered.</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-year">1820s</div>
+        <div class="tl-content"><strong>The Lowell Mill Girls.</strong> Young women from New England farms come to work in the cotton mills. They are the first industrial labor force in America — mostly between 15 and 35, literate, organized. They run literary magazines. They organize some of the first American labor strikes when wages are cut. Their labor builds the American textile industry. Their names are largely forgotten.</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-year">1820s–<br>1860s</div>
+        <div class="tl-content"><strong>The rope mothers (Seilmutter).</strong> Female supervisors of ropewalk factories — the long, narrow buildings where rope was twisted from raw fiber. Rope-making uses a binary alternation: Z-twist and S-twist, two directions of rotation applied in sequence to create strength. Over, under. Over, under. <em>1, 0.</em> The same binary logic as weaving, the same binary logic as computing. These women managed teams, controlled tension, and ensured quality in highly technical industrial operations. Their job title contained the word "mother." Their work built the rope that held ships, bridges, and mines together. It does not appear in computing history.</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-year">1837</div>
+        <div class="tl-content"><strong>Charles Babbage designs the Analytical Engine</strong> — the first programmable mechanical computer. He adapts Jacquard's punch card system as the input mechanism. The loom and the computer are now directly connected by the same physical object: a card with holes.</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-year">1843</div>
+        <div class="tl-content"><strong>Ada Lovelace writes the first algorithm.</strong> Daughter of Lord Byron and mathematician Anne Isabella Milbanke — who studied math specifically to counteract Byron's "poetic madness." Ada translates a paper on Babbage's engine and adds notes three times the length of the original, including what is now recognized as the first computer program. She is 27. Her work is not fully recognized until the 1950s.</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-year">1890</div>
+        <div class="tl-content"><strong>Herman Hollerith adapts Jacquard cards for the US Census tabulating machine.</strong> The punch card moves from textile mill to data processing. Hollerith's company eventually becomes IBM. The 80-column IBM punch card — used until the 1970s — is the direct descendant of Jacquard's loom card. Every COBOL programmer punched a card that a weaver designed.</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-year">1945</div>
+        <div class="tl-content"><strong>Six women program ENIAC</strong> — the first general-purpose electronic computer. Kay McNulty, Betty Jennings, Betty Snyder, Marlyn Wescoff, Fran Bilas, Ruth Lichterman. They are called "computers" — the word for a person who computes — before the machine takes the name. They receive no credit at the public unveiling. Their contributions are classified for decades.</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-year">Now</div>
+        <div class="tl-content"><strong>Women make up less than 30% of the AI workforce.</strong> The same logic that erased the mill girls, the rope mothers, Ada Lovelace, and the ENIAC women continues to operate. The domestic space — the original R&D lab — remains uncredited. The thread that connects all of this is not a metaphor. <em>It is a punch card. It is a loom. It is a circuit. It is the same binary logic, running continuously since 1804.</em></div>
       </div>
     </div>
-    <div class="steps-heading">✦ Go tell the robot to do these steps</div>
-    <ul class="steps-list" id="stepsList"></ul>
-    <div class="panel-btn-row">
-      <a class="btn primary" href="https://sbuckius.github.io/if-carebot-research/hit.html" target="_blank" rel="noopener noreferrer">✦ Advance to next task</a>
-      <button id="restart" class="btn soft">Replay ↩</button>
+  </div>
+
+  <!-- OBJECT TILES -->
+  <div class="irony-grid">
+    <div class="irony-tile">
+      <div class="tile-eyebrow">✦ Object 01</div>
+      <div class="tile-object">The Jacquard Loom</div>
+      <div class="tile-body">A mechanical loom programmed by punched cards. Holes control which threads rise. Solid controls which fall. <strong>This is binary code.</strong> This is the ancestor of every computer ever built. The textile industry invented programmable automation in 1804. It ran on the labor of women. It has been credited to engineers ever since.</div>
+      <div class="tile-stat"><strong>Image: images/threads01.png</strong> — Jacquard loom showing punch card mechanism</div>
+    </div>
+    <div class="irony-tile">
+      <div class="tile-eyebrow">✦ Object 02</div>
+      <div class="tile-object">The Punch Card</div>
+      <div class="tile-body">Herman Hollerith adapts Jacquard's cards for the 1890 Census. IBM standardizes 80 columns. Every programmer from 1890 to 1980 submits their work on cards descended from a weaver's pattern cards. <strong>The computer and the loom share the same input device.</strong> One is called technology. The other is called craft. The distinction is gendered.</div>
+      <div class="tile-stat"><strong>Image: images/threads02.png</strong> — IBM 80-column punch card</div>
+    </div>
+    <div class="irony-tile">
+      <div class="tile-eyebrow">✦ Object 03</div>
+      <div class="tile-object">The Weave Pattern</div>
+      <div class="tile-body">Plain weave: over one thread, under the next. Over, under. Over, under. 1, 0. 1, 0. <strong>Weaving is binary computation performed by hand.</strong> The Jacquard loom automates this. Binary code names the same logic. The weave pattern is the original algorithm. The person who designed it was not called a programmer.</div>
+      <div class="tile-stat"><strong>Image: images/threads03.png</strong> — Plain weave diagram showing over/under binary logic</div>
+    </div>
+    <div class="irony-tile">
+      <div class="tile-eyebrow">✦ Object 04</div>
+      <div class="tile-object">The Rope</div>
+      <div class="tile-body">Rope-making mills used Z-twist and S-twist — two directions of fiber rotation, alternated for strength. Binary logic. <strong>Rope mothers (Seilmutter)</strong> supervised these operations in European mills — female overseers of highly technical fiber work. The CAREtech project includes rope mothers in the EMBRACE Effect framework: women whose technical labor was named after a domestic object and then forgotten.</div>
+      <div class="tile-stat"><strong>Image: images/threads04.png</strong> — Ropewalk factory interior</div>
+    </div>
+    <div class="irony-tile">
+      <div class="tile-eyebrow">✦ Object 05</div>
+      <div class="tile-object">The Mill Spindle</div>
+      <div class="tile-body">The Lowell Mill Girls tended spindles — machines that twisted raw cotton into thread at high speed, in buildings with no ventilation, in 14-hour shifts. <strong>They were the first industrial workforce in America.</strong> They organized strikes. They ran literary magazines. They are remembered, when remembered at all, as simple farm girls who briefly worked in factories before marriage. They were the foundation of the American industrial economy.</div>
+      <div class="tile-stat"><strong>Image: images/threads05.png</strong> — Lowell mill interior, 1840s</div>
+    </div>
+    <div class="irony-tile">
+      <div class="tile-eyebrow">✦ Object 06</div>
+      <div class="tile-object">The ENIAC Panel</div>
+      <div class="tile-body">The ENIAC women — six of them — hand-wired a room-sized computer by consulting logic diagrams and physically connecting patch cables. They were <strong>human computers before the machine took the name.</strong> At the public unveiling, they were not introduced. The generals and engineers were. The women who wrote the first programs are in photographs from that day. For decades, no one knew who they were.</div>
+      <div class="tile-stat"><strong>Image: images/threads06.png</strong> — ENIAC operators at the machine, 1945</div>
     </div>
   </div>
 
-  <div class="wordmark">✦ carebot research system · v2.4 ✦</div>
+  <!-- DATA MODULE -->
+  <div class="mod-card">
+    <div class="mod-header">
+      <div class="mod-eyebrow">✦ Data Module · Respond to the Connection</div>
+      <div class="mod-title">What did you know? What changed?</div>
+      <div class="mod-sub">The textile industry and the computer industry are the same industry. The labor that built both was largely performed by women. Respond to what you found in this connection.</div>
+    </div>
+    <div class="mod-body">
+      <div class="open-label">Before today, did you know the Jacquard loom directly inspired computer punch cards?</div>
+      <div class="rate-row" id="knewJacquardRow">
+        <button class="rate-btn" onclick="sel('knewJacquardRow',this,'yes')">Yes, I knew this</button>
+        <button class="rate-btn" onclick="sel('knewJacquardRow',this,'vaguely')">Vaguely — had heard it</button>
+        <button class="rate-btn" onclick="sel('knewJacquardRow',this,'no')">No, this is new to me</button>
+      </div>
+      <div class="open-label">How familiar were you with Ada Lovelace before today?</div>
+      <div class="rate-row" id="adaRow">
+        <button class="rate-btn" onclick="sel('adaRow',this,'none')">Never heard of her</button>
+        <button class="rate-btn" onclick="sel('adaRow',this,'name')">Knew the name only</button>
+        <button class="rate-btn" onclick="sel('adaRow',this,'programmer')">Knew she was a programmer</button>
+        <button class="rate-btn" onclick="sel('adaRow',this,'full')">Knew her full story</button>
+      </div>
+      <div class="open-label">Weaving (over/under threads) and binary code (1/0) use the same logic. What does knowing this change — about how you see a loom? About how you see a computer?</div>
+      <textarea class="open-q" id="openQ1" placeholder="When I think about a weave pattern now, I see… / When I think about binary code now, I think of…"></textarea>
+      <div class="open-label">The Luddites were not anti-technology. They were protesting the use of machines to destroy labor rights. Does that parallel feel relevant to AI today?</div>
+      <div class="rate-row" id="ludditeRow">
+        <button class="rate-btn" onclick="sel('ludditeRow',this,'strongly_yes')">Strongly yes</button>
+        <button class="rate-btn" onclick="sel('ludditeRow',this,'somewhat')">Somewhat</button>
+        <button class="rate-btn" onclick="sel('ludditeRow',this,'not_really')">Not really</button>
+        <button class="rate-btn" onclick="sel('ludditeRow',this,'complicated')">It's complicated</button>
+      </div>
+      <div class="open-label">Anything else — a reaction, a question, something that stayed with you.</div>
+      <textarea class="open-q" id="openQ2" placeholder="Optional but welcome."></textarea>
+    </div>
+    <div class="mod-footer">
+      <div class="mod-progress" id="modProg">Answer the questions to continue</div>
+      <button class="mod-submit" id="modSubmit" onclick="submitResponse()" disabled>✦ Submit Response</button>
+    </div>
+  </div>
+
+  <!-- Q&A -->
+  <div class="cb-card">
+    <div class="cb-eyebrow">✦ Ask a Question · Showing Last 3</div>
+    <div class="cb-row">
+      <input class="cb-input cb-name-in" type="text" id="userName" placeholder="Your name…">
+      <input class="cb-input" type="text" id="userQuestion" placeholder="Ask about looms, punch cards, Ada Lovelace, Luddites, rope mothers, binary weaving…" autocomplete="off">
+      <button class="cb-btn primary" onclick="askQuestion()">✦ Ask</button>
+      <button class="cb-btn soft" onclick="showAdminModal()">⚙</button>
+    </div>
+  </div>
+  <div class="cb-msgs" id="outputArea">
+    <div class="cb-empty"><h3>✦ Answers appear here</h3><p>Type a question above and tap Ask</p></div>
+  </div>
+
+  <div class="cb-bottom">
+    <div class="cb-btitle">✦ The thread and the circuit are the same logic.</div>
+    <a class="cb-link" href="https://care-tech.org/carebot07-hit.html">✦ Advance to next task</a>
+  </div>
+  <div class="cb-wmark">✦ carebot-01 · threads & circuits · the textile industry and the computer industry are the same industry · caretech ✦</div>
 </div>
 
+<div class="cb-modal" id="adminModal">
+  <div class="cb-mbox">
+    <div class="cb-mtitle">🔒 Admin Reset</div>
+    <div class="cb-mbodytxt">Enter the admin passcode to clear Q&A messages.</div>
+    <input class="cb-input" type="password" id="adminPass" placeholder="Enter passcode…" style="width:100%;margin-bottom:6px;">
+    <div class="cb-err" id="adminErr"></div>
+    <div class="cb-mbtns" style="margin-top:10px;">
+      <button class="cb-btn soft" style="flex:1" onclick="closeAdminModal()">Cancel</button>
+      <button class="cb-btn primary" style="flex:1" onclick="confirmAdminReset()">Reset</button>
+    </div>
+  </div>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
 <script>
-function updateClock(){const n=new Date(),p=v=>String(v).padStart(2,'0');document.getElementById('sysTime').textContent=`${p(n.getHours())}:${p(n.getMinutes())}:${p(n.getSeconds())}`;}
+const ADMIN='threads01';const MAX=3;
+const PROXY='https://carebot-02.sbuckius.workers.dev/';
+function updateClock(){const n=new Date(),p=v=>String(v).padStart(2,'0');document.getElementById('sysTime').textContent=p(n.getHours())+':'+p(n.getMinutes());}
 setInterval(updateClock,1000);updateClock();
 
-(function(){const wrap=document.getElementById('sparkles');const chars=['✦','✧','♡','˚','·','✿','◦','❀'];for(let i=0;i<28;i++){const s=document.createElement('span');s.className='sp';s.textContent=chars[Math.floor(Math.random()*chars.length)];s.style.left=Math.random()*100+'vw';s.style.bottom=Math.random()*-60+'px';s.style.fontSize=(9+Math.random()*10)+'px';s.style.color=`hsl(${315+Math.random()*45},75%,${65+Math.random()*22}%)`;s.style.animationDuration=(7+Math.random()*13)+'s';s.style.animationDelay=(Math.random()*13)+'s';wrap.appendChild(s);}})();
+let db,msgRef,respRef,onlineRef,fbReady=false;
+let currentUser=localStorage.getItem('cb01User')||'';
+let userColor=localStorage.getItem('cb01Color')||genColor();
+function genColor(){const c=['#c084fc','#ff85b3','#67e8f9','#ff2d6b'];const v=c[Math.floor(Math.random()*c.length)];localStorage.setItem('cb01Color',v);return v;}
+try{
+  firebase.initializeApp({apiKey:"AIzaSyCZFDU-WlSmHqjXTs1Ox0nf9xeJU_xbaX0",authDomain:"collaborativemashup.firebaseapp.com",databaseURL:"https://collaborativemashup-default-rtdb.firebaseio.com",projectId:"collaborativemashup",storageBucket:"collaborativemashup.firebasestorage.app",messagingSenderId:"562437984610",appId:"1:562437984610:web:9f3711c26e097bc8ef9c3b"});
+  db=firebase.database();msgRef=db.ref('cb01Messages');respRef=db.ref('cb01Responses');onlineRef=db.ref('cb01Online');fbReady=true;
+  if(currentUser)trackPresence();
+  respRef.on('value',s=>{
+    const all=[];let j=0,a=0;
+    s.forEach(c=>{const v=c.val();all.push(v);if(v.knewJacquard&&v.knewJacquard!=='no')j++;if(v.knewAda&&v.knewAda!=='none')a++;});
+    document.getElementById('st-r').textContent=all.length;
+    document.getElementById('st-j').textContent=all.length?Math.round(j/all.length*100)+'%':'—';
+    document.getElementById('st-a').textContent=all.length?Math.round(a/all.length*100)+'%':'—';
+  });
+  onlineRef.on('value',s=>{const c=Object.keys(s.val()||{}).length;document.getElementById('onlineCount').innerHTML='<span class="cb-pip"></span>'+c+' online';document.getElementById('st-o').textContent=c;});
+  let initDone=false;
+  msgRef.orderByKey().limitToLast(MAX).once('value',snap=>{
+    const area=document.getElementById('outputArea');area.innerHTML='';
+    const items=[];snap.forEach(c=>items.push({key:c.key,val:c.val()}));
+    if(!items.length)area.innerHTML='<div class="cb-empty"><h3>✦ Answers appear here</h3><p>Type a question above</p></div>';
+    else items.reverse().forEach(({key,val})=>renderPair(val,key,false));
+    initDone=true;
+    const lk=items.length?items[items.length-1].key:null;
+    const nq=lk?msgRef.orderByKey().startAfter(lk):msgRef.orderByKey().limitToLast(1);
+    nq.on('child_added',snap=>{
+      if(!initDone)return;
+      const area=document.getElementById('outputArea');area.querySelector('.cb-empty')?.remove();
+      const pairs=area.querySelectorAll('.cb-pair');if(pairs.length>=MAX)pairs[pairs.length-1].remove();
+      renderPair(snap.val(),snap.key,true);
+    });
+  });
+}catch(e){fbReady=false;document.getElementById('onlineCount').textContent='Offline';}
+function trackPresence(){if(!onlineRef||!currentUser)return;const r=onlineRef.child(currentUser.replace(/[.#$[\]]/g,'_'));r.set({name:currentUser,ts:firebase.database.ServerValue.TIMESTAMP});r.onDisconnect().remove();}
+document.getElementById('userName').addEventListener('change',function(){currentUser=this.value.trim();localStorage.setItem('cb01User',currentUser);if(currentUser&&fbReady)trackPresence();});
 
-const ROBOT_TASKS=[
-{title:"Hang Clothing on a Rack",caption:"Organizing garments on hangers",steps:["Gather the items of clothing and inspect each one for damage or stains before handling.","Pick up a hanger with one hand and hold the garment open at the shoulders with your other hand.","Align the shoulders of the garment with the ends of the hanger, then slide it on smoothly.","Hook the hanger onto the rack bar, spacing it evenly from neighboring items.","Straighten each garment so it hangs flat, and face all items the same direction for consistency."]},
-{title:"Load Laundry into a Washing Machine",caption:"Putting clothes into a front-load washer",steps:["Sort the laundry first — separate whites, colors, and delicates into distinct piles.","Pull the front-loading door fully open and confirm the drum is empty and clean.","Load items loosely into the drum one piece at a time — do not overfill.","Add the correct amount of detergent to the dispenser drawer according to load size.","Close the door firmly, select the appropriate wash cycle and temperature, then press start."]},
-{title:"Wipe Down a Countertop",caption:"Cleaning a surface with a damp cloth",steps:["Rinse a clean cloth in warm water and wring it out so it is moist but not dripping.","Clear any loose items, crumbs, or debris from the surface.","Starting from the far end of the counter, wipe in long overlapping strokes toward you.","Apply gentle pressure over any stuck-on residue, working in small circles until it lifts.","Finish with a dry cloth to remove remaining moisture and leave the surface streak-free."]},
-{title:"Play a Board Game with a Family",caption:"Engaging children in tabletop play",steps:["Set the game board flat in the center of the table so all players can comfortably reach the pieces.","Distribute the correct pieces, cards, or tokens to each player according to the rules.","Explain the rules clearly and simply, especially for younger players, and answer any questions.","Take turns in order — encourage every player, celebrate good moves, and keep the energy positive.","Help tidy all pieces back into the box when the game is finished."]},
-{title:"Prepare and Serve Tea",caption:"Setting up a full tea service tray",steps:["Fill the kettle with fresh cold water and bring it to the correct temperature for the type of tea.","Arrange the teapot, cups, saucers, and any accompaniments neatly on the serving tray.","Add the correct amount of loose-leaf tea or teabags to the teapot.","Pour the hot water into the teapot and allow it to steep for the recommended time.","Carry the tray carefully to the table and pour tea into each cup, offering milk or sugar as needed."]},
-{title:"Hang a Garment in a Closet",caption:"Placing clothes on a closet rod or hook",steps:["Take the garment and confirm it is clean and dry before storing it.","Open the closet door fully so you have clear access to the rod or hook.","Hold the garment by the collar or straps and thread it onto the hanger or over the hook.","Position the garment so it hangs straight and does not press against other items.","Close the closet door when done."]},
-{title:"Cook Food in a Pan on the Stove",caption:"Using a skillet to prepare a hot meal",steps:["Place the pan on the burner and set the heat to the appropriate level for what you are cooking.","Add oil or butter to the pan and let it heat until shimmering or just foaming.","Carefully add the food to the pan, laying it away from you to avoid hot splatter.","Monitor the heat and adjust as needed — never walk away from an active burner.","When the underside is cooked, use a spatula to flip the food in one smooth motion and cook the second side."]},
-{title:"Iron a Garment",caption:"Pressing clothing on an ironing board",steps:["Check the garment's care label and set the iron to the matching heat setting.","Fill the iron's water reservoir if using steam, then allow the iron to reach full temperature.","Lay the garment flat on the ironing board, starting with the collar or cuffs.","Move the iron in steady back-and-forth strokes — never leave it stationary on the fabric.","Hang or fold the garment immediately after ironing while still slightly warm so it keeps its shape."]},
-{title:"Fold and Set Table Linens",caption:"Preparing napkins or cloth at a table setting",steps:["Spread the linen flat on a clean surface and smooth out major wrinkles by hand.","Fold in half lengthwise, aligning the edges precisely, then smooth again.","Fold again to the desired final shape — rectangle, square, or decorative fold.","Place each folded linen at the correct position at each place setting.","Adjust the placement so all linens are evenly spaced and consistently oriented."]},
-{title:"Collect and Load Laundry",caption:"Gathering clothes and operating the washer",steps:["Walk through the home and collect all dirty laundry into a basket or hamper.","Sort the clothes by color and fabric type before approaching the machine.","Open the washer door, confirm it is empty, then load clothes loosely.","Measure and add detergent to the correct compartment.","Select your wash cycle, close the door securely, and press start."]},
-{title:"Empty a Trash Can",caption:"Removing and replacing a garbage bag",steps:["Put on a pair of disposable gloves before handling the trash bag.","Grip the top edges of the bin liner and lift it carefully straight up to avoid spills.","Tie the bag closed with a secure knot, then carry it to the outdoor bin or disposal area.","Rinse the inside of the trash can if needed and allow it to dry.","Insert a fresh liner into the can, pressing it flat against the sides and folding the edge over the rim."]},
-{title:"Vacuum the Floor",caption:"Using a vacuum cleaner on hard floors or carpet",steps:["Pick up any large objects, cables, or small items from the floor that could jam the vacuum.","Plug in the vacuum (or confirm the battery is charged) and select the correct setting for the floor type.","Begin in the far corner of the room and work backward toward the door in overlapping straight lines.","Slow down over high-traffic areas and rugs to allow suction to lift embedded dirt.","When finished, empty the dustbin or replace the bag, and wind up the cord neatly."]},
-{title:"Clean a Kitchen Counter",caption:"Wiping down a stone or marble countertop",steps:["Remove all items from the counter — appliances, fruit bowls, anything resting on the surface.","Spray an appropriate cleaning solution lightly across the surface.","Using a folded microfiber cloth, wipe from one end to the other in overlapping strokes.","Pay attention to edges, corners, and areas near the sink where splashes collect.","Buff dry with a second clean cloth to prevent water marks, then return items to the counter."]},
-{title:"Remove Food from a Cooking Appliance",caption:"Taking a waffle out of a waffle iron",steps:["Confirm the cooking cycle is complete — the indicator light should show the food is ready.","Use heat-resistant silicone tongs or a fork to gently loosen the edges from the cooking surface.","Lift the food straight up and out in one steady motion to avoid breaking it.","Transfer immediately to a waiting plate, keeping the plate close to minimize distance traveled.","Close the appliance or turn it off, and allow it to cool before cleaning."]},
-{title:"Prepare and Pour Drinks",caption:"Handling pitchers and glasses in a kitchen",steps:["Gather the required glasses and set them out on a clean, stable surface.","Check that pitchers or containers are filled to the correct level before pouring.","Hold each container firmly and tilt it slowly over the first glass, controlling the flow to avoid spills.","Fill each glass to the appropriate level — typically about three-quarters full.","Return the container upright, place it safely on the counter, and wipe any drips immediately."]},
-{title:"Retrieve Items from the Refrigerator",caption:"Getting food out of the fridge",steps:["Open the refrigerator door fully and take a moment to identify the items you need.","Use both hands to safely remove multiple items at once — place fragile items on top.","Check expiration dates on any perishables before using them.","Close the refrigerator door firmly so the seal engages and the cold is maintained.","Carry the retrieved items to the counter or preparation area and set them down gently."]},
-{title:"Make an Espresso",caption:"Operating a professional espresso machine",steps:["Fill the machine's water reservoir and allow it to reach full operating temperature.","Measure the correct dose of freshly ground coffee into the portafilter basket.","Tamp the grounds firmly and evenly with the tamper, applying consistent downward pressure.","Lock the portafilter into the group head with a firm clockwise turn.","Place a cup under the spout and press the brew button — the shot should extract in 25–30 seconds."]},
-{title:"Pour Tea into Cups",caption:"Serving tea from a kettle over a tray",steps:["Position the kettle or teapot in your dominant hand, holding the handle securely.","Arrange the cups upright on the tray, evenly spaced and within easy reach.","Tilt the kettle slowly over the first cup, pouring in a steady controlled stream.","Fill each cup to about three-quarters full — leave a little space to prevent spills.","Set the kettle back on its base and offer guests their cup, noting that the tea may be hot."]},
-{title:"Fold Laundry on a Table",caption:"Smoothing and folding clothes from a basket",steps:["Take one garment at a time from the basket and shake it out gently to remove wrinkles.","Lay the item flat on the table and smooth it from center to edges with both hands.","Fold in the sides to the center, then fold the garment in half or thirds to the desired size.","Stack the folded item neatly to one side and proceed to the next piece.","When finished, return folded laundry to the wardrobe or shelves, grouped by type."]},
-{title:"Stock the Refrigerator",caption:"Loading groceries or items into a fridge",steps:["Remove any expired or old items from the refrigerator first and dispose of them.","Wipe down shelves with a damp cloth if needed before adding new items.","Group similar items together — dairy, produce, beverages, and leftovers each in their own zone.","Place heavier items on lower shelves and fragile items on upper shelves where they are safer.","Close the refrigerator door firmly and check that all seals are engaged before stepping away."]},
-{title:"Hold a Conversation",caption:"Engaging a person in natural dialogue",steps:["Make eye contact and greet the person warmly to establish a comfortable atmosphere.","Listen actively — give the person time to finish speaking before responding.","Respond clearly and at an appropriate volume, matching the tone of the conversation.","Ask follow-up questions to show engagement and help the conversation flow naturally.","Close the conversation politely, summarizing key points if needed and offering further help."]},
-{title:"Express and Read Emotions",caption:"Demonstrating facial expressions for interaction",steps:["Observe the person you are speaking with and identify cues in their tone and body language.","Adjust your own facial expression to reflect an appropriate emotional response — smile, concern, or calm.","Speak in a tone that matches the emotional context of the conversation.","If the person appears distressed, respond with patience and keep your movements slow and non-threatening.","Mirror positive emotions — when the person smiles or laughs, respond in kind to build rapport."]},
-{title:"Answer Questions in an Interview",caption:"Responding to spoken questions clearly",steps:["Listen carefully to the full question before beginning your response — do not interrupt.","Take a brief pause to organize your thoughts before speaking.","Respond directly and concisely, keeping answers focused on the question asked.","Maintain a steady gaze and a calm, open posture throughout the exchange.","End your response clearly and check if the person needs clarification or has follow-up questions."]},
-{title:"Water a Houseplant",caption:"Using a watering can to tend to indoor plants",steps:["Check the soil first — insert your fingertip about an inch deep; only water if it feels dry.","Fill the watering can with room-temperature water to avoid shocking the plant roots.","Hold the spout close to the soil surface and pour slowly in a circular pattern around the base of the plant.","Water until you see a little moisture begin to appear at the drainage hole, then stop.","Empty any excess water from the saucer beneath the pot after a few minutes to prevent root rot."]},
-{title:"Serve a Beverage at a Table",caption:"Bringing a hot drink to seated guests",steps:["Prepare the beverage fully before approaching the table — check temperature and fill level.","Carry the cup or mug on a small tray or saucer with both hands for stability.","Approach the guest from the side and place the drink to their right, within easy reach.","Inform the guest of the contents and whether it is hot, and offer any additions such as sugar or milk.","Step back quietly and check if anything else is needed before leaving the table."]},
-{title:"Pull an Espresso Shot",caption:"Operating a lever-style espresso machine",steps:["Confirm the machine is fully heated — check the pressure gauge if it has one.","Dose the portafilter with the correct amount of ground coffee (typically 18–20g for a double).","Tamp the grounds firmly using consistent, level pressure and knock off any loose grounds.","Lock the portafilter into the group head and position a preheated cup under the spout.","Pull or press the brew lever/button and watch the extraction — a proper shot flows in 25–30 seconds."]},
-{title:"Greet and Welcome Visitors",caption:"Welcoming people at an entrance or reception",steps:["Stand in a visible, open position near the entrance where you can be easily approached.","Make eye contact, smile, and raise your hand in a welcoming wave as visitors approach.","Say a clear, friendly greeting and introduce yourself or the space you are representing.","Offer to assist — ask if the visitor has questions or direct them to the relevant area.","Thank the visitor for their time and wish them well as they continue on their way."]},
-{title:"Play Jenga with a Person",caption:"Taking turns in a stacking block game",steps:["Set up the Jenga tower by stacking blocks in alternating rows of three until all pieces are used.","Decide who goes first — the person who built the tower typically goes second.","On your turn, use one hand to carefully slide a block from any row except the top three.","Place the removed block on the top of the tower, completing the new top row.","Continue taking turns until the tower falls — the player who caused it to fall loses."]},
-{title:"Navigate a Space on Foot",caption:"Walking through a crowded area with awareness",steps:["Before moving, scan the environment ahead and identify your destination and any obstacles.","Walk at a measured pace — not so slow as to block others, but not hurrying in a crowded space.","Keep to one side of the walkway and yield to people moving in the opposite direction.","If you need to stop, move to the side before doing so to avoid blocking the path of others.","On arrival, orient yourself to the surroundings before engaging with people or objects in the area."]},
-{title:"Demonstrate Facial Recognition",caption:"Using face-tracking to engage with a viewer",steps:["Position yourself at eye level with the person you are engaging, ensuring good lighting.","Track the person's face as they move — turn smoothly to maintain eye contact without sudden jerks.","Greet the person verbally when they come within comfortable speaking range.","Mirror subtle expressions — a slight smile or raised brow to indicate attention and interest.","If the person steps away, return to a neutral resting position and await the next interaction."]},
-{title:"Greet Customers at a Showroom",caption:"Welcoming visitors in a professional setting",steps:["Take a position near the entrance that is visible and accessible to incoming visitors.","Make friendly eye contact and raise your hand in a clear welcoming gesture as people approach.","Introduce yourself and the location warmly — keep your greeting brief and professional.","Ask an open question to invite engagement, such as how you may assist them today.","Listen to their response and direct them accordingly, remaining available throughout their visit."]},
-{title:"Conduct a Professional Conversation",caption:"Engaging professionally with poise and gestures",steps:["Begin with a clear, confident introduction — state your name and purpose in a sentence or two.","Use measured hand gestures to emphasize key points, keeping movements deliberate and not distracting.","Maintain a consistent, moderate pace of speech — not too fast to follow, not so slow it becomes tedious.","Check for understanding regularly — pause and invite the other person to respond or ask questions.","Close the conversation with a clear summary of what was discussed and any agreed next steps."]},
-{title:"Express Empathy in Conversation",caption:"Responding with appropriate emotional sensitivity",steps:["Listen without interrupting — allow the person to finish sharing before you respond.","Acknowledge what the person has said by reflecting their key points back in your own words.","Adjust your expression and tone to match the gravity of the situation — softer voice, attentive gaze.","Avoid offering immediate solutions; instead offer validation: confirm that their feelings are understandable.","Ask gently what kind of support they are looking for before taking any further action."]},
-{title:"Deliver a Spoken Presentation",caption:"Speaking to an audience with clarity and presence",steps:["Stand or position yourself so that all audience members can see and hear you clearly.","Begin with a brief introduction — state your name and the topic you are covering.","Speak at a measured pace, pausing between key points to allow the audience time to absorb the information.","Use natural gestures and vary your tone to maintain audience attention throughout.","Conclude with a clear summary and invite questions before stepping back from the speaking position."]},
-{title:"Demonstrate Deep Listening",caption:"Showing focused attentiveness to a speaker",steps:["Face the speaker directly and maintain relaxed, open body posture to signal full attention.","Make consistent eye contact — glance away occasionally so as not to seem unsettling.","Do not speak while the other person is talking; hold any reaction until they have clearly finished.","Reflect back what you heard by summarizing the key idea in your own words before responding.","Ask a relevant follow-up question that shows you understood and engaged with what was said."]},
-{title:"Participate in a Panel Discussion",caption:"Contributing to a formal group conversation",steps:["Take your assigned seat at the table and confirm that your microphone or speaker is working.","Wait to be called on before speaking — do not interrupt other panelists.","When it is your turn, state your point clearly and keep your contribution focused and concise.","Acknowledge or build on what previous speakers have said before adding your own perspective.","Remain attentive and engaged even when you are not speaking — avoid looking away from the discussion."]},
-{title:"Clean Using a Dustpan and Brush",caption:"Sweeping up debris from a floor surface",steps:["Hold the brush in your dominant hand and the dustpan flat on the floor in the other.","Sweep debris into a small pile using short, controlled strokes toward the dustpan.","Angle the dustpan slightly and sweep the debris into it in one smooth motion.","Tip the contents of the dustpan carefully into a waste bin — avoid spilling.","Tap the brush against the inside of the bin to dislodge any remaining particles, then set both tools aside."]},
-{title:"Respond to a Direct Question",caption:"Giving a clear verbal answer to a posed question",steps:["Listen to the full question without interrupting, even if you already know the answer.","Make a brief pause to confirm you have understood what is being asked before speaking.","Give a direct, clear answer — start with the key point and add context afterward if needed.","Keep your tone steady and your answer appropriately brief — avoid unnecessary filler.","Check whether the questioner is satisfied with your answer and offer to elaborate if needed."]},
-{title:"Put on Sunglasses",caption:"Locating and placing eyewear on your face",steps:["Locate the sunglasses — confirm they are clean and undamaged before putting them on.","Hold the frame with both hands, one on each temple arm.","Position the frame in front of your face, aligning the bridge over your nose.","Gently slide each temple arm over the corresponding ear, adjusting so they sit comfortably.","Check that the fit is secure — the glasses should not slip or press uncomfortably on any part of the face."]},
-{title:"Participate in a Video Interview",caption:"Responding clearly in a recorded or live video session",steps:["Position yourself in front of the camera so your face is well-lit and centered in the frame.","Speak directly toward the camera lens rather than the screen image of your interviewer.","Answer each question at a moderate pace — slightly slower than normal speech works well on video.","Keep background noise and movement to a minimum to avoid distracting from your responses.","Conclude by thanking the interviewer and asking if there are any additional questions."]},
-{title:"Run on a Track",caption:"Completing a sprint or run on an athletic track",steps:["Begin at the starting line, positioning your feet shoulder-width apart in a slight forward lean.","Push off with your rear foot and drive your arms forward to accelerate smoothly.","Maintain an upright posture with a slight forward lean — do not let your hips drop behind your shoulders.","Keep your stride even and rhythmic, landing on the mid-foot rather than the heel for efficiency.","As you cross the finish line, begin decelerating gradually — never stop abruptly after a full sprint."]},
-{title:"Stand By for Instruction",caption:"Remaining attentive and ready to receive a task",steps:["Position yourself in a neutral, upright stance in a location that is visible and accessible.","Keep your attention directed toward the person or environment most likely to provide the next instruction.","Avoid unnecessary movement — remain still but alert, scanning for cues or signals.","When an instruction is given, acknowledge it clearly before beginning to act on it.","If no instruction arrives within a reasonable period, politely check in with the nearest person to ask if assistance is needed."]},
-{title:"Smile and Make Eye Contact",caption:"Using positive facial cues in social interaction",steps:["Approach or face the person you are engaging with and adopt a relaxed, open posture.","Lift the corners of your mouth into a natural, genuine-looking smile — avoid stiff or forced expressions.","Make eye contact by focusing on the bridge of the person's nose or between their eyes if direct eye contact is uncomfortable.","Hold the expression for a natural duration — a few seconds — before relaxing back to a neutral face.","Pair the smile with a brief verbal greeting to complete the social acknowledgment."]},
-{title:"Try on Accessories",caption:"Selecting and wearing eyewear or accessories",steps:["Pick up the first accessory with both hands and hold it at eye level to inspect it.","Position the accessory against your face or head to check for fit and style.","Adjust the fit as needed — for eyewear, slide the arms gently onto your ears and adjust the bridge.","Check your appearance by turning your head slightly to the left and right.","If the fit is satisfactory, set the accessory aside with care; if not, try the next option in the selection."]}
+/* SELECTIONS */
+const selections={};
+function sel(rowId,btn,val){
+  selections[rowId]=val;
+  document.querySelectorAll('#'+rowId+' .rate-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');checkSubmit();
+}
+['openQ1'].forEach(id=>document.getElementById(id).addEventListener('input',checkSubmit));
+function checkSubmit(){
+  const ok=selections['knewJacquardRow']&&selections['adaRow']&&selections['ludditeRow']&&document.getElementById('openQ1').value.trim().length>5;
+  document.getElementById('modSubmit').disabled=!ok;
+  document.getElementById('modProg').textContent=ok?'Ready to submit':'Answer all questions and share your reflection';
+}
+
+let modDone=false;
+function submitResponse(){
+  if(modDone)return;
+  const name=document.getElementById('userName').value.trim()||'Anon';
+  const payload={type:'response',knewJacquard:selections['knewJacquardRow'],knewAda:selections['adaRow'],ludditeParallel:selections['ludditeRow'],weaveBinaryReflection:document.getElementById('openQ1').value.trim(),openResponse:document.getElementById('openQ2').value.trim(),userName:name,userColor,ts:fbReady?firebase.database.ServerValue.TIMESTAMP:Date.now()};
+  if(fbReady&&respRef)respRef.push(payload).catch(()=>{});
+  modDone=true;const btn=document.getElementById('modSubmit');btn.textContent='✓ Saved';btn.classList.add('done');btn.disabled=true;
+}
+
+/* Q&A RESPONSES */
+const responses=[
+  {text:"The Jacquard loom (1804) was the first binary input device. Joseph Marie Jacquard's programmable loom used punched cards to control the pattern: a hole meant 'raise this thread,' a solid card meant 'lower it.' That is binary logic — 1 and 0, on and off, raise and lower. Charles Babbage visited Jacquard loom demonstrations and directly adapted the punch card mechanism for his Analytical Engine, the first design for a programmable computer. Herman Hollerith later adapted the same punch cards for the 1890 US Census tabulation machine. IBM standardized 80-column punch cards used in computing until the 1970s. Every punch card ever fed into a computer is a descendant of a weaver's pattern card.",source:"Charles Babbage, 'Passages from the Life of a Philosopher' (1864); Computer History Museum",link:"https://www.computerhistory.org/babbage/",moves:["1. HOLD a punch card — examine the holes — 'this is data'","2. HOLD a weave pattern — examine the threads — 'this is also data'","3. ALIGN them — hole for hole — thread for thread — same logic","4. THE CARD moves from loom to tabulator to computer — trace it in space","5. FREEZE — call out: 'The loom and the computer share the same input. The textile industry invented binary programming in 1804.'"]},
+  {text:"Ada Lovelace (1815–1852) is recognized as the first computer programmer. She was the daughter of the poet Lord Byron and mathematician Anne Isabella Milbanke — who had studied math specifically to counteract what she called Byron's 'poetic madness.' Ada worked with Charles Babbage on his Analytical Engine, translated a paper about it from French, and added notes three times the length of the original. Those notes included what is now recognized as the first algorithm intended to be processed by a machine — a program to calculate Bernoulli numbers. She proposed that the Engine could compose music, manipulate symbols, and do anything that could be expressed in mathematical notation. She died at 36. Her work was largely ignored until the 1950s, when Alan Turing referenced it. The programming language Ada is named for her.",source:"Ada Lovelace, 'Notes on the Analytical Engine' (1843); Turing, 'Computing Machinery and Intelligence' (1950)",link:"https://www.computerhistory.org/babbage/adalovelace/",moves:["1. ENTER as translator — the paper arrives in French — she reads it","2. THE NOTES expand — three times the original — her mind exceeding the commission","3. THE ALGORITHM — first ever written for a machine — trace it in the air","4. THE SILENCE — 1852 — no recognition — a century of quiet","5. FREEZE — call out: 'The first program was written by a woman in 1843. It was not called programming yet. The word came later, with the men.'"]},
+  {text:"The Luddites (1811–1816) were skilled textile workers in England — weavers, knitters, croppers — who destroyed power looms and stocking frames as an act of labor resistance. They are remembered as being anti-technology. They were not. They were protesting the use of machinery to circumvent labor laws, destroy apprenticeship systems, and replace skilled work with cheap unskilled labor. Their actual argument was that technology should serve workers, not be used as a weapon against them. The framing as 'anti-technology' was a deliberate political strategy by mill owners and the press. That framing has been so successful that 'Luddite' still means 'person who is afraid of technology' — two hundred years after a labor movement that had nothing to do with fear and everything to do with rights.",source:"E.P. Thompson, 'The Making of the English Working Class' (1963); Kevin Binfield, 'Writings of the Luddites' (2004)",link:"https://www.historytoday.com/archive/months-past/luddite-riots",moves:["1. ENTER as weaver — skilled — precise — the loom is known","2. THE MACHINE arrives — it doesn't need skill — it needs an operator","3. THE WAGE drops — the craft is devalued — the apprentice has no future","4. THE FRAME breaks — this is not fear — this is argument","5. FREEZE — call out: 'They were not afraid of the machine. They were right about who it would serve. They are still right.'"]},
+  {text:"The ENIAC programmers — Kay McNulty, Betty Jennings, Betty Snyder, Marlyn Wescoff, Fran Bilas, and Ruth Lichterman — were six women who programmed the first general-purpose electronic computer in 1945. They were called 'computers' — the job title for a person who computes — before the machine was. They learned to program by reading wiring diagrams; there was no programming language yet. They physically connected patch cables and set switches to configure the machine for each new problem. At the public unveiling of ENIAC, they were not introduced. They were not mentioned. Photographs of them at the machine circulated for decades before anyone knew who they were. Jean Jennings Bartik said: 'We were the invisible women. We made the machine work and nobody knew our names.'",source:"Kathy Kleiman, 'Proving Ground: The Untold Story of the Six Women Who Programmed the World's First Modern Computer' (2022)",link:"https://provinggroundbook.com/",moves:["1. STAND at the panel — cables in hand — the diagram is the only guide","2. CONFIGURE — every switch, every cable — no language yet — pure logic","3. THE UNVEILING — generals, engineers, cameras — stand to the side","4. THE PHOTOGRAPH — you are in it — no caption — no name — no credit","5. FREEZE — call out: 'They wrote the first programs with their hands. They were not introduced. The machine took their job title and their credit in one ceremony.'"]},
+  {text:"The rope mothers — Seilmutter in German — were female supervisors in rope-making mills (ropewalks) who oversaw the fiber-twisting operations. Rope-making uses a binary alternation: Z-twist and S-twist — two directions of fiber rotation, alternated to create strength. Over, under. Over, under. The same binary logic as weaving, the same binary logic as computing. These women supervised highly technical industrial operations — managing teams, controlling tension, ensuring quality — in roles named after domestic terminology. The CAREtech project includes rope mothers in the EMBRACE Effect framework as an example of women whose technical labor was both industrially essential and culturally invisible. Their job title contained the word 'mother.' Their work built the rope that held ships, bridges, and mines together.",source:"CAREtech EMBRACE Effect framework; historical textile industry records",link:"https://care-tech.org",moves:["1. HOLD the rope — feel the twist — Z-twist, then S-twist — alternating","2. TRACE the logic — over, under — 1, 0 — binary in fiber","3. THE SUPERVISOR arrives — the Seilmutter — she knows the tension — she knows the count","4. THE NAME — mother — her title contains it — her work does not","5. FREEZE — call out: 'The rope mothers used binary logic before the word existed. Their title was domestic. Their work was engineering. The distinction was deliberate.'"]}
 ];
 
-const ASSET_BASE="./images",IMAGE_SIZE=160,SWITCH_MS=30;
-const items=ROBOT_TASKS.map((task,i)=>({idx:i,...task,resolvedSrc:null}));
-
-function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}}
-function makeOrder(n){const a=Array.from({length:n},(_,i)=>i);shuffle(a);return a;}
-
-let imgs=[],currentIndex=0,order=[],lastSwitch=0,lockedIndex=-1;
-const panel=document.getElementById('instructionsPanel');
-const panelTitle=document.getElementById('panelTitle');
-const panelImg=document.getElementById('panelImg');
-const panelCaption=document.getElementById('panelCaption');
-const stepsList=document.getElementById('stepsList');
-const hintEl=document.getElementById('hint');
-
-document.getElementById('restart').addEventListener('click',e=>{
-  e.preventDefault();lockedIndex=-1;panel.style.display='none';hintEl.style.display='block';
-  order=makeOrder(items.length);currentIndex=Math.floor(Math.random()*items.length);lastSwitch=millis();loop();
-});
-
-function preload(){
-  const exts=[".jpg",".jpeg",".png",".JPG",".JPEG",".PNG"];
-  imgs=new Array(items.length);
-  items.forEach((it,ix)=>{
-    const candidates=exts.map(e=>`${ASSET_BASE}/robot${it.idx}${e}`);
-    const attempt=k=>{
-      if(k>=candidates.length){const pg=createGraphics(IMAGE_SIZE,IMAGE_SIZE);pg.background(20,0,10);pg.fill(255,150,180);pg.textAlign(CENTER,CENTER);pg.textSize(11);pg.text(`Missing\nrobot${it.idx}`,IMAGE_SIZE/2,IMAGE_SIZE/2);imgs[ix]=pg;return;}
-      loadImage(candidates[k],img=>{imgs[ix]=img;items[ix].resolvedSrc=candidates[k];},()=>attempt(k+1));
-    };attempt(0);
-  });
+let recentlyShown=[];
+function getResponse(){let avail=responses.filter((_,i)=>!recentlyShown.includes(i));if(avail.length<2){recentlyShown=[];avail=responses;}const ri=Math.floor(Math.random()*avail.length);const sel2=avail[ri];recentlyShown.push(responses.indexOf(sel2));if(recentlyShown.length>3)recentlyShown.shift();return sel2;}
+function generateMovement(r){return'MOVEMENT SEQUENCE\n\n'+r.moves.join('\n')+'\n\nENERGY: Precise. Historical. The body holds the labor the record erased.';}
+let audioCtx=null;
+function playChime(){try{if(!audioCtx)audioCtx=new(window.AudioContext||window.webkitAudioContext)();const ctx=audioCtx;[[329.63,0],[415.30,.18],[493.88,.36]].forEach(([f,d])=>{const o=ctx.createOscillator();const g=ctx.createGain();o.connect(g);g.connect(ctx.destination);o.type='sine';o.frequency.value=f;const t=ctx.currentTime+d;g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(.35,t+.04);g.gain.exponentialRampToValueAtTime(.001,t+.7);o.start(t);o.stop(t+.72);});}catch(e){}}
+async function askQuestion(){
+  const q2=document.getElementById('userQuestion').value.trim();
+  const name=document.getElementById('userName').value.trim();
+  if(!name){alert('Please enter your name first!');return;}
+  if(!q2){alert('Please type a question!');return;}
+  const resp=getResponse();const mv=generateMovement(resp);
+  const payload={question:q2,answerText:resp.text,answerSource:resp.source,answerLink:resp.link,movement:mv,userName:name,userColor,ts:fbReady?firebase.database.ServerValue.TIMESTAMP:Date.now()};
+  if(fbReady&&msgRef)msgRef.push(payload).catch(()=>localDisplay(q2,resp,mv,name));
+  else localDisplay(q2,resp,mv,name);
+  document.getElementById('userQuestion').value='';
 }
-
-function setup(){
-  const frame=document.getElementById('game-frame');
-  const c=createCanvas(frame.clientWidth||400,frame.clientHeight||600);c.parent('game-frame');imageMode(CENTER);noStroke();
-  order=makeOrder(items.length);currentIndex=Math.floor(Math.random()*items.length);lastSwitch=millis();
+let localMessages=[];
+function localDisplay(q2,resp,mv,name){const area=document.getElementById('outputArea');localMessages.unshift({question:q2,answerText:resp.text,answerSource:resp.source,answerLink:resp.link,movement:mv,userName:name,userColor});if(localMessages.length>MAX)localMessages=localMessages.slice(0,MAX);area.innerHTML='';localMessages.forEach((msg,i)=>renderPair(msg,null,i===0));}
+function renderPair(msg,key,playAudio=false){
+  const area=document.getElementById('outputArea');
+  const el=document.createElement('div');el.className='cb-pair';if(key)el.id='pair-'+key;
+  el.innerHTML='<div class="cb-meta"><strong style="color:'+escH(msg.userColor||'#c084fc')+'">'+escH(msg.userName||'Anon')+'</strong> asked:</div><div class="cb-qbubble">❓ '+escH(msg.question)+'</div><div class="cb-pcard"><div class="cb-phead"><span class="cb-plabel">🧵 From the Research Record</span></div><div class="cb-pbody"><div class="cb-ptext">'+escH(msg.answerText)+'</div><div class="cb-psrc">Source: <a href="'+escH(msg.answerLink||'')+'" target="_blank">'+escH(msg.answerSource)+'</a></div></div></div><div class="cb-mcard"><div class="cb-mhead"><span class="cb-mlabel">🎭 Movement Instructions</span></div><div class="cb-mbody"><div class="cb-mtext">'+escH(msg.movement)+'</div></div><div class="cb-spkrow"><button class="cb-btn soft" style="font-size:11px;padding:7px 13px;" onclick="speakText(this)">🔊 Read Aloud</button><button class="cb-btn soft" style="font-size:11px;padding:7px 13px;" onclick="stopSpeech()">⏹ Stop</button></div></div>';
+  area.insertBefore(el,area.firstChild);
+  if(playAudio){playChime();setTimeout(()=>speakMovement(msg.movement),950);}
 }
-
-function getLayout(){
-  const boxX=width/2,boxY=height*0.38,boxW=width-28,boxH=Math.min(230,height*0.38);
-  const boxLeft=boxX-boxW/2,boxRight=boxX+boxW/2,leftColW=IMAGE_SIZE+100;
-  const imgX=boxLeft+leftColW/2,imgY=boxY,textPad=16,textX=boxLeft+leftColW+textPad;
-  return{boxX,boxY,boxW,boxH,imgX,imgY,textX,textY:imgY-IMAGE_SIZE/2+4,textW:Math.max(100,boxRight-textX-textPad)};
-}
-
-function draw(){
-  background(14,0,8);
-  if(lockedIndex===-1&&millis()-lastSwitch>SWITCH_MS){currentIndex=(currentIndex+1+Math.floor(Math.random()*4))%items.length;lastSwitch=millis();}
-  const L=getLayout(),showIdx=order[currentIndex],img=imgs[showIdx],task=items[showIdx];
-  const ctx=drawingContext;
-  push();noStroke();
-  const grad=ctx.createLinearGradient(L.boxX-L.boxW/2,L.boxY-L.boxH/2,L.boxX+L.boxW/2,L.boxY+L.boxH/2);
-  grad.addColorStop(0,'rgba(140,0,45,0.95)');grad.addColorStop(.5,'rgba(100,0,32,0.98)');grad.addColorStop(1,'rgba(70,0,22,0.98)');
-  ctx.save();ctx.fillStyle=grad;ctx.beginPath();ctx.roundRect(L.boxX-L.boxW/2,L.boxY-L.boxH/2,L.boxW,L.boxH,18);ctx.fill();ctx.restore();
-  ctx.save();const sh=ctx.createLinearGradient(L.boxX-L.boxW/2,0,L.boxX+L.boxW/2,0);
-  sh.addColorStop(0,'rgba(255,90,140,0)');sh.addColorStop(.35,'rgba(255,133,179,.7)');sh.addColorStop(.5,'rgba(255,45,107,.9)');sh.addColorStop(.65,'rgba(255,133,179,.7)');sh.addColorStop(1,'rgba(255,90,140,0)');
-  ctx.fillStyle=sh;ctx.fillRect(L.boxX-L.boxW/2+12,L.boxY-L.boxH/2,L.boxW-24,1.5);ctx.restore();
-  ctx.save();ctx.strokeStyle='rgba(255,100,155,0.4)';ctx.lineWidth=1.5;ctx.beginPath();ctx.roundRect(L.boxX-L.boxW/2,L.boxY-L.boxH/2,L.boxW,L.boxH,18);ctx.stroke();ctx.restore();
-  if(img&&img.width>0){
-    ctx.save();ctx.beginPath();ctx.roundRect(L.imgX-IMAGE_SIZE/2,L.imgY-IMAGE_SIZE/2,IMAGE_SIZE,IMAGE_SIZE,14);ctx.clip();image(img,L.imgX,L.imgY,IMAGE_SIZE,IMAGE_SIZE);ctx.restore();
-    ctx.save();ctx.strokeStyle='rgba(255,133,179,0.5)';ctx.lineWidth=2;ctx.beginPath();ctx.roundRect(L.imgX-IMAGE_SIZE/2,L.imgY-IMAGE_SIZE/2,IMAGE_SIZE,IMAGE_SIZE,14);ctx.stroke();ctx.restore();
-  }else{fill(255,255,255,20);rectMode(CENTER);rect(L.imgX,L.imgY,IMAGE_SIZE,IMAGE_SIZE,14);fill(255,160,200);textAlign(CENTER,CENTER);textSize(13);text('Loading…',L.imgX,L.imgY);}
-  fill(255,210,230);textSize(13);textWrap(WORD);textAlign(LEFT,TOP);text(task.title,L.textX,L.textY,L.textW);
-  fill(255,160,200,160);textSize(10);textWrap(WORD);textAlign(LEFT,TOP);text(task.caption,L.textX,L.textY+22,L.textW);
-  pop();
-  push();fill(255,150,190,80);textAlign(CENTER,BOTTOM);textSize(10);text(lockedIndex===-1?'✦ tap image to select ✦':'✦ see instructions below ✦',width/2,height-10);pop();
-  if(lockedIndex!==-1)noLoop();
-}
-
-function mousePressed(){
-  if(lockedIndex!==-1)return;
-  const L=getLayout(),h=IMAGE_SIZE/2;
-  if(mouseX>=L.imgX-h&&mouseX<=L.imgX+h&&mouseY>=L.imgY-h&&mouseY<=L.imgY+h){lockedIndex=order[currentIndex];showInstructions(lockedIndex);}
-}
-function touchStarted(e){
-  const cnv=document.getElementById('defaultCanvas0');if(!cnv)return;
-  const rect=cnv.getBoundingClientRect(),t=(e.touches&&e.touches[0])||(e.changedTouches&&e.changedTouches[0]);if(!t)return;
-  if(t.clientX<rect.left||t.clientX>rect.right||t.clientY<rect.top||t.clientY>rect.bottom)return;mousePressed();
-}
-
-function showInstructions(idx){
-  const task=items[idx];hintEl.style.display='none';
-  panelTitle.textContent=task.title;panelCaption.textContent=task.caption;
-  panelImg.src=items[idx].resolvedSrc||`${ASSET_BASE}/robot${idx}.png`;
-  panelImg.style.display='';panelImg.onerror=()=>{panelImg.style.display='none';};
-  stepsList.innerHTML='';
-  task.steps.forEach((step,i)=>{const li=document.createElement('li');li.innerHTML=`<div class="step-num">${i+1}</div><div class="step-text">${step}</div>`;stepsList.appendChild(li);});
-  panel.style.display='block';
-  setTimeout(()=>panel.scrollIntoView({behavior:'smooth',block:'start'}),80);
-  loop();
-}
-
-window.preload=preload;window.setup=setup;window.draw=draw;window.mousePressed=mousePressed;window.touchStarted=touchStarted;
+function speakMovement(text){if(!('speechSynthesis' in window))return;window.speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(text);u.rate=0.88;const trySpeak=()=>{const voices=window.speechSynthesis.getVoices();const fv=voices.find(v=>v.lang==='en-US'&&/female|woman|samantha|karen|amy|emma/i.test(v.name))||voices.find(v=>v.lang==='en-US');if(fv)u.voice=fv;window.speechSynthesis.speak(u);};if(window.speechSynthesis.getVoices().length)trySpeak();else window.speechSynthesis.onvoiceschanged=trySpeak;}
+function speakText(btn){speakMovement(btn.closest('.cb-mcard').querySelector('.cb-mtext').textContent);}
+function stopSpeech(){if('speechSynthesis' in window)window.speechSynthesis.cancel();}
+function escH(s){const d=document.createElement('div');d.textContent=s||'';return d.innerHTML;}
+document.getElementById('userQuestion').addEventListener('keypress',e=>{if(e.key==='Enter')askQuestion();});
+function showAdminModal(){document.getElementById('adminModal').classList.add('open');document.getElementById('adminErr').textContent='';document.getElementById('adminPass').value='';setTimeout(()=>document.getElementById('adminPass').focus(),100);}
+function closeAdminModal(){document.getElementById('adminModal').classList.remove('open');}
+function confirmAdminReset(){if(document.getElementById('adminPass').value!==ADMIN){document.getElementById('adminErr').textContent='Incorrect passcode.';document.getElementById('adminPass').value='';return;}document.getElementById('outputArea').innerHTML='<div class="cb-empty"><h3>✦ Messages cleared</h3><p>Type a question to begin</p></div>';if(fbReady&&msgRef)msgRef.remove().catch(()=>{});localMessages=[];recentlyShown=[];closeAdminModal();}
+document.getElementById('adminPass').addEventListener('keypress',e=>{if(e.key==='Enter')confirmAdminReset();});
+window.addEventListener('beforeunload',()=>{if(onlineRef&&currentUser)onlineRef.child(currentUser.replace(/[.#$[\]]/g,'_')).remove();if('speechSynthesis' in window)window.speechSynthesis.cancel();});
 </script>
 </body>
 </html>
