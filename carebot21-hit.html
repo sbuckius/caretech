@@ -83,6 +83,16 @@
   .cta:active{transform:translateY(0) scale(.97);animation:none;}
 
   .note{background:rgba(255,45,107,.05);border:1.5px dashed rgba(255,130,180,.2);border-radius:14px;padding:12px 16px;font-size:11px;color:var(--text-dim);line-height:1.65;letter-spacing:.03em;text-align:left;}
+
+  .id-input{width:100%;max-width:280px;background:rgba(0,0,0,.25);border:1.5px solid var(--card-border-bright);border-radius:12px;padding:10px 16px;font-family:'Nunito',sans-serif;font-weight:800;font-size:clamp(16px,4vw,22px);letter-spacing:.06em;text-align:center;color:var(--cream);text-transform:uppercase;outline:none;transition:border-color .2s,box-shadow .2s;}
+  .id-input::placeholder{color:rgba(255,200,224,.35);font-size:12px;letter-spacing:.04em;text-transform:none;font-weight:600;}
+  .id-input:focus{border-color:var(--hot);box-shadow:0 0 0 3px rgba(255,45,107,.2);}
+  .id-input.shake{animation:shake .35s ease;}
+  @keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+  .id-hint{font-size:10px;letter-spacing:.05em;color:var(--text-dim);margin-top:2px;}
+
+  .result-section{display:grid;gap:22px;animation:fadeIn .5s ease;}
+  @keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
 </style>
 </head>
 <body>
@@ -106,9 +116,9 @@
   <!-- CONTEXT BANNER -->
   <div class="context-banner">
     <div class="banner-eyebrow">✦ CAREBOT-21 · Task Briefing</div>
-    <div class="banner-title">⚠️ You are being assigned a Worker ID.</div>
+    <div class="banner-title">⚠️ Please enter your Worker ID.</div>
     <div class="banner-text">
-      <strong>Amazon Mechanical Turk</strong> assigns each worker a unique alphanumeric ID — a string like <strong>A3HKZJ8QLMXP4</strong> — that is permanent, anonymous to requesters, and used to track all completed tasks and payments. Your ID determines which AI-generated badge image you receive. All 41 images were generated using the prompt <em>"worker ID badge"</em> and <em>"technology worker ID badge."</em>
+      <strong>Amazon Mechanical Turk</strong> assigns each worker a unique alphanumeric ID — a string like <strong>A3HKZJ8QLMXP4</strong> — that is permanent, anonymous to requesters, and used to track all completed tasks and payments. Enter the Worker ID printed on the badge you received when you entered the room. Your ID determines which AI-generated badge image you receive. All 41 images were generated using the prompt <em>"worker ID badge"</em> and <em>"technology worker ID badge."</em>
     </div>
   </div>
 
@@ -117,7 +127,7 @@
 
     <div class="heading-block">
       <div class="eyebrow">✦ CAREBOT-21 · Mechanical Turk Worker</div>
-      <h1>Your Worker ID # is</h1>
+      <h1>Enter your Worker ID</h1>
     </div>
 
     <div class="timer-strip">
@@ -127,24 +137,31 @@
 
     <div class="id-bubble">
       <div class="id-label">Worker ID</div>
-      <div class="id-number" id="workerID">——</div>
+      <input type="text" id="workerIDInput" class="id-input" placeholder="Type the ID from your badge" autocomplete="off" autocapitalize="characters" spellcheck="false" />
+      <div class="id-hint">✦ Found on the badge you received when you entered the room</div>
     </div>
 
-    <div class="divider"></div>
+    <button type="button" class="cta" id="submitBtn">✦ Submit Worker ID ✦</button>
 
-    <div class="badge-label">✦ Your AI-generated ID Badge is below</div>
+    <div class="result-section" id="resultSection" style="display:none;">
 
-    <div class="image-holder">
-      <img id="workerImage" src="" alt="Worker ID badge image" />
+      <div class="divider"></div>
+
+      <div class="badge-label">✦ Your AI-generated ID Badge is below</div>
+
+      <div class="image-holder">
+        <img id="workerImage" src="" alt="Worker ID badge image" />
+      </div>
+      <div class="caption" id="imageCaption"></div>
+
+      <a href="https://care-tech.org/carebot19-hit.html" class="cta" id="ctaBtn" style="display:none;">✦ Begin your work here ✦</a>
+
     </div>
-    <div class="caption" id="imageCaption"></div>
-
-    <a href="hit.html" class="cta" id="ctaBtn">✦ Begin your work here ✦</a>
 
   </div>
 
   <div class="note">
-    ✦ NOTE: All of the images were the first 41 images generated using AI with the prompt "worker ID badge" and "technology worker ID badge". No real worker data is used. Your ID number is generated randomly for this session.
+    ✦ NOTE: All of the images were the first 41 images generated using AI with the prompt "worker ID badge" and "technology worker ID badge". No real worker data is used.
   </div>
 
 </main>
@@ -197,18 +214,53 @@ const TOTAL_IMAGES=41;
 const IMAGE_PREFIX='images/id_';
 const IMAGE_EXT='.png';
 
-const workerID=Math.floor(100000+Math.random()*900000);
-document.getElementById('workerID').textContent=workerID;
+function hashString(str){
+  let hash=0;
+  for(let i=0;i<str.length;i++){
+    hash=(hash*31+str.charCodeAt(i))>>>0;
+  }
+  return hash;
+}
 
-const index=workerID%TOTAL_IMAGES;
-const indexStr=index.toString().padStart(2,'0');
-const imagePath=`${IMAGE_PREFIX}${indexStr}${IMAGE_EXT}`;
+let workerID='';
+let index=0;
+let indexStr='00';
 
+const inputEl=document.getElementById('workerIDInput');
+const submitBtn=document.getElementById('submitBtn');
+const resultSection=document.getElementById('resultSection');
 const imgEl=document.getElementById('workerImage');
 const captionEl=document.getElementById('imageCaption');
-imgEl.src=imagePath;
-imgEl.alt=`Image id_${indexStr}`;
-captionEl.textContent=`Image: id_${indexStr}.png`;
+const ctaBtn=document.getElementById('ctaBtn');
+
+function submitWorkerID(){
+  const val=inputEl.value.trim();
+  if(!val){
+    inputEl.classList.remove('shake');
+    requestAnimationFrame(()=>inputEl.classList.add('shake'));
+    inputEl.focus();
+    return;
+  }
+  workerID=val;
+  index=hashString(workerID)%TOTAL_IMAGES;
+  indexStr=index.toString().padStart(2,'0');
+  const imagePath=`${IMAGE_PREFIX}${indexStr}${IMAGE_EXT}`;
+
+  ctaBtn.style.display='none';
+  imgEl.src=imagePath;
+  imgEl.alt=`Image id_${indexStr}`;
+  captionEl.textContent=`Image: id_${indexStr}.png`;
+
+  resultSection.style.display='grid';
+  submitBtn.style.display='none';
+  inputEl.disabled=true;
+  ctaBtn.style.display='inline-flex';
+}
+
+submitBtn.addEventListener('click',submitWorkerID);
+inputEl.addEventListener('keydown',(e)=>{
+  if(e.key==='Enter'){e.preventDefault();submitWorkerID();}
+});
 
 imgEl.addEventListener('error',()=>{
   imgEl.src=`${IMAGE_PREFIX}00${IMAGE_EXT}`;
