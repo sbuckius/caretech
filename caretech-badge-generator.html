@@ -1,0 +1,506 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>✦ CARETECH ✦ Badge Generator</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.js"></script>
+<style>
+  :root {
+    --rose:#ff5c8a;--hot:#ff2d6b;--candy:#ff85b3;--blush:#ffb3cf;
+    --cream:#fff5f8;--berry:#c4005a;--maroon:#6f001e;
+    --fuchsia:#ff1f80;--bg:#1a0012;
+    --card-border:rgba(255,160,200,.22);--card-border-bright:rgba(255,100,160,.55);
+    --soft-glow:0 4px 30px rgba(255,45,107,.2),0 1px 0 rgba(255,160,200,.12) inset;
+    --pop-glow:0 8px 50px rgba(255,45,107,.4),0 0 90px rgba(255,30,128,.15);
+    --text-dim:rgba(255,200,224,.55);
+  }
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+  html,body{min-height:100%;font-family:'Quicksand',sans-serif;font-weight:600;color:var(--cream);background:var(--bg);-webkit-font-smoothing:antialiased;}
+
+  .bg-layer{position:fixed;inset:0;z-index:0;pointer-events:none;background:radial-gradient(ellipse 70% 55% at 18% 12%,rgba(200,0,50,.32) 0%,transparent 60%),radial-gradient(ellipse 55% 65% at 82% 80%,rgba(140,0,40,.28) 0%,transparent 60%),linear-gradient(160deg,#220008,#180008 50%,#120005);}
+
+  .wrap{position:relative;z-index:2;max-width:1100px;margin:0 auto;padding:max(20px,env(safe-area-inset-top)) clamp(14px,4vmin,28px) 60px;}
+
+  .mascot-bar{display:flex;align-items:center;gap:10px;margin-bottom:18px;}
+  .bot-face{width:42px;height:42px;border-radius:13px;background:linear-gradient(135deg,rgba(255,45,107,.25),rgba(180,0,50,.35));border:1.5px solid var(--card-border-bright);box-shadow:var(--soft-glow);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;}
+  .bot-name{font-family:'Nunito',sans-serif;font-weight:900;font-size:15px;letter-spacing:.04em;background:linear-gradient(90deg,var(--blush),var(--fuchsia) 55%,var(--candy));-webkit-background-clip:text;background-clip:text;color:transparent;}
+  .bot-sub{font-size:9px;letter-spacing:.15em;text-transform:uppercase;color:var(--text-dim);margin-top:1px;}
+
+  .layout{display:grid;grid-template-columns:340px 1fr;gap:24px;align-items:start;}
+  @media (max-width:820px){.layout{grid-template-columns:1fr;}}
+
+  .panel{background:rgba(15,0,8,.75);border:1.5px solid var(--card-border-bright);border-radius:22px;box-shadow:var(--pop-glow),inset 0 1px 0 rgba(255,160,200,.08);backdrop-filter:blur(20px) saturate(1.4);padding:22px;display:grid;gap:16px;}
+  .panel h2{font-family:'Nunito',sans-serif;font-weight:900;font-size:14px;letter-spacing:.1em;text-transform:uppercase;background:linear-gradient(90deg,var(--blush),var(--fuchsia));-webkit-background-clip:text;background-clip:text;color:transparent;}
+
+  .stat-row{display:flex;justify-content:space-between;align-items:baseline;font-size:12px;color:var(--text-dim);}
+  .stat-row strong{color:var(--cream);font-family:'Nunito',sans-serif;font-weight:800;}
+
+  .nav-row{display:flex;gap:8px;}
+  .btn{appearance:none;font-family:'Nunito',sans-serif;font-weight:800;font-size:13px;letter-spacing:.02em;color:var(--cream);cursor:pointer;text-decoration:none;border:1.5px solid var(--card-border-bright);padding:10px 14px;border-radius:12px;background:rgba(255,45,107,.1);transition:all .18s ease;flex:1;text-align:center;}
+  .btn:hover{background:rgba(255,45,107,.22);transform:translateY(-1px);}
+  .btn:active{transform:translateY(0);}
+  .btn-primary{background:linear-gradient(135deg,var(--hot) 0%,var(--berry) 50%,var(--maroon) 100%);box-shadow:0 6px 24px rgba(255,45,107,.35),inset 0 1px 0 rgba(255,255,255,.09);border:none;}
+  .btn-primary:hover{background:linear-gradient(135deg,var(--fuchsia) 0%,var(--hot) 50%,var(--berry) 100%);}
+  .btn-full{width:100%;}
+  .btn:disabled{opacity:.45;cursor:not-allowed;transform:none;}
+
+  .field{display:grid;gap:6px;}
+  .field label{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--text-dim);}
+  .field input[type=number]{width:100%;background:rgba(0,0,0,.25);border:1.5px solid var(--card-border-bright);border-radius:10px;padding:9px 12px;font-family:'Nunito',sans-serif;font-weight:700;font-size:14px;color:var(--cream);outline:none;}
+  .field input[type=number]:focus{border-color:var(--hot);}
+
+  .divider{height:1px;background:linear-gradient(90deg,transparent,rgba(255,130,180,.2),transparent);}
+
+  .note{background:rgba(255,45,107,.05);border:1.5px dashed rgba(255,130,180,.2);border-radius:12px;padding:10px 13px;font-size:11px;color:var(--text-dim);line-height:1.6;}
+  .note code{color:var(--blush);background:rgba(255,45,107,.12);padding:1px 5px;border-radius:5px;font-size:10.5px;}
+
+  .progress{font-size:11px;color:var(--candy);line-height:1.6;}
+  .progress code{color:var(--blush);background:rgba(255,45,107,.12);padding:1px 5px;border-radius:5px;font-size:10.5px;}
+
+  .preview-col{display:flex;flex-direction:column;align-items:center;gap:14px;}
+  .canvas-shell{background:rgba(0,0,0,.2);border-radius:24px;padding:18px;box-shadow:var(--pop-glow);}
+  #badgeCanvas{display:block;width:min(100%,330px);height:auto;border-radius:14px;box-shadow:0 10px 50px rgba(0,0,0,.5);}
+</style>
+</head>
+<body>
+<div class="bg-layer"></div>
+
+<main class="wrap">
+
+  <div class="mascot-bar">
+    <div class="bot-face">🪪</div>
+    <div>
+      <div class="bot-name">CARETECH ✦ Badge Generator</div>
+      <div class="bot-sub">Worker ID Badge · PNG Export Tool</div>
+    </div>
+  </div>
+
+  <div class="layout">
+
+    <!-- CONTROL PANEL -->
+    <div class="panel">
+      <h2>✦ Current Badge</h2>
+      <div class="stat-row"><span>Image</span><strong id="statImage">id_00.png</strong></div>
+      <div class="stat-row"><span>Badge</span><strong id="statCount">1 / 41</strong></div>
+      <div class="stat-row"><span>Worker ID</span><strong id="statID">—</strong></div>
+
+      <div class="nav-row">
+        <button class="btn" id="prevBtn">◀ Prev</button>
+        <button class="btn" id="nextBtn">Next ▶</button>
+      </div>
+      <button class="btn btn-full" id="rerollBtn">🔁 Reroll Worker ID</button>
+
+      <div class="divider"></div>
+
+      <h2>✦ Export</h2>
+      <button class="btn btn-primary btn-full" id="downloadOneBtn">⬇ Download This Badge (PNG)</button>
+
+      <div class="field">
+        <label for="batchCount">Number of badges to generate</label>
+        <input type="number" id="batchCount" min="1" max="41" value="40" />
+      </div>
+      <button class="btn btn-primary btn-full" id="downloadAllBtn">⬇⬇ Download All as PNGs</button>
+      <div class="progress" id="progressText"></div>
+
+      <div class="divider"></div>
+
+      <div class="note">
+        Place this file in the same folder as your <code>images/id_00.png</code> … <code>id_40.png</code> files so the badge artwork loads correctly. Each badge is rendered at <code>750×1300px</code> — sized to fit a standard vertical ID badge holder.
+      </div>
+    </div>
+
+    <!-- PREVIEW -->
+    <div class="preview-col">
+      <div class="canvas-shell">
+        <canvas id="badgeCanvas" width="750" height="1300"></canvas>
+      </div>
+    </div>
+
+  </div>
+
+</main>
+
+<script>
+/* ── config ── */
+const TOTAL_IMAGES=41;
+const IMAGE_PREFIX='images/id_';
+const IMAGE_EXT='.png';
+const QR_URL='https://care-tech.org/carebot21-hit.html';
+const CANVAS_W=750, CANVAS_H=1300;
+
+const COLORS={
+  cream:'#fff5f8',blush:'#ffb3cf',candy:'#ff85b3',hot:'#ff2d6b',
+  fuchsia:'#ff1f80',berry:'#c4005a',maroon:'#6f001e',bg:'#1a0012',
+  textDim:'rgba(255,210,228,.85)',labelDim:'rgba(255,200,224,.55)'
+};
+
+/* ── state ── */
+let currentIndex=0;
+const assignedIDs={};
+
+/* ── worker ID generation (Mechanical-Turk-style) ── */
+function genWorkerID(){
+  const chars='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  let id='';
+  for(let i=0;i<13;i++) id+=chars[Math.floor(Math.random()*chars.length)];
+  return id;
+}
+function idFor(index){
+  if(!assignedIDs[index]) assignedIDs[index]=genWorkerID();
+  return assignedIDs[index];
+}
+
+/* ── image loading w/ cache ── */
+const imageCache={};
+function loadImage(index){
+  return new Promise((resolve,reject)=>{
+    if(imageCache[index]){resolve(imageCache[index]);return;}
+    const img=new Image();
+    img.onload=()=>{imageCache[index]=img;resolve(img);};
+    img.onerror=()=>{
+      if(index!==0){loadImage(0).then(resolve).catch(reject);}
+      else reject(new Error('fallback image missing'));
+    };
+    const s=index.toString().padStart(2,'0');
+    img.src=`${IMAGE_PREFIX}${s}${IMAGE_EXT}`;
+  });
+}
+
+/* ── QR matrix (pure JS, no external image fetch → safe for canvas export) ── */
+let qrModulesCache=null;
+function getQRModules(text){
+  if(qrModulesCache)return qrModulesCache;
+  if(typeof qrcode!=='function'){
+    console.warn('qrcode-generator library failed to load — skipping QR code.');
+    return null;
+  }
+  const qr=qrcode(0,'M');
+  qr.addData(text);
+  qr.make();
+  const count=qr.getModuleCount();
+  const modules=[];
+  for(let r=0;r<count;r++){
+    const row=[];
+    for(let c=0;c<count;c++) row.push(qr.isDark(r,c));
+    modules.push(row);
+  }
+  qrModulesCache=modules;
+  return modules;
+}
+function drawQR(ctx,x,y,size,modules,dark,light){
+  const count=modules.length;
+  const cell=size/count;
+  ctx.fillStyle=light;
+  ctx.fillRect(x,y,size,size);
+  ctx.fillStyle=dark;
+  for(let r=0;r<count;r++){
+    for(let c=0;c<count;c++){
+      if(modules[r][c]){
+        ctx.fillRect(Math.floor(x+c*cell),Math.floor(y+r*cell),Math.ceil(cell)+1,Math.ceil(cell)+1);
+      }
+    }
+  }
+}
+
+/* ── helpers ── */
+function roundRectPath(ctx,x,y,w,h,r){
+  ctx.beginPath();
+  ctx.moveTo(x+r,y);
+  ctx.arcTo(x+w,y,x+w,y+h,r);
+  ctx.arcTo(x+w,y+h,x,y+h,r);
+  ctx.arcTo(x,y+h,x,y,r);
+  ctx.arcTo(x,y,x+w,y,r);
+  ctx.closePath();
+}
+function drawContain(ctx,img,x,y,w,h){
+  const ir=img.width/img.height, br=w/h;
+  let dw,dh;
+  if(ir>br){dw=w;dh=w/ir;}else{dh=h;dw=h*ir;}
+  const dx=x+(w-dw)/2, dy=y+(h-dh)/2;
+  ctx.drawImage(img,dx,dy,dw,dh);
+}
+function wrapText(ctx,text,cx,y,maxWidth,lineHeight){
+  const words=text.split(' ');
+  let line='',cy=y;
+  for(let n=0;n<words.length;n++){
+    const test=line+words[n]+' ';
+    if(ctx.measureText(test).width>maxWidth && n>0){
+      ctx.fillText(line.trim(),cx,cy);
+      line=words[n]+' ';
+      cy+=lineHeight;
+    } else {
+      line=test;
+    }
+  }
+  ctx.fillText(line.trim(),cx,cy);
+  return cy;
+}
+function setLetterSpacing(ctx,val){
+  try{ctx.letterSpacing=val;}catch(e){}
+}
+
+/* ── main render ── */
+async function renderBadge(index,workerID){
+  const canvas=document.getElementById('badgeCanvas');
+  canvas.width=CANVAS_W;canvas.height=CANVAS_H;
+  const ctx=canvas.getContext('2d');
+  const idxStr=index.toString().padStart(2,'0');
+
+  let img;
+  try{ img=await loadImage(index); }catch(e){ img=null; }
+
+  /* background */
+  const bgGrad=ctx.createLinearGradient(0,0,0,CANVAS_H);
+  bgGrad.addColorStop(0,'#220008');
+  bgGrad.addColorStop(.5,'#180008');
+  bgGrad.addColorStop(1,'#120005');
+  ctx.fillStyle=bgGrad;
+  ctx.fillRect(0,0,CANVAS_W,CANVAS_H);
+
+  function blob(cx,cy,r,color,alpha){
+    const g=ctx.createRadialGradient(cx,cy,0,cx,cy,r);
+    g.addColorStop(0,color);g.addColorStop(1,'rgba(0,0,0,0)');
+    ctx.globalAlpha=alpha;ctx.fillStyle=g;
+    ctx.beginPath();ctx.arc(cx,cy,r,0,Math.PI*2);ctx.fill();
+    ctx.globalAlpha=1;
+  }
+  blob(CANVAS_W*0.14,CANVAS_H*0.06,260,'#c80032',.32);
+  blob(CANVAS_W*0.88,CANVAS_H*0.95,230,'#8c0028',.28);
+
+  ctx.textAlign='center';
+  ctx.textBaseline='alphabetic';
+
+  /* title */
+  const titleGrad=ctx.createLinearGradient(CANVAS_W*0.1,0,CANVAS_W*0.9,0);
+  titleGrad.addColorStop(0,COLORS.cream);
+  titleGrad.addColorStop(.5,COLORS.blush);
+  titleGrad.addColorStop(1,COLORS.fuchsia);
+  ctx.fillStyle=titleGrad;
+  ctx.font='900 50px Nunito, sans-serif';
+  ctx.fillText('✦ CARETECH ✦',CANVAS_W/2,98);
+
+  ctx.font='700 15px Quicksand, sans-serif';
+  ctx.fillStyle=COLORS.labelDim;
+  setLetterSpacing(ctx,'3px');
+  ctx.fillText('MECHANICAL TURK WORKER ID BADGE',CANVAS_W/2,128);
+  setLetterSpacing(ctx,'0px');
+
+  ctx.strokeStyle='rgba(255,130,180,.35)';
+  ctx.lineWidth=2;
+  ctx.beginPath();ctx.moveTo(CANVAS_W*0.16,150);ctx.lineTo(CANVAS_W*0.84,150);ctx.stroke();
+
+  /* worker id */
+  ctx.font='700 14px Quicksand, sans-serif';
+  ctx.fillStyle=COLORS.labelDim;
+  setLetterSpacing(ctx,'2px');
+  ctx.fillText('WORKER ID',CANVAS_W/2,184);
+  setLetterSpacing(ctx,'0px');
+
+  const idGrad=ctx.createLinearGradient(CANVAS_W*0.2,0,CANVAS_W*0.8,0);
+  idGrad.addColorStop(0,COLORS.blush);
+  idGrad.addColorStop(.55,COLORS.fuchsia);
+  idGrad.addColorStop(1,COLORS.hot);
+  ctx.fillStyle=idGrad;
+  ctx.font='900 42px Nunito, sans-serif';
+  ctx.fillText(workerID,CANVAS_W/2,235);
+
+  /* image holder */
+  const boxW=CANVAS_W*0.78, boxH=boxW*0.82;
+  const boxX=(CANVAS_W-boxW)/2, boxY=265;
+  ctx.fillStyle='rgba(255,45,107,.08)';
+  ctx.strokeStyle='rgba(255,160,200,.28)';
+  ctx.lineWidth=2;
+  roundRectPath(ctx,boxX,boxY,boxW,boxH,18);
+  ctx.fill();ctx.stroke();
+  if(img) drawContain(ctx,img,boxX+12,boxY+12,boxW-24,boxH-24);
+
+  let y=boxY+boxH+34;
+  ctx.font='600 14px Quicksand, sans-serif';
+  ctx.fillStyle=COLORS.labelDim;
+  ctx.fillText(`Image: id_${idxStr}.png`,CANVAS_W/2,y);
+
+  /* blurb 1 */
+  y+=42;
+  ctx.font='700 13px Quicksand, sans-serif';
+  ctx.fillStyle=COLORS.blush;
+  setLetterSpacing(ctx,'1.5px');
+  ctx.fillText('WHAT IS A WORKER ID?',CANVAS_W/2,y);
+  setLetterSpacing(ctx,'0px');
+  y+=24;
+  ctx.font='600 14px Quicksand, sans-serif';
+  ctx.fillStyle=COLORS.textDim;
+  y=wrapText(ctx,'Amazon Mechanical Turk assigns each worker a permanent, anonymous alphanumeric ID used to track completed tasks and payments.',CANVAS_W/2,y,boxW,21);
+
+  /* blurb 2 */
+  y+=38;
+  ctx.font='700 13px Quicksand, sans-serif';
+  ctx.fillStyle=COLORS.blush;
+  setLetterSpacing(ctx,'1.5px');
+  ctx.fillText('ABOUT THIS IMAGE',CANVAS_W/2,y);
+  setLetterSpacing(ctx,'0px');
+  y+=24;
+  ctx.font='600 14px Quicksand, sans-serif';
+  ctx.fillStyle=COLORS.textDim;
+  y=wrapText(ctx,'This badge artwork is one of 41 AI-generated images created from the prompts "worker ID badge" and "technology worker ID badge."',CANVAS_W/2,y,boxW,21);
+
+  /* qr */
+  y+=40;
+  const qrSize=180;
+  const qrX=(CANVAS_W-qrSize)/2;
+  const qrModules=getQRModules(QR_URL);
+  if(qrModules){
+    drawQR(ctx,qrX,y,qrSize,qrModules,'#1a0012','#fff5f8');
+    ctx.strokeStyle='rgba(255,160,200,.3)';
+    ctx.lineWidth=2;
+    roundRectPath(ctx,qrX-2,y-2,qrSize+4,qrSize+4,8);
+    ctx.stroke();
+    y+=qrSize+28;
+  } else {
+    ctx.font='600 12px Quicksand, sans-serif';
+    ctx.fillStyle='rgba(255,200,224,.5)';
+    ctx.fillText('(QR code unavailable — check your connection)',CANVAS_W/2,y+20);
+    y+=50;
+  }
+
+  ctx.font='700 13px Quicksand, sans-serif';
+  ctx.fillStyle=COLORS.blush;
+  setLetterSpacing(ctx,'1.5px');
+  ctx.fillText('✦ SCAN TO BEGIN YOUR WORK ✦',CANVAS_W/2,y);
+  setLetterSpacing(ctx,'0px');
+  y+=22;
+  ctx.font='600 11px Quicksand, sans-serif';
+  ctx.fillStyle='rgba(255,200,224,.45)';
+  ctx.fillText('care-tech.org',CANVAS_W/2,y);
+
+  /* outer border frame (drawn last, on top) */
+  ctx.strokeStyle='rgba(255,100,160,.55)';
+  ctx.lineWidth=4;
+  roundRectPath(ctx,12,12,CANVAS_W-24,CANVAS_H-24,28);
+  ctx.stroke();
+}
+
+/* ── UI wiring ── */
+const statImage=document.getElementById('statImage');
+const statCount=document.getElementById('statCount');
+const statID=document.getElementById('statID');
+const progressText=document.getElementById('progressText');
+
+async function showIndex(index){
+  currentIndex=((index%TOTAL_IMAGES)+TOTAL_IMAGES)%TOTAL_IMAGES;
+  const id=idFor(currentIndex);
+  const idxStr=currentIndex.toString().padStart(2,'0');
+  statImage.textContent=`id_${idxStr}.png`;
+  statCount.textContent=`${currentIndex+1} / ${TOTAL_IMAGES}`;
+  statID.textContent=id;
+  await renderBadge(currentIndex,id);
+}
+
+document.getElementById('prevBtn').addEventListener('click',()=>showIndex(currentIndex-1));
+document.getElementById('nextBtn').addEventListener('click',()=>showIndex(currentIndex+1));
+document.getElementById('rerollBtn').addEventListener('click',()=>{
+  assignedIDs[currentIndex]=genWorkerID();
+  showIndex(currentIndex);
+});
+
+function downloadCanvas(filename){
+  return new Promise((resolve,reject)=>{
+    const canvas=document.getElementById('badgeCanvas');
+    let blobCallbackFired=false;
+    try{
+      canvas.toBlob((blob)=>{
+        blobCallbackFired=true;
+        if(!blob){reject(new Error('toBlob returned null')); return;}
+        const url=URL.createObjectURL(blob);
+        const a=document.createElement('a');
+        a.href=url;a.download=filename;
+        document.body.appendChild(a);a.click();
+        document.body.removeChild(a);
+        setTimeout(()=>URL.revokeObjectURL(url),2000);
+        resolve();
+      },'image/png');
+      // Some browsers throw synchronously for a tainted canvas rather than
+      // calling the toBlob callback at all — catch that case too.
+      setTimeout(()=>{
+        if(!blobCallbackFired){
+          reject(new Error('toBlob never returned — canvas is likely tainted (security restriction).'));
+        }
+      },1500);
+    }catch(err){
+      reject(err);
+    }
+  });
+}
+
+function showDownloadError(err){
+  console.error('Download failed:',err);
+  const isSecurity = err && (err.name==='SecurityError' || /tainted|insecure|cross-origin/i.test(err.message||''));
+  if(isSecurity){
+    progressText.innerHTML = '⚠️ Download blocked: this page was likely opened as a local file (file://), '
+      + 'which stops the browser from exporting the canvas once it contains the badge image. '
+      + 'Fix: serve this folder over a local web server instead — e.g. run <code>python3 -m http.server</code> '
+      + 'inside the folder that contains this file and the <code>images/</code> folder, then open '
+      + '<code>http://localhost:8000/caretech-badge-generator.html</code>. '
+      + 'Uploading the file to your actual site (care-tech.org) will also work fine.';
+  } else {
+    progressText.textContent = `⚠️ Download failed: ${err && err.message ? err.message : err}`;
+  }
+}
+
+document.getElementById('downloadOneBtn').addEventListener('click',async()=>{
+  progressText.textContent='';
+  const idxStr=currentIndex.toString().padStart(2,'0');
+  try{
+    await downloadCanvas(`caretech-badge-id_${idxStr}-${statID.textContent}.png`);
+    progressText.textContent='✓ Downloaded.';
+  }catch(err){
+    showDownloadError(err);
+  }
+});
+
+document.getElementById('downloadAllBtn').addEventListener('click',async()=>{
+  const countInput=document.getElementById('batchCount');
+  let count=parseInt(countInput.value,10);
+  if(isNaN(count)||count<1)count=1;
+  if(count>TOTAL_IMAGES)count=TOTAL_IMAGES;
+
+  const allBtn=document.getElementById('downloadAllBtn');
+  const oneBtn=document.getElementById('downloadOneBtn');
+  const prevBtn=document.getElementById('prevBtn');
+  const nextBtn=document.getElementById('nextBtn');
+  allBtn.disabled=true;oneBtn.disabled=true;prevBtn.disabled=true;nextBtn.disabled=true;
+
+  for(let i=0;i<count;i++){
+    progressText.textContent=`Generating badge ${i+1} / ${count}…`;
+    await showIndex(i);
+    const idxStr=i.toString().padStart(2,'0');
+    try{
+      await downloadCanvas(`caretech-badge-id_${idxStr}-${idFor(i)}.png`);
+    }catch(err){
+      showDownloadError(err);
+      allBtn.disabled=false;oneBtn.disabled=false;prevBtn.disabled=false;nextBtn.disabled=false;
+      return;
+    }
+    await new Promise(r=>setTimeout(r,350));
+  }
+  progressText.textContent=`✓ Done — downloaded ${count} badge${count===1?'':'s'}.`;
+  allBtn.disabled=false;oneBtn.disabled=false;prevBtn.disabled=false;nextBtn.disabled=false;
+});
+
+/* ── init ── */
+(async function init(){
+  try{
+    await Promise.all([
+      document.fonts.load('900 50px Nunito'),
+      document.fonts.load('900 42px Nunito'),
+      document.fonts.load('700 15px Quicksand'),
+      document.fonts.load('600 14px Quicksand'),
+      document.fonts.load('700 13px Quicksand'),
+    ]);
+  }catch(e){}
+  showIndex(0);
+})();
+</script>
+</body>
+</html>
