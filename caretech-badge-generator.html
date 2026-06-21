@@ -192,13 +192,30 @@ function getQRModules(text){
 function drawQR(ctx,x,y,size,modules,dark,light){
   const count=modules.length;
   const cell=size/count;
+
+  function isCriticalZone(r,c){
+    const finder=(r<7&&c<7)||(r<7&&c>=count-7)||(r>=count-7&&c<7);
+    const timing=(r===6)||(c===6);
+    return finder||timing;
+  }
+
   ctx.fillStyle=light;
   ctx.fillRect(x,y,size,size);
   ctx.fillStyle=dark;
   for(let r=0;r<count;r++){
     for(let c=0;c<count;c++){
-      if(modules[r][c]){
-        ctx.fillRect(Math.floor(x+c*cell),Math.floor(y+r*cell),Math.ceil(cell)+1,Math.ceil(cell)+1);
+      if(!modules[r][c])continue;
+      const cellX=x+c*cell, cellY=y+r*cell;
+      if(isCriticalZone(r,c)){
+        // solid square — these carry the position/timing info scanners rely on
+        ctx.fillRect(Math.floor(cellX),Math.floor(cellY),Math.ceil(cell)+1,Math.ceil(cell)+1);
+      } else {
+        // cute circular dot — diameter equals the full module width so it
+        // still touches neighboring modules (tested to keep scanning reliable)
+        const cx=cellX+cell/2, cy=cellY+cell/2;
+        ctx.beginPath();
+        ctx.arc(cx,cy,cell/2,0,Math.PI*2);
+        ctx.fill();
       }
     }
   }
@@ -240,6 +257,18 @@ function wrapText(ctx,text,cx,y,maxWidth,lineHeight){
 function setLetterSpacing(ctx,val){
   try{ctx.letterSpacing=val;}catch(e){}
 }
+function drawShadedHeart(ctx,cx,cy,sizePx,colorLight,colorDark){
+  ctx.save();
+  ctx.textAlign='center';
+  ctx.textBaseline='middle';
+  ctx.font=`900 ${sizePx}px Quicksand, sans-serif`;
+  const g=ctx.createLinearGradient(cx-sizePx/2,cy-sizePx/2,cx+sizePx/2,cy+sizePx/2);
+  g.addColorStop(0,colorLight);
+  g.addColorStop(1,colorDark);
+  ctx.fillStyle=g;
+  ctx.fillText('♥',cx,cy+sizePx*0.05);
+  ctx.restore();
+}
 
 /* ── main render ── */
 async function renderBadge(index,workerID){
@@ -272,14 +301,43 @@ async function renderBadge(index,workerID){
   ctx.textAlign='center';
   ctx.textBaseline='alphabetic';
 
-  /* title */
-  const titleGrad=ctx.createLinearGradient(CANVAS_W*0.1,0,CANVAS_W*0.9,0);
-  titleGrad.addColorStop(0,COLORS.cream);
-  titleGrad.addColorStop(.5,COLORS.blush);
-  titleGrad.addColorStop(1,COLORS.fuchsia);
-  ctx.fillStyle=titleGrad;
-  ctx.font='900 50px Nunito, sans-serif';
-  ctx.fillText('✦ CARETECH ✦',CANVAS_W/2,98);
+  /* title — "CARE" big + "tech" small, shaded hearts on both sides */
+  (function drawTitle(){
+    const baselineY=98;
+    const heartFont='900 32px Quicksand, sans-serif';
+    const careFont='900 52px Nunito, sans-serif';
+    const techFont='800 28px Nunito, sans-serif';
+    const gap=12;
+
+    ctx.font=heartFont; const heartW=ctx.measureText('♥').width;
+    ctx.font=careFont; const careW=ctx.measureText('CARE').width;
+    ctx.font=techFont; const techW=ctx.measureText('tech').width;
+    const total=heartW+gap+careW+techW+gap+heartW;
+
+    let tx=CANVAS_W/2-total/2;
+    ctx.textAlign='left';
+
+    drawShadedHeart(ctx,tx+heartW/2,baselineY-12,30,COLORS.blush,COLORS.berry);
+    tx+=heartW+gap;
+
+    const careGrad=ctx.createLinearGradient(tx,0,tx+careW,0);
+    careGrad.addColorStop(0,COLORS.cream);
+    careGrad.addColorStop(.5,COLORS.blush);
+    careGrad.addColorStop(1,COLORS.fuchsia);
+    ctx.fillStyle=careGrad;
+    ctx.font=careFont;
+    ctx.fillText('CARE',tx,baselineY);
+    tx+=careW;
+
+    ctx.fillStyle=COLORS.candy;
+    ctx.font=techFont;
+    ctx.fillText('tech',tx,baselineY);
+    tx+=techW+gap;
+
+    drawShadedHeart(ctx,tx+heartW/2,baselineY-12,30,COLORS.blush,COLORS.berry);
+
+    ctx.textAlign='center';
+  })();
 
   ctx.font='700 15px Quicksand, sans-serif';
   ctx.fillStyle=COLORS.labelDim;
@@ -351,12 +409,22 @@ async function renderBadge(index,workerID){
   const qrX=(CANVAS_W-qrSize)/2;
   const qrModules=getQRModules(QR_URL);
   if(qrModules){
+    const pad=14;
+    ctx.fillStyle='rgba(255,245,248,.06)';
+    ctx.strokeStyle='rgba(255,160,200,.35)';
+    ctx.lineWidth=2.5;
+    roundRectPath(ctx,qrX-pad,y-pad,qrSize+pad*2,qrSize+pad*2,22);
+    ctx.fill();ctx.stroke();
+
     drawQR(ctx,qrX,y,qrSize,qrModules,'#1a0012','#fff5f8');
-    ctx.strokeStyle='rgba(255,160,200,.3)';
-    ctx.lineWidth=2;
-    roundRectPath(ctx,qrX-2,y-2,qrSize+4,qrSize+4,8);
-    ctx.stroke();
-    y+=qrSize+28;
+
+    const heartSize=20;
+    drawShadedHeart(ctx,qrX-pad+2,y-pad+2,heartSize,COLORS.blush,COLORS.berry);
+    drawShadedHeart(ctx,qrX+qrSize+pad-2,y-pad+2,heartSize,COLORS.blush,COLORS.berry);
+    drawShadedHeart(ctx,qrX-pad+2,y+qrSize+pad-2,heartSize,COLORS.blush,COLORS.berry);
+    drawShadedHeart(ctx,qrX+qrSize+pad-2,y+qrSize+pad-2,heartSize,COLORS.blush,COLORS.berry);
+
+    y+=qrSize+pad+28;
   } else {
     ctx.font='600 12px Quicksand, sans-serif';
     ctx.fillStyle='rgba(255,200,224,.5)';
