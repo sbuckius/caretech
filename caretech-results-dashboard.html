@@ -171,7 +171,7 @@ html,body{min-height:100%;font-family:var(--fb);font-weight:600;color:var(--crea
           <button id="playAllDirectionsBtn" onclick="playAllDirections()" style="appearance:none;font-family:'Nunito',sans-serif;font-weight:900;font-size:10px;letter-spacing:.06em;color:var(--cream);background:linear-gradient(135deg,var(--hot),var(--berry));border:1.5px solid var(--hot);border-radius:9px;padding:6px 14px;cursor:pointer;box-shadow:0 3px 14px rgba(255,45,107,.35);white-space:nowrap;">▶ Play all</button>
         </div>
       </div>
-      <div id="cb42LatestBox" style="background:rgba(14,0,8,.7);border:1.5px solid rgba(255,100,160,.28);border-radius:14px;padding:16px 18px;min-height:90px;display:flex;flex-direction:column;justify-content:center;">
+      <div id="cb42LatestBox" style="background:rgba(14,0,8,.7);border:1.5px solid rgba(255,100,160,.28);border-radius:14px;padding:16px 18px;min-height:90px;display:flex;flex-direction:column;justify-content:flex-start;align-items:stretch;">
         <div class="loading-msg">✦ loading latest direction…</div>
       </div>
       <div style="margin-top:8px;font-size:9px;color:var(--td);letter-spacing:.04em;">Source: <a href="https://care-tech.org/carebot42-hit.html" target="_blank" rel="noopener" style="color:var(--candy);text-decoration:none;">care-tech.org/carebot42-hit.html</a></div>
@@ -877,9 +877,8 @@ async function buildCB42(wrap){
 
 /* ── PAYMENT CARDS ── */
 async function buildPaymentCards(){
-  const waitForDb=()=>new Promise(resolve=>{const check=()=>{try{const d=typeof db==='function'?db('collab'):null;if(d)resolve(d);else setTimeout(check,100);}catch(e){setTimeout(check,100);}};check();});
   let data=null;
-  try{const d=await waitForDb();const snap=await d.ref('microtaskReactions').once('value');const val=snap.val();data=val?Object.values(val):[];}catch(e){console.error('paymentCards fetch failed:',e);return;}
+  try{data=await rtdbAll('collab','microtaskReactions');}catch(e){console.error('paymentCards fetch failed:',e);return;}
   if(!data||!data.length)return;
   const sorted=[...data].sort((a,b)=>(b.ts||0)-(a.ts||0));
   const container=document.getElementById('paymentCards');if(!container)return;container.innerHTML='';
@@ -952,7 +951,18 @@ async function buildCB42Latest(){
   const sorted=[...data].sort((a,b)=>(b.ts||0)-(a.ts||0));
   window._cb42AllDirections=sorted.map(d=>d.instruction).filter(Boolean);
   const latest=sorted.find(d=>d.instruction)||sorted[0];
+  const hasWorker=latest.workerId&&latest.workerId!=='anonymous';
   box.innerHTML='';
+  if(hasWorker){
+    const wid=document.createElement('div');
+    wid.style.cssText="font-family:'DM Mono',monospace;font-weight:700;font-size:10px;color:rgba(255,133,179,.75);letter-spacing:.04em;margin-bottom:8px;";
+    wid.textContent='🪪 '+latest.workerId;
+    box.appendChild(wid);
+  }
+  const svgWrap=document.createElement('div');
+  svgWrap.style.cssText='max-width:220px;margin:0 auto 10px;';
+  svgWrap.innerHTML=cb42RenderSVG(latest);
+  box.appendChild(svgWrap);
   const txt=document.createElement('div');
   txt.style.cssText="font-family:'Quicksand',sans-serif;font-weight:600;font-size:13px;color:rgba(255,215,230,.92);line-height:1.65;";
   txt.textContent=latest.instruction||'—';
