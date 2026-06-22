@@ -94,6 +94,11 @@ html,body{min-height:100%;font-family:var(--fb);font-weight:600;color:var(--crea
 .insight{background:rgba(255,45,107,.07);border:1.5px solid rgba(255,100,160,.25);border-radius:12px;padding:12px 14px;font-size:12px;color:rgba(255,200,224,.8);line-height:1.7;}
 .insight strong{color:var(--blush);}
 .two-col{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+.three-col{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;}
+.top-cols{display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:start;}
+@media(max-width:900px){.three-col{grid-template-columns:1fr 1fr;}}
+@media(max-width:600px){.three-col{grid-template-columns:1fr;}}
+@media(max-width:480px){.top-cols{grid-template-columns:1fr;}}
 @media(max-width:700px){.two-col{grid-template-columns:1fr;}.compare-grid{grid-template-columns:1fr 1fr;}}
 @media(max-width:500px){.bar-row{grid-template-columns:80px 1fr 36px;}.bar-label{font-size:10px;}}
 .slider-display{display:flex;flex-direction:column;gap:4px;}
@@ -119,6 +124,7 @@ html,body{min-height:100%;font-family:var(--fb);font-weight:600;color:var(--crea
 <header class="hdr">
   <div class="hdr-logo">CAREtech ✦ Aggregated Results</div>
   <div class="hdr-r">
+    <button id="resetAllBtn" onclick="resetAllData()" style="appearance:none;font-family:'Nunito',sans-serif;font-weight:800;font-size:10px;letter-spacing:.07em;color:#ffc2d6;background:rgba(180,0,40,.22);border:1.5px solid rgba(255,80,120,.5);border-radius:8px;padding:6px 12px;cursor:pointer;white-space:nowrap;">🗑 Reset All Data</button>
     <div class="live-badge"><div class="live-pip"></div>Live</div>
     <div class="clk" id="clk">--:--:--</div>
   </div>
@@ -142,12 +148,35 @@ html,body{min-height:100%;font-family:var(--fb);font-weight:600;color:var(--crea
 </div>
 
 <div id="paymentSection" style="position:relative;z-index:190;background:rgba(10,0,6,.92);border-bottom:2px solid rgba(255,45,107,.35);padding:18px clamp(16px,3vw,28px);">
-  <div style="max-width:1100px;margin:0 auto;">
-    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:12px;">
-      <div style="font-size:9px;letter-spacing:.22em;text-transform:uppercase;color:rgba(255,200,224,.45);font-family:'Nunito',sans-serif;font-weight:800;">✦ CAREBOT-07 · Worker Payments Due</div>
-      <button id="payAllBtn" onclick="playAllPayments()" style="appearance:none;font-family:'Nunito',sans-serif;font-weight:900;font-size:11px;letter-spacing:.08em;color:var(--cream);background:linear-gradient(135deg,var(--hot),var(--berry));border:1.5px solid var(--hot);border-radius:10px;padding:7px 16px;cursor:pointer;box-shadow:0 3px 14px rgba(255,45,107,.35);white-space:nowrap;">▶ Play all payments</button>
+  <div class="top-cols" style="max-width:1100px;margin:0 auto;">
+
+    <!-- LEFT COLUMN — worker IDs to be paid, most recent on top -->
+    <div>
+      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:12px;">
+        <div style="font-size:9px;letter-spacing:.22em;text-transform:uppercase;color:rgba(255,200,224,.45);font-family:'Nunito',sans-serif;font-weight:800;">✦ CAREBOT-07 · Worker IDs To Be Paid</div>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;">
+          <button id="playLatestPaymentBtn" onclick="playLatestPayment()" style="appearance:none;font-family:'Nunito',sans-serif;font-weight:800;font-size:10px;letter-spacing:.06em;color:var(--blush);background:rgba(255,45,107,.12);border:1.5px solid rgba(255,100,160,.4);border-radius:9px;padding:6px 12px;cursor:pointer;white-space:nowrap;">▶ Play latest</button>
+          <button id="payAllBtn" onclick="playAllPayments()" style="appearance:none;font-family:'Nunito',sans-serif;font-weight:900;font-size:10px;letter-spacing:.06em;color:var(--cream);background:linear-gradient(135deg,var(--hot),var(--berry));border:1.5px solid var(--hot);border-radius:9px;padding:6px 14px;cursor:pointer;box-shadow:0 3px 14px rgba(255,45,107,.35);white-space:nowrap;">▶ Play all</button>
+        </div>
+      </div>
+      <div id="paymentCards" style="display:grid;grid-template-columns:1fr;gap:10px;max-height:540px;overflow-y:auto;padding-right:2px;"></div>
     </div>
-    <div id="paymentCards" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px;"></div>
+
+    <!-- RIGHT COLUMN — most recent CAREBOT-42 direction, audio only -->
+    <div>
+      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:12px;">
+        <div style="font-size:9px;letter-spacing:.22em;text-transform:uppercase;color:rgba(255,200,224,.45);font-family:'Nunito',sans-serif;font-weight:800;">✦ CAREBOT-42 · Most Recent Direction</div>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;">
+          <button id="playLatestDirectionBtn" onclick="playLatestDirection()" style="appearance:none;font-family:'Nunito',sans-serif;font-weight:800;font-size:10px;letter-spacing:.06em;color:var(--blush);background:rgba(255,45,107,.12);border:1.5px solid rgba(255,100,160,.4);border-radius:9px;padding:6px 12px;cursor:pointer;white-space:nowrap;">▶ Play latest</button>
+          <button id="playAllDirectionsBtn" onclick="playAllDirections()" style="appearance:none;font-family:'Nunito',sans-serif;font-weight:900;font-size:10px;letter-spacing:.06em;color:var(--cream);background:linear-gradient(135deg,var(--hot),var(--berry));border:1.5px solid var(--hot);border-radius:9px;padding:6px 14px;cursor:pointer;box-shadow:0 3px 14px rgba(255,45,107,.35);white-space:nowrap;">▶ Play all</button>
+        </div>
+      </div>
+      <div id="cb42LatestBox" style="background:rgba(14,0,8,.7);border:1.5px solid rgba(255,100,160,.28);border-radius:14px;padding:16px 18px;min-height:90px;display:flex;flex-direction:column;justify-content:center;">
+        <div class="loading-msg">✦ loading latest direction…</div>
+      </div>
+      <div style="margin-top:8px;font-size:9px;color:var(--td);letter-spacing:.04em;">Source: <a href="https://care-tech.org/carebot42-hit.html" target="_blank" rel="noopener" style="color:var(--candy);text-decoration:none;">care-tech.org/carebot42-hit.html</a></div>
+    </div>
+
   </div>
 </div>
 
@@ -270,6 +299,92 @@ function fsDocToObj(doc){
 
 // No SDK needed — stub so any leftover references don't throw
 function loadFirebase(){return Promise.resolve();}
+
+/* ── RESET ALL DATA — destructive, requires typed confirmation ── */
+async function rtdbDelete(key,path){
+  try{
+    const cfg=CFGS[key];
+    if(!cfg||!cfg.rtdb)return{key,path,ok:false,reason:'no rtdb url'};
+    const url=`${cfg.rtdb}/${path}.json`;
+    const r=await fetch(url,{method:'DELETE'});
+    return{key,path,ok:r.ok,status:r.status};
+  }catch(e){return{key,path,ok:false,reason:e.message};}
+}
+
+async function fsDeleteAll(key,col){
+  try{
+    const cfg=CFGS[key];
+    if(!cfg||!cfg.fs)return{key,col,ok:false,reason:'no firestore project'};
+    const base=`https://firestore.googleapis.com/v1/projects/${cfg.fs}/databases/(default)/documents/${col}`;
+    let deleted=0,failed=0,pageToken=null;
+    do{
+      const listUrl=pageToken?`${base}?pageToken=${pageToken}&key=${cfg.key}`:`${base}?key=${cfg.key}`;
+      const r=await fetch(listUrl);
+      if(!r.ok)return{key,col,ok:false,status:r.status,deleted,failed};
+      const j=await r.json();
+      const docs=j.documents||[];
+      for(const doc of docs){
+        const delUrl=`https://firestore.googleapis.com/v1/${doc.name}?key=${cfg.key}`;
+        const dr=await fetch(delUrl,{method:'DELETE'});
+        if(dr.ok)deleted++;else failed++;
+      }
+      pageToken=j.nextPageToken||null;
+    }while(pageToken);
+    return{key,col,ok:failed===0,deleted,failed};
+  }catch(e){return{key,col,ok:false,reason:e.message};}
+}
+
+// Every data path this dashboard reads from, across every connected Firebase project.
+// (ibm + handbook are connected projects but this dashboard doesn't read/display
+// any path from them, so there's no confirmed node name here to safely clear.)
+const RESET_TARGETS={
+  rtdb:[
+    ['honey','honeywellReactions'],
+    ['collab','carecoachReactions'],
+    ['collab','microtaskReactions'],
+    ['collab','ceoAnnotations'],
+    ['collab','ceoSessions'],
+    ['collab','replacementCostSessions'],
+    ['collab','humanComputerAnnotations'],
+    ['collab','annotationSessions'],
+    ['collab','domesticAnnotations'],
+    ['collab','cb33Responses'],
+    ['collab','cb35Responses'],
+    ['collab','cb42Instructions'],
+    ['whoimp','inventorReactions'],
+    ['woman','cb29Ratings'],
+  ],
+  fs:[
+    ['collab','annotations03'],
+    ['weave','weavingReactions'],
+    ['bias','bias_responses'],
+    ['automat','hit_participants'],
+    ['cook','kc_responses'],
+  ],
+};
+
+async function resetAllData(){
+  const typed=prompt('This permanently deletes ALL carebot data across every connected Firebase project — worker payments, CB42 instructions, annotations, ratings, everything this dashboard reads. This cannot be undone.\n\nType RESET to confirm:');
+  if(typed!=='RESET')return;
+  const btn=document.getElementById('resetAllBtn');
+  if(btn){btn.disabled=true;btn.style.opacity='.5';btn.textContent='⏳ Resetting…';}
+  const results=[];
+  for(const[key,path]of RESET_TARGETS.rtdb)results.push(await rtdbDelete(key,path));
+  for(const[key,col]of RESET_TARGETS.fs)results.push(await fsDeleteAll(key,col));
+  const failures=results.filter(r=>!r.ok);
+  if(btn){btn.disabled=false;btn.style.opacity='1';btn.textContent='🗑 Reset All Data';}
+  console.log('[resetAllData] results:',results);
+  if(failures.length){
+    alert(`Reset finished with ${failures.length} failure(s) out of ${results.length} target(s). Check the browser console for details. Reloading dashboard…`);
+  }else{
+    alert('All carebot data has been reset. Reloading dashboard…');
+  }
+  window._cb42AllDirections=[];
+  window.speechSynthesis&&window.speechSynthesis.cancel();
+  buildAll();
+  buildCB42Latest();
+  setTimeout(buildPaymentCards,800);
+}
 
 const avg=arr=>arr.length?arr.reduce((a,b)=>a+b,0)/arr.length:0;
 const pct=(n,t)=>t?Math.round(n/t*100):0;
@@ -811,9 +926,60 @@ function playAllPayments(){
   const wids=[...cards].map(c=>c.dataset.wid).filter(Boolean);
   if(!wids.length){alert('No payment cards loaded yet.');return;}
   const queue=wids.map(wid=>'Please pay worker number '+wid.split('').join(' ')+' one cent.');
-  if(btn){btn.textContent='⏸ Playing… (click to stop)';btn.onclick=()=>{window.speechSynthesis.cancel();btn.textContent='▶ Play all payments';btn.onclick=playAllPayments;};}
+  if(btn){btn.textContent='⏸ Playing… (click to stop)';btn.onclick=()=>{window.speechSynthesis.cancel();btn.textContent='▶ Play all';btn.onclick=playAllPayments;};}
   function getVoice(){const voices=window.speechSynthesis.getVoices();return voices.find(v=>v.lang==='en-US'&&/zira|samantha|aria|jenny|michelle|jane|emma|woman|female/i.test(v.name))||voices.find(v=>v.lang==='en-US'&&!/male|david|mark|richard|guy|james/i.test(v.name))||voices.find(v=>v.lang==='en-US')||voices[0];}
-  function playNext(i){if(i>=queue.length){if(btn){btn.textContent='▶ Play all payments';btn.onclick=playAllPayments;}return;}const u=new SpeechSynthesisUtterance(queue[i]);u.rate=0.88;u.pitch=1.05;u.lang='en-US';const v=getVoice();if(v)u.voice=v;u.onend=()=>setTimeout(()=>playNext(i+1),400);u.onerror=()=>playNext(i+1);window.speechSynthesis.speak(u);}
+  function playNext(i){if(i>=queue.length){if(btn){btn.textContent='▶ Play all';btn.onclick=playAllPayments;}return;}const u=new SpeechSynthesisUtterance(queue[i]);u.rate=0.88;u.pitch=1.05;u.lang='en-US';const v=getVoice();if(v)u.voice=v;u.onend=()=>setTimeout(()=>playNext(i+1),400);u.onerror=()=>playNext(i+1);window.speechSynthesis.speak(u);}
+  if(window.speechSynthesis.getVoices().length)playNext(0);
+  else window.speechSynthesis.addEventListener('voiceschanged',()=>playNext(0),{once:true});
+}
+
+/* ── PLAY LATEST PAID WORKER (single, most recent) ── */
+function playLatestPayment(){
+  const cards=document.querySelectorAll('#paymentCards [data-wid]');
+  if(!cards.length){alert('No payment cards loaded yet.');return;}
+  if(!window.speechSynthesis){alert('Speech synthesis not supported.');return;}
+  window.speechSynthesis.cancel();
+  const wid=cards[0].dataset.wid;
+  announceWorker(wid==='Anonymous'?'anonymous':wid);
+}
+
+/* ── CAREBOT-42 · LATEST DIRECTION (top-right column, audio only) ── */
+async function buildCB42Latest(){
+  const box=document.getElementById('cb42LatestBox');
+  if(!box)return;
+  const data=await rtdbAll('collab','cb42Instructions');
+  if(!data||!data.length){box.innerHTML='<div class="empty-msg">No directions yet.</div>';window._cb42AllDirections=[];return;}
+  const sorted=[...data].sort((a,b)=>(b.ts||0)-(a.ts||0));
+  window._cb42AllDirections=sorted.map(d=>d.instruction).filter(Boolean);
+  const latest=sorted.find(d=>d.instruction)||sorted[0];
+  box.innerHTML='';
+  const txt=document.createElement('div');
+  txt.style.cssText="font-family:'Quicksand',sans-serif;font-weight:600;font-size:13px;color:rgba(255,215,230,.92);line-height:1.65;";
+  txt.textContent=latest.instruction||'—';
+  box.appendChild(txt);
+  const meta=document.createElement('div');
+  meta.style.cssText='font-size:9px;color:var(--td);letter-spacing:.06em;margin-top:10px;';
+  meta.textContent='🕐 '+(latest.ts?new Date(latest.ts).toLocaleString():'—');
+  box.appendChild(meta);
+}
+
+function playLatestDirection(){
+  const list=window._cb42AllDirections||[];
+  if(!list.length){alert('No directions loaded yet.');return;}
+  if(!window.speechSynthesis){alert('Speech synthesis not supported.');return;}
+  window.speechSynthesis.cancel();
+  cb42Speak(list[0]);
+}
+
+function playAllDirections(){
+  const list=window._cb42AllDirections||[];
+  const btn=document.getElementById('playAllDirectionsBtn');
+  if(!window.speechSynthesis){alert('Speech synthesis not supported.');return;}
+  if(!list.length){alert('No directions loaded yet.');return;}
+  window.speechSynthesis.cancel();
+  if(btn){btn.textContent='⏸ Playing… (click to stop)';btn.onclick=()=>{window.speechSynthesis.cancel();btn.textContent='▶ Play all';btn.onclick=playAllDirections;};}
+  function getVoice(){const voices=window.speechSynthesis.getVoices();return voices.find(v=>v.lang==='en-US'&&/zira|samantha|aria|jenny|michelle|jane|emma|woman|female/i.test(v.name))||voices.find(v=>v.lang==='en-US'&&!/male|david|mark|richard|guy|james/i.test(v.name))||voices.find(v=>v.lang==='en-US')||voices[0];}
+  function playNext(i){if(i>=list.length){if(btn){btn.textContent='▶ Play all';btn.onclick=playAllDirections;}return;}const u=new SpeechSynthesisUtterance(list[i]);u.rate=0.88;u.pitch=1.05;u.lang='en-US';const v=getVoice();if(v)u.voice=v;u.onend=()=>setTimeout(()=>playNext(i+1),420);u.onerror=()=>playNext(i+1);window.speechSynthesis.speak(u);}
   if(window.speechSynthesis.getVoices().length)playNext(0);
   else window.speechSynthesis.addEventListener('voiceschanged',()=>playNext(0),{once:true});
 }
@@ -827,28 +993,29 @@ async function buildAll(){
   wrap.appendChild(secHead('✦ CEO ROBOT INSTRUCTIONS · WORKER IDs · NONSENSICAL DATA'));
   const r42=await buildCB42(wrap);addR(r42||0);
   wrap.appendChild(secHead('✦ AFFECT & EMOTIONAL RESPONSE'));
-  const row1=document.createElement('div');row1.className='two-col';wrap.appendChild(row1);
-  const [r02,r07]=await Promise.all([buildCB02(row1),buildCB07(row1)]);addR((r02||0)+(r07||0));
-  const [r04,r05]=await Promise.all([buildCB04(wrap),buildCB05(wrap)]);addR((r04||0)+(r05||0));
+  const row1=document.createElement('div');row1.className='three-col';wrap.appendChild(row1);
+  const [r02,r07,r04,r05]=await Promise.all([buildCB02(row1),buildCB07(row1),buildCB04(row1),buildCB05(row1)]);addR((r02||0)+(r07||0)+(r04||0)+(r05||0));
   wrap.appendChild(secHead('✦ INVENTOR ARCHIVES'));
-  const row2=document.createElement('div');row2.className='two-col';wrap.appendChild(row2);
+  const row2=document.createElement('div');row2.className='three-col';wrap.appendChild(row2);
   const [r06,r29]=await Promise.all([buildCB06(row2),buildCB29(row2)]);addR((r06||0)+(r29||0));
   wrap.appendChild(secHead('✦ ANNOTATION & VISUAL CODING'));
-  const [r03,r09,r10,r14]=await Promise.all([buildCB03(wrap),buildCB09(wrap),buildCB10(wrap),buildCB14_24(wrap)]);addR((r03||0)+(r09||0)+(r10||0)+(r14||0));
+  const row2b=document.createElement('div');row2b.className='three-col';wrap.appendChild(row2b);
+  const [r03,r09,r10,r14]=await Promise.all([buildCB03(row2b),buildCB09(row2b),buildCB10(row2b),buildCB14_24(row2b)]);addR((r03||0)+(r09||0)+(r10||0)+(r14||0));
   wrap.appendChild(secHead('✦ LABOR VALUATION'));
-  const row3=document.createElement('div');row3.className='two-col';wrap.appendChild(row3);
+  const row3=document.createElement('div');row3.className='three-col';wrap.appendChild(row3);
   const [r11,r31]=await Promise.all([buildCB11(row3),buildCB31(row3)]);addR((r11||0)+(r31||0));
   wrap.appendChild(secHead('✦ POWER, AUTOMATION & CONTRADICTION'));
-  const row4=document.createElement('div');row4.className='two-col';wrap.appendChild(row4);
+  const row4=document.createElement('div');row4.className='three-col';wrap.appendChild(row4);
   const [r33,r35]=await Promise.all([buildCB33(row4),buildCB35(row4)]);addR((r33||0)+(r35||0));
   wrap.appendChild(secHead('✦ SURVEY DATA'));
-  const row5=document.createElement('div');row5.className='two-col';wrap.appendChild(row5);
+  const row5=document.createElement('div');row5.className='three-col';wrap.appendChild(row5);
   const [r08,r22]=await Promise.all([buildCB08(row5),buildCB22(row5)]);addR((r08||0)+(r22||0));
   document.getElementById('s-bots').textContent='13';
 }
 
 // Firebase REST — no SDK needed, call directly
 buildAll();
+buildCB42Latest();
 setTimeout(buildPaymentCards,800);
 </script>
 </body>

@@ -59,9 +59,11 @@
   .progress{font-size:11px;color:var(--candy);line-height:1.6;}
   .progress code{color:var(--blush);background:rgba(255,45,107,.12);padding:1px 5px;border-radius:5px;font-size:10.5px;}
 
-  .preview-col{display:flex;flex-direction:column;align-items:center;gap:14px;}
+  .preview-col{display:flex;flex-wrap:wrap;justify-content:center;gap:20px;}
+  .badge-side{display:flex;flex-direction:column;align-items:center;gap:10px;}
+  .side-label{font-family:'Nunito',sans-serif;font-weight:800;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--candy);}
   .canvas-shell{background:rgba(0,0,0,.2);border-radius:24px;padding:18px;box-shadow:var(--pop-glow);}
-  #badgeCanvas{display:block;width:min(100%,330px);height:auto;border-radius:14px;box-shadow:0 10px 50px rgba(0,0,0,.5);}
+  .badge-canvas{display:block;width:min(100%,260px);height:auto;border-radius:14px;box-shadow:0 10px 50px rgba(0,0,0,.5);}
 </style>
 </head>
 <body>
@@ -73,7 +75,7 @@
     <div class="bot-face">🪪</div>
     <div>
       <div class="bot-name">CARETECH ✦ Badge Generator</div>
-      <div class="bot-sub">Worker ID Badge · PNG Export Tool</div>
+      <div class="bot-sub">HIT Worker ID Badge · Front &amp; Back PNG Export</div>
     </div>
   </div>
 
@@ -95,26 +97,35 @@
       <div class="divider"></div>
 
       <h2>✦ Export</h2>
-      <button class="btn btn-primary btn-full" id="downloadOneBtn">⬇ Download This Badge (PNG)</button>
+      <button class="btn btn-primary btn-full" id="downloadOneBtn">⬇ Download This Badge (Front + Back PNGs)</button>
 
       <div class="field">
         <label for="batchCount">Number of badges to generate</label>
         <input type="number" id="batchCount" min="1" max="41" value="40" />
       </div>
-      <button class="btn btn-primary btn-full" id="downloadAllBtn">⬇⬇ Download All as PNGs</button>
+      <button class="btn btn-primary btn-full" id="downloadAllBtn">⬇⬇ Download All as PNGs (Front + Back)</button>
       <div class="progress" id="progressText"></div>
 
       <div class="divider"></div>
 
       <div class="note">
-        Place this file in the same folder as your <code>images/id_00.png</code> … <code>id_40.png</code> files so the badge artwork loads correctly. Each badge is rendered at <code>750×1300px</code> — sized to fit a standard vertical ID badge holder.
+        Place this file in the same folder as your <code>images/id_00.png</code> … <code>id_40.png</code> files so the badge artwork loads correctly. Each badge has a front (photo + worker ID) and a back (QR code) — both rendered at <code>690×1050px</code>, a 2.3″×3.5″ card at 300 DPI.
       </div>
     </div>
 
     <!-- PREVIEW -->
     <div class="preview-col">
-      <div class="canvas-shell">
-        <canvas id="badgeCanvas" width="750" height="1300"></canvas>
+      <div class="badge-side">
+        <div class="side-label">✦ Front</div>
+        <div class="canvas-shell">
+          <canvas id="frontCanvas" class="badge-canvas" width="690" height="1050"></canvas>
+        </div>
+      </div>
+      <div class="badge-side">
+        <div class="side-label">✦ Back</div>
+        <div class="canvas-shell">
+          <canvas id="backCanvas" class="badge-canvas" width="690" height="1050"></canvas>
+        </div>
       </div>
     </div>
 
@@ -128,7 +139,7 @@ const TOTAL_IMAGES=41;
 const IMAGE_PREFIX='images/id_';
 const IMAGE_EXT='.png';
 const QR_URL='https://care-tech.org/carebot21-hit.html';
-const CANVAS_W=750, CANVAS_H=1300;
+const CANVAS_W=690, CANVAS_H=1050;
 
 const COLORS={
   cream:'#fff5f8',blush:'#ffb3cf',candy:'#ff85b3',hot:'#ff2d6b',
@@ -140,7 +151,7 @@ const COLORS={
 let currentIndex=0;
 const assignedIDs={};
 
-/* ── worker ID generation (Mechanical-Turk-style) ── */
+/* ── worker ID generation (HIT-worker-style) ── */
 function genWorkerID(){
   const chars='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
   let id='';
@@ -270,17 +281,8 @@ function drawShadedHeart(ctx,cx,cy,sizePx,colorLight,colorDark){
   ctx.restore();
 }
 
-/* ── main render ── */
-async function renderBadge(index,workerID){
-  const canvas=document.getElementById('badgeCanvas');
-  canvas.width=CANVAS_W;canvas.height=CANVAS_H;
-  const ctx=canvas.getContext('2d');
-  const idxStr=index.toString().padStart(2,'0');
-
-  let img;
-  try{ img=await loadImage(index); }catch(e){ img=null; }
-
-  /* background */
+/* ── shared card chrome (used by both front & back) ── */
+function drawCardBackground(ctx){
   const bgGrad=ctx.createLinearGradient(0,0,0,CANVAS_H);
   bgGrad.addColorStop(0,'#220008');
   bgGrad.addColorStop(.5,'#180008');
@@ -300,60 +302,91 @@ async function renderBadge(index,workerID){
 
   ctx.textAlign='center';
   ctx.textBaseline='alphabetic';
+}
 
-  /* title — "CARE" big + "tech" small, shaded hearts on both sides */
-  (function drawTitle(){
-    const baselineY=98;
-    const heartFont='900 32px Quicksand, sans-serif';
-    const careFont='900 52px Nunito, sans-serif';
-    const techFont='800 28px Nunito, sans-serif';
-    const gap=12;
+function drawOuterBorder(ctx){
+  ctx.strokeStyle='rgba(255,100,160,.55)';
+  ctx.lineWidth=4;
+  roundRectPath(ctx,12,12,CANVAS_W-24,CANVAS_H-24,28);
+  ctx.stroke();
+}
 
-    ctx.font=heartFont; const heartW=ctx.measureText('♥').width;
-    ctx.font=careFont; const careW=ctx.measureText('CARE').width;
-    ctx.font=techFont; const techW=ctx.measureText('tech').width;
-    const total=heartW+gap+careW+techW+gap+heartW;
+/* a decorative divider made of a row of small hearts */
+function drawHeartLine(ctx,y,totalWidth,count,size){
+  const gap=(totalWidth-count*size)/(count-1);
+  let x=CANVAS_W/2-totalWidth/2+size/2;
+  for(let i=0;i<count;i++){
+    drawShadedHeart(ctx,x,y,size,COLORS.blush,COLORS.berry);
+    x+=size+gap;
+  }
+}
 
-    let tx=CANVAS_W/2-total/2;
-    ctx.textAlign='left';
+/* CARE♥tech logo — shaded hearts + gradient wordmark, shared by both sides */
+const LOGO_BASELINE_Y=100;
+function drawLogoTitle(ctx){
+  const baselineY=LOGO_BASELINE_Y;
+  const heartFont='900 60px Quicksand, sans-serif';
+  const careFont='900 56px Nunito, sans-serif';
+  const techFont='800 40px Nunito, sans-serif';
+  const gap=12;
 
-    drawShadedHeart(ctx,tx+heartW/2,baselineY-12,30,COLORS.blush,COLORS.berry);
-    tx+=heartW+gap;
+  ctx.font=heartFont; const heartW=ctx.measureText('♥').width;
+  ctx.font=careFont; const careW=ctx.measureText('CARE').width;
+  ctx.font=techFont; const techW=ctx.measureText('tech').width;
+  const total=heartW+gap+careW+techW+gap+heartW;
 
-    const careGrad=ctx.createLinearGradient(tx,0,tx+careW,0);
-    careGrad.addColorStop(0,COLORS.cream);
-    careGrad.addColorStop(.5,COLORS.blush);
-    careGrad.addColorStop(1,COLORS.fuchsia);
-    ctx.fillStyle=careGrad;
-    ctx.font=careFont;
-    ctx.fillText('CARE',tx,baselineY);
-    tx+=careW;
+  let tx=CANVAS_W/2-total/2;
+  ctx.textAlign='left';
 
-    ctx.fillStyle=COLORS.candy;
-    ctx.font=techFont;
-    ctx.fillText('tech',tx,baselineY);
-    tx+=techW+gap;
+  drawShadedHeart(ctx,tx+heartW/2,baselineY-14,58,COLORS.blush,COLORS.berry);
+  tx+=heartW+gap;
 
-    drawShadedHeart(ctx,tx+heartW/2,baselineY-12,30,COLORS.blush,COLORS.berry);
+  const careGrad=ctx.createLinearGradient(tx,0,tx+careW,0);
+  careGrad.addColorStop(0,COLORS.cream);
+  careGrad.addColorStop(.5,COLORS.blush);
+  careGrad.addColorStop(1,COLORS.fuchsia);
+  ctx.fillStyle=careGrad;
+  ctx.font=careFont;
+  ctx.fillText('CARE',tx,baselineY);
+  tx+=careW;
 
-    ctx.textAlign='center';
-  })();
+  ctx.fillStyle=COLORS.candy;
+  ctx.font=techFont;
+  ctx.fillText('tech',tx,baselineY);
+  tx+=techW+gap;
 
-  ctx.font='700 15px Quicksand, sans-serif';
+  drawShadedHeart(ctx,tx+heartW/2,baselineY-14,58,COLORS.blush,COLORS.berry);
+
+  ctx.textAlign='center';
+}
+
+/* ── FRONT: logo, HIT worker subtitle, worker ID, big image ── */
+async function renderFront(index,workerID){
+  const canvas=document.getElementById('frontCanvas');
+  canvas.width=CANVAS_W;canvas.height=CANVAS_H;
+  const ctx=canvas.getContext('2d');
+
+  let img;
+  try{ img=await loadImage(index); }catch(e){ img=null; }
+
+  drawCardBackground(ctx);
+  drawLogoTitle(ctx);
+
+  ctx.font='700 18px Quicksand, sans-serif';
   ctx.fillStyle=COLORS.labelDim;
-  setLetterSpacing(ctx,'3px');
-  ctx.fillText('MECHANICAL TURK WORKER ID BADGE',CANVAS_W/2,128);
+  setLetterSpacing(ctx,'2px');
+  ctx.fillText('HUMAN INTELLIGENCE TASK (HIT) WORKER',CANVAS_W/2,144);
   setLetterSpacing(ctx,'0px');
 
   ctx.strokeStyle='rgba(255,130,180,.35)';
   ctx.lineWidth=2;
-  ctx.beginPath();ctx.moveTo(CANVAS_W*0.16,150);ctx.lineTo(CANVAS_W*0.84,150);ctx.stroke();
+  ctx.beginPath();ctx.moveTo(CANVAS_W*0.16,166);ctx.lineTo(CANVAS_W*0.84,166);ctx.stroke();
 
   /* worker id */
-  ctx.font='700 14px Quicksand, sans-serif';
+  ctx.font='700 18px Quicksand, sans-serif';
   ctx.fillStyle=COLORS.labelDim;
   setLetterSpacing(ctx,'2px');
-  ctx.fillText('WORKER ID',CANVAS_W/2,184);
+  ctx.fillText('WORKER ID',CANVAS_W/2,200);
   setLetterSpacing(ctx,'0px');
 
   const idGrad=ctx.createLinearGradient(CANVAS_W*0.2,0,CANVAS_W*0.8,0);
@@ -361,12 +394,13 @@ async function renderBadge(index,workerID){
   idGrad.addColorStop(.55,COLORS.fuchsia);
   idGrad.addColorStop(1,COLORS.hot);
   ctx.fillStyle=idGrad;
-  ctx.font='900 42px Nunito, sans-serif';
-  ctx.fillText(workerID,CANVAS_W/2,235);
+  ctx.font='900 52px Nunito, sans-serif';
+  ctx.fillText(workerID,CANVAS_W/2,256);
 
-  /* image holder */
-  const boxW=CANVAS_W*0.78, boxH=boxW*0.82;
-  const boxX=(CANVAS_W-boxW)/2, boxY=265;
+  /* image holder — big, but leaves room for info text below */
+  const boxW=CANVAS_W*0.88;
+  const boxX=(CANVAS_W-boxW)/2, boxY=280;
+  const boxH=540;
   ctx.fillStyle='rgba(255,45,107,.08)';
   ctx.strokeStyle='rgba(255,160,200,.28)';
   ctx.lineWidth=2;
@@ -374,79 +408,108 @@ async function renderBadge(index,workerID){
   ctx.fill();ctx.stroke();
   if(img) drawContain(ctx,img,boxX+12,boxY+12,boxW-24,boxH-24);
 
-  let y=boxY+boxH+34;
-  ctx.font='600 14px Quicksand, sans-serif';
-  ctx.fillStyle=COLORS.labelDim;
-  ctx.fillText(`Image: id_${idxStr}.png`,CANVAS_W/2,y);
+  /* heart-line divider */
+  let y=boxY+boxH+28;
+  drawHeartLine(ctx,y,260,7,16);
+  y+=30;
 
-  /* blurb 1 */
-  y+=42;
-  ctx.font='700 13px Quicksand, sans-serif';
-  ctx.fillStyle=COLORS.blush;
-  setLetterSpacing(ctx,'1.5px');
-  ctx.fillText('WHAT IS A WORKER ID?',CANVAS_W/2,y);
-  setLetterSpacing(ctx,'0px');
-  y+=24;
-  ctx.font='600 14px Quicksand, sans-serif';
-  ctx.fillStyle=COLORS.textDim;
-  y=wrapText(ctx,'Amazon Mechanical Turk assigns each worker a permanent, anonymous alphanumeric ID used to track completed tasks and payments.',CANVAS_W/2,y,boxW,21);
-
-  /* blurb 2 */
-  y+=38;
-  ctx.font='700 13px Quicksand, sans-serif';
+  /* about this image */
+  ctx.font='700 20px Quicksand, sans-serif';
   ctx.fillStyle=COLORS.blush;
   setLetterSpacing(ctx,'1.5px');
   ctx.fillText('ABOUT THIS IMAGE',CANVAS_W/2,y);
   setLetterSpacing(ctx,'0px');
-  y+=24;
-  ctx.font='600 14px Quicksand, sans-serif';
+  y+=26;
+  ctx.font='600 21px Quicksand, sans-serif';
   ctx.fillStyle=COLORS.textDim;
-  y=wrapText(ctx,'This badge artwork is one of 41 AI-generated images created from the prompts "worker ID badge" and "technology worker ID badge."',CANVAS_W/2,y,boxW,21);
+  const textW=CANVAS_W*0.84;
+  wrapText(ctx,'This badge artwork is one of 41 AI-generated images created from the prompts "worker ID badge" and "technology worker ID badge."',CANVAS_W/2,y,textW,26);
 
-  /* qr */
-  y+=40;
-  const qrSize=180;
+  drawOuterBorder(ctx);
+}
+
+/* ── BACK: logo, about-image text, big QR code ── */
+async function renderBack(index,workerID){
+  const canvas=document.getElementById('backCanvas');
+  canvas.width=CANVAS_W;canvas.height=CANVAS_H;
+  const ctx=canvas.getContext('2d');
+
+  drawCardBackground(ctx);
+  drawLogoTitle(ctx);
+
+  const textW=CANVAS_W*0.84;
+  let y=180;
+
+  /* mission statement */
+  const missionGrad=ctx.createLinearGradient(CANVAS_W*0.1,0,CANVAS_W*0.9,0);
+  missionGrad.addColorStop(0,COLORS.blush);
+  missionGrad.addColorStop(.5,COLORS.candy);
+  missionGrad.addColorStop(1,COLORS.fuchsia);
+  ctx.fillStyle=missionGrad;
+  ctx.font='800 22px Nunito, sans-serif';
+  y=wrapText(ctx,'Amplifying Diverse HUMAN Voices in Technology',CANVAS_W/2,y,textW,26);
+  y+=24;
+  ctx.font='600 18px Quicksand, sans-serif';
+  ctx.fillStyle=COLORS.textDim;
+  y=wrapText(ctx,'We are creating caring technologies that include diverse voices, challenge bias, uncover underamplified histories, and build a more CARE-centered, equitable future for technology — one carebot at a time.',CANVAS_W/2,y,textW,23);
+
+  /* qr — fills remaining space */
+  y+=28;
+  const qrSize=380;
   const qrX=(CANVAS_W-qrSize)/2;
   const qrModules=getQRModules(QR_URL);
   if(qrModules){
-    const pad=14;
+    const pad=15;
     ctx.fillStyle='rgba(255,245,248,.06)';
     ctx.strokeStyle='rgba(255,160,200,.35)';
     ctx.lineWidth=2.5;
     roundRectPath(ctx,qrX-pad,y-pad,qrSize+pad*2,qrSize+pad*2,22);
     ctx.fill();ctx.stroke();
 
-    drawQR(ctx,qrX,y,qrSize,qrModules,'#1a0012','#fff5f8');
+    drawQR(ctx,qrX,y,qrSize,qrModules,COLORS.maroon,'#fff5f8');
 
-    const heartSize=20;
+    const heartSize=30;
     drawShadedHeart(ctx,qrX-pad+2,y-pad+2,heartSize,COLORS.blush,COLORS.berry);
     drawShadedHeart(ctx,qrX+qrSize+pad-2,y-pad+2,heartSize,COLORS.blush,COLORS.berry);
     drawShadedHeart(ctx,qrX-pad+2,y+qrSize+pad-2,heartSize,COLORS.blush,COLORS.berry);
     drawShadedHeart(ctx,qrX+qrSize+pad-2,y+qrSize+pad-2,heartSize,COLORS.blush,COLORS.berry);
 
-    y+=qrSize+pad+28;
+    y+=qrSize+pad+26;
   } else {
-    ctx.font='600 12px Quicksand, sans-serif';
+    ctx.font='600 13px Quicksand, sans-serif';
     ctx.fillStyle='rgba(255,200,224,.5)';
     ctx.fillText('(QR code unavailable — check your connection)',CANVAS_W/2,y+20);
     y+=50;
   }
 
-  ctx.font='700 13px Quicksand, sans-serif';
+  /* scan to begin */
+  ctx.font='700 19px Quicksand, sans-serif';
   ctx.fillStyle=COLORS.blush;
   setLetterSpacing(ctx,'1.5px');
   ctx.fillText('✦ SCAN TO BEGIN YOUR WORK ✦',CANVAS_W/2,y);
   setLetterSpacing(ctx,'0px');
   y+=22;
-  ctx.font='600 11px Quicksand, sans-serif';
+  ctx.font='600 16px Quicksand, sans-serif';
   ctx.fillStyle='rgba(255,200,224,.45)';
   ctx.fillText('care-tech.org',CANVAS_W/2,y);
 
-  /* outer border frame (drawn last, on top) */
-  ctx.strokeStyle='rgba(255,100,160,.55)';
-  ctx.lineWidth=4;
-  roundRectPath(ctx,12,12,CANVAS_W-24,CANVAS_H-24,28);
-  ctx.stroke();
+  /* heart-line divider */
+  y+=30;
+  drawHeartLine(ctx,y,260,7,16);
+  y+=30;
+
+  /* about this work */
+  ctx.font='700 20px Quicksand, sans-serif';
+  ctx.fillStyle=COLORS.blush;
+  setLetterSpacing(ctx,'1.5px');
+  ctx.fillText('ABOUT THIS WORK',CANVAS_W/2,y);
+  setLetterSpacing(ctx,'0px');
+  y+=27;
+  ctx.font='600 21px Quicksand, sans-serif';
+  ctx.fillStyle=COLORS.textDim;
+  y=wrapText(ctx,'A Human Intelligence Task — originally from Amazon Mechanical Turk. Humans are paid to label data, verify images, and train AI systems. The irony: the task exists because machines can\'t do it — but the humans who do it are often unnamed, underpaid, and invisible in the final product.',CANVAS_W/2,y,textW,26);
+
+  drawOuterBorder(ctx);
 }
 
 /* ── UI wiring ── */
@@ -462,7 +525,7 @@ async function showIndex(index){
   statImage.textContent=`id_${idxStr}.png`;
   statCount.textContent=`${currentIndex+1} / ${TOTAL_IMAGES}`;
   statID.textContent=id;
-  await renderBadge(currentIndex,id);
+  await Promise.all([renderFront(currentIndex,id),renderBack(currentIndex,id)]);
 }
 
 document.getElementById('prevBtn').addEventListener('click',()=>showIndex(currentIndex-1));
@@ -472,9 +535,9 @@ document.getElementById('rerollBtn').addEventListener('click',()=>{
   showIndex(currentIndex);
 });
 
-function downloadCanvas(filename){
+function downloadCanvas(canvasId,filename){
   return new Promise((resolve,reject)=>{
-    const canvas=document.getElementById('badgeCanvas');
+    const canvas=document.getElementById(canvasId);
     let blobCallbackFired=false;
     try{
       canvas.toBlob((blob)=>{
@@ -520,8 +583,9 @@ document.getElementById('downloadOneBtn').addEventListener('click',async()=>{
   progressText.textContent='';
   const idxStr=currentIndex.toString().padStart(2,'0');
   try{
-    await downloadCanvas(`caretech-badge-id_${idxStr}-${statID.textContent}.png`);
-    progressText.textContent='✓ Downloaded.';
+    await downloadCanvas('frontCanvas',`caretech-badge-id_${idxStr}-${statID.textContent}-FRONT.png`);
+    await downloadCanvas('backCanvas',`caretech-badge-id_${idxStr}-${statID.textContent}-BACK.png`);
+    progressText.textContent='✓ Downloaded front + back.';
   }catch(err){
     showDownloadError(err);
   }
@@ -544,7 +608,8 @@ document.getElementById('downloadAllBtn').addEventListener('click',async()=>{
     await showIndex(i);
     const idxStr=i.toString().padStart(2,'0');
     try{
-      await downloadCanvas(`caretech-badge-id_${idxStr}-${idFor(i)}.png`);
+      await downloadCanvas('frontCanvas',`caretech-badge-id_${idxStr}-${idFor(i)}-FRONT.png`);
+      await downloadCanvas('backCanvas',`caretech-badge-id_${idxStr}-${idFor(i)}-BACK.png`);
     }catch(err){
       showDownloadError(err);
       allBtn.disabled=false;oneBtn.disabled=false;prevBtn.disabled=false;nextBtn.disabled=false;
@@ -552,7 +617,7 @@ document.getElementById('downloadAllBtn').addEventListener('click',async()=>{
     }
     await new Promise(r=>setTimeout(r,350));
   }
-  progressText.textContent=`✓ Done — downloaded ${count} badge${count===1?'':'s'}.`;
+  progressText.textContent=`✓ Done — downloaded ${count} badge${count===1?'':'s'} (front + back).`;
   allBtn.disabled=false;oneBtn.disabled=false;prevBtn.disabled=false;nextBtn.disabled=false;
 });
 
