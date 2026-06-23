@@ -137,6 +137,14 @@
   .result-body ul{padding-left:17px;margin-bottom:11px;}
   .result-body li{margin-bottom:4px;}
   .action-row{display:flex;gap:9px;margin-top:18px;padding-top:14px;border-top:1px solid var(--border);align-items:center;flex-wrap:wrap;}
+  .sketch-section{margin-top:16px;}
+  .sketch-label{font-family:var(--fh);font-weight:800;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--pink-soft);margin-bottom:9px;opacity:.85;}
+  .sketch-wrap{background:#0e0008;border:1px solid var(--card-border);border-radius:14px;overflow:hidden;display:flex;align-items:center;justify-content:center;min-height:200px;}
+  .sketch-wrap svg{width:100%;height:auto;display:block;}
+  .sketch-err{font-size:11px;color:var(--muted);padding:24px;text-align:center;}
+  .sketch-btn{padding:7px 15px;border-radius:9px;font-family:var(--fb);font-weight:700;font-size:11px;cursor:pointer;border:1px solid rgba(255,80,150,.22);background:rgba(201,123,255,.1);color:var(--lilac);transition:all .2s;}
+  .sketch-btn:hover{background:rgba(201,123,255,.22);}
+  .sketch-btn:disabled{opacity:.45;cursor:not-allowed;}
   .btn-sm{padding:7px 15px;border-radius:9px;font-family:var(--fb);font-weight:700;font-size:11px;cursor:pointer;border:1px solid rgba(255,80,150,.22);background:rgba(255,60,120,.07);color:var(--pink-soft);transition:all .2s;}
   .btn-sm:hover{background:rgba(255,60,120,.14);}
   .ts{margin-left:auto;font-size:10px;color:rgba(255,180,210,.28);}
@@ -359,7 +367,7 @@ const PATENTS=[
 const CATS=['All','Computer','Typewriter','Loom','Sewing','Textile','Clothing'];
 const added=[];
 let currentCat='All',searchQuery='',mode='invent';
-let currentInventionTitle='',currentInventionPatents='';
+let currentInventionTitle='',currentInventionPatents='',lastInventionText='';
 
 /* build tabs */
 const catTabsEl=document.getElementById('catTabs');
@@ -408,14 +416,16 @@ async function generate(){
   btn.disabled=true;btn.textContent='⏳ Inventing…';
   out.innerHTML='<div class="thinking"><div class="thinking-dots"><span></span><span></span><span></span></div><div class="thinking-text">Drawing on '+added.length+' patent'+(added.length!==1?'s':'')+'… synthesizing new invention…</div></div>';
   try{
-    const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1000,system:buildSys(),messages:[{role:'user',content:buildUser(input)}]})});
+    const res=await fetch('https://carebot-02.sbuckius.workers.dev/',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:1000,system:buildSys(),messages:[{role:'user',content:buildUser(input)}]})});
     if(!res.ok)throw new Error('API error '+res.status);
     const data=await res.json();const text=data.content?.find(b=>b.type==='text')?.text||'';
     const tM=text.match(/\*\*INVENTION NAME:\*\*\s*(.+)/);
     currentInventionTitle=tM?tM[1].trim():'Untitled Invention';
     currentInventionPatents=added.map(p=>p.inventor+' — '+p.title).join('; ');
+    lastInventionText=text;
     saveGeneration({title:currentInventionTitle,patents:currentInventionPatents,mode,prompt:input,patentCount:added.length});
     showResult(text);
+    generateSketch(text);
   }catch(e){out.innerHTML='';genErr.textContent='Error: '+e.message;genErr.style.display='block';}
   btn.disabled=false;btn.textContent='⚗ Generate Invention';
 }
@@ -438,7 +448,14 @@ function showResult(text){
     <div class="action-row">
       <button class="btn-sm" onclick="copyRes(event)">⎘ Copy</button>
       <button class="btn-sm" onclick="generate()">↺ Regenerate</button>
+      <button class="sketch-btn" id="resketchBtn" onclick="generateSketch(lastInventionText)">✏ Re-sketch</button>
       <span class="ts">Generated ${ts}</span>
+    </div>
+    <div class="sketch-section">
+      <div class="sketch-label">✏ Invention Sketch</div>
+      <div class="sketch-wrap" id="sketchWrap">
+        <div class="thinking"><div class="thinking-dots"><span></span><span></span><span></span></div><div class="thinking-text">Drafting invention sketch…</div></div>
+      </div>
     </div>
     <div class="eval-panel" id="evalPanel">
       <div class="eval-title">◈ Rate This Invention</div>
@@ -469,6 +486,49 @@ function showResult(text){
   </div>`;
 }
 
+async function generateSketch(inventionText){
+  const wrap=document.getElementById('sketchWrap');
+  const btn=document.getElementById('resketchBtn');
+  if(!wrap)return;
+  if(btn){btn.disabled=true;btn.textContent='⏳ Sketching…';}
+  wrap.innerHTML='<div class="thinking"><div class="thinking-dots"><span></span><span></span><span></span></div><div class="thinking-text">Drafting invention sketch…</div></div>';
+  const sketchPrompt=`You are a patent sketch artist. Based on this invention description, create a detailed SVG patent-style technical drawing.
+
+INVENTION:
+${inventionText}
+
+Create an SVG technical sketch in the style of a hand-drawn patent illustration. Requirements:
+- viewBox="0 0 600 420"
+- Dark background: fill the background rect with #0e0008
+- Use ONLY these colors: stroke="#ff85b3" (main lines), stroke="#c97bff" (labels/callouts), stroke="#ff2d6b" (accent lines), fill="none" for shapes
+- Draw the invention as a technical schematic with labeled parts using <text> elements in fill="#ff85b3" font-family="monospace" font-size="11"
+- Include callout lines with part labels (A, B, C or short descriptive labels)
+- Use dashed lines for internal/hidden components: stroke-dasharray="4 3"
+- Include a title at the bottom in fill="#c97bff" font-size="13" font-family="monospace"
+- Make it look like a hand-sketched technical drawing with slightly imperfect lines
+- Add dimension lines or arrows where appropriate
+- Include at least 6-8 labeled components, minimum 30 SVG elements
+
+Return ONLY the raw SVG code starting with <svg and ending with </svg>. No markdown, no explanation, no code fences.`;
+  try{
+    const res=await fetch('https://carebot-02.sbuckius.workers.dev/',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:4000,messages:[{role:'user',content:sketchPrompt}]})});
+    if(!res.ok)throw new Error('API error '+res.status);
+    const data=await res.json();
+    const raw=data.content?.find(b=>b.type==='text')?.text||'';
+    let svgM=raw.match(/<svg[\s\S]*?<\/svg>/i);
+    if(!svgM){
+      console.warn('Sketch: no closing </svg> found, raw response:',raw);
+      const openM=raw.match(/<svg[\s\S]*/i);
+      if(openM)svgM=[openM[0]+'</svg>'];
+    }
+    if(!svgM||!svgM[0].includes('<svg'))throw new Error('No sketch returned (got '+raw.length+' chars back)');
+    wrap.innerHTML=svgM[0];
+  }catch(e){
+    wrap.innerHTML='<div class="sketch-err">Sketch unavailable — '+esc(e.message)+'. Try ✏ Re-sketch.</div>';
+  }
+  if(btn){btn.disabled=false;btn.textContent='✏ Re-sketch';}
+}
+
 function submitEval(){
   const btn=document.getElementById('evalSubmitBtn');
   if(btn.classList.contains('submitted'))return;
@@ -485,7 +545,7 @@ function submitEval(){
 function resetForAnother(){
   document.getElementById('outputArea').innerHTML='';
   document.getElementById('userPrompt').value='';
-  currentInventionTitle='';currentInventionPatents='';
+  currentInventionTitle='';currentInventionPatents='';lastInventionText='';
   document.getElementById('userPrompt').scrollIntoView({behavior:'smooth',block:'center'});
 }
 
