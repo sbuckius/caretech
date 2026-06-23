@@ -108,6 +108,22 @@
   .cta-btn:active{transform:translateY(0) scale(.97);animation:none;}
 
   .wordmark{font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,160,200,.18);padding-bottom:4px;}
+
+  /* ── REFLECTION GATE ── */
+  #reflectGate{width:100%;max-width:520px;display:flex;flex-direction:column;align-items:center;gap:16px;}
+  .reflect-intro{font-size:12px;color:rgba(255,210,228,.6);line-height:1.6;text-align:center;max-width:420px;margin-top:2px;}
+  .reflect-card{background:rgba(14,0,8,.78);border:1.5px solid var(--card-border-bright);border-radius:20px;box-shadow:var(--soft-glow);backdrop-filter:blur(20px) saturate(1.4);padding:clamp(18px,3.5vmin,26px) clamp(20px,4.5vmin,32px);width:100%;position:relative;overflow:hidden;}
+  .reflect-card::before{content:'';position:absolute;top:0;left:10%;right:10%;height:1.5px;background:linear-gradient(90deg,transparent,var(--candy) 35%,var(--hot) 50%,var(--candy) 65%,transparent);box-shadow:0 0 12px var(--candy);border-radius:999px;}
+  .reflect-num{display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:50%;background:rgba(255,45,107,.18);border:1px solid var(--card-border-bright);font-size:10px;font-weight:900;color:var(--blush);font-family:'Nunito',sans-serif;margin-right:7px;flex-shrink:0;}
+  .reflect-q{display:flex;align-items:flex-start;font-family:'Nunito',sans-serif;font-weight:800;font-size:clamp(13px,2.4vw,15px);color:var(--blush);margin-bottom:12px;line-height:1.45;}
+  .reflect-q-text{flex:1;}
+  .reflect-block{margin-bottom:18px;}
+  .reflect-block:last-of-type{margin-bottom:8px;}
+  .reflect-textarea{width:100%;background:rgba(255,45,107,.06);border:1.5px solid var(--card-border-bright);border-radius:12px;padding:11px 14px;font-family:'Quicksand',sans-serif;font-weight:600;font-size:13px;color:var(--cream);outline:none;resize:vertical;min-height:64px;line-height:1.5;transition:border-color .2s,box-shadow .2s;}
+  .reflect-textarea:focus{border-color:var(--hot);box-shadow:0 0 0 3px rgba(255,45,107,.18);}
+  .reflect-textarea::placeholder{color:rgba(255,160,200,.32);font-weight:500;}
+  .reflect-error{font-size:11px;color:rgba(255,100,140,.85);min-height:16px;text-align:center;letter-spacing:.03em;margin-top:4px;}
+  .reflect-submit-row{display:flex;justify-content:center;margin-top:6px;}
 </style>
 </head>
 <body>
@@ -128,11 +144,107 @@
     </div>
     <div class="gate-card">
       <div class="gate-heading">Enter your Worker ID ✦</div>
-      <div class="gate-sub">Your Mechanical Turk Worker ID is required to confirm your reward and continue to the next task.</div>
+      <div class="gate-sub">Your Human Intelligence Task Worker ID is required to confirm your reward and continue to the next task.</div>
       <div class="gate-label">Worker ID</div>
       <input class="gate-input" id="workerIdInput" type="text" placeholder="e.g. A1B2C3D4EXAMPLE" autocomplete="off" autocapitalize="characters" spellcheck="false" />
       <div class="gate-error" id="gateError"></div>
       <button class="btn btn-primary" style="width:100%;justify-content:center;padding:13px 20px;font-size:14px;border-radius:14px;" onclick="submitWorkerId()">Confirm &amp; view reward ✦</button>
+    </div>
+  </div>
+
+  <!-- ══ REFLECTION GATE (must complete before payment) ══ -->
+  <div id="reflectGate" style="display:none;">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:2px;">
+      <div class="bot-face">🤖</div>
+      <div>
+        <div class="bot-name">CAREBOT-07 · CARETECH ✦</div>
+        <div class="bot-sub">Before You're Paid · 8 Quick Questions</div>
+      </div>
+    </div>
+    <div class="reflect-intro">Your reward is ready — but first, CAREBOT-07 needs a moment of your honest reflection on the task you just completed. This research helps CARETECH understand where human judgment matters most.</div>
+
+    <div class="reflect-card">
+      <div class="reflect-block">
+        <div class="reflect-q"><span class="reflect-num">1</span><span class="reflect-q-text">Did this task reveal a real difference between what <em style="color:var(--cream);font-style:normal;">you</em> could do and what a machine could do?</span></div>
+        <div class="etag-group" id="q1Group">
+          <div class="etag" data-val="yes-clearly">yes, clearly</div>
+          <div class="etag" data-val="somewhat">somewhat</div>
+          <div class="etag" data-val="not-really">not really</div>
+          <div class="etag" data-val="hard-to-say">hard to say</div>
+        </div>
+      </div>
+
+      <div class="reflect-block">
+        <div class="reflect-q"><span class="reflect-num">2</span><span class="reflect-q-text">Which parts of this task, if any, could be handed entirely to a machine — and which parts truly needed a human?</span></div>
+        <div class="etag-group" id="q2Group">
+          <div class="etag" data-val="repetitive-parts-machine">the repetitive parts → machine</div>
+          <div class="etag" data-val="judgment-parts-human">the judgment calls → human</div>
+          <div class="etag" data-val="context-care-human">context &amp; care → human</div>
+          <div class="etag" data-val="all-automatable">honestly, all of it could be automated</div>
+          <div class="etag" data-val="none-automatable">none of it should be automated</div>
+        </div>
+      </div>
+
+      <div class="reflect-block">
+        <div class="reflect-q"><span class="reflect-num">3</span><span class="reflect-q-text">In your own words — what's one thing about this task that needed <em style="color:var(--cream);font-style:normal;">a human</em>, not a machine?</span></div>
+        <textarea class="reflect-textarea" id="q3Text" placeholder="e.g. understanding context, making a judgment call, noticing something a rule couldn't catch..."></textarea>
+      </div>
+
+      <div class="reflect-block">
+        <div class="reflect-q"><span class="reflect-num">4</span><span class="reflect-q-text">Did this task introduce you to a person, group, or contribution to technology that you hadn't heard of before?</span></div>
+        <div class="etag-group" id="q4Group">
+          <div class="etag" data-val="yes-new-to-me">yes, totally new to me</div>
+          <div class="etag" data-val="somewhat-familiar">I'd heard a little before</div>
+          <div class="etag" data-val="already-knew">I already knew this</div>
+          <div class="etag" data-val="not-applicable">not really part of this task</div>
+        </div>
+      </div>
+
+      <div class="reflect-block">
+        <div class="reflect-q"><span class="reflect-num">5</span><span class="reflect-q-text">Name the person, group, or piece of work from this task that felt <em style="color:var(--cream);font-style:normal;">underamplified or erased</em> from the usual story of technology — and why it stuck with you.</span></div>
+        <textarea class="reflect-textarea" id="q5Text" placeholder="e.g. a specific inventor, a group of workers, a contribution credited to someone else..."></textarea>
+      </div>
+
+      <div class="reflect-block">
+        <div class="reflect-q"><span class="reflect-num">6</span><span class="reflect-q-text">Did this task reveal any bias baked into technological systems, datasets, or design choices?</span></div>
+        <div class="etag-group" id="q6Group">
+          <div class="etag" data-val="whose-work-credited">whose work gets credited</div>
+          <div class="etag" data-val="whose-names-recorded">whose names were recorded at all</div>
+          <div class="etag" data-val="who-tech-was-built-for">who the technology was built for</div>
+          <div class="etag" data-val="who-it-was-built-by">who actually built it, unrecognized</div>
+          <div class="etag" data-val="no-bias-noticed">didn't notice any bias</div>
+        </div>
+      </div>
+
+      <div class="reflect-block">
+        <div class="reflect-q"><span class="reflect-num">7</span><span class="reflect-q-text">In this conversation — does it feel like your voice was heard? Do you feel like you have power in the technology landscape this task represents?</span></div>
+        <div class="etag-group" id="q7Group">
+          <div class="etag" data-val="voice-heard">my voice felt heard</div>
+          <div class="etag" data-val="voice-unheard">my voice felt unheard</div>
+          <div class="etag" data-val="have-power">I have power in this landscape</div>
+          <div class="etag" data-val="no-power">I have little to no power in this landscape</div>
+          <div class="etag" data-val="not-sure-voice-power">not sure</div>
+        </div>
+      </div>
+
+      <div class="reflect-block">
+        <div class="reflect-q"><span class="reflect-num">8</span><span class="reflect-q-text">Do you believe this technology shows CARE — for you personally? For people in general? For all people equally? For the earth?</span></div>
+        <div class="etag-group" id="q8Group">
+          <div class="etag" data-val="cares-for-me">yes, cares for me</div>
+          <div class="etag" data-val="cares-for-people-generally">yes, cares for people in general</div>
+          <div class="etag" data-val="cares-for-all-equally">yes, cares for all people equally</div>
+          <div class="etag" data-val="cares-for-earth">yes, cares for the earth</div>
+          <div class="etag" data-val="not-care-for-me">no, doesn't care for me</div>
+          <div class="etag" data-val="not-care-equally">no, doesn't care for everyone equally</div>
+          <div class="etag" data-val="not-care-for-earth">no, doesn't care for the earth</div>
+          <div class="etag" data-val="not-sure-care">not sure</div>
+        </div>
+      </div>
+
+      <div class="reflect-error" id="reflectError"></div>
+      <div class="reflect-submit-row">
+        <button class="btn btn-primary" style="padding:12px 26px;font-size:13px;" onclick="submitReflection()">Submit &amp; get paid ✦</button>
+      </div>
     </div>
   </div>
 
@@ -201,7 +313,7 @@
       <a class="cta-btn" id="ctaBtn" href="carebot42-hit.html">✦ Click for more work! ✦</a>
     </div>
 
-    <div class="wordmark">✦ carebot-07 / caretech research system · microtask labor · v2.0 ✦</div>
+    <div class="wordmark">✦ carebot-07 / caretech research system · microtask labor · v3.2 reflection ✦</div>
   </div>
 
 </div>
@@ -227,6 +339,8 @@ const STORAGE_KEY = 'caretech_worker_id';
 function getStoredWorkerId(){try{return localStorage.getItem(STORAGE_KEY)||'';}catch(e){return '';}}
 function storeWorkerId(id){try{localStorage.setItem(STORAGE_KEY,id);}catch(e){}}
 
+let PENDING_WORKER_ID = '';
+
 function submitWorkerId(){
   const raw=document.getElementById('workerIdInput').value.trim();
   const errorEl=document.getElementById('gateError');
@@ -234,7 +348,80 @@ function submitWorkerId(){
   if(raw.length<3){errorEl.textContent='Worker ID looks too short — please check and try again.';return;}
   errorEl.textContent='';
   storeWorkerId(raw);
-  revealRewardScreen(raw);
+  PENDING_WORKER_ID=raw;
+  document.getElementById('workerGate').style.display='none';
+  document.getElementById('reflectGate').style.display='flex';
+}
+
+/* ── REFLECTION GATE (mandatory, pre-payment) ── */
+document.getElementById('q1Group').addEventListener('click',e=>{
+  const tag=e.target.closest('.etag');if(!tag)return;
+  [...document.getElementById('q1Group').children].forEach(t=>t.classList.remove('selected'));
+  tag.classList.add('selected');
+});
+document.getElementById('q2Group').addEventListener('click',e=>{
+  const tag=e.target.closest('.etag');if(!tag)return;
+  tag.classList.toggle('selected');
+});
+document.getElementById('q4Group').addEventListener('click',e=>{
+  const tag=e.target.closest('.etag');if(!tag)return;
+  [...document.getElementById('q4Group').children].forEach(t=>t.classList.remove('selected'));
+  tag.classList.add('selected');
+});
+document.getElementById('q6Group').addEventListener('click',e=>{
+  const tag=e.target.closest('.etag');if(!tag)return;
+  tag.classList.toggle('selected');
+});
+document.getElementById('q7Group').addEventListener('click',e=>{
+  const tag=e.target.closest('.etag');if(!tag)return;
+  tag.classList.toggle('selected');
+});
+document.getElementById('q8Group').addEventListener('click',e=>{
+  const tag=e.target.closest('.etag');if(!tag)return;
+  tag.classList.toggle('selected');
+});
+
+function submitReflection(){
+  const errorEl=document.getElementById('reflectError');
+  const q1=document.querySelector('#q1Group .etag.selected');
+  const q2=[...document.querySelectorAll('#q2Group .etag.selected')].map(t=>t.dataset.val);
+  const q3=document.getElementById('q3Text').value.trim();
+  const q4=document.querySelector('#q4Group .etag.selected');
+  const q5=document.getElementById('q5Text').value.trim();
+  const q6=[...document.querySelectorAll('#q6Group .etag.selected')].map(t=>t.dataset.val);
+  const q7=[...document.querySelectorAll('#q7Group .etag.selected')].map(t=>t.dataset.val);
+  const q8=[...document.querySelectorAll('#q8Group .etag.selected')].map(t=>t.dataset.val);
+
+  if(!q1){errorEl.textContent='Please answer question 1 before continuing.';return;}
+  if(!q2.length){errorEl.textContent='Please select at least one answer for question 2.';return;}
+  if(q3.length<10){errorEl.textContent='Please write a sentence or two for question 3 before continuing.';document.getElementById('q3Text').focus();return;}
+  if(!q4){errorEl.textContent='Please answer question 4 before continuing.';return;}
+  if(q5.length<10){errorEl.textContent='Please write a sentence or two for question 5 before continuing.';document.getElementById('q5Text').focus();return;}
+  if(!q6.length){errorEl.textContent='Please select at least one answer for question 6.';return;}
+  if(!q7.length){errorEl.textContent='Please select at least one answer for question 7.';return;}
+  if(!q8.length){errorEl.textContent='Please select at least one answer for question 8.';return;}
+  errorEl.textContent='';
+
+  const workerId=PENDING_WORKER_ID||getStoredWorkerId();
+  const payload={
+    workerId,
+    sessionId:SESSION_ID,
+    humanMachineDifference:q1.dataset.val,
+    automationSplit:q2,
+    humanNeededWhy:q3,
+    underamplifiedAwareness:q4.dataset.val,
+    underamplifiedWho:q5,
+    biasNoticed:q6,
+    voicePower:q7,
+    careLevels:q8,
+    timestamp:useFirebase?firebase.database.ServerValue.TIMESTAMP:Date.now()
+  };
+  if(useFirebase&&db){
+    db.ref('cb07Reflections').push(payload).catch(e=>console.warn('Reflection save failed:',e));
+  }
+
+  document.getElementById('reflectGate').style.display='none';
+  revealRewardScreen(workerId);
 }
 
 function announceWorker(wid){
