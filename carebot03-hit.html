@@ -327,6 +327,38 @@ input[type=range].val-slider::-webkit-slider-thumb{width:18px;height:18px;border
         </div>
       </div>
 
+      <!-- TECHNOLOGY QUESTIONS — shown only for technology images -->
+      <div class="tech-section" id="techSection" style="display:none;">
+        <div class="value-section-title" style="margin-top:4px;">
+          About this technology ✦
+          <span>Based only on what you see — not what you already know.</span>
+        </div>
+        <div class="value-row">
+          <div class="value-label">
+            ✦ How important does this technology seem to the mission?
+            <span class="val-readout" id="techImportanceReadout">5 / 10</span>
+          </div>
+          <input type="range" class="val-slider" id="techImportanceSlider" min="1" max="10" value="5" step="1"/>
+          <div class="slider-ends"><span>Minor component</span><span>Mission-critical</span></div>
+        </div>
+        <div class="value-row">
+          <div class="value-label">
+            ✦ How hard do you think this was to make?
+            <span class="val-readout" id="techDifficultyReadout">5 / 10</span>
+          </div>
+          <input type="range" class="val-slider" id="techDifficultySlider" min="1" max="10" value="5" step="1"/>
+          <div class="slider-ends"><span>Straightforward</span><span>Extremely difficult</span></div>
+        </div>
+        <div class="value-row">
+          <div class="value-label">
+            ✦ How important was the work done by the people who made this?
+            <span class="val-readout" id="techLaborReadout">5 / 10</span>
+          </div>
+          <input type="range" class="val-slider" id="techLaborSlider" min="1" max="10" value="5" step="1"/>
+          <div class="slider-ends"><span>Could be done by anyone</span><span>Highly specialized</span></div>
+        </div>
+      </div>
+
       <div class="submit-row">
         <div class="selection-summary" id="selectionSummary">No tags selected yet</div>
         <button id="submitBtn" class="btn primary" disabled>Submit annotation ✦</button>
@@ -350,74 +382,132 @@ const IMAGE_CATALOG = [
   {
     id: "hamilton_code_stack",
     name: "Margaret Hamilton with Apollo Guidance Computer software listings, MIT, 1969",
-    url: "https://upload.wikimedia.org/wikipedia/commons/d/db/Margaret_Hamilton_-_restoration.jpg",
+    url: "images/space01.png",
     source: "Draper Laboratory / Wikimedia Commons",
     sourceUrl: "https://commons.wikimedia.org/wiki/File:Margaret_Hamilton_-_restoration.jpg",
     category: "lol",
-    truth: "This is <strong>Margaret Hamilton</strong>, standing next to the printed source code for the Apollo Guidance Computer — software she led a team to write at MIT. She coined the phrase <em>\"software engineering\"</em> for this work. At the time, software was classified as clerical, not engineering. She is 32 years old in this photo. The stack of listings is as tall as she is."
+    type: "labor",
+    truth: "This is <strong>Margaret Hamilton</strong>, standing next to the printed source code for the Apollo Guidance Computer — software she led a team to write at MIT. She coined the phrase <em>&ldquo;software engineering&rdquo;</em> for this work. At the time, software was classified as clerical, not engineering. She is 32 years old in this photo. The stack of listings is as tall as she is."
   },
   {
     id: "rope_memory_ferrite",
     name: "Apollo Guidance Computer ferrite core rope memory, close-up detail",
-    url: "https://upload.wikimedia.org/wikipedia/commons/1/13/Apollo_guidance_computer_ferrit_core_memory.jpg",
+    url: "images/space02.png",
     source: "Wikimedia Commons (CC-BY-SA)",
     sourceUrl: "https://commons.wikimedia.org/wiki/File:Apollo_guidance_computer_ferrit_core_memory.jpg",
     category: "lol",
+    type: "technology",
     truth: "The finished product of the LOL teams' hand labor: a core rope memory module. <strong>36,864 words of read-only memory, hand-woven bit by bit.</strong> Once woven, it could never be changed — every error was permanent. It stored the software that navigated Apollo 11 to the Moon. One module took 8 weeks to make and cost $15,000. The women who made it are unmentioned in the 1975 NASA Apollo summary."
   },
   {
     id: "agc_full_nasm",
     name: "Apollo Guidance Computer (AGC), Smithsonian National Air and Space Museum",
-    url: "https://upload.wikimedia.org/wikipedia/commons/e/ef/Apollo_Guidance_Computer_%28NASM%29.JPG",
+    url: "images/space03.png",
     source: "Smithsonian NASM / Wikimedia Commons",
     sourceUrl: "https://commons.wikimedia.org/wiki/File:Apollo_Guidance_Computer_(NASM).JPG",
     category: "industrial",
+    type: "technology",
     truth: "The Apollo Guidance Computer — the hardware that the LOL teams' rope memory plugged into. Extensively documented, celebrated, and museum-preserved. The <strong>engineers who designed the hardware</strong> are named in press releases and history books. The women who wove the read-only memory inside it are not mentioned in the official 1975 NASA mission summary."
   },
   {
     id: "agc_logic_module",
     name: "Apollo Guidance Computer logic module (integrated circuits), c.1965",
-    url: "https://upload.wikimedia.org/wikipedia/commons/6/6e/Apollo_Guidance_Computer_Logic_Module_%285900036757%29.jpg",
+    url: "images/space04.png",
     source: "NASA / Wikimedia Commons",
     sourceUrl: "https://commons.wikimedia.org/wiki/File:Apollo_Guidance_Computer_Logic_Module_(5900036757).jpg",
     category: "industrial",
-    truth: "The AGC's integrated circuit logic modules — designed by engineers at MIT and Raytheon. Each was meticulously documented and patented. The <strong>Navajo women</strong> who assembled many of these ICs at Fairchild Semiconductor were simultaneously described in company materials as performing work requiring no technical skill — \"tender loving care,\" in the words of a Raytheon hardware manager."
+    type: "technology",
+    truth: "The AGC's integrated circuit logic modules — designed by engineers at MIT and Raytheon. Each was meticulously documented and patented. The <strong>Navajo women</strong> who assembled many of these ICs at Fairchild Semiconductor were simultaneously described in company materials as performing work requiring no technical skill — &ldquo;tender loving care,&rdquo; in the words of a Raytheon hardware manager."
   },
   {
     id: "rope_core_board",
     name: "Core rope memory board — close-up of wire-through-core encoding",
-    url: "https://upload.wikimedia.org/wikipedia/commons/8/8b/16Kb_Rope_Core_Memory_Board_from_Wagner_WAC-40.jpg",
+    url: "images/space05.png",
     source: "Wikimedia Commons (CC-BY-SA)",
     sourceUrl: "https://commons.wikimedia.org/wiki/File:16Kb_Rope_Core_Memory_Board_from_Wagner_WAC-40.jpg",
     category: "lol",
+    type: "technology",
     truth: "Wire woven through ferrite cores in a dense, precise pattern — each pass encoding one binary digit. The cores are smaller than a housefly's wing. <strong>Every bit was threaded by a human hand</strong>, by women hired from New England textile mills and the Waltham Watch Company. Raytheon classified this as manufacturing labor. It was paid as manufacturing labor. It sent a spacecraft to the Moon."
   },
   {
     id: "agc_with_dsky",
     name: "Apollo Guidance Computer with DSKY (Display/Keyboard interface), as flown",
-    url: "https://upload.wikimedia.org/wikipedia/commons/5/5a/ApolloGuidanceComputerwithDSKY.agr.jpg",
+    url: "images/space06.png",
     source: "Wikimedia Commons (CC-BY-SA)",
     sourceUrl: "https://commons.wikimedia.org/wiki/File:ApolloGuidanceComputerwithDSKY.agr.jpg",
     category: "industrial",
+    type: "technology",
     truth: "The DSKY — the interface astronauts used to interact with the AGC. When alarm codes 1202 and 1201 fired during Apollo 11's lunar descent, <strong>Hamilton's priority interrupt software</strong> — stored in rope memory woven by the LOL teams — automatically rerouted tasks and continued the landing. The hardware got the Smithsonian exhibit. Hamilton received the Presidential Medal of Freedom 47 years later."
   },
   {
     id: "magnetic_core_closeup",
     name: "Magnetic core memory — individual ferrite rings, 1960s computing",
-    url: "https://upload.wikimedia.org/wikipedia/commons/6/60/Magnetic-core_memory.jpg",
+    url: "images/space07.png",
     source: "Wikimedia Commons (CC-BY-SA)",
     sourceUrl: "https://commons.wikimedia.org/wiki/File:Magnetic-core_memory.jpg",
     category: "lol",
-    truth: "Individual ferrite cores — the tiny rings the LOL teams threaded wire through, one at a time. <strong>\"Every bit had to be sewn with a needle and a thread-like wire through these little magnetic cores\"</strong> — David Mindell, author of <em>Digital Apollo</em>. This work was described in 1960s engineering documents as \"tedious\" and requiring \"no thinking.\" Researchers who recreated it in 2018 found it demanded deep focus and expert fine motor skill."
+    type: "technology",
+    truth: "Individual ferrite cores — the tiny rings the LOL teams threaded wire through, one at a time. <strong>&ldquo;Every bit had to be sewn with a needle and a thread-like wire through these little magnetic cores&rdquo;</strong> — David Mindell, author of <em>Digital Apollo</em>. This work was described in 1960s engineering documents as &ldquo;tedious&rdquo; and requiring &ldquo;no thinking.&rdquo; Researchers who recreated it in 2018 found it demanded deep focus and expert fine motor skill."
   },
   {
     id: "agc_computer_history_museum",
     name: "Apollo Guidance Computer and software collection, Computer History Museum, 2007",
-    url: "https://upload.wikimedia.org/wikipedia/commons/e/e4/Apollo_Guidance_Computer_%28c.1965%29_%26_Apollo_Guidance_Computer_Software_%28c.1961-1971%29_by_MIT_%26_Raytheon_-_Computer_History_Museum_%282007-11-10_23.04.42_by_Carlo_Nardone%29.jpg",
+    url: "images/space08.png",
     source: "Carlo Nardone / Wikimedia Commons (CC-BY-SA)",
     sourceUrl: "https://commons.wikimedia.org/wiki/File:Apollo_Guidance_Computer_(c.1965)_%26_Apollo_Guidance_Computer_Software_(c.1961-1971)_by_MIT_%26_Raytheon_-_Computer_History_Museum_(2007-11-10_23.04.42_by_Carlo_Nardone).jpg",
     category: "industrial",
+    type: "technology",
     truth: "The AGC and its software collection as displayed at the Computer History Museum in 2007. Museum exhibits about computing history overwhelmingly feature hardware and the men who designed it. The <strong>Making Core Memory project (2018)</strong> by Rosner, Shorey, Craft, and Remick was among the first scholarly attempts to document and restore the contributions of the women who assembled this hardware — 50 years later."
+  },
+  {
+    id: "ic_assembly_worker",
+    name: "Woman assembling integrated circuits on a grid component, c.1965",
+    url: "images/space09.png",
+    source: "Fairchild Semiconductor / Science News archive",
+    sourceUrl: "https://www.sciencenews.org/article/core-memory-weavers-navajo-apollo-raytheon-computer-nasa",
+    category: "lol",
+    type: "labor",
+    truth: "A woman assembles integrated circuits — placing electrical components on tiny silicon chips and connecting them with wires in precise locations, under a microscope. <strong>This work required painstaking attention to detail, excellent eyesight, and high-level fine motor skill</strong> — but Fairchild Semiconductor described it in company materials as an extension of women's natural &ldquo;dexterity.&rdquo; She was never named. This image was used in company brochures without identifying the worker."
+  },
+  {
+    id: "raytheon_rope_memory_inspection",
+    name: "Two Raytheon employees examining a completed core rope memory module, c.1965",
+    url: "images/space10.png",
+    source: "BBC / Raytheon archive",
+    sourceUrl: "http://news.bbc.co.uk/2/hi/technology/8148730.stm",
+    category: "lol",
+    type: "labor",
+    truth: "Two Raytheon workers inspect a completed core rope memory module — the same type that flew on Apollo 11. The Raytheon badge is visible. <strong>These women were known internally as the LOL teams</strong> — &ldquo;little old ladies&rdquo; — a name that minimized the expertise required. Each module took 8 weeks to produce and could not be corrected once woven. Their quality control was so precise that NASA declared the memory &ldquo;virtually error-free.&rdquo;"
+  },
+  {
+    id: "weaving_core_ropes_color",
+    name: "Woman weaving core ropes at the Raytheon plant, suburban Boston, c.1965",
+    url: "images/space11.png",
+    source: "Smithsonian National Air and Space Museum",
+    sourceUrl: "https://airandspace.si.edu/multimedia-gallery/image/13006hjpg?id=13006",
+    category: "lol",
+    type: "labor",
+    truth: "A Raytheon worker weaves core rope memory by hand — threading wire through ferrite rings smaller than a grain of rice, one bit at a time. The wire spool is visible on the right. <strong>This is the physical act of programming the Apollo Guidance Computer.</strong> Hamilton's software existed as abstract code until these hands encoded it into hardware. The Air and Space Museum holds this image but did not name the worker."
+  },
+  {
+    id: "fairchild_floor_video_still",
+    name: "Fairchild Semiconductor assembly floor, Shiprock New Mexico, c.1965–1970 (video still)",
+    url: "images/space12.png",
+    source: "Documentary footage / YouTube",
+    sourceUrl: "https://www.youtube.com/watch?v=ndvmFlg1WmE&t=1292s",
+    category: "lol",
+    type: "labor",
+    truth: "The Fairchild Semiconductor factory floor in Shiprock, New Mexico, on the Navajo Nation. <strong>At its peak, over 1,000 workers — mostly Navajo women — assembled integrated circuits here for the Apollo Guidance Computer.</strong> Fairchild chose the location for its tax incentives and a workforce with &ldquo;almost no other employment options.&rdquo; Company brochures compared the IC work to Navajo weaving traditions — framing it as cultural craft, not technical labor, to justify lower wages."
+  },
+  {
+    id: "apollo_production_area",
+    name: "Apollo Production Area — women using microscopes to assemble integrated circuits, c.1965",
+    url: "images/space13.png",
+    source: "Fairchild Semiconductor / NASA archive (source under investigation)",
+    sourceUrl: "https://www.sciencenews.org/article/core-memory-weavers-navajo-apollo-raytheon-computer-nasa",
+    category: "lol",
+    type: "labor",
+    truth: "The sign reads <strong>&ldquo;Apollo Production Area.&rdquo;</strong> Every person visible is a woman. Each is working at a microscope, assembling or inspecting integrated circuits for the Apollo Guidance Computer. <strong>By 1964, Fairchild produced more than 100,000 integrated circuits for the Apollo program</strong> — all assembled by workers like these, who are unnamed in every official NASA document. The computers that went to the Moon were built by these hands."
   }
 ];
 </script>
@@ -468,6 +558,15 @@ document.getElementById('importanceSlider').addEventListener('input',function(){
 document.getElementById('recognitionSlider').addEventListener('input',function(){
   document.getElementById('recognitionReadout').textContent=this.value+' / 10';
 });
+document.getElementById('techImportanceSlider').addEventListener('input',function(){
+  document.getElementById('techImportanceReadout').textContent=this.value+' / 10';
+});
+document.getElementById('techDifficultySlider').addEventListener('input',function(){
+  document.getElementById('techDifficultyReadout').textContent=this.value+' / 10';
+});
+document.getElementById('techLaborSlider').addEventListener('input',function(){
+  document.getElementById('techLaborReadout').textContent=this.value+' / 10';
+});
 
 /* load image */
 function loadImage(idx){
@@ -486,6 +585,20 @@ function loadImage(idx){
   document.getElementById('sourceLink').href='#';
   document.getElementById('sourceLink').style.display='none';
   updateCatChip(img);
+  // Show/hide tech questions based on image type
+  const techSec = document.getElementById('techSection');
+  if(img.type === 'technology'){
+    techSec.style.display = 'block';
+  } else {
+    techSec.style.display = 'none';
+  }
+  // Reset tech sliders
+  document.getElementById('techImportanceSlider').value=5;
+  document.getElementById('techDifficultySlider').value=5;
+  document.getElementById('techLaborSlider').value=5;
+  document.getElementById('techImportanceReadout').textContent='5 / 10';
+  document.getElementById('techDifficultyReadout').textContent='5 / 10';
+  document.getElementById('techLaborReadout').textContent='5 / 10';
   const pct=IMAGE_CATALOG.length>1?(idx/(IMAGE_CATALOG.length-1))*100:0;
   document.getElementById('progressBar').style.width=pct+'%';
   document.getElementById('progressText').textContent=`Image ${idx+1} of ${IMAGE_CATALOG.length}  ✦  Tag to continue`;
@@ -515,15 +628,18 @@ document.getElementById('submitBtn').addEventListener('click',()=>{
   const recognition=parseInt(document.getElementById('recognitionSlider').value);
   if(!tags.length)return;
   const img=IMAGE_CATALOG[current];
-  annotations[current]={tags,free,wage,importance,recognition,category:img.category};
+  const techImportance = img.type==='technology' ? parseInt(document.getElementById('techImportanceSlider').value) : null;
+  const techDifficulty = img.type==='technology' ? parseInt(document.getElementById('techDifficultySlider').value) : null;
+  const techLabor      = img.type==='technology' ? parseInt(document.getElementById('techLaborSlider').value) : null;
+  annotations[current]={tags,free,wage,importance,recognition,techImportance,techDifficulty,techLabor,category:img.category,type:img.type};
   if(typeof window._writeAnnotation03==='function'){
-    window._writeAnnotation03({imageId:img.id,imageName:img.name,imageUrl:img.url,category:img.category,tags,freeText:free,wage,importance,recognition,sessionId:SESSION_ID});
+    window._writeAnnotation03({imageId:img.id,imageName:img.name,imageUrl:img.url,category:img.category,imageType:img.type,tags,freeText:free,wage,importance,recognition,techImportance,techDifficulty,techLabor,sessionId:SESSION_ID});
   }
-  showReveal(current,tags,free,wage,importance,recognition,img);
+  showReveal(current,tags,free,wage,importance,recognition,techImportance,techDifficulty,techLabor,img);
 });
 
 /* reveal */
-function showReveal(idx,tags,free,wage,importance,recognition,img){
+function showReveal(idx,tags,free,wage,importance,recognition,techImportance,techDifficulty,techLabor,img){
   const overlay=document.getElementById('revealOverlay');
   document.getElementById('revealItemName').textContent=img.name;
   const row=document.getElementById('revealTagsRow');
@@ -538,7 +654,12 @@ function showReveal(idx,tags,free,wage,importance,recognition,img){
   const cardData=[
     {label:'Fair wage',val:wage!=null?'$'+wage.toFixed(2)+'/hr':'—'},
     {label:'Importance',val:importance+' / 10'},
-    {label:'Credit received',val:recognition+' / 10'}
+    {label:'Credit received',val:recognition+' / 10'},
+    ...(img.type==='technology'?[
+      {label:'Tech importance',val:(techImportance||'—')+' / 10'},
+      {label:'Difficulty to make',val:(techDifficulty||'—')+' / 10'},
+      {label:'Labor importance',val:(techLabor||'—')+' / 10'}
+    ]:[])
   ];
   cardData.forEach(c=>{
     const el=document.createElement('div');
