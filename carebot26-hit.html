@@ -158,6 +158,13 @@
   .eval-submit:hover{background:linear-gradient(135deg,rgba(255,60,120,.42),rgba(201,123,255,.34));color:var(--white);}
   .eval-submit.submitted{background:rgba(100,200,100,.12);border-color:rgba(100,200,100,.3);color:rgba(180,255,180,.7);cursor:default;}
   .eval-submit:disabled{opacity:.4;cursor:not-allowed;}
+  .next-steps{margin-top:14px;display:none;gap:9px;flex-wrap:wrap;}
+  .next-steps.show{display:flex;}
+  .next-btn{flex:1;min-width:160px;padding:11px 14px;border-radius:10px;font-family:var(--fb);font-weight:700;font-size:11px;letter-spacing:.04em;cursor:pointer;text-align:center;text-decoration:none;display:flex;align-items:center;justify-content:center;gap:6px;transition:all .2s;border:1px solid rgba(255,80,150,.3);}
+  .next-btn-again{background:rgba(255,255,255,.04);color:var(--pink-soft);}
+  .next-btn-again:hover{background:rgba(255,60,120,.14);transform:translateY(-1px);}
+  .next-btn-advance{background:linear-gradient(135deg,#ff3d7a,#c97bff);color:white;box-shadow:0 4px 18px rgba(255,60,120,.28);}
+  .next-btn-advance:hover{transform:translateY(-1px);box-shadow:0 8px 26px rgba(255,60,120,.42);}
 
   /* INSPIRE BANNER */
   .inspire-banner{position:relative;z-index:1;margin:0 18px 28px;padding:14px 18px;background:rgba(255,60,120,.07);border:1px solid var(--border);border-radius:15px;overflow:hidden;}
@@ -454,6 +461,10 @@ function showResult(text){
         </div>
       </div>
       <button class="eval-submit" id="evalSubmitBtn" onclick="submitEval()">✦ Submit Evaluation</button>
+      <div class="next-steps" id="nextSteps">
+        <button class="next-btn next-btn-again" onclick="resetForAnother()">✦ Complete Another Invention</button>
+        <a class="next-btn next-btn-advance" href="carebot07-hit.html">Advance to Next Task →</a>
+      </div>
     </div>
   </div>`;
 }
@@ -468,6 +479,14 @@ function submitEval(){
   saveEval({inventionTitle:currentInventionTitle,patents:currentInventionPatents,feasibility:feas,originality:orig,socialImpact:soc,commercialViability:com});
   btn.textContent='✓ Evaluation Saved';btn.classList.add('submitted');btn.disabled=true;
   document.querySelectorAll('.eval-slider').forEach(s=>s.disabled=true);
+  const ns=document.getElementById('nextSteps');if(ns)ns.classList.add('show');
+}
+
+function resetForAnother(){
+  document.getElementById('outputArea').innerHTML='';
+  document.getElementById('userPrompt').value='';
+  currentInventionTitle='';currentInventionPatents='';
+  document.getElementById('userPrompt').scrollIntoView({behavior:'smooth',block:'center'});
 }
 
 function copyRes(e){const t=document.querySelector('.result')?.innerText||'';navigator.clipboard.writeText(t).then(()=>{e.target.textContent='✓ Copied!';setTimeout(()=>e.target.textContent='⎘ Copy',2000);});}
