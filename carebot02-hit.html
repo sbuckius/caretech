@@ -54,6 +54,18 @@
   .photo-fallback span{font-size:18px;margin-bottom:5px;opacity:.3;}
   .photo-num{position:absolute;bottom:4px;right:7px;font-size:8px;color:rgba(255,140,185,.35);letter-spacing:.08em;}
 
+  /* ── TRANSCRIPT (NEW) ── */
+  .cb-transcript-card{width:100%;max-width:600px;background:rgba(12,0,7,.92);border:1.5px solid rgba(255,80,150,.5);border-radius:18px;padding:18px;position:relative;overflow:hidden;}
+  .cb-transcript-card::before{content:'';position:absolute;top:0;left:10%;right:10%;height:1.5px;background:linear-gradient(90deg,transparent,#ff85b3 35%,#ff2d6b 50%,#ff85b3 65%,transparent);box-shadow:0 0 10px #ff85b3;border-radius:999px;}
+  .cb-transcript-head{display:flex;align-items:center;justify-content:space-between;gap:10px;cursor:pointer;}
+  .cb-transcript-toggle{font-family:'Nunito',sans-serif;font-weight:800;font-size:11px;color:rgba(255,200,220,.7);background:rgba(255,255,255,.05);border:1px solid rgba(255,140,185,.2);padding:5px 12px;border-radius:999px;cursor:pointer;transition:all .2s;white-space:nowrap;}
+  .cb-transcript-toggle:hover{background:rgba(255,45,107,.2);color:#ffb3cf;}
+  .cb-transcript-body{display:none;margin-top:14px;max-height:340px;overflow-y:auto;padding-right:6px;}
+  .cb-transcript-body.open{display:block;}
+  .cb-transcript-line{display:flex;gap:10px;padding:6px 0;border-bottom:1px solid rgba(255,100,160,.08);font-size:12.5px;line-height:1.6;color:rgba(255,215,235,.85);}
+  .cb-transcript-line:last-child{border-bottom:none;}
+  .cb-transcript-ts{flex:0 0 44px;color:rgba(255,140,185,.5);font-size:11px;letter-spacing:.03em;padding-top:1px;}
+
   /* VIDEO */
   .cb-video-card{width:100%;max-width:600px;background:rgba(12,0,7,.92);border:1.5px solid rgba(255,80,150,.5);border-radius:18px;overflow:hidden;position:relative;box-shadow:0 8px 40px rgba(255,45,107,.25);}
   .cb-video-card::before{content:'';position:absolute;top:0;left:10%;right:10%;height:1.5px;background:linear-gradient(90deg,transparent,#ff85b3 35%,#ff2d6b 50%,#ff85b3 65%,transparent);box-shadow:0 0 10px #ff85b3;border-radius:999px;z-index:2;}
@@ -174,7 +186,7 @@
       <div class="cb-icon">🤖</div>
       <div>
         <div class="cb-name">CAREBOT-02 · MISS HONEYWELL ✦</div>
-        <div class="cb-sub">Robot or Conjuring Trick? · 1960s</div>
+        <div class="cb-sub">Robot or Conjuring Trick? · 1968</div>
       </div>
     </div>
     <div class="cb-badges">
@@ -186,12 +198,13 @@
   <!-- CONTEXT BANNER -->
   <div class="irony-card">
     <div class="irony-eyebrow">✦ Critical Context · Read Before Asking</div>
-    <div class="irony-title">⚠️ Is this a robot — or is it a woman doing unpaid performance labour?</div>
+    <div class="irony-title">⚠️ Is this a robot— or is it a woman performing presentation labor embodying a robot and being controlled?</div>
     <div class="irony-text">
       Honeywell presented <strong>Miss Honeywell</strong> as "the ultimate in automation" and "the human-tronic saleswoman of tomorrow" at the Instruments, Electronics and Automation Exhibition at Olympia. The narrator asks: "Is this computerized control or is it a conjuring trick?"
-      The answer is neither. The firm behind her is <strong>Magical Productions</strong> — run by a Hollywood conjurer named Mark Wilson — and Honeywell paid <strong>£2,000</strong> to bring her over from Hollywood. When challenged to prove she was a robot by removing her head, <strong>he closed the cabinet</strong>, citing "delicate micro circuits."
+      The answer is neither. The firm behind her is <strong>Magical Productions</strong> — Mark Wilson's Hollywood company — and Honeywell paid <strong>£2,000</strong> to bring her over from Hollywood. When challenged to prove she was a robot by removing her head, <strong>he closed the cabinet</strong>, citing "delicate micro circuits." Wilson later patented this very head-substitution illusion — cabinet, mirrors, and a swapped head — as <a href="https://patents.google.com/patent/US3612516A/en" target="_blank" rel="noopener" style="color:#ff8080;text-decoration:underline;">US Patent 3,612,516, "Apparatus and Method for Producing Display Illusions."</a>
       Whatever Miss Honeywell was, she was scripted to say she'd make "someone a very good wife." A machine defined by domesticity. A woman defined as a machine. The ambiguity was the whole point.
     </div>
+    <div class="irony-text" style="margin-top:10px;opacity:.65;font-size:11px;font-style:italic;">✦ AI helped me with this. There might be inaccuracies.</div>
   </div>
 
   <!-- PHOTO GRID -->
@@ -221,6 +234,25 @@
     </div>
   </div>
 
+  <!-- ── TRANSCRIPT (NEW) ── -->
+  <div class="cb-transcript-card">
+    <div class="cb-transcript-head" onclick="toggleTranscript()">
+      <div class="cb-eyebrow" style="margin-bottom:0;">✦ Full Transcript · Pathé News, 1968</div>
+      <button class="cb-transcript-toggle" id="transcriptToggleBtn" onclick="event.stopPropagation();toggleTranscript()">Show transcript ✦</button>
+    </div>
+    <div class="cb-transcript-body" id="transcriptBody">
+      <div class="cb-transcript-line"><span class="cb-transcript-ts">0:00</span><span>Mass production calls for automation — which may or may not be what we've got here. Is this or is this not a robot?</span></div>
+      <div class="cb-transcript-line"><span class="cb-transcript-ts">0:07</span><span>Honeywell Controls, the giant computer firm, present what they call a lifelike girl robot. But watch this demonstration carefully — closing that door to rig up the robot is suspicious.</span></div>
+      <div class="cb-transcript-line"><span class="cb-transcript-ts">0:18</span><span>Is this computerized control, or is it a conjuring trick? The robot is called Miss Honeywell, presented as the ultimate in automation — the human-tronic saleswoman of tomorrow — at the Instruments, Electronics and Automatic Exhibition at Olympia. She — or it — or maybe he — had the boffins bewildered.</span></div>
+      <div class="cb-transcript-line"><span class="cb-transcript-ts">0:43</span><span>Study Miss Honeywell — yourself, animal, vegetable or mineral, science or science fiction, whatever else you may be. Miss Honeywell pulls in the crowds even at a refined exhibition which only the top technicians can begin to comprehend.</span></div>
+      <div class="cb-transcript-line"><span class="cb-transcript-ts">1:05</span><span>Honeywell's own spokesman says he himself doesn't know if this is electronic, or mechanical, or human flesh.</span></div>
+      <div class="cb-transcript-line"><span class="cb-transcript-ts">1:18</span><span>The compère of this show tells his audience that Miss Honeywell would make a good assistant to any sales manager. He, she, or it replies: "Assistant? Nothing! I'd make someone a very good wife, if he were a B.Sc. and mechanically minded" — all in a high-pitched voice, like one of the television Daleks.</span></div>
+      <div class="cb-transcript-line"><span class="cb-transcript-ts">1:44</span><span>That man may give us a clue. He's just charged Honeywell Controls £2,000 for bringing Miss Honeywell over here to do her tricks — from Hollywood, of all places. There's something fishy, or fleshy, about this show.</span></div>
+      <div class="cb-transcript-line"><span class="cb-transcript-ts">2:06</span><span>Now, what's the man's name? Mark Wilson. His Hollywood firm's called Magical Productions, and he himself used to be a conjurer. Let's see what happens when Miss Honeywell is back in her cabinet — he can prove she's a genuine robot simply by taking her head off in the open. That's all he has to do.</span></div>
+      <div class="cb-transcript-line"><span class="cb-transcript-ts">2:36</span><span>He's closed the cabinet. He says it's because there are delicate micro circuits, integrated digital logic nodules, not to be disturbed. Well — he could have fooled me.</span></div>
+    </div>
+  </div>
+
   <!-- ── VIDEO REFLECTION (NEW) ── -->
   <div class="cb-reflection-card" id="reflectionCard">
     <div class="cb-eyebrow">✦ After Watching · Your First Reaction</div>
@@ -237,7 +269,6 @@
   <div class="cb-input-card">
     <div class="cb-eyebrow">✦ Ask a Question · Everyone Sees the Same Answers · Showing Last 3</div>
     <div class="cb-row">
-      <input class="cb-input cb-name-in" type="text" id="userName" placeholder="Your name…" value="">
       <input class="cb-input" type="text" id="userQuestion" placeholder="Ask about Miss Honeywell…" autocomplete="off">
       <button class="cb-btn primary" onclick="askQuestion()">✦ Ask</button>
       <button class="cb-btn soft" onclick="showAdminModal()" title="Admin reset">⚙</button>
@@ -309,6 +340,14 @@ setInterval(updateClock,1000);updateClock();
   }
 })();
 
+/* ── Transcript toggle ── */
+function toggleTranscript(){
+  const body=document.getElementById('transcriptBody');
+  const btn=document.getElementById('transcriptToggleBtn');
+  const open=body.classList.toggle('open');
+  btn.textContent=open?'Hide transcript ✦':'Show transcript ✦';
+}
+
 /* ── Video ── */
 function markWatched(){
   document.getElementById('videoSection').style.opacity='.55';
@@ -329,7 +368,7 @@ function rewatch(){
 function saveReflection(){
   const text=document.getElementById('videoReflection').value.trim();
   if(!text){document.getElementById('reflectionSaved').textContent='Please write something first.';return;}
-  const name=document.getElementById('userName').value.trim()||'Anonymous';
+  const name=currentUser;
   const payload={
     reflection:text,
     userName:name,
@@ -360,8 +399,13 @@ const firebaseConfig = {
   measurementId: "G-8232DBD6VN"
 };
 let app,database,messagesRef,onlineRef,useFirebase=true;
-let currentUser=localStorage.getItem('hwUser')||'';
+let currentUser=localStorage.getItem('hwUser')||genGuestName();
 let userColor=localStorage.getItem('hwColor')||genColor();
+
+function genGuestName(){
+  const n='Guest-'+Math.random().toString(36).slice(2,6).toUpperCase();
+  localStorage.setItem('hwUser',n);return n;
+}
 
 function genColor(){
   const c=['#ff85b3','#ff2d6b','#ab47bc','#ff9800','#40c8ff','#c4005a'];
@@ -409,18 +453,13 @@ function trackPresence(){
   r.set({name:currentUser,timestamp:firebase.database.ServerValue.TIMESTAMP});
   r.onDisconnect().remove();
 }
-document.getElementById('userName').addEventListener('change',function(){
-  currentUser=this.value.trim();localStorage.setItem('hwUser',currentUser);
-  if(currentUser&&useFirebase)trackPresence();
-});
-
 function emptyHTML(){return '<div class="cb-empty"><h3>✦ Answers appear here</h3><p>Type a question above and tap Ask</p></div>';}
 
 /* ── Response Bank ── */
 const responses=[
   {text:"The newsreel narrator opens with a challenge: 'Mass production calls for automation — which may or may not be what we've got here. Is this or is this not a robot?' The question hangs in the air. The camera closes in on Miss Honeywell. She's standing in a cabinet. The man beside her is carefully — very carefully — closing the door.",source:"Miss Honeywell newsreel transcript, 0:00–0:18",link:"https://www.youtube.com/watch?v=6e8mj7r7V60"},
   {text:"The narrator calls Miss Honeywell 'the ultimate in automation — the human-tronic saleswoman of tomorrow.' She was presented at the Instruments, Electronics and Automation Exhibition at Olympia as the future of selling. The boffins were bewildered. The crowds pulled in. Whether she was electronic, mechanical, or human — nobody officially knew.",source:"Miss Honeywell newsreel transcript, 0:18–0:43",link:"https://www.youtube.com/watch?v=6e8mj7r7V60"},
-  {text:"The narrator invites the audience to decide: 'Yourself — animal, vegetable or mineral? Science or science fiction?' Miss Honeywell speaks. She says she doesn't know if she is electronic, mechanical, or human. Her own spokesman says the same: he himself doesn't know what she is. The ambiguity is perfectly maintained — and perfectly useful.",source:"Miss Honeywell newsreel transcript, 0:43–1:18",link:"https://www.youtube.com/watch?v=6e8mj7r7V60"},
+  {text:"The narrator invites the audience to decide: 'Yourself — animal, vegetable or mineral? Science or science fiction?' Miss Honeywell pulls in the crowds even at this exhibition, where only the top technicians can begin to comprehend her. Honeywell's own spokesman says he himself doesn't know if she is electronic, mechanical, or human flesh. The ambiguity is perfectly maintained — and perfectly useful.",source:"Miss Honeywell newsreel transcript, 0:43–1:18",link:"https://www.youtube.com/watch?v=6e8mj7r7V60"},
   {text:"The compère announces to his audience that Miss Honeywell would make a good assistant to any sales manager. She replies — in a high-pitched voice — 'Assistant? Nothing. I'd make someone a very good wife, if he were a BSc and mechanically minded.' A machine programmed to propose itself as a wife. Automation selling the idea of domestic femininity.",source:"Miss Honeywell newsreel transcript, 1:18–1:44",link:"https://www.youtube.com/watch?v=6e8mj7r7V60"},
   {text:"The narrator reveals the key clue: the company that brought Miss Honeywell to London is called Magical Productions, run by a Hollywood man named Mark Wilson — who used to be a conjurer. Honeywell paid £2,000 to bring her over from Hollywood. 'There's something fishy — or fleshy — about this show,' the narrator says.",source:"Miss Honeywell newsreel transcript, 1:44–2:06",link:"https://www.youtube.com/watch?v=6e8mj7r7V60"},
   {text:"The narrator issues a simple challenge: if Miss Honeywell is a genuine robot, all the man has to do is take her head off — in the open. The camera closes in. The moment arrives. And then — he closes the cabinet. He says it's because of 'delicate micro circuits, integrated digital logic nodules, not to be disturbed.' The narrator's final line: 'Well, he could have fooled me.'",source:"Miss Honeywell newsreel transcript, 2:06–2:58",link:"https://www.youtube.com/watch?v=6e8mj7r7V60"},
@@ -442,9 +481,8 @@ function getResponse(){
 /* ── Ask ── */
 function askQuestion(){
   const q=document.getElementById('userQuestion').value.trim();
-  const name=document.getElementById('userName').value.trim();
-  if(!name){alert('Please enter your name first!');document.getElementById('userName').focus();return;}
   if(!q){alert('Please type a question!');return;}
+  const name=currentUser;
   const resp=getResponse();
   const payload={
     question:q,answerText:resp.text,answerSource:resp.source,
@@ -477,7 +515,7 @@ function saveReaction(msgKey,theme){
   const disturbing=parseInt(document.getElementById('slider-disturbing-'+prefix).value);
   const familiar=parseInt(document.getElementById('slider-familiar-'+prefix).value);
   const tags=[...document.querySelectorAll('#tags-'+prefix+' .cb-tag.selected')].map(t=>t.dataset.value);
-  const name=document.getElementById('userName').value.trim()||'Anonymous';
+  const name=currentUser;
   const payload={
     msgKey:prefix,theme:theme||'',
     surprising,disturbing,familiar,tags,
