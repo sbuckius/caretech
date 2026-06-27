@@ -54,6 +54,26 @@
   .photo-fallback span{font-size:18px;margin-bottom:5px;opacity:.3;}
   .photo-num{position:absolute;bottom:4px;right:7px;font-size:8px;color:rgba(255,140,185,.35);letter-spacing:.08em;}
 
+  /* ── PATENT (NEW) ── */
+  .cb-patent-card{width:100%;max-width:600px;background:rgba(12,0,7,.92);border:1.5px solid rgba(255,80,150,.5);border-radius:18px;padding:18px;position:relative;overflow:hidden;}
+  .cb-patent-card::before{content:'';position:absolute;top:0;left:10%;right:10%;height:1.5px;background:linear-gradient(90deg,transparent,#ff85b3 35%,#ff2d6b 50%,#ff85b3 65%,transparent);box-shadow:0 0 10px #ff85b3;border-radius:999px;}
+  .cb-patent-link{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;color:#ff85b3;text-decoration:underline;margin-bottom:14px;}
+  .cb-patent-link:hover{color:#ffb3cf;}
+  .cb-patent-grid{display:flex;flex-direction:column;gap:10px;}
+  .cb-patent-slot{background:#fff;border:1.5px solid rgba(255,80,150,.25);border-radius:10px;overflow:hidden;position:relative;}
+  .cb-patent-slot img{width:100%;display:block;}
+  .cb-patent-fallback{display:none;flex-direction:column;align-items:center;justify-content:center;width:100%;min-height:160px;color:rgba(255,190,220,.35);font-size:10px;letter-spacing:.08em;text-align:center;padding:20px;background:rgba(12,0,7,.9);}
+  .cb-patent-fallback span{font-size:20px;margin-bottom:6px;opacity:.4;}
+  .cb-patent-cap{font-size:10px;color:rgba(255,190,220,.4);text-align:center;padding:6px 0 2px;letter-spacing:.05em;}
+
+  .cb-patent-quote{font-size:12px;line-height:1.65;color:rgba(255,210,225,.75);border-left:2.5px solid rgba(255,45,107,.4);padding:4px 0 4px 12px;margin:8px 0;font-style:italic;}
+  .cb-patent-q{margin:14px 0 8px;font-size:12.5px;font-weight:700;color:#ffd6e6;line-height:1.55;}
+  .cb-patent-opts{display:flex;flex-direction:column;gap:6px;margin-bottom:6px;}
+  .cb-patent-opt{padding:9px 13px;border-radius:10px;cursor:pointer;background:rgba(255,45,107,.06);border:1.5px solid rgba(255,45,107,.16);font-size:12px;line-height:1.5;color:rgba(255,210,225,.75);transition:all .15s;user-select:none;}
+  .cb-patent-opt:hover{background:rgba(255,45,107,.13);border-color:rgba(255,80,150,.4);}
+  .cb-patent-opt.selected{background:linear-gradient(135deg,rgba(255,45,107,.3),rgba(196,0,90,.3));border-color:#ff2d6b;color:#fff5f8;box-shadow:0 0 8px rgba(255,45,107,.2);}
+  .cb-patent-opt.selected::before{content:'✦ ';}
+
   /* ── TRANSCRIPT (NEW) ── */
   .cb-transcript-card{width:100%;max-width:600px;background:rgba(12,0,7,.92);border:1.5px solid rgba(255,80,150,.5);border-radius:18px;padding:18px;position:relative;overflow:hidden;}
   .cb-transcript-card::before{content:'';position:absolute;top:0;left:10%;right:10%;height:1.5px;background:linear-gradient(90deg,transparent,#ff85b3 35%,#ff2d6b 50%,#ff85b3 65%,transparent);box-shadow:0 0 10px #ff85b3;border-radius:999px;}
@@ -234,7 +254,63 @@
     </div>
   </div>
 
-  <!-- ── TRANSCRIPT (NEW) ── -->
+  <!-- ── PATENT (NEW) ── -->
+  <div class="cb-patent-card">
+    <div class="cb-eyebrow">✦ The Patent · US 3,612,516 · Filed 1969</div>
+    <a class="cb-patent-link" href="https://patents.google.com/patent/US3612516A/en" target="_blank" rel="noopener">↗ View "Apparatus and Method for Producing Display Illusions" on Google Patents</a>
+    <div class="cb-patent-grid">
+      <div class="cb-patent-slot">
+        <img src="images/misshoneywell_patent_01.png" alt="US Patent 3,612,516 page 1 — front page with abstract and inventor James Mark Wilson" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+        <div class="cb-patent-fallback"><span>📄</span>images/misshoneywell_patent_01.png</div>
+      </div>
+      <div class="cb-patent-cap">Front page · Inventor: James Mark Wilson · Filed Jan. 13, 1969 · Patented Oct. 12, 1971</div>
+      <div class="cb-patent-slot">
+        <img src="images/misshoneywell_patent_02.png" alt="US Patent 3,612,516 page 2 — drawing figures of the cabinet, mirrors, and robot head" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+        <div class="cb-patent-fallback"><span>📄</span>images/misshoneywell_patent_02.png</div>
+      </div>
+      <div class="cb-patent-cap">Figs. 1–4 · the cabinet, mirrors, and the robot head Miss Honeywell's was swapped for</div>
+    </div>
+  </div>
+
+  <!-- ── PATENT REFLECTION (NEW) ── -->
+  <div class="cb-reflection-card visible" id="patentReflectionCard">
+    <div class="cb-eyebrow">✦ React to the Patent · Your First Thoughts</div>
+    <div class="cb-reflection-title">What do you think about a patent that puts a woman in a box and turns her into a robot?</div>
+
+    <div class="cb-patent-quote">"She stands in the cabinet in a crouched position in the enclosure and the robot head is grasped and held by the girl."</div>
+    <div class="cb-patent-q">The patent uses the same phrase — "grasped and held" — for her head that it used for the inanimate robot head a moment earlier. What does that tell you?</div>
+    <div class="cb-patent-opts" data-qid="language">
+      <div class="cb-patent-opt" data-value="Same mechanical language is applied to her body and to the prop" onclick="selectPatentOpt(this)">The same mechanical language is applied to her body and to the prop</div>
+      <div class="cb-patent-opt" data-value="It's just a coincidence of how patents are legally worded" onclick="selectPatentOpt(this)">It's just a coincidence of how patents are legally worded</div>
+      <div class="cb-patent-opt" data-value="It shows the magician was being careful with her safety" onclick="selectPatentOpt(this)">It shows the magician was being careful with her safety</div>
+      <div class="cb-patent-opt" data-value="I'm honestly not sure" onclick="selectPatentOpt(this)">I'm honestly not sure</div>
+    </div>
+
+    <div class="cb-patent-quote">"...a human, that is, a live girl is used in the display and her head is garbed or clothed exactly resembling that of the robot head. She wears a corresponding helmet or mask 86 and goggles 88 so that the appearance of the head of the live girl and the robot head are identical."</div>
+    <div class="cb-patent-q">Throughout the patent she's only ever "a girl," "the girl," or "girl assistant" — never named, while the magician and the inventor are. What does that pattern suggest to you?</div>
+    <div class="cb-patent-opts" data-qid="naming">
+      <div class="cb-patent-opt" data-value="She's incidental to the invention — like a replaceable part" onclick="selectPatentOpt(this)">She's incidental to the invention — like a replaceable part</div>
+      <div class="cb-patent-opt" data-value="It's just standard, neutral patent-writing convention" onclick="selectPatentOpt(this)">It's just standard, neutral patent-writing convention</div>
+      <div class="cb-patent-opt" data-value="It accurately reflects her professional role at the time" onclick="selectPatentOpt(this)">It accurately reflects her professional role at the time</div>
+      <div class="cb-patent-opt" data-value="I'm honestly not sure" onclick="selectPatentOpt(this)">I'm honestly not sure</div>
+    </div>
+
+    <div class="cb-patent-quote">"A girl assistant enters the cabinet through the concealed passageway and stands in a concealed position. The magician places the robot head in position where it is grasped and held by the girl. A globe with a cutout is placed over the head and manipulated to momentarily conceal it, at which point the girl removes it, and substitutes her own, after which she steps forth, the disembodied head apparently having become embodied."</div>
+    <div class="cb-patent-q">The trick's whole climax is her head becoming "apparently...embodied" as the robot. What do you think is actually being patented here?</div>
+    <div class="cb-patent-opts" data-qid="invention">
+      <div class="cb-patent-opt" data-value="A method for disguising a person as a machine" onclick="selectPatentOpt(this)">A method for disguising a person as a machine</div>
+      <div class="cb-patent-opt" data-value="An early kind of functioning robot" onclick="selectPatentOpt(this)">An early kind of functioning robot</div>
+      <div class="cb-patent-opt" data-value="A piece of theatrical stage furniture" onclick="selectPatentOpt(this)">A piece of theatrical stage furniture</div>
+      <div class="cb-patent-opt" data-value="I'm honestly not sure" onclick="selectPatentOpt(this)">I'm honestly not sure</div>
+    </div>
+
+    <div class="cb-reflection-sub" style="margin-top:14px;">Anything else? Optional — a sentence or two on what stands out to you.</div>
+    <textarea class="cb-textarea" id="patentReflection" placeholder="What do you notice in this language? How does it sit with you?"></textarea>
+    <div style="display:flex;justify-content:flex-end;margin-top:8px;">
+      <button class="cb-btn primary" onclick="savePatentReflection()" style="font-size:11px;padding:8px 16px;">Save answers ✦</button>
+    </div>
+    <div class="cb-reflection-saved" id="patentReflectionSaved"></div>
+  </div>
   <div class="cb-transcript-card">
     <div class="cb-transcript-head" onclick="toggleTranscript()">
       <div class="cb-eyebrow" style="margin-bottom:0;">✦ Full Transcript · Pathé News, 1968</div>
@@ -314,6 +390,7 @@ const MAX_DISPLAY = 3;
 const FB_REF_KEY = 'honeywellMessages';
 const FB_REACT_KEY = 'honeywellReactions';
 const FB_REFLECT_KEY = 'honeywellReflections';
+const FB_PATENT_KEY = 'honeywellPatentReflections';
 const SESSION_ID = 'sess02-' + Math.random().toString(36).slice(2,10);
 
 /* ── Clock ── */
@@ -384,6 +461,40 @@ function saveReflection(){
       .catch(()=>document.getElementById('reflectionSaved').textContent='Saved locally.');
   } else {
     document.getElementById('reflectionSaved').textContent='Saved locally.';
+  }
+}
+
+/* ── Patent question options ── */
+let patentAnswers={};
+function selectPatentOpt(el){
+  const qid=el.parentElement.dataset.qid;
+  el.parentElement.querySelectorAll('.cb-patent-opt').forEach(o=>o.classList.remove('selected'));
+  el.classList.add('selected');
+  patentAnswers[qid]=el.dataset.value;
+}
+
+/* ── Save patent reflection ── */
+function savePatentReflection(){
+  const text=document.getElementById('patentReflection').value.trim();
+  const answeredCount=Object.keys(patentAnswers).length;
+  if(!text&&answeredCount===0){document.getElementById('patentReflectionSaved').textContent='Please answer at least one question or write something first.';return;}
+  const name=currentUser;
+  const payload={
+    reflection:text,
+    answers:{...patentAnswers},
+    userName:name,
+    sessionId:SESSION_ID,
+    timestamp:useFirebase?firebase.database.ServerValue.TIMESTAMP:Date.now()
+  };
+  if(useFirebase&&database){
+    database.ref(FB_PATENT_KEY).push(payload)
+      .then(()=>{
+        document.getElementById('patentReflectionSaved').textContent='✦ Saved — thank you.';
+        setTimeout(()=>document.getElementById('patentReflectionSaved').textContent='',3000);
+      })
+      .catch(()=>document.getElementById('patentReflectionSaved').textContent='Saved locally.');
+  } else {
+    document.getElementById('patentReflectionSaved').textContent='Saved locally.';
   }
 }
 
