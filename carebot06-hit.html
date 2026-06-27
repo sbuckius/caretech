@@ -159,16 +159,23 @@
   <!-- context banner replaces video -->
   <div class="context-banner">
     <div class="context-eyebrow">✦ CAREBOT-06 · Critical Context</div>
-    <div class="context-title">⚠️ These inventors are real. Most people have never heard of them.</div>
+    <div class="context-title">⚠️ Explore some inventions!</div>
     <div class="context-text">
       The inventors in this archive range from <strong>4,000 BCE to the 20th century</strong>. They invented bread, silk, the cotton gin, the paper bag machine, the word processor, and the modern brassiere. Many took out patents in men's names because doing otherwise would have exposed them to <strong>ridicule and loss of social position</strong>. Ask a question — and tell us what you notice.
+    </div>
+    <div style="font-size:10.5px;color:rgba(255,190,220,.4);margin-top:10px;font-style:italic;">✦ AI helped me with this. There might be inaccuracies.</div>
+    <div style="font-size:11px;line-height:1.7;color:rgba(255,190,220,.5);margin-top:12px;padding-top:10px;border-top:1px solid rgba(255,100,160,.12);">
+      Sources: <a href="https://www.si.edu/object/patent-model-paper-bag-machine:nmah_214303" target="_blank" rel="noopener" style="color:#ff85b3;text-decoration:none;">Smithsonian (paper bag machine)</a> ·
+      <a href="https://www.invent.org/inductees/evelyn-berezin" target="_blank" rel="noopener" style="color:#ff85b3;text-decoration:none;">National Inventors Hall of Fame (word processor)</a> ·
+      <a href="https://en.wikipedia.org/wiki/Cotton_gin" target="_blank" rel="noopener" style="color:#ff85b3;text-decoration:none;">Wikipedia (cotton gin)</a> ·
+      <a href="https://www.historyhit.com/the-patent-for-the-first-bra-and-the-bohemian-lifestyle-of-the-woman-who-invented-it/" target="_blank" rel="noopener" style="color:#ff85b3;text-decoration:none;">History Hit (brassiere)</a> ·
+      <a href="https://archive.org/details/jstor-25118326" target="_blank" rel="noopener" style="color:#ff85b3;text-decoration:none;">Woman as Inventor, Gage 1883 (bread, silk, patents in men's names)</a>
     </div>
   </div>
 
   <div class="cb-card">
     <div class="cb-eyebrow">✦ Ask a Question · Everyone Sees the Same Answers · Showing Last 3</div>
     <div class="cb-row">
-      <input class="cb-input cb-name-in" type="text" id="userName" placeholder="Your name…" value="">
       <input class="cb-input" type="text" id="userQuestion" placeholder="Ask about women inventors…" autocomplete="off">
       <button class="cb-btn primary" onclick="askQuestion()">✦ Ask</button>
       <button class="cb-btn soft" onclick="showAdminModal()" title="Admin reset">⚙</button>
@@ -230,7 +237,7 @@ setInterval(updateClock,1000);updateClock();
 
 const firebaseConfig={apiKey:"AIzaSyAT5bd-3SUfXrz9Se_7_rrlDg4PUWY-yCs",authDomain:"whoimpactstechnology.firebaseapp.com",databaseURL:"https://whoimpactstechnology-default-rtdb.firebaseio.com",projectId:"whoimpactstechnology",storageBucket:"whoimpactstechnology.firebasestorage.app",messagingSenderId:"1069141826768",appId:"1:1069141826768:web:6fc48e35e09a3a244a92d5"};
 let app,database,messagesRef,reactionsRef,reflectionsRef,onlineRef,useFirebase=true;
-let currentUser=localStorage.getItem('cbUser')||'';
+let currentUser=SESSION_ID;
 let userColor=localStorage.getItem('cbColor')||genColor();
 
 function genColor(){const c=['#e91e63','#9c27b0','#ff5722','#2196f3','#009688','#ff9800'];const v=c[Math.floor(Math.random()*c.length)];localStorage.setItem('cbColor',v);return v;}
@@ -242,7 +249,7 @@ try{
   reactionsRef=database.ref('inventorReactions');
   reflectionsRef=database.ref('inventorReflections');
   onlineRef=database.ref('online');
-  if(currentUser)trackPresence();
+  trackPresence();
 
   let initialLoadDone=false;
   messagesRef.orderByKey().limitToLast(MAX_DISPLAY).once('value',snapshot=>{
@@ -274,7 +281,6 @@ function trackPresence(){
   r.set({name:currentUser,timestamp:firebase.database.ServerValue.TIMESTAMP});
   r.onDisconnect().remove();
 }
-document.getElementById('userName').addEventListener('change',function(){currentUser=this.value.trim();localStorage.setItem('cbUser',currentUser);if(currentUser&&useFirebase)trackPresence();});
 
 function emptyHTML(){return '<div class="cb-empty"><h3>✦ Answers appear here</h3><p>Type a question above and tap Ask</p></div>';}
 
@@ -312,8 +318,7 @@ function saveReaction(prefix,inventor){
   const surprise=parseInt(document.getElementById('sl-surprise-'+prefix).value);
   const familiarity=parseInt(document.getElementById('sl-familiarity-'+prefix).value);
   const knownTags=[...document.querySelectorAll('#ktags-'+prefix+' .cb-ktag.selected')].map(t=>t.dataset.val);
-  const name=document.getElementById('userName').value.trim()||'Anonymous';
-  const payload={inventor,surprise,familiarity,knownTags,userName:name,sessionId:SESSION_ID,timestamp:useFirebase?firebase.database.ServerValue.TIMESTAMP:Date.now()};
+  const payload={inventor,surprise,familiarity,knownTags,sessionId:SESSION_ID,timestamp:useFirebase?firebase.database.ServerValue.TIMESTAMP:Date.now()};
   if(useFirebase&&reactionsRef){
     reactionsRef.push(payload).catch(()=>{});
     const el=document.getElementById('react-saved-'+prefix);
@@ -325,9 +330,8 @@ function saveReaction(prefix,inventor){
 function saveReflection(){
   const text=document.getElementById('reflectionText').value.trim();
   if(!text){document.getElementById('reflectionSaved').textContent='Please write something first.';return;}
-  const name=document.getElementById('userName').value.trim()||'Anonymous';
   if(useFirebase&&reflectionsRef){
-    reflectionsRef.push({reflection:text,userName:name,sessionId:SESSION_ID,timestamp:firebase.database.ServerValue.TIMESTAMP}).catch(()=>{});
+    reflectionsRef.push({reflection:text,sessionId:SESSION_ID,timestamp:firebase.database.ServerValue.TIMESTAMP}).catch(()=>{});
   }
   document.getElementById('reflectionSaved').textContent='✦ Saved — thank you.';
   setTimeout(()=>document.getElementById('reflectionSaved').textContent='',3000);
@@ -335,20 +339,18 @@ function saveReflection(){
 
 function askQuestion(){
   const q=document.getElementById('userQuestion').value.trim();
-  const name=document.getElementById('userName').value.trim();
-  if(!name){alert('Please enter your name first!');document.getElementById('userName').focus();return;}
   if(!q){alert('Please type a question!');return;}
   const resp=getResponse();
-  const payload={question:q,answerText:resp.text,answerSource:resp.source,answerLink:resp.link,inventor:resp.inventor,userName:name,userColor:userColor,sessionId:SESSION_ID,timestamp:useFirebase?firebase.database.ServerValue.TIMESTAMP:Date.now()};
-  if(useFirebase&&messagesRef){messagesRef.push(payload).catch(()=>localDisplay(q,resp,name));}
-  else{localDisplay(q,resp,name);}
+  const payload={question:q,answerText:resp.text,answerSource:resp.source,answerLink:resp.link,inventor:resp.inventor,userColor:userColor,sessionId:SESSION_ID,timestamp:useFirebase?firebase.database.ServerValue.TIMESTAMP:Date.now()};
+  if(useFirebase&&messagesRef){messagesRef.push(payload).catch(()=>localDisplay(q,resp));}
+  else{localDisplay(q,resp);}
   document.getElementById('userQuestion').value='';
 }
 
 let localMessages=[];
-function localDisplay(q,resp,name){
+function localDisplay(q,resp){
   const area=document.getElementById('outputArea');
-  localMessages.unshift({question:q,answerText:resp.text,answerSource:resp.source,answerLink:resp.link,inventor:resp.inventor,userName:name,userColor:userColor});
+  localMessages.unshift({question:q,answerText:resp.text,answerSource:resp.source,answerLink:resp.link,inventor:resp.inventor,userColor:userColor});
   if(localMessages.length>MAX_DISPLAY)localMessages=localMessages.slice(0,MAX_DISPLAY);
   area.innerHTML='';
   localMessages.forEach((msg,i)=>renderPair(msg,null,i===0));
@@ -390,7 +392,7 @@ function renderPair(msg,key,playAudio=false){
   const inv=escH(msg.inventor||'this inventor');
 
   el.innerHTML=`
-    <div class="cb-meta"><strong style="color:${escH(msg.userColor||'#ff85b3')}">${escH(msg.userName||'Anon')}</strong><span>asked:</span></div>
+    <div class="cb-meta"><span>❓ Asked:</span></div>
     <div class="cb-qbubble">❓ ${escH(msg.question)}</div>
     <div class="cb-pcard">
       <div class="cb-phead"><span class="cb-plabel">📝 Patent Information · ${inv}</span></div>
