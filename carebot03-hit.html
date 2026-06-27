@@ -84,6 +84,7 @@ html,body{min-height:100%;font-family:'Quicksand',sans-serif;font-weight:600;col
 .agenda-title{font-family:'Nunito',sans-serif;font-weight:900;font-size:clamp(16px,2.5vw,22px);line-height:1.3;background:linear-gradient(120deg,var(--cream) 20%,var(--hot) 55%,var(--purple) 85%);-webkit-background-clip:text;background-clip:text;color:transparent;}
 .agenda-body{font-size:clamp(12px,1.5vw,14px);color:rgba(255,210,228,.85);line-height:1.75;}
 .agenda-body strong{color:var(--hot);}
+.agenda-disclosure{font-size:11px;font-style:italic;color:var(--text-dim);letter-spacing:.02em;text-align:center;padding-top:4px;}
 .agenda-chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:4px;}
 .agenda-chip{display:inline-flex;align-items:center;gap:5px;padding:4px 11px;border-radius:999px;background:rgba(220,60,140,.08);border:1px solid rgba(220,60,140,.22);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--text-dim);}
 .agenda-chip .dot{width:4px;height:4px;border-radius:50%;background:var(--hot);}
@@ -111,7 +112,7 @@ html,body{min-height:100%;font-family:'Quicksand',sans-serif;font-weight:600;col
 .img-link-badge a:hover{color:var(--rose);border-color:var(--rose);}
 
 /* reveal */
-.reveal-overlay{position:absolute;inset:0;z-index:10;background:rgba(8,0,4,.96);display:none;flex-direction:column;align-items:center;justify-content:center;gap:13px;padding:24px 28px;text-align:center;animation:fadeIn .4s ease;overflow-y:auto;}
+.reveal-overlay{position:relative;z-index:5;background:rgba(8,0,4,.96);border-top:1.5px solid var(--card-border-bright);display:none;flex-direction:column;align-items:center;justify-content:center;gap:13px;padding:24px 28px;text-align:center;animation:fadeIn .4s ease;}
 .reveal-overlay.show{display:flex;}
 @keyframes fadeIn{from{opacity:0;transform:scale(.97)}to{opacity:1;transform:scale(1)}}
 .reveal-label{font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--text-dim);flex-shrink:0;}
@@ -128,14 +129,26 @@ html,body{min-height:100%;font-family:'Quicksand',sans-serif;font-weight:600;col
 @keyframes ctaPulse{0%,100%{box-shadow:0 6px 28px rgba(220,60,140,.4)}50%{box-shadow:0 10px 44px rgba(220,60,140,.65),0 0 60px rgba(180,30,100,.2)}}
 .reveal-next-btn:hover{transform:translateY(-3px) scale(1.04);animation:none;}
 
+/* wizard */
+.wizard-wrap{display:grid;gap:16px;}
+.wizard-progress{display:flex;align-items:center;gap:10px;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--text-dim);}
+.wizard-progress-track{flex:1;height:4px;border-radius:999px;background:rgba(220,60,140,.1);border:1px solid rgba(220,60,140,.15);overflow:hidden;}
+.wizard-progress-fill{height:100%;border-radius:999px;background:linear-gradient(90deg,var(--rose),var(--hot));transition:width .35s cubic-bezier(.34,1.56,.64,1);}
+.wizard-stage{display:grid;min-height:180px;}
+.wizard-step{display:none;}
+.wizard-step.active{display:grid;gap:16px;animation:stepIn .3s ease;}
+@keyframes stepIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+.wizard-nav{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding-top:4px;}
+.wizard-nav .selection-summary{text-align:center;flex:1;}
+
 /* tag panel */
 .tag-panel{padding:20px 22px;border-top:1px solid rgba(220,60,140,.1);display:grid;gap:16px;}
 .tag-instruction{font-family:'Nunito',sans-serif;font-weight:800;font-size:clamp(13px,2vw,16px);color:var(--rose);line-height:1.5;}
 .tag-instruction span{font-size:clamp(11px,1.4vw,12px);font-weight:600;font-family:'Quicksand',sans-serif;color:var(--text-dim);display:block;margin-top:3px;}
 .tag-section{display:grid;gap:8px;}
 .tag-section-label{font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--text-dim);}
-.tag-group{display:flex;flex-wrap:wrap;gap:7px;}
-.tag{padding:7px 14px;border-radius:999px;cursor:pointer;background:rgba(220,60,140,.07);border:1.5px solid rgba(220,60,140,.18);font-size:clamp(11px,1.2vw,13px);color:rgba(255,200,228,.7);transition:all .18s cubic-bezier(.34,1.56,.64,1);user-select:none;}
+.tag-group{display:flex;flex-wrap:wrap;align-items:center;gap:7px;}
+.tag{padding:4px 11px;border-radius:999px;cursor:pointer;background:rgba(220,60,140,.07);border:1px solid rgba(220,60,140,.18);font-size:11px;line-height:1.2;color:rgba(255,200,228,.7);transition:all .18s cubic-bezier(.34,1.56,.64,1);user-select:none;}
 .tag:hover{background:rgba(220,60,140,.15);border-color:var(--card-border-bright);color:var(--cream);}
 .tag.selected{background:linear-gradient(135deg,rgba(220,60,140,.28),rgba(120,0,60,.28));border-color:var(--hot);color:var(--cream);box-shadow:0 0 10px rgba(220,60,140,.28);}
 .tag.selected::before{content:'✦ ';}
@@ -144,6 +157,7 @@ html,body{min-height:100%;font-family:'Quicksand',sans-serif;font-weight:600;col
 .free-input::placeholder{color:rgba(220,60,140,.28);}
 /* ── VALUE QUESTIONS ── */
 .value-section{display:grid;gap:14px;padding:16px 0 4px;border-top:1px solid rgba(220,60,140,.1);margin-top:4px;}
+.tech-section{display:grid;gap:14px;}
 .value-section-title{font-family:'Nunito',sans-serif;font-weight:800;font-size:clamp(13px,2vw,15px);color:var(--rose);}
 .value-section-title span{font-size:11px;font-weight:600;font-family:'Quicksand',sans-serif;color:var(--text-dim);display:block;margin-top:2px;}
 .value-row{display:grid;gap:8px;}
@@ -228,6 +242,144 @@ input[type=range].val-slider::-webkit-slider-thumb{width:18px;height:18px;border
       <img id="archiveImg" alt=""/>
       <div class="img-source-badge" id="sourceBadge"></div>
       <div class="img-link-badge"><a id="sourceLink" href="#" target="_blank" rel="noopener">↗ View source</a></div>
+    </div>
+
+    <div class="tag-panel">
+      <div class="wizard-wrap" id="wizardWrap">
+        <div class="wizard-progress">
+          <span id="wizardProgressText">Question 1 of 5</span>
+          <div class="wizard-progress-track"><div class="wizard-progress-fill" id="wizardProgressFill"></div></div>
+        </div>
+
+        <div class="wizard-stage" id="wizardStage">
+
+          <div class="wizard-step" data-step="work">
+            <div class="tag-section">
+              <div class="tag-section-label">✦ Type of work shown</div>
+              <div class="tag-group">
+                <div class="tag" data-group="work" data-value="manual assembly">manual assembly</div>
+                <div class="tag" data-group="work" data-value="precision craft">precision craft</div>
+                <div class="tag" data-group="work" data-value="engineering">engineering</div>
+                <div class="tag" data-group="work" data-value="software / programming">software / programming</div>
+                <div class="tag" data-group="work" data-value="clerical">clerical</div>
+                <div class="tag" data-group="work" data-value="manufacturing">manufacturing</div>
+                <div class="tag" data-group="work" data-value="management">management</div>
+                <div class="tag" data-group="work" data-value="needlework / sewing">needlework / sewing</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="wizard-step" data-step="skill">
+            <div class="tag-section">
+              <div class="tag-section-label">✦ Skill level required (your impression)</div>
+              <div class="tag-group">
+                <div class="tag" data-group="skill" data-value="unskilled">unskilled</div>
+                <div class="tag" data-group="skill" data-value="semi-skilled">semi-skilled</div>
+                <div class="tag" data-group="skill" data-value="highly skilled">highly skilled</div>
+                <div class="tag" data-group="skill" data-value="expert / specialized">expert / specialized</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="wizard-step" data-step="tools">
+            <div class="tag-section">
+              <div class="tag-section-label">✦ Tools or objects visible in the image</div>
+              <div class="tag-group">
+                <div class="tag" data-group="tools" data-value="needle and wire">needle and wire</div>
+                <div class="tag" data-group="tools" data-value="computer hardware">computer hardware</div>
+                <div class="tag" data-group="tools" data-value="paper / printouts">paper / printouts</div>
+                <div class="tag" data-group="tools" data-value="circuit board">circuit board</div>
+                <div class="tag" data-group="tools" data-value="magnetic cores">magnetic cores</div>
+                <div class="tag" data-group="tools" data-value="memory module">memory module</div>
+                <div class="tag" data-group="tools" data-value="keyboard / terminal">keyboard / terminal</div>
+                <div class="tag" data-group="tools" data-value="no tools visible">no tools visible</div>
+              </div>
+            </div>
+            <div class="tag-section">
+              <div class="tag-section-label">✦ Your own label (optional — describe what you see)</div>
+              <textarea id="freeText" class="free-input" rows="2" placeholder="Add your own description in a few words…"></textarea>
+            </div>
+          </div>
+
+          <div class="wizard-step" data-step="value">
+            <div class="value-section">
+              <div class="value-section-title">
+                Value this work ✦
+                <span>Based on what you see in this image — not what you already know.</span>
+              </div>
+
+              <div class="value-row">
+                <div class="value-label">✦ Fair hourly wage for this work (in today's dollars)</div>
+                <div class="wage-row">
+                  <div class="wage-symbol">$</div>
+                  <input id="wageInput" class="wage-input" type="number" min="0" step="0.50" placeholder="0.00" inputmode="decimal"/>
+                  <div class="wage-unit">per hour</div>
+                </div>
+              </div>
+
+              <div class="value-row">
+                <div class="value-label">
+                  ✦ How important was this work to the mission?
+                  <span class="val-readout" id="importanceReadout">5 / 10</span>
+                </div>
+                <input type="range" class="val-slider" id="importanceSlider" min="1" max="10" value="5" step="1"/>
+                <div class="slider-ends"><span>Not important</span><span>Mission-critical</span></div>
+              </div>
+
+              <div class="value-row">
+                <div class="value-label">
+                  ✦ How much credit did this work receive historically?
+                  <span class="val-readout" id="recognitionReadout">5 / 10</span>
+                </div>
+                <input type="range" class="val-slider" id="recognitionSlider" min="1" max="10" value="5" step="1"/>
+                <div class="slider-ends"><span>None at all</span><span>Fully credited</span></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="wizard-step" data-step="tech">
+            <div class="tech-section" id="techSection">
+              <div class="value-section-title" style="margin-top:4px;">
+                About this technology ✦
+                <span>Based only on what you see — not what you already know.</span>
+              </div>
+              <div class="value-row">
+                <div class="value-label">
+                  ✦ How important does this technology seem to the mission?
+                  <span class="val-readout" id="techImportanceReadout">5 / 10</span>
+                </div>
+                <input type="range" class="val-slider" id="techImportanceSlider" min="1" max="10" value="5" step="1"/>
+                <div class="slider-ends"><span>Minor component</span><span>Mission-critical</span></div>
+              </div>
+              <div class="value-row">
+                <div class="value-label">
+                  ✦ How hard do you think this was to make?
+                  <span class="val-readout" id="techDifficultyReadout">5 / 10</span>
+                </div>
+                <input type="range" class="val-slider" id="techDifficultySlider" min="1" max="10" value="5" step="1"/>
+                <div class="slider-ends"><span>Straightforward</span><span>Extremely difficult</span></div>
+              </div>
+              <div class="value-row">
+                <div class="value-label">
+                  ✦ How important was the work done by the people who made this?
+                  <span class="val-readout" id="techLaborReadout">5 / 10</span>
+                </div>
+                <input type="range" class="val-slider" id="techLaborSlider" min="1" max="10" value="5" step="1"/>
+                <div class="slider-ends"><span>Could be done by anyone</span><span>Highly specialized</span></div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="agenda-disclosure">✦ AI helped me with this. There might be inaccuracies.</div>
+
+        <div class="wizard-nav">
+          <button id="backBtn" class="btn">← Back</button>
+          <div class="selection-summary" id="selectionSummary">No tags selected yet</div>
+          <button id="nextBtn" class="btn primary" disabled>Next ✦</button>
+        </div>
+      </div>
 
       <div class="reveal-overlay" id="revealOverlay">
         <div class="reveal-label">✦ CAREBOT-03 · Annotation Recorded</div>
@@ -236,132 +388,6 @@ input[type=range].val-slider::-webkit-slider-thumb{width:18px;height:18px;border
         <div class="reveal-truth" id="revealTruth"></div>
         <div class="reveal-source" id="revealSource"></div>
         <button class="reveal-next-btn" id="revealNextBtn">Next image ✦</button>
-      </div>
-    </div>
-
-    <div class="tag-panel">
-      <div class="tag-instruction">
-        Select all tags that describe this image ✦
-        <span>Choose as many as apply. Your first impression is what matters.</span>
-      </div>
-
-      <div class="tag-section">
-        <div class="tag-section-label">✦ Type of work shown</div>
-        <div class="tag-group">
-          <div class="tag" data-group="work" data-value="manual assembly">manual assembly</div>
-          <div class="tag" data-group="work" data-value="precision craft">precision craft</div>
-          <div class="tag" data-group="work" data-value="engineering">engineering</div>
-          <div class="tag" data-group="work" data-value="software / programming">software / programming</div>
-          <div class="tag" data-group="work" data-value="clerical">clerical</div>
-          <div class="tag" data-group="work" data-value="manufacturing">manufacturing</div>
-          <div class="tag" data-group="work" data-value="management">management</div>
-          <div class="tag" data-group="work" data-value="needlework / sewing">needlework / sewing</div>
-        </div>
-      </div>
-
-      <div class="tag-section">
-        <div class="tag-section-label">✦ Skill level required (your impression)</div>
-        <div class="tag-group">
-          <div class="tag" data-group="skill" data-value="unskilled">unskilled</div>
-          <div class="tag" data-group="skill" data-value="semi-skilled">semi-skilled</div>
-          <div class="tag" data-group="skill" data-value="highly skilled">highly skilled</div>
-          <div class="tag" data-group="skill" data-value="expert / specialized">expert / specialized</div>
-        </div>
-      </div>
-
-      <div class="tag-section">
-        <div class="tag-section-label">✦ Tools or objects visible in the image</div>
-        <div class="tag-group">
-          <div class="tag" data-group="tools" data-value="needle and wire">needle and wire</div>
-          <div class="tag" data-group="tools" data-value="computer hardware">computer hardware</div>
-          <div class="tag" data-group="tools" data-value="paper / printouts">paper / printouts</div>
-          <div class="tag" data-group="tools" data-value="circuit board">circuit board</div>
-          <div class="tag" data-group="tools" data-value="magnetic cores">magnetic cores</div>
-          <div class="tag" data-group="tools" data-value="memory module">memory module</div>
-          <div class="tag" data-group="tools" data-value="keyboard / terminal">keyboard / terminal</div>
-          <div class="tag" data-group="tools" data-value="no tools visible">no tools visible</div>
-        </div>
-      </div>
-
-      <div class="tag-section">
-        <div class="tag-section-label">✦ Your own label (optional — describe what you see)</div>
-        <textarea id="freeText" class="free-input" rows="2" placeholder="Add your own description in a few words…"></textarea>
-      </div>
-
-
-      <!-- VALUE QUESTIONS -->
-      <div class="value-section">
-        <div class="value-section-title">
-          Value this work ✦
-          <span>Based on what you see in this image — not what you already know.</span>
-        </div>
-
-        <!-- Wage -->
-        <div class="value-row">
-          <div class="value-label">✦ Fair hourly wage for this work (in today's dollars)</div>
-          <div class="wage-row">
-            <div class="wage-symbol">$</div>
-            <input id="wageInput" class="wage-input" type="number" min="0" step="0.50" placeholder="0.00" inputmode="decimal"/>
-            <div class="wage-unit">per hour</div>
-          </div>
-        </div>
-
-        <!-- Importance -->
-        <div class="value-row">
-          <div class="value-label">
-            ✦ How important was this work to the mission?
-            <span class="val-readout" id="importanceReadout">5 / 10</span>
-          </div>
-          <input type="range" class="val-slider" id="importanceSlider" min="1" max="10" value="5" step="1"/>
-          <div class="slider-ends"><span>Not important</span><span>Mission-critical</span></div>
-        </div>
-
-        <!-- Recognition -->
-        <div class="value-row">
-          <div class="value-label">
-            ✦ How much credit did this work receive historically?
-            <span class="val-readout" id="recognitionReadout">5 / 10</span>
-          </div>
-          <input type="range" class="val-slider" id="recognitionSlider" min="1" max="10" value="5" step="1"/>
-          <div class="slider-ends"><span>None at all</span><span>Fully credited</span></div>
-        </div>
-      </div>
-
-      <!-- TECHNOLOGY QUESTIONS — shown only for technology images -->
-      <div class="tech-section" id="techSection" style="display:none;">
-        <div class="value-section-title" style="margin-top:4px;">
-          About this technology ✦
-          <span>Based only on what you see — not what you already know.</span>
-        </div>
-        <div class="value-row">
-          <div class="value-label">
-            ✦ How important does this technology seem to the mission?
-            <span class="val-readout" id="techImportanceReadout">5 / 10</span>
-          </div>
-          <input type="range" class="val-slider" id="techImportanceSlider" min="1" max="10" value="5" step="1"/>
-          <div class="slider-ends"><span>Minor component</span><span>Mission-critical</span></div>
-        </div>
-        <div class="value-row">
-          <div class="value-label">
-            ✦ How hard do you think this was to make?
-            <span class="val-readout" id="techDifficultyReadout">5 / 10</span>
-          </div>
-          <input type="range" class="val-slider" id="techDifficultySlider" min="1" max="10" value="5" step="1"/>
-          <div class="slider-ends"><span>Straightforward</span><span>Extremely difficult</span></div>
-        </div>
-        <div class="value-row">
-          <div class="value-label">
-            ✦ How important was the work done by the people who made this?
-            <span class="val-readout" id="techLaborReadout">5 / 10</span>
-          </div>
-          <input type="range" class="val-slider" id="techLaborSlider" min="1" max="10" value="5" step="1"/>
-          <div class="slider-ends"><span>Could be done by anyone</span><span>Highly specialized</span></div>
-        </div>
-      </div>
-
-      <div class="submit-row">
-        <div class="selection-summary" id="selectionSummary">No tags selected yet</div>
-        <button id="submitBtn" class="btn primary" disabled>Submit annotation ✦</button>
       </div>
     </div>
   </section>
@@ -533,6 +559,8 @@ setInterval(tick,1000);tick();
 
 const SESSION_ID='sess03a-'+Math.random().toString(36).slice(2,10);
 let current=0;
+let stepIndex=0;
+let WIZARD_STEPS=['work','skill','tools','value'];
 const annotations={};
 
 /* tag interaction */
@@ -546,10 +574,38 @@ function updateSummary(){
   const hasWage=wage!==''&&!isNaN(parseFloat(wage));
   if(n===0) document.getElementById('selectionSummary').textContent='Select tags + enter a wage to submit';
   else document.getElementById('selectionSummary').textContent=`${n} tag${n===1?'':'s'} selected`;
-  document.getElementById('submitBtn').disabled=(n===0||!hasWage);
+  const nextBtn=document.getElementById('nextBtn');
+  const isLast=stepIndex===WIZARD_STEPS.length-1;
+  if(isLast){
+    nextBtn.textContent='Submit annotation ✦';
+    nextBtn.disabled=(n===0||!hasWage);
+  } else {
+    nextBtn.textContent='Next ✦';
+    nextBtn.disabled=false;
+  }
 }
 document.getElementById('freeText').addEventListener('input',updateSummary);
 document.getElementById('wageInput').addEventListener('input',updateSummary);
+
+/* wizard navigation */
+function renderStep(){
+  document.querySelectorAll('.wizard-step').forEach(el=>{
+    el.classList.toggle('active', el.dataset.step===WIZARD_STEPS[stepIndex]);
+  });
+  document.getElementById('wizardProgressText').textContent=`Question ${stepIndex+1} of ${WIZARD_STEPS.length}`;
+  const pct=WIZARD_STEPS.length>1?(stepIndex/(WIZARD_STEPS.length-1))*100:100;
+  document.getElementById('wizardProgressFill').style.width=pct+'%';
+  document.getElementById('backBtn').disabled=(stepIndex===0);
+  updateSummary();
+}
+document.getElementById('backBtn').addEventListener('click',()=>{
+  if(stepIndex>0){stepIndex--;renderStep();}
+});
+document.getElementById('nextBtn').addEventListener('click',()=>{
+  const isLast=stepIndex===WIZARD_STEPS.length-1;
+  if(!isLast){stepIndex++;renderStep();return;}
+  doSubmit();
+});
 
 // Slider readouts
 document.getElementById('importanceSlider').addEventListener('input',function(){
@@ -585,13 +641,10 @@ function loadImage(idx){
   document.getElementById('sourceLink').href='#';
   document.getElementById('sourceLink').style.display='none';
   updateCatChip(img);
-  // Show/hide tech questions based on image type
-  const techSec = document.getElementById('techSection');
-  if(img.type === 'technology'){
-    techSec.style.display = 'block';
-  } else {
-    techSec.style.display = 'none';
-  }
+  // Build the wizard step list for this image's type
+  WIZARD_STEPS=['work','skill','tools','value'];
+  if(img.type==='technology') WIZARD_STEPS.push('tech');
+  stepIndex=0;
   // Reset tech sliders
   document.getElementById('techImportanceSlider').value=5;
   document.getElementById('techDifficultySlider').value=5;
@@ -609,7 +662,7 @@ function loadImage(idx){
   document.getElementById('recognitionSlider').value=5;
   document.getElementById('importanceReadout').textContent='5 / 10';
   document.getElementById('recognitionReadout').textContent='5 / 10';
-  updateSummary();
+  renderStep();
 }
 
 function updateCatChip(img){
@@ -620,7 +673,7 @@ function updateCatChip(img){
 }
 
 /* submit */
-document.getElementById('submitBtn').addEventListener('click',()=>{
+function doSubmit(){
   const tags=getSelected();
   const free=document.getElementById('freeText').value.trim();
   const wage=parseFloat(document.getElementById('wageInput').value)||null;
@@ -636,7 +689,7 @@ document.getElementById('submitBtn').addEventListener('click',()=>{
     window._writeAnnotation03({imageId:img.id,imageName:img.name,imageUrl:img.url,category:img.category,imageType:img.type,tags,freeText:free,wage,importance,recognition,techImportance,techDifficulty,techLabor,sessionId:SESSION_ID});
   }
   showReveal(current,tags,free,wage,importance,recognition,techImportance,techDifficulty,techLabor,img);
-});
+}
 
 /* reveal */
 function showReveal(idx,tags,free,wage,importance,recognition,techImportance,techDifficulty,techLabor,img){
@@ -675,11 +728,13 @@ function showReveal(idx,tags,free,wage,importance,recognition,techImportance,tec
   document.getElementById('sourceLink').href=img.sourceUrl;
   document.getElementById('sourceLink').style.display='';
   document.getElementById('revealSource').innerHTML=`Source: <a href="${img.sourceUrl}" target="_blank" rel="noopener">${img.source}</a>`;
+  document.getElementById('wizardWrap').style.display='none';
   overlay.classList.add('show');
 }
 
 document.getElementById('revealNextBtn').addEventListener('click',()=>{
   document.getElementById('revealOverlay').classList.remove('show');
+  document.getElementById('wizardWrap').style.display='';
   document.getElementById('sourceLink').style.display='none';
   document.getElementById('sourceBadge').textContent='';
   current++;
