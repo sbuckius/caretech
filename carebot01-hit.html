@@ -56,6 +56,10 @@ html,body{min-height:100%;font-family:var(--fb);font-weight:600;color:var(--crea
 .tl-content{padding:12px 0 12px 18px;font-size:11.5px;line-height:1.7;color:var(--muted2);}
 .tl-content strong{color:var(--cream);}
 .tl-content em{color:var(--candy);}
+.tl-source{display:block;margin-top:6px;font-size:9.5px;letter-spacing:.04em;color:var(--weave);text-decoration:none;opacity:.85;}
+.tl-source:hover{text-decoration:underline;opacity:1;}
+.tl-source::before{content:'✦ source: ';opacity:.7;}
+.ai-note{width:100%;max-width:720px;text-align:center;font-size:10.5px;color:var(--muted);line-height:1.6;padding:2px 14px;}
 /* OBJECT GRID */
 .irony-grid{width:100%;max-width:720px;display:grid;grid-template-columns:1fr 1fr;gap:10px;}
 @media(max-width:540px){.irony-grid{grid-template-columns:1fr;}}
@@ -67,6 +71,8 @@ html,body{min-height:100%;font-family:var(--fb);font-weight:600;color:var(--crea
 .tile-body strong{color:var(--cream);}
 .tile-stat{margin-top:8px;padding:6px 9px;border-radius:8px;background:rgba(255,255,255,.04);font-size:10px;line-height:1.55;color:var(--muted2);}
 .tile-stat strong{color:var(--weave);}
+.tile-stat a{color:var(--candy);text-decoration:none;}
+.tile-stat a:hover{text-decoration:underline;}
 /* DATA MODULE */
 .mod-card{width:100%;max-width:720px;background:var(--surface);border:1.5px solid var(--border2);border-radius:18px;overflow:hidden;position:relative;box-shadow:0 4px 28px rgba(255,45,107,.15);}
 .mod-card::before{content:'';position:absolute;top:0;left:10%;right:10%;height:1.5px;background:linear-gradient(90deg,transparent,var(--candy) 35%,var(--pink) 50%,var(--candy) 65%,transparent);box-shadow:0 0 10px var(--candy);border-radius:999px;}
@@ -169,9 +175,11 @@ html,body{min-height:100%;font-family:var(--fb);font-weight:600;color:var(--crea
     <div class="irony-eyebrow">✦ CAREBOT-01 · The Connection</div>
     <div class="irony-title">The Jacquard loom (1804) was the first binary input device. Holes in a card meant raise the thread. Solid meant lower it. Charles Babbage saw this and built the punch card into his Analytical Engine. Ada Lovelace wrote programs for that machine — making her the first programmer. Every computer you have ever used runs on logic invented by a weaver.</div>
     <div class="irony-body">
-      The textile industry and the computer industry are the same industry, separated by 150 years. Both ran on <strong>the labor of women whose names we rarely learn.</strong> The Lowell Mill Girls were the first industrial labor force in America. The ENIAC programmers were called "computers" before the machine was. The rope mothers supervised fiber factories using the same binary twist logic — Z-twist / S-twist, over / under, 1 / 0 — that now runs your phone. <em>The thread and the circuit are the same logic. The labor that built both was the same labor. The erasure was the same erasure.</em>
+      The textile industry and the computer industry are the same industry, separated by 150 years. Both ran on <strong>the labor of women whose names we rarely learn.</strong> The Lowell Mill Girls were the first industrial labor force in America. The ENIAC programmers were called "computers" before the machine was. A century later, NASA's rope mothers wove the Apollo Guidance Computer's memory by hand, thread by thread, using the same over/under binary twist logic — Z-twist / S-twist, over / under, 1 / 0 — that now runs your phone. <em>The thread and the circuit are the same logic. The labor that built both was the same labor. The erasure was the same erasure.</em>
     </div>
   </div>
+
+  <div class="ai-note">AI helped me with this. I have tried to check all items for accuracy, but there might be some inaccuracies.</div>
 
   <!-- TIMELINE -->
   <div class="history-section">
@@ -180,87 +188,108 @@ html,body{min-height:100%;font-family:var(--fb);font-weight:600;color:var(--crea
     <div class="timeline">
       <div class="tl-item">
         <div class="tl-year">100,000<br>BCE</div>
-        <div class="tl-content"><strong>The first use of fiber.</strong> Evidence from Neanderthal sites suggests twisted plant cordage — string, sinew, bark fiber — predates modern humans. The ability to twist two strands together to create something stronger than either alone is one of the foundational cognitive leaps in human history. String enables nets, bags, clothing, shelter. <em>Civilization is, in one sense, a species that learned to twist fiber.</em></div>
+        <div class="tl-content"><strong>The first use of fiber.</strong> Evidence from Neanderthal sites suggests twisted plant cordage — string, sinew, bark fiber — predates modern humans. The ability to twist two strands together to create something stronger than either alone is one of the foundational cognitive leaps in human history. String enables nets, bags, clothing, shelter. <em>Civilization is, in one sense, a species that learned to twist fiber.</em>
+        <a class="tl-source" href="https://www.nature.com/articles/s41598-020-61839-w" target="_blank">Hardy et al., "Direct evidence of Neanderthal fibre technology," Scientific Reports (2020) — note: the actual dated cordage fragment from Abri du Maras is ~41,000–52,000 years old, not 100,000</a></div>
       </div>
       <div class="tl-item">
         <div class="tl-year">36,000<br>BCE</div>
-        <div class="tl-content"><strong>Flax fibers processed in Dzudzuana Cave, Georgia.</strong> Colored and twisted wild flax fibers — some dyed pink, violet, turquoise — found preserved in a cave in the Caucasus. These are not raw fibers. They are processed, selected for color, and twisted into thread. <strong>Textile production at this date implies specialized knowledge, division of labor, and aesthetic intention.</strong> Someone chose the color. Someone knew the process. That someone is statistically likely to have been a woman.</div>
+        <div class="tl-content"><strong>Flax fibers processed in Dzudzuana Cave, Georgia.</strong> Colored and twisted wild flax fibers — some dyed pink, violet, turquoise — found preserved in a cave in the Caucasus. These are not raw fibers. They are processed, selected for color, and twisted into thread. <strong>Textile production at this date implies specialized knowledge, division of labor, and aesthetic intention.</strong> Someone chose the color. Someone knew the process. That someone is statistically likely to have been a woman.
+        <a class="tl-source" href="https://www.npr.org/2009/09/10/112726804/these-vintage-threads-are-30-000-years-old" target="_blank">Kvavadze et al., Science (2009); NPR coverage — fibers dated 30,000–36,000 years</a></div>
       </div>
       <div class="tl-item">
         <div class="tl-year">27,000<br>BCE</div>
-        <div class="tl-content"><strong>The first woven fibers.</strong> Archaeological evidence from the Dzudzuana Cave in Georgia (country) shows twisted plant fibers — the earliest known textile technology. Humans are spinning and interlacing materials <em>before pottery, before agriculture, before writing.</em> The logic of over and under, twist and counter-twist, is one of the oldest technologies our species possesses.</div>
+        <div class="tl-content"><strong>The first woven fibers — found in Moravia, not Georgia.</strong> Archaeologists excavating Pavlov I, a different Upper Paleolithic site in the Czech Republic, found basketry and textile patterns impressed into fired clay — interlaced weaves, not just twisted cordage. Humans are spinning and interlacing materials <em>before pottery, before agriculture, before writing.</em> The logic of over and under, twist and counter-twist, is one of the oldest technologies our species possesses.
+        <a class="tl-source" href="https://www.discovermagazine.com/the-basket-age-14273" target="_blank">Adovasio, Soffer & Klíma, "Upper Palaeolithic fibre technology," Antiquity (1996)</a></div>
       </div>
       <div class="tl-item">
         <div class="tl-year">5000<br>BCE</div>
-        <div class="tl-content"><strong>Weaving looms appear across multiple civilizations simultaneously.</strong> In Egypt, Mesopotamia, China, and the Andes — independently, without contact — humans develop the loom. The warp threads are fixed; the weft threads pass over and under. Over, under. Over, under. <strong>This is binary logic.</strong> Every civilization that weaves discovers the same fundamental computational structure. The loom is not a metaphor for computing. It is computing, performed by hand.</div>
+        <div class="tl-content"><strong>Weaving looms appear across multiple civilizations simultaneously.</strong> In Egypt, Mesopotamia, China, and the Andes — independently, without contact — humans develop the loom. The warp threads are fixed; the weft threads pass over and under. Over, under. Over, under. <strong>This is binary logic.</strong> Every civilization that weaves discovers the same fundamental computational structure. The loom is not a metaphor for computing. It is computing, performed by hand.
+        <a class="tl-source" href="https://en.wikipedia.org/wiki/Loom" target="_blank">"Loom," Wikipedia, history section</a></div>
       </div>
       <div class="tl-item">
         <div class="tl-year">3000<br>BCE</div>
-        <div class="tl-content"><strong>Textile production is women's work across most of the ancient world.</strong> In Mesopotamia, temple records document thousands of female textile workers — weavers, spinners, fullers — paid in rations of grain and oil. In ancient Greece, weaving is the defining female virtue: Penelope weaves and unweaves to hold off her suitors; Athena, goddess of wisdom, is also goddess of weaving. <em>The connection between women, craft knowledge, and intelligent pattern-making is ancient and consistent. The erasure of that connection is more recent.</em></div>
+        <div class="tl-content"><strong>Textile production is women's work across most of the ancient world.</strong> In Mesopotamia, temple records document thousands of female textile workers — weavers, spinners, fullers — paid in rations of grain and oil. In ancient Greece, weaving is the defining female virtue: Penelope weaves and unweaves to hold off her suitors; Athena, goddess of wisdom, is also goddess of weaving. <em>The connection between women, craft knowledge, and intelligent pattern-making is ancient and consistent. The erasure of that connection is more recent.</em>
+        <a class="tl-source" href="https://www.worldhistory.org/article/2081/women-in-ancient-mesopotamia/" target="_blank">"Women in Ancient Mesopotamia," World History Encyclopedia</a></div>
       </div>
       <div class="tl-item">
         <div class="tl-year">1200s</div>
-        <div class="tl-content"><strong>The horizontal treadle loom spreads across Europe.</strong> Foot pedals (treadles) control the raising and lowering of warp threads, freeing both hands to pass the shuttle. The loom becomes faster, more complex patterns become possible. Guild systems form — and immediately exclude women from the most skilled and highest-paid weaving work. Women continue to spin, to card, to finish. Men control the looms. <strong>The technology advances. The gendering of who operates it is imposed, not natural.</strong></div>
+        <div class="tl-content"><strong>The horizontal treadle loom spreads across Europe.</strong> Foot pedals (treadles) control the raising and lowering of warp threads, freeing both hands to pass the shuttle. The loom becomes faster, more complex patterns become possible. Guild systems form — and immediately exclude women from the most skilled and highest-paid weaving work. Women continue to spin, to card, to finish. Men control the looms. <strong>The technology advances. The gendering of who operates it is imposed, not natural.</strong>
+        <a class="tl-source" href="https://en.wikipedia.org/wiki/Loom" target="_blank">"Loom," Wikipedia — treadle loom and guild history</a></div>
       </div>
       <div class="tl-item">
         <div class="tl-year">1700s</div>
-        <div class="tl-content"><strong>The drawloom enables complex patterned silk weaving</strong> — brocades, damasks, tapestries. A second worker, the "draw boy," pulls cords above the loom to raise specific warp threads for each row of the pattern. This is manual programming: someone reads the pattern, selects the correct threads, executes one row, repeats. The draw boy is often a child. The pattern designer is often not credited. <em>The labor of translating a visual pattern into thread-by-thread instructions is the same labor Ada Lovelace will perform for Babbage's machine 100 years later.</em></div>
+        <div class="tl-content"><strong>The drawloom enables complex patterned silk weaving</strong> — brocades, damasks, tapestries. A second worker, the "draw boy," pulls cords above the loom to raise specific warp threads for each row of the pattern. This is manual programming: someone reads the pattern, selects the correct threads, executes one row, repeats. The draw boy is often a child. The pattern designer is often not credited. <em>The labor of translating a visual pattern into thread-by-thread instructions is the same labor Ada Lovelace will perform for Babbage's machine 100 years later.</em>
+        <a class="tl-source" href="https://www.britannica.com/technology/drawloom" target="_blank">"Drawloom," Encyclopaedia Britannica</a></div>
       </div>
       <div class="tl-item">
         <div class="tl-year">1000s–<br>1500s</div>
-        <div class="tl-content"><strong>The wool trade builds medieval Europe.</strong> Wool textiles from England, Flanders, and Florence are the most valuable traded commodity in Europe — the oil of the medieval economy. Entire cities exist to produce, finish, and trade cloth. The Medici bank begins as a wool trading operation. Edward III of England weaponizes wool export as economic warfare. <strong>Thread is currency. Textile knowledge is power.</strong> The women who spin the raw wool — spinsters — are so central to the economy that their job title becomes the legal term for an unmarried woman.</div>
+        <div class="tl-content"><strong>The wool trade builds medieval Europe.</strong> Wool textiles from England, Flanders, and Florence are the most valuable traded commodity in Europe — the oil of the medieval economy. Entire cities exist to produce, finish, and trade cloth. The Medici bank begins as a wool trading operation. Edward III of England weaponizes wool export as economic warfare. <strong>Thread is currency. Textile knowledge is power.</strong> The women who spin the raw wool — spinsters — are so central to the economy that their job title becomes the legal term for an unmarried woman.
+        <a class="tl-source" href="https://en.wikipedia.org/wiki/Spinster" target="_blank">"Spinster," Wikipedia; "Wool trade," Wikipedia — medieval wool economy</a></div>
       </div>
       <div class="tl-item">
         <div class="tl-year">1500s–<br>1600s</div>
-        <div class="tl-content"><strong>Cotton arrives in Europe from India and the Americas.</strong> The East India Company trades in Indian cotton cloth — calico, muslin, chintz — so successfully that English and French wool merchants petition their governments to ban it. Cotton is lighter, cheaper, washable, and printable. The textile industry fractures between old wool interests and new cotton capital. <em>The battle over fiber is also a battle over empire, labor, and whose knowledge counts.</em></div>
+        <div class="tl-content"><strong>Cotton arrives in Europe from India and the Americas.</strong> The East India Company trades in Indian cotton cloth — calico, muslin, chintz — so successfully that English and French wool merchants petition their governments to ban it. Cotton is lighter, cheaper, washable, and printable. The textile industry fractures between old wool interests and new cotton capital. <em>The battle over fiber is also a battle over empire, labor, and whose knowledge counts.</em>
+        <a class="tl-source" href="https://en.wikipedia.org/wiki/Calico_Acts" target="_blank">"Calico Acts," Wikipedia — wool merchants' petitions against Indian cotton</a></div>
       </div>
       <div class="tl-item">
         <div class="tl-year">1733</div>
-        <div class="tl-content"><strong>The flying shuttle doubles weaving speed</strong> — and immediately creates a bottleneck. Weavers can now consume thread faster than spinners can produce it. The demand for faster spinning drives the invention of the spinning jenny (1764), the water frame (1769), and the spinning mule (1779). <strong>One mechanical innovation triggers a cascade.</strong> The Industrial Revolution begins not with steam but with thread — with the problem of keeping up with a faster loom. Every step is powered by women's labor rendered newly mechanical.</div>
+        <div class="tl-content"><strong>The flying shuttle doubles weaving speed</strong> — and immediately creates a bottleneck. Weavers can now consume thread faster than spinners can produce it. The demand for faster spinning drives the invention of the spinning jenny (1764), the water frame (1769), and the spinning mule (1779). <strong>One mechanical innovation triggers a cascade.</strong> The Industrial Revolution begins not with steam but with thread — with the problem of keeping up with a faster loom. Every step is powered by women's labor rendered newly mechanical.
+        <a class="tl-source" href="https://en.wikipedia.org/wiki/Spinning_jenny" target="_blank">"Spinning jenny," Wikipedia — flying shuttle (1733) creating the spinning bottleneck</a></div>
       </div>
       <div class="tl-item">
         <div class="tl-year">1764–<br>1779</div>
-        <div class="tl-content"><strong>The spinning jenny, water frame, and spinning mule mechanize spinning.</strong> James Hargreaves, Richard Arkwright, Samuel Crompton — three men credited with inventions that displaced thousands of female hand-spinners. The domestic spinning wheel, tended by women in their homes for income, is made obsolete in a generation. <em>The word "spinster" — from the women who spun — becomes a term of social failure.</em> The work that built the medieval economy is automated away. The women who performed it are not compensated, retrained, or remembered.</div>
+        <div class="tl-content"><strong>The spinning jenny, water frame, and spinning mule mechanize spinning.</strong> James Hargreaves, Richard Arkwright, Samuel Crompton — three men credited with inventions that displaced thousands of female hand-spinners. The domestic spinning wheel, tended by women in their homes for income, is made obsolete in a generation. <em>The word "spinster" — from the women who spun — becomes a term of social failure.</em> The work that built the medieval economy is automated away. The women who performed it are not compensated, retrained, or remembered.
+        <a class="tl-source" href="https://en.wikipedia.org/wiki/Spinning_jenny" target="_blank">"Spinning jenny" (1764), "Water frame" (1769), "Spinning mule" (1779), Wikipedia</a></div>
       </div>
       <div class="tl-item">
         <div class="tl-year">1790s</div>
-        <div class="tl-content"><strong>The first textile factories in America.</strong> Samuel Slater smuggles British mill designs to Rhode Island and builds the first American cotton mill in 1793. Child labor — children as young as seven — operates the machinery. The American textile industry is built on the same model as the British: extract maximum labor at minimum cost from those with the least power. Within a generation, the workforce shifts to young women. <strong>The factory system and the gendering of textile labor arrive together.</strong></div>
+        <div class="tl-content"><strong>The first textile factories in America.</strong> Samuel Slater smuggles British mill designs to Rhode Island and builds the first American cotton mill in 1793. Child labor — children as young as seven — operates the machinery. The American textile industry is built on the same model as the British: extract maximum labor at minimum cost from those with the least power. Within a generation, the workforce shifts to young women. <strong>The factory system and the gendering of textile labor arrive together.</strong>
+        <a class="tl-source" href="https://en.wikipedia.org/wiki/Samuel_Slater" target="_blank">"Samuel Slater," Wikipedia — first American cotton mill, 1793</a></div>
       </div>
       <div class="tl-item">
         <div class="tl-year">1804</div>
-        <div class="tl-content"><strong>Joseph Marie Jacquard invents the programmable loom.</strong> Punched cards control which threads rise and fall — holes = 1, solid = 0. The first binary input device. Pattern complexity is now limited only by the number of cards, not the skill of the weaver. The textile industry is automated. Thousands of weavers lose their livelihoods.</div>
+        <div class="tl-content"><strong>Joseph Marie Jacquard invents the programmable loom.</strong> Punched cards control which threads rise and fall — holes = 1, solid = 0. The first binary input device. Pattern complexity is now limited only by the number of cards, not the skill of the weaver. The textile industry is automated. Thousands of weavers lose their livelihoods.
+        <a class="tl-source" href="https://www.britannica.com/technology/Jacquard-loom" target="_blank">"Jacquard loom," Encyclopaedia Britannica</a></div>
       </div>
       <div class="tl-item">
         <div class="tl-year">1811</div>
-        <div class="tl-content"><strong>The Luddites.</strong> Skilled textile workers in England smash power looms and stocking frames. They are not anti-technology — they are protesting the use of machinery to destroy craft labor and wage protections. They are framed as technophobes. <em>The framing holds to this day.</em> Their actual argument — that technology should serve workers, not replace them — has never been answered.</div>
+        <div class="tl-content"><strong>The Luddites.</strong> Skilled textile workers in England smash power looms and stocking frames. They are not anti-technology — they are protesting the use of machinery to destroy craft labor and wage protections. They are framed as technophobes. <em>The framing holds to this day.</em> Their actual argument — that technology should serve workers, not replace them — has never been answered.
+        <a class="tl-source" href="https://www.historytoday.com/archive/feature/yorkshires-luddites-war-future" target="_blank">"The Luddite Riots," History Today</a></div>
       </div>
       <div class="tl-item">
         <div class="tl-year">1820s</div>
-        <div class="tl-content"><strong>The Lowell Mill Girls.</strong> Young women from New England farms come to work in the cotton mills. They are the first industrial labor force in America — mostly between 15 and 35, literate, organized. They run literary magazines. They organize some of the first American labor strikes when wages are cut. Their labor builds the American textile industry. Their names are largely forgotten.</div>
-      </div>
-      <div class="tl-item">
-        <div class="tl-year">1820s–<br>1860s</div>
-        <div class="tl-content"><strong>The rope mothers (Seilmutter).</strong> Female supervisors of ropewalk factories — the long, narrow buildings where rope was twisted from raw fiber. Rope-making uses a binary alternation: Z-twist and S-twist, two directions of rotation applied in sequence to create strength. Over, under. Over, under. <em>1, 0.</em> The same binary logic as weaving, the same binary logic as computing. These women managed teams, controlled tension, and ensured quality in highly technical industrial operations. Their job title contained the word "mother." Their work built the rope that held ships, bridges, and mines together. It does not appear in computing history.</div>
+        <div class="tl-content"><strong>The Lowell Mill Girls.</strong> Young women from New England farms come to work in the cotton mills. They are the first industrial labor force in America — mostly between 15 and 35, literate, organized. They run literary magazines. They organize some of the first American labor strikes when wages are cut. Their labor builds the American textile industry. Their names are largely forgotten.
+        <a class="tl-source" href="https://www.nps.gov/lowe/learn/historyculture/the-mill-girls-of-lowell.htm" target="_blank">"The Mill Girls of Lowell," Lowell National Historical Park (U.S. National Park Service)</a></div>
       </div>
       <div class="tl-item">
         <div class="tl-year">1837</div>
-        <div class="tl-content"><strong>Charles Babbage designs the Analytical Engine</strong> — the first programmable mechanical computer. He adapts Jacquard's punch card system as the input mechanism. The loom and the computer are now directly connected by the same physical object: a card with holes.</div>
+        <div class="tl-content"><strong>Charles Babbage designs the Analytical Engine</strong> — the first programmable mechanical computer. He adapts Jacquard's punch card system as the input mechanism. The loom and the computer are now directly connected by the same physical object: a card with holes.
+        <a class="tl-source" href="https://www.scienceandindustrymuseum.org.uk/objects-and-stories/jacquard-loom" target="_blank">Science and Industry Museum, "Programming patterns: the story of the Jacquard loom"</a></div>
       </div>
       <div class="tl-item">
         <div class="tl-year">1843</div>
-        <div class="tl-content"><strong>Ada Lovelace writes the first algorithm.</strong> Daughter of Lord Byron and mathematician Anne Isabella Milbanke — who studied math specifically to counteract Byron's "poetic madness." Ada translates a paper on Babbage's engine and adds notes three times the length of the original, including what is now recognized as the first computer program. She is 27. Her work is not fully recognized until the 1950s.</div>
+        <div class="tl-content"><strong>Ada Lovelace writes the first algorithm.</strong> Daughter of Lord Byron and mathematician Anne Isabella Milbanke — who studied math specifically to counteract Byron's "poetic madness." Ada translates a paper on Babbage's engine and adds notes three times the length of the original, including what is now recognized as the first computer program. She is 27. Her work is not fully recognized until the 1950s.
+        <a class="tl-source" href="https://www.computerhistory.org/babbage/adalovelace/" target="_blank">Computer History Museum, "Ada Lovelace"</a></div>
       </div>
       <div class="tl-item">
         <div class="tl-year">1890</div>
-        <div class="tl-content"><strong>Herman Hollerith adapts Jacquard cards for the US Census tabulating machine.</strong> The punch card moves from textile mill to data processing. Hollerith's company eventually becomes IBM. The 80-column IBM punch card — used until the 1970s — is the direct descendant of Jacquard's loom card. Every COBOL programmer punched a card that a weaver designed.</div>
+        <div class="tl-content"><strong>Herman Hollerith adapts Jacquard cards for the US Census tabulating machine.</strong> The punch card moves from textile mill to data processing. Hollerith's company eventually becomes IBM. The 80-column IBM punch card — used until the 1970s — is the direct descendant of Jacquard's loom card. Every COBOL programmer punched a card that a weaver designed.
+        <a class="tl-source" href="https://www.britannica.com/technology/Jacquard-loom" target="_blank">"Jacquard loom," Encyclopaedia Britannica — Hollerith census tabulator lineage</a></div>
       </div>
       <div class="tl-item">
         <div class="tl-year">1945</div>
-        <div class="tl-content"><strong>Six women program ENIAC</strong> — the first general-purpose electronic computer. Kay McNulty, Betty Jennings, Betty Snyder, Marlyn Wescoff, Fran Bilas, Ruth Lichterman. They are called "computers" — the word for a person who computes — before the machine takes the name. They receive no credit at the public unveiling. Their contributions are classified for decades.</div>
+        <div class="tl-content"><strong>Six women program ENIAC</strong> — the first general-purpose electronic computer. Kay McNulty, Betty Jennings, Betty Snyder, Marlyn Wescoff, Fran Bilas, Ruth Lichterman. They are called "computers" — the word for a person who computes — before the machine takes the name. They receive no credit at the public unveiling. Their contributions are classified for decades.
+        <a class="tl-source" href="https://eniacprogrammers.org/" target="_blank">ENIAC Programmers Project; Kathy Kleiman, "Proving Ground" (2022)</a></div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-year">1961–<br>1972</div>
+        <div class="tl-content"><strong>The rope mothers.</strong> At Raytheon, women hand-wove the memory of the Apollo Guidance Computer — wire threaded through tiny magnetic cores, a wire through the core for a 1, around it for a 0. This was core rope memory: software, literally woven by hand on a loom-like frame, that could not be changed once woven. The supervisors who managed this weaving process — checking every thread, every core, against the punched program — were called "rope mothers," regardless of their actual gender. Margaret Hamilton, who led the Apollo software team, was their boss. Their woven memory carried the Lunar Module's guidance code to the Moon. <em>This is not a metaphor about thread and code. It is the literal history of one.</em>
+        <a class="tl-source" href="https://spectrum.ieee.org/software-as-hardware-apollos-rope-memory" target="_blank">"Software as Hardware: Apollo's Rope Memory," IEEE Spectrum</a></div>
       </div>
       <div class="tl-item">
         <div class="tl-year">Now</div>
-        <div class="tl-content"><strong>Women make up less than 30% of the AI workforce.</strong> The same logic that erased the mill girls, the rope mothers, Ada Lovelace, and the ENIAC women continues to operate. The domestic space — the original R&D lab — remains uncredited. The thread that connects all of this is not a metaphor. <em>It is a punch card. It is a loom. It is a circuit. It is the same binary logic, running continuously since 1804.</em></div>
+        <div class="tl-content"><strong>Women make up less than 30% of the AI workforce.</strong> The same logic that erased the mill girls, the rope mothers, Ada Lovelace, and the ENIAC women continues to operate. The domestic space — the original R&D lab — remains uncredited. The thread that connects all of this is not a metaphor. <em>It is a punch card. It is a loom. It is a circuit. It is the same binary logic, running continuously since 1804.</em>
+        <a class="tl-source" href="https://www.ilo.org/resource/news/new-ilo-data-confirm-women-face-higher-workplace-risks-generative-ai-men" target="_blank">International Labour Organization, citing World Economic Forum Global Gender Gap Report data — women ~30% of global AI workforce in 2022</a></div>
       </div>
     </div>
   </div>
@@ -271,37 +300,37 @@ html,body{min-height:100%;font-family:var(--fb);font-weight:600;color:var(--crea
       <div class="tile-eyebrow">✦ Object 01</div>
       <div class="tile-object">The Jacquard Loom</div>
       <div class="tile-body">A mechanical loom programmed by punched cards. Holes control which threads rise. Solid controls which fall. <strong>This is binary code.</strong> This is the ancestor of every computer ever built. The textile industry invented programmable automation in 1804. It ran on the labor of women. It has been credited to engineers ever since.</div>
-      <div class="tile-stat"><strong>Image: images/threads01.png</strong> — Jacquard loom showing punch card mechanism</div>
+      <div class="tile-stat"><strong>Reference image:</strong> <a href="https://commons.wikimedia.org/wiki/Category:Punched_cards_of_Jacquard_looms" target="_blank">Jacquard loom punch-card mechanism, Wikimedia Commons</a> — save as images/threads01.png</div>
     </div>
     <div class="irony-tile">
       <div class="tile-eyebrow">✦ Object 02</div>
       <div class="tile-object">The Punch Card</div>
       <div class="tile-body">Herman Hollerith adapts Jacquard's cards for the 1890 Census. IBM standardizes 80 columns. Every programmer from 1890 to 1980 submits their work on cards descended from a weaver's pattern cards. <strong>The computer and the loom share the same input device.</strong> One is called technology. The other is called craft. The distinction is gendered.</div>
-      <div class="tile-stat"><strong>Image: images/threads02.png</strong> — IBM 80-column punch card</div>
+      <div class="tile-stat"><strong>Reference image:</strong> <a href="https://commons.wikimedia.org/wiki/Category:Punch_cards" target="_blank">IBM 80-column punch card, Wikimedia Commons</a> — save as images/threads02.png</div>
     </div>
     <div class="irony-tile">
       <div class="tile-eyebrow">✦ Object 03</div>
       <div class="tile-object">The Weave Pattern</div>
       <div class="tile-body">Plain weave: over one thread, under the next. Over, under. Over, under. 1, 0. 1, 0. <strong>Weaving is binary computation performed by hand.</strong> The Jacquard loom automates this. Binary code names the same logic. The weave pattern is the original algorithm. The person who designed it was not called a programmer.</div>
-      <div class="tile-stat"><strong>Image: images/threads03.png</strong> — Plain weave diagram showing over/under binary logic</div>
+      <div class="tile-stat"><strong>Reference image:</strong> <a href="https://en.wikipedia.org/wiki/Plain_weave" target="_blank">Plain weave diagram, Wikipedia</a> — save as images/threads03.png</div>
     </div>
     <div class="irony-tile">
       <div class="tile-eyebrow">✦ Object 04</div>
       <div class="tile-object">The Rope</div>
-      <div class="tile-body">Rope-making mills used Z-twist and S-twist — two directions of fiber rotation, alternated for strength. Binary logic. <strong>Rope mothers (Seilmutter)</strong> supervised these operations in European mills — female overseers of highly technical fiber work. The CAREtech project includes rope mothers in the EMBRACE Effect framework: women whose technical labor was named after a domestic object and then forgotten.</div>
-      <div class="tile-stat"><strong>Image: images/threads04.png</strong> — Ropewalk factory interior</div>
+      <div class="tile-body">Core rope memory used a binary logic in fiber: a wire threaded <em>through</em> a magnetic core read as a 1, threaded <em>around</em> it read as a 0. <strong>Rope mothers</strong> — the real ones, at Raytheon in the 1960s, supervising the hand-weaving of the Apollo Guidance Computer's memory — managed this literal weaving of binary code into wire. The CAREtech project includes the rope mothers in the EMBRACE Effect framework: women whose technical labor was named after a domestic role and is still barely known outside computing history.</div>
+      <div class="tile-stat"><strong>Reference image:</strong> <a href="https://spectrum.ieee.org/software-as-hardware-apollos-rope-memory" target="_blank">Core rope memory weaving, IEEE Spectrum</a> — save as images/threads04.png</div>
     </div>
     <div class="irony-tile">
       <div class="tile-eyebrow">✦ Object 05</div>
       <div class="tile-object">The Mill Spindle</div>
       <div class="tile-body">The Lowell Mill Girls tended spindles — machines that twisted raw cotton into thread at high speed, in buildings with no ventilation, in 14-hour shifts. <strong>They were the first industrial workforce in America.</strong> They organized strikes. They ran literary magazines. They are remembered, when remembered at all, as simple farm girls who briefly worked in factories before marriage. They were the foundation of the American industrial economy.</div>
-      <div class="tile-stat"><strong>Image: images/threads05.png</strong> — Lowell mill interior, 1840s</div>
+      <div class="tile-stat"><strong>Reference image:</strong> <a href="https://www.nps.gov/lowe/learn/historyculture/the-mill-girls-of-lowell.htm" target="_blank">Lowell mill interior, National Park Service</a> — save as images/threads05.png</div>
     </div>
     <div class="irony-tile">
       <div class="tile-eyebrow">✦ Object 06</div>
       <div class="tile-object">The ENIAC Panel</div>
       <div class="tile-body">The ENIAC women — six of them — hand-wired a room-sized computer by consulting logic diagrams and physically connecting patch cables. They were <strong>human computers before the machine took the name.</strong> At the public unveiling, they were not introduced. The generals and engineers were. The women who wrote the first programs are in photographs from that day. For decades, no one knew who they were.</div>
-      <div class="tile-stat"><strong>Image: images/threads06.png</strong> — ENIAC operators at the machine, 1945</div>
+      <div class="tile-stat"><strong>Reference image:</strong> <a href="https://eniacprogrammers.org/" target="_blank">ENIAC operators at the machine, ENIAC Programmers Project</a> — save as images/threads06.png</div>
     </div>
   </div>
 
@@ -348,7 +377,6 @@ html,body{min-height:100%;font-family:var(--fb);font-weight:600;color:var(--crea
   <div class="cb-card">
     <div class="cb-eyebrow">✦ Ask a Question · Showing Last 3</div>
     <div class="cb-row">
-      <input class="cb-input cb-name-in" type="text" id="userName" placeholder="Your name…">
       <input class="cb-input" type="text" id="userQuestion" placeholder="Ask about looms, punch cards, Ada Lovelace, Luddites, rope mothers, binary weaving…" autocomplete="off">
       <button class="cb-btn primary" onclick="askQuestion()">✦ Ask</button>
       <button class="cb-btn soft" onclick="showAdminModal()">⚙</button>
@@ -387,7 +415,8 @@ function updateClock(){const n=new Date(),p=v=>String(v).padStart(2,'0');documen
 setInterval(updateClock,1000);updateClock();
 
 let db,msgRef,respRef,onlineRef,fbReady=false;
-let currentUser=localStorage.getItem('cb01User')||'';
+let currentUser=localStorage.getItem('cb01User')||('Visitor'+Math.floor(Math.random()*100000));
+localStorage.setItem('cb01User',currentUser);
 let userColor=localStorage.getItem('cb01Color')||genColor();
 function genColor(){const c=['#c084fc','#ff85b3','#67e8f9','#ff2d6b'];const v=c[Math.floor(Math.random()*c.length)];localStorage.setItem('cb01Color',v);return v;}
 try{
@@ -420,7 +449,6 @@ try{
   });
 }catch(e){fbReady=false;document.getElementById('onlineCount').textContent='Offline';}
 function trackPresence(){if(!onlineRef||!currentUser)return;const r=onlineRef.child(currentUser.replace(/[.#$[\]]/g,'_'));r.set({name:currentUser,ts:firebase.database.ServerValue.TIMESTAMP});r.onDisconnect().remove();}
-document.getElementById('userName').addEventListener('change',function(){currentUser=this.value.trim();localStorage.setItem('cb01User',currentUser);if(currentUser&&fbReady)trackPresence();});
 
 /* SELECTIONS */
 const selections={};
@@ -439,7 +467,7 @@ function checkSubmit(){
 let modDone=false;
 function submitResponse(){
   if(modDone)return;
-  const name=document.getElementById('userName').value.trim()||'Anon';
+  const name='Anon';
   const payload={type:'response',knewJacquard:selections['knewJacquardRow'],knewAda:selections['adaRow'],ludditeParallel:selections['ludditeRow'],weaveBinaryReflection:document.getElementById('openQ1').value.trim(),openResponse:document.getElementById('openQ2').value.trim(),userName:name,userColor,ts:fbReady?firebase.database.ServerValue.TIMESTAMP:Date.now()};
   if(fbReady&&respRef)respRef.push(payload).catch(()=>{});
   modDone=true;const btn=document.getElementById('modSubmit');btn.textContent='✓ Saved';btn.classList.add('done');btn.disabled=true;
@@ -449,9 +477,9 @@ function submitResponse(){
 const responses=[
   {text:"The Jacquard loom (1804) was the first binary input device. Joseph Marie Jacquard's programmable loom used punched cards to control the pattern: a hole meant 'raise this thread,' a solid card meant 'lower it.' That is binary logic — 1 and 0, on and off, raise and lower. Charles Babbage visited Jacquard loom demonstrations and directly adapted the punch card mechanism for his Analytical Engine, the first design for a programmable computer. Herman Hollerith later adapted the same punch cards for the 1890 US Census tabulation machine. IBM standardized 80-column punch cards used in computing until the 1970s. Every punch card ever fed into a computer is a descendant of a weaver's pattern card.",source:"Charles Babbage, 'Passages from the Life of a Philosopher' (1864); Computer History Museum",link:"https://www.computerhistory.org/babbage/",moves:["1. HOLD a punch card — examine the holes — 'this is data'","2. HOLD a weave pattern — examine the threads — 'this is also data'","3. ALIGN them — hole for hole — thread for thread — same logic","4. THE CARD moves from loom to tabulator to computer — trace it in space","5. FREEZE — call out: 'The loom and the computer share the same input. The textile industry invented binary programming in 1804.'"]},
   {text:"Ada Lovelace (1815–1852) is recognized as the first computer programmer. She was the daughter of the poet Lord Byron and mathematician Anne Isabella Milbanke — who had studied math specifically to counteract what she called Byron's 'poetic madness.' Ada worked with Charles Babbage on his Analytical Engine, translated a paper about it from French, and added notes three times the length of the original. Those notes included what is now recognized as the first algorithm intended to be processed by a machine — a program to calculate Bernoulli numbers. She proposed that the Engine could compose music, manipulate symbols, and do anything that could be expressed in mathematical notation. She died at 36. Her work was largely ignored until the 1950s, when Alan Turing referenced it. The programming language Ada is named for her.",source:"Ada Lovelace, 'Notes on the Analytical Engine' (1843); Turing, 'Computing Machinery and Intelligence' (1950)",link:"https://www.computerhistory.org/babbage/adalovelace/",moves:["1. ENTER as translator — the paper arrives in French — she reads it","2. THE NOTES expand — three times the original — her mind exceeding the commission","3. THE ALGORITHM — first ever written for a machine — trace it in the air","4. THE SILENCE — 1852 — no recognition — a century of quiet","5. FREEZE — call out: 'The first program was written by a woman in 1843. It was not called programming yet. The word came later, with the men.'"]},
-  {text:"The Luddites (1811–1816) were skilled textile workers in England — weavers, knitters, croppers — who destroyed power looms and stocking frames as an act of labor resistance. They are remembered as being anti-technology. They were not. They were protesting the use of machinery to circumvent labor laws, destroy apprenticeship systems, and replace skilled work with cheap unskilled labor. Their actual argument was that technology should serve workers, not be used as a weapon against them. The framing as 'anti-technology' was a deliberate political strategy by mill owners and the press. That framing has been so successful that 'Luddite' still means 'person who is afraid of technology' — two hundred years after a labor movement that had nothing to do with fear and everything to do with rights.",source:"E.P. Thompson, 'The Making of the English Working Class' (1963); Kevin Binfield, 'Writings of the Luddites' (2004)",link:"https://www.historytoday.com/archive/months-past/luddite-riots",moves:["1. ENTER as weaver — skilled — precise — the loom is known","2. THE MACHINE arrives — it doesn't need skill — it needs an operator","3. THE WAGE drops — the craft is devalued — the apprentice has no future","4. THE FRAME breaks — this is not fear — this is argument","5. FREEZE — call out: 'They were not afraid of the machine. They were right about who it would serve. They are still right.'"]},
+  {text:"The Luddites (1811–1816) were skilled textile workers in England — weavers, knitters, croppers — who destroyed power looms and stocking frames as an act of labor resistance. They are remembered as being anti-technology. They were not. They were protesting the use of machinery to circumvent labor laws, destroy apprenticeship systems, and replace skilled work with cheap unskilled labor. Their actual argument was that technology should serve workers, not be used as a weapon against them. The framing as 'anti-technology' was a deliberate political strategy by mill owners and the press. That framing has been so successful that 'Luddite' still means 'person who is afraid of technology' — two hundred years after a labor movement that had nothing to do with fear and everything to do with rights.",source:"E.P. Thompson, 'The Making of the English Working Class' (1963); Kevin Binfield, 'Writings of the Luddites' (2004)",link:"https://www.historytoday.com/archive/feature/yorkshires-luddites-war-future",moves:["1. ENTER as weaver — skilled — precise — the loom is known","2. THE MACHINE arrives — it doesn't need skill — it needs an operator","3. THE WAGE drops — the craft is devalued — the apprentice has no future","4. THE FRAME breaks — this is not fear — this is argument","5. FREEZE — call out: 'They were not afraid of the machine. They were right about who it would serve. They are still right.'"]},
   {text:"The ENIAC programmers — Kay McNulty, Betty Jennings, Betty Snyder, Marlyn Wescoff, Fran Bilas, and Ruth Lichterman — were six women who programmed the first general-purpose electronic computer in 1945. They were called 'computers' — the job title for a person who computes — before the machine was. They learned to program by reading wiring diagrams; there was no programming language yet. They physically connected patch cables and set switches to configure the machine for each new problem. At the public unveiling of ENIAC, they were not introduced. They were not mentioned. Photographs of them at the machine circulated for decades before anyone knew who they were. Jean Jennings Bartik said: 'We were the invisible women. We made the machine work and nobody knew our names.'",source:"Kathy Kleiman, 'Proving Ground: The Untold Story of the Six Women Who Programmed the World's First Modern Computer' (2022)",link:"https://provinggroundbook.com/",moves:["1. STAND at the panel — cables in hand — the diagram is the only guide","2. CONFIGURE — every switch, every cable — no language yet — pure logic","3. THE UNVEILING — generals, engineers, cameras — stand to the side","4. THE PHOTOGRAPH — you are in it — no caption — no name — no credit","5. FREEZE — call out: 'They wrote the first programs with their hands. They were not introduced. The machine took their job title and their credit in one ceremony.'"]},
-  {text:"The rope mothers — Seilmutter in German — were female supervisors in rope-making mills (ropewalks) who oversaw the fiber-twisting operations. Rope-making uses a binary alternation: Z-twist and S-twist — two directions of fiber rotation, alternated to create strength. Over, under. Over, under. The same binary logic as weaving, the same binary logic as computing. These women supervised highly technical industrial operations — managing teams, controlling tension, ensuring quality — in roles named after domestic terminology. The CAREtech project includes rope mothers in the EMBRACE Effect framework as an example of women whose technical labor was both industrially essential and culturally invisible. Their job title contained the word 'mother.' Their work built the rope that held ships, bridges, and mines together.",source:"CAREtech EMBRACE Effect framework; historical textile industry records",link:"https://care-tech.org",moves:["1. HOLD the rope — feel the twist — Z-twist, then S-twist — alternating","2. TRACE the logic — over, under — 1, 0 — binary in fiber","3. THE SUPERVISOR arrives — the Seilmutter — she knows the tension — she knows the count","4. THE NAME — mother — her title contains it — her work does not","5. FREEZE — call out: 'The rope mothers used binary logic before the word existed. Their title was domestic. Their work was engineering. The distinction was deliberate.'"]}
+  {text:"The rope mothers were women at Raytheon who, in the 1960s and '70s, supervised the hand-weaving of the Apollo Guidance Computer's memory. The memory — called core rope memory — was woven by threading wire through or around tiny magnetic cores: through a core registered as a 1, around it registered as a 0. Once woven, the program could not be changed; an error meant unweaving and starting over. The 'rope mothers' were the supervisors who checked every thread against the program's punched-card listing, regardless of their own gender, though most were women. Their boss was Margaret Hamilton, who led the Apollo software team at MIT's Instrumentation Lab. The rope memory they wove carried the guidance code that helped land Apollo 11 on the Moon. This is the literal point where thread and binary code are the same object, not a metaphor for it.",source:"IEEE Spectrum, 'Software as Hardware: Apollo's Rope Memory' (2022); MIT Instrumentation Lab records",link:"https://spectrum.ieee.org/software-as-hardware-apollos-rope-memory",moves:["1. HOLD the wire — thread it through the core — that is a 1","2. WRAP the wire around the core — that is a 0 — over, under, over, under","3. THE ROPE MOTHER checks the weave — one wrong thread and the program fails","4. THE WOVEN ROPE leaves the bench — bound for the Lunar Module — bound for the Moon","5. FREEZE — call out: 'The code that landed on the Moon was woven by hand. The thread and the program were the same object. The weaver and the programmer were the same person.'"]}
 ];
 
 let recentlyShown=[];
@@ -461,8 +489,7 @@ let audioCtx=null;
 function playChime(){try{if(!audioCtx)audioCtx=new(window.AudioContext||window.webkitAudioContext)();const ctx=audioCtx;[[329.63,0],[415.30,.18],[493.88,.36]].forEach(([f,d])=>{const o=ctx.createOscillator();const g=ctx.createGain();o.connect(g);g.connect(ctx.destination);o.type='sine';o.frequency.value=f;const t=ctx.currentTime+d;g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(.35,t+.04);g.gain.exponentialRampToValueAtTime(.001,t+.7);o.start(t);o.stop(t+.72);});}catch(e){}}
 async function askQuestion(){
   const q2=document.getElementById('userQuestion').value.trim();
-  const name=document.getElementById('userName').value.trim();
-  if(!name){alert('Please enter your name first!');return;}
+  const name='Anon';
   if(!q2){alert('Please type a question!');return;}
   const resp=getResponse();const mv=generateMovement(resp);
   const payload={question:q2,answerText:resp.text,answerSource:resp.source,answerLink:resp.link,movement:mv,userName:name,userColor,ts:fbReady?firebase.database.ServerValue.TIMESTAMP:Date.now()};
