@@ -173,7 +173,6 @@
   <div class="redir-card">
     <div class="redir-header">
       <span>✦ Computer History Museum — Human Computers</span>
-      <div class="redir-countdown">Auto-close <span id="countdown">3</span>s</div>
     </div>
     <iframe id="calcFrame" title="CHM page"></iframe>
     <div class="redir-footer">
@@ -253,7 +252,7 @@ function saveSessionSummary(){
 
 /* ── p5 settings ── */
 const FOLDER_PATH="images/",FILE_PREFIX="techwork",FILE_EXT=".png",MAX_ATTEMPTS=500;
-const EXTERNAL_URL="https://www.computerhistory.org/revolution/calculators/1/65",DISPLAY_SECONDS=3;
+const EXTERNAL_URL="https://www.computerhistory.org/revolution/calculators/1/65/2209",DISPLAY_SECONDS=3;
 
 let imgs=[],imgMeta=[],current=0,dragging=false,dragStart=null,tempRect=null,scaleInfo=null,finished=false,canvas;
 let discovering=true;
@@ -373,16 +372,10 @@ function resetR(){clearTimeout(timer);clearInterval(tick);remain=DISPLAY_SECONDS
 function closeO(){overlay.classList.remove('open');calcFrame.src="about:blank";resetR();openBtn.disabled=false;document.title="✦ CAREBOT-14 ✦";}
 function overlayFallback(){
   openBtn.disabled=true;overlay.classList.add('open');calcFrame.src=EXTERNAL_URL;directLink.href=EXTERNAL_URL;
-  resetR();tick=setInterval(()=>{remain--;if(cntdwn)cntdwn.textContent=Math.max(remain,0);if(remain<=0)clearInterval(tick);},1000);
-  timer=setTimeout(closeO,DISPLAY_SECONDS*1000);
 }
 function openInNewTabThenReturn(){
   const w=window.open(EXTERNAL_URL,'_blank');
-  if(w&&!w.closed){
-    openBtn.disabled=true;resetR();
-    tick=setInterval(()=>{remain--;if(remain<=0)clearInterval(tick);document.title=`(${Math.max(remain,0)}s) CAREBOT-14`;},1000);
-    timer=setTimeout(()=>{try{w.close();}catch(e){}document.title="✦ CAREBOT-14 ✦";openBtn.disabled=false;resetR();},DISPLAY_SECONDS*1000);
-  }else{popup.classList.add('show');setTimeout(()=>popup.classList.remove('show'),3000);overlayFallback();}
+  if(!(w&&!w.closed)){popup.classList.add('show');setTimeout(()=>popup.classList.remove('show'),3000);overlayFallback();}
 }
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&overlay.classList.contains('open'))closeO();});
 overlay.addEventListener('click',e=>{if(e.target===overlay)closeO();});
