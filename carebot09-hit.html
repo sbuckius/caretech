@@ -50,6 +50,11 @@
   .banner-title{font-family:'Nunito',sans-serif;font-weight:900;font-size:clamp(16px,3vw,22px);background:linear-gradient(120deg,var(--cream) 15%,var(--blush) 50%,var(--fuchsia) 90%);-webkit-background-clip:text;background-clip:text;color:transparent;margin-bottom:10px;line-height:1.3;}
   .banner-text{font-size:13px;color:rgba(255,210,228,.8);line-height:1.75;}
   .banner-text strong{color:var(--blush);}
+  .banner-links{display:flex;flex-wrap:wrap;align-items:center;gap:8px 10px;margin-top:12px;}
+  .banner-links-label{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,160,200,.4);font-weight:700;}
+  .banner-link{font-size:11px;font-weight:700;letter-spacing:.02em;color:var(--candy);text-decoration:none;border-bottom:1px solid rgba(255,130,180,.3);padding-bottom:1px;transition:color .2s,border-color .2s;}
+  .banner-link:hover{color:var(--blush);border-color:var(--blush);}
+  .banner-disclaimer{font-size:10.5px;font-style:italic;color:rgba(255,200,224,.45);margin-top:10px;letter-spacing:.02em;}
 
   /* TASK CARD */
   .app{background:var(--card);border:1.5px solid var(--card-border);border-radius:24px;box-shadow:var(--soft-glow);backdrop-filter:blur(20px) saturate(1.5);overflow:hidden;position:relative;}
@@ -164,6 +169,44 @@
     <div class="time-badge"><div class="time-pip"></div><span id="sysTime">--:--:--</span></div>
   </div>
 
+  <!--
+    FACT-CHECK NOTE (verified June 2026):
+    The coding scheme below draws on three strands of peer-reviewed research:
+
+    1) VISUAL GENDER DISPLAY (patent + photo + ad dimensions on posture, touch,
+       relative size, function ranking, licensed withdrawal):
+       Adapted from Erving Goffman's "Gender Advertisements" (Harvard University
+       Press, 1979), the foundational study in visual gender-display analysis.
+       Goffman coded roughly 500 print advertisements; later researchers (Kang 1997;
+       Belknap & Leonard 1991; Mooney, Brabant & Moran 1993) replicated and extended
+       the framework to magazines, birthday cards, and digital media.
+         - https://en.wikipedia.org/wiki/Gender_Advertisements
+         - https://sociology.org/gender-advertisements-revisited/
+         - https://link.springer.com/article/10.1007/BF00289848
+         - https://digitalcommons.bryant.edu/honors_communication/6/
+         - Goffman, E. (1979). Gender Advertisements. New York: Harper & Row.
+
+    2) SEXUALISATION / OBJECTIFICATION (ad dimensions C1–C3 on sexualisation,
+       decorative vs. functional framing):
+       Grounded in Fredrickson & Roberts' "Objectification Theory" (1997,
+       Psychology of Women Quarterly), the foundational psychology paper on
+       sexual objectification of women in media and culture.
+         - https://onlinelibrary.wiley.com/doi/10.1111/j.1471-6402.1997.tb00108.x
+
+    3) PATENT-SPECIFIC GENDER BIAS (patent dimensions on figure centrality,
+       labelling, and authority framing):
+       Supported by empirical findings that gender bias persists in the patent
+       system itself, not just in how patent drawings depict figures.
+         - https://www.sciencedirect.com/science/article/abs/pii/S1751157719303724
+         - https://www.aeaweb.org/conference/2025/program/paper/8ENnyBnB
+
+    The claim "each dimension has been shown to systematically differ between images
+    depicting men and women" is supported by the above content-analysis and
+    psychology literature, though effect sizes vary by category (relative size and
+    function ranking appear less frequently than feminine touch and ritualization
+    of subordination in some replications — see Springer link above).
+  -->
+
   <!-- CONTEXT BANNER (replaces video) -->
   <div class="context-banner">
     <div class="banner-eyebrow">✦ CAREBOT-09 · Task Briefing</div>
@@ -171,6 +214,14 @@
     <div class="banner-text">
       This task uses a <strong>12-question coding scheme</strong> developed from feminist visual analysis research. You will see an image — a patent drawing, photograph, or advertisement — and code how gender is visually represented across four dimensions: <strong>figure centrality</strong>, <strong>agency and posture</strong>, <strong>identity and body</strong>, and <strong>context</strong>. Each dimension has been shown to systematically differ between images depicting men and women. Select the image type first, then answer as many questions as you can. Your responses become research data.
     </div>
+    <div class="banner-links">
+      <span class="banner-links-label">↗ Further reading:</span>
+      <a class="banner-link" href="https://en.wikipedia.org/wiki/Gender_Advertisements" target="_blank" rel="noopener">Goffman, Gender Advertisements (1979)</a>
+      <a class="banner-link" href="https://onlinelibrary.wiley.com/doi/10.1111/j.1471-6402.1997.tb00108.x" target="_blank" rel="noopener">Fredrickson &amp; Roberts, Objectification Theory (1997)</a>
+      <a class="banner-link" href="https://www.sciencedirect.com/science/article/abs/pii/S1751157719303724" target="_blank" rel="noopener">Gender Bias in the Patenting Process</a>
+      <a class="banner-link" href="https://www.aeaweb.org/conference/2025/program/paper/8ENnyBnB" target="_blank" rel="noopener">Inventor Gender &amp; Patent Examination Outcomes</a>
+    </div>
+    <div class="banner-disclaimer">✦ AI helped me with this. There might be inaccuracies.</div>
   </div>
 
   <!-- TASK CARD -->
@@ -266,6 +317,17 @@ const IMAGES_FOLDER="images/";
 const MANIFEST_PATH="manifest.json";
 const COLLECTION="bias_responses";
 
+// FACT-CHECK: dimensions C1 (relative size), B2/C2 (ritualistic/feminine touch),
+// C2 (function ranking), B1 (subordinate body posture), and C3 (licensed withdrawal)
+// across the schemes below are adapted from Erving Goffman's "Gender Advertisements"
+// (1979) coding categories. Sexualisation/objectification dimensions in the ad scheme
+// (C1-C3) draw on Fredrickson & Roberts' "Objectification Theory" (1997). Patent-type
+// dimensions on figure centrality/labelling are informed by empirical research on
+// gender bias in the patent system itself. See:
+// https://en.wikipedia.org/wiki/Gender_Advertisements
+// https://link.springer.com/article/10.1007/BF00289848
+// https://onlinelibrary.wiley.com/doi/10.1111/j.1471-6402.1997.tb00108.x
+// https://www.sciencedirect.com/science/article/abs/pii/S1751157719303724
 const SCHEME={
   patent:{label:"Patent drawing",dims:[
     {id:'A',label:'Figure centrality',vars:[
