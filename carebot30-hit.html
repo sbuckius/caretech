@@ -69,11 +69,13 @@ html,body{min-height:100%;font-family:'Quicksand',sans-serif;font-weight:600;col
 .agenda-title{font-family:'Nunito',sans-serif;font-weight:900;font-size:clamp(16px,2.5vw,22px);line-height:1.3;background:linear-gradient(120deg,var(--cream) 20%,var(--hot) 55%,var(--purple) 85%);-webkit-background-clip:text;background-clip:text;color:transparent;}
 .agenda-body{font-size:clamp(12px,1.5vw,14px);color:rgba(255,210,228,.85);line-height:1.75;}
 .agenda-body strong{color:var(--hot);}
+.ai-disclaimer{font-size:11px;color:rgba(255,200,228,.55);line-height:1.6;padding:9px 13px;border-radius:11px;background:rgba(220,60,140,.05);border:1px dashed rgba(220,60,140,.22);display:flex;align-items:center;gap:7px;}
+.ai-disclaimer::before{content:'✦';color:var(--hot);flex-shrink:0;}
 .agenda-chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:4px;}
 .agenda-chip{display:inline-flex;align-items:center;gap:5px;padding:4px 11px;border-radius:999px;background:rgba(220,60,140,.08);border:1px solid rgba(220,60,140,.22);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--text-dim);}
 .agenda-chip .dot{width:4px;height:4px;border-radius:50%;background:var(--hot);}
 
-.app{background:rgba(255,255,255,.042);border:1.5px solid var(--card-border);border-radius:24px;box-shadow:var(--soft-glow);backdrop-filter:blur(20px) saturate(1.5);overflow:hidden;position:relative;}
+.app{background:rgba(255,255,255,.042);border:1.5px solid var(--card-border);border-radius:24px;box-shadow:var(--soft-glow);backdrop-filter:blur(20px) saturate(1.5);overflow:hidden;position:relative;transition:opacity .4s ease;}
 .app::before{content:'';position:absolute;top:0;left:16px;right:16px;height:1px;background:linear-gradient(90deg,transparent,var(--rose) 30%,var(--hot) 50%,var(--rose) 70%,transparent);box-shadow:0 0 10px var(--rose);border-radius:999px;}
 
 .task-header{padding:18px 22px 14px;border-bottom:1px solid rgba(220,60,140,.1);display:grid;gap:10px;}
@@ -94,7 +96,14 @@ html,body{min-height:100%;font-family:'Quicksand',sans-serif;font-weight:600;col
 .headline-outlet{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,180,220,.35);}
 .headline-year{font-size:10px;letter-spacing:.1em;color:rgba(255,180,220,.25);}
 
-.tag-panel{padding:20px 22px;display:grid;gap:16px;}
+.step-indicator{display:flex;align-items:center;justify-content:space-between;padding:16px 22px 0;}
+.step-label{font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--hot);}
+.step-dots{display:flex;gap:5px;}
+.step-dot{width:6px;height:6px;border-radius:50%;background:rgba(220,60,140,.18);border:1px solid rgba(220,60,140,.3);transition:all .25s ease;}
+.step-dot.done{background:var(--rose);border-color:var(--rose);}
+.step-dot.active{background:var(--hot);border-color:var(--hot);box-shadow:0 0 8px var(--hot);width:16px;border-radius:4px;}
+
+.tag-panel{padding:18px 22px 22px;display:grid;gap:16px;min-height:120px;}
 .tag-instruction{font-family:'Nunito',sans-serif;font-weight:800;font-size:clamp(13px,2vw,15px);color:var(--rose);line-height:1.5;}
 .tag-instruction span{font-size:11px;font-weight:600;font-family:'Quicksand',sans-serif;color:var(--text-dim);display:block;margin-top:3px;}
 .tag-section{display:grid;gap:8px;}
@@ -105,9 +114,6 @@ html,body{min-height:100%;font-family:'Quicksand',sans-serif;font-weight:600;col
 .tag.selected{background:linear-gradient(135deg,rgba(220,60,140,.28),rgba(120,0,60,.28));border-color:var(--hot);color:var(--cream);box-shadow:0 0 10px rgba(220,60,140,.25);}
 .tag.selected::before{content:'✦ ';}
 
-.value-section{display:grid;gap:14px;padding:16px 0 4px;border-top:1px solid rgba(220,60,140,.1);margin-top:4px;}
-.value-section-title{font-family:'Nunito',sans-serif;font-weight:800;font-size:clamp(13px,2vw,15px);color:var(--rose);}
-.value-section-title span{font-size:11px;font-weight:600;font-family:'Quicksand',sans-serif;color:var(--text-dim);display:block;margin-top:2px;}
 .value-row{display:grid;gap:8px;}
 .value-label{font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--text-dim);display:flex;align-items:center;justify-content:space-between;}
 .val-readout{font-family:'Nunito',sans-serif;font-weight:900;font-size:13px;color:var(--cream);letter-spacing:0;text-transform:none;}
@@ -118,32 +124,35 @@ input[type=range].val-slider{width:100%;accent-color:var(--hot);height:5px;curso
 .free-input:focus{border-color:var(--rose);box-shadow:0 0 14px rgba(220,60,140,.2);}
 .free-input::placeholder{color:rgba(220,60,140,.28);}
 
-.submit-row{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding-top:4px;}
-.selection-summary{font-size:11px;color:var(--text-dim);flex:1;}
+.step-nav{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:14px 22px 22px;border-top:1px solid rgba(220,60,140,.1);}
+.nav-status{font-size:11px;color:var(--text-dim);flex:1;}
 .btn{appearance:none;font-family:'Nunito',sans-serif;font-weight:900;font-size:13px;letter-spacing:.06em;color:var(--cream);cursor:pointer;display:inline-flex;align-items:center;gap:6px;padding:11px 22px;border-radius:14px;min-height:42px;border:1.5px solid var(--card-border);background:rgba(220,60,140,.1);transition:all .2s cubic-bezier(.34,1.56,.64,1);}
 .btn:hover:not([disabled]){transform:translateY(-2px) scale(1.03);box-shadow:0 8px 24px rgba(220,60,140,.3);border-color:var(--card-border-bright);}
 .btn.primary{background:linear-gradient(135deg,rgba(255,45,107,.55),rgba(120,0,60,.65));border-color:var(--hot);box-shadow:0 4px 20px rgba(220,60,140,.28);}
 .btn.primary:hover:not([disabled]){background:linear-gradient(135deg,rgba(255,45,107,.72),rgba(140,0,70,.72));}
+.btn.ghost{background:rgba(255,255,255,.03);}
 .btn[disabled]{opacity:.28;cursor:not-allowed;transform:none!important;box-shadow:none!important;}
 
-.reveal-overlay{position:absolute;inset:0;z-index:10;background:rgba(8,0,4,.97);display:none;flex-direction:column;align-items:center;justify-content:flex-start;gap:12px;padding:24px 26px;text-align:left;animation:fadeIn .4s ease;overflow-y:auto;}
-.reveal-overlay.show{display:flex;}
-@keyframes fadeIn{from{opacity:0;transform:scale(.97)}to{opacity:1;transform:scale(1)}}
-.reveal-headline-back{font-family:'Nunito',sans-serif;font-weight:900;font-size:clamp(14px,2.2vw,19px);color:var(--cream);line-height:1.35;padding-bottom:12px;border-bottom:1px solid rgba(220,60,140,.15);width:100%;}
-.reveal-your-tags{display:flex;flex-wrap:wrap;gap:6px;padding:10px 0;}
+.results-panel{background:rgba(12,0,6,.9);border:1.5px solid var(--card-border-bright);box-shadow:var(--pop-glow);border-radius:24px;padding:clamp(20px,3vh,30px) clamp(20px,3vw,28px);position:relative;overflow:hidden;animation:fadeUp .5s ease;display:grid;gap:14px;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+.results-panel::before{content:'';position:absolute;top:0;left:12%;right:12%;height:1.5px;background:linear-gradient(90deg,transparent,var(--rose) 35%,var(--hot) 50%,var(--rose) 65%,transparent);box-shadow:0 0 10px var(--rose);border-radius:999px;}
+.results-eyebrow{font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--text-dim);}
+.reveal-headline-back{font-family:'Nunito',sans-serif;font-weight:900;font-size:clamp(15px,2.4vw,20px);color:var(--cream);line-height:1.35;padding-bottom:12px;border-bottom:1px solid rgba(220,60,140,.15);}
+.reveal-your-tags{display:flex;flex-wrap:wrap;gap:6px;}
 .reveal-tag{padding:4px 11px;border-radius:999px;background:rgba(220,60,140,.14);border:1px solid rgba(220,60,140,.32);font-size:11px;color:rgba(255,200,228,.85);}
-.reveal-value-cards{display:flex;gap:10px;flex-wrap:wrap;padding:6px 0 10px;}
+.reveal-value-cards{display:flex;gap:10px;flex-wrap:wrap;}
 .reveal-vcard{display:flex;flex-direction:column;align-items:center;gap:3px;padding:8px 14px;border-radius:12px;background:rgba(220,60,140,.1);border:1.5px solid rgba(220,60,140,.28);flex:1;min-width:90px;}
 .reveal-vcard-num{font-family:'Nunito',sans-serif;font-weight:900;font-size:17px;background:linear-gradient(135deg,var(--hot),var(--purple));-webkit-background-clip:text;background-clip:text;color:transparent;}
 .reveal-vcard-label{font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--text-dim);text-align:center;}
-.reveal-context{font-size:clamp(12px,1.4vw,13px);color:rgba(255,200,228,.78);line-height:1.78;padding:10px 0;}
+.reveal-context{font-size:clamp(12px,1.4vw,13px);color:rgba(255,200,228,.78);line-height:1.78;}
 .reveal-context strong{color:var(--hot);}
 .reveal-context em{color:var(--purple);}
-.reveal-source-link{font-size:11px;color:rgba(220,60,140,.6);text-decoration:none;border-bottom:1px solid rgba(220,60,140,.25);padding-bottom:1px;}
+.reveal-source-link{font-size:11px;color:rgba(220,60,140,.75);text-decoration:none;border-bottom:1px solid rgba(220,60,140,.25);padding-bottom:1px;}
 .reveal-source-link:hover{color:var(--rose);}
-.reveal-next-btn{font-family:'Nunito',sans-serif;font-weight:900;font-size:clamp(13px,1.8vw,15px);letter-spacing:.06em;color:var(--cream);cursor:pointer;border:none;padding:11px 28px;border-radius:14px;background:linear-gradient(135deg,var(--hot) 0%,var(--rose) 55%,var(--berry) 100%);box-shadow:0 6px 28px rgba(220,60,140,.4);transition:all .22s cubic-bezier(.34,1.56,.64,1);animation:ctaPulse 3s ease-in-out infinite;margin-top:8px;align-self:flex-start;flex-shrink:0;}
+.reveal-next-btn{font-family:'Nunito',sans-serif;font-weight:900;font-size:clamp(13px,1.8vw,15px);letter-spacing:.06em;color:var(--cream);cursor:pointer;border:none;padding:11px 28px;border-radius:14px;background:linear-gradient(135deg,var(--hot) 0%,var(--rose) 55%,var(--berry) 100%);box-shadow:0 6px 28px rgba(220,60,140,.4);transition:all .22s cubic-bezier(.34,1.56,.64,1);animation:ctaPulse 3s ease-in-out infinite;align-self:flex-start;flex-shrink:0;}
 @keyframes ctaPulse{0%,100%{box-shadow:0 6px 28px rgba(220,60,140,.4)}50%{box-shadow:0 10px 44px rgba(220,60,140,.65)}}
 .reveal-next-btn:hover{transform:translateY(-3px) scale(1.04);animation:none;}
+.scroll-cue{font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--text-dim);text-align:center;display:flex;align-items:center;justify-content:center;gap:6px;animation:breathe 2.4s ease-in-out infinite;}
 
 .completion-card{background:rgba(12,0,6,.9);border:1.5px solid var(--card-border-bright);box-shadow:var(--pop-glow);border-radius:24px;padding:38px 28px;text-align:center;position:relative;overflow:hidden;}
 .completion-card::before{content:'';position:absolute;top:0;left:12%;right:12%;height:1.5px;background:linear-gradient(90deg,transparent,var(--rose) 35%,var(--hot) 50%,var(--rose) 65%,transparent);box-shadow:0 0 10px var(--rose);border-radius:999px;}
@@ -153,6 +162,12 @@ input[type=range].val-slider{width:100%;accent-color:var(--hot);height:5px;curso
 .pattern-note{background:rgba(220,60,140,.06);border:1.5px dashed rgba(220,60,140,.22);border-radius:14px;padding:18px 22px;font-size:clamp(12px,1.5vw,14px);color:rgba(255,200,224,.82);line-height:1.75;margin:16px auto;text-align:left;max-width:540px;}
 .pattern-note strong{color:var(--hot);}
 .pattern-note em{color:var(--purple);}
+
+.sources-list{text-align:left;max-width:560px;margin:0 auto;display:grid;gap:7px;padding:14px 18px;border-radius:14px;background:rgba(220,60,140,.05);border:1px solid rgba(220,60,140,.16);}
+.sources-title{font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--text-dim);margin-bottom:4px;}
+.source-row{font-size:11px;line-height:1.6;color:rgba(255,200,228,.7);}
+.source-row a{color:rgba(255,120,170,.9);text-decoration:none;border-bottom:1px solid rgba(220,60,140,.3);}
+.source-row a:hover{color:var(--rose);}
 </style>
 </head>
 <body>
@@ -179,6 +194,7 @@ input[type=range].val-slider{width:100%;accent-color:var(--hot);height:5px;curso
       I am collecting data on how media covers a particular group of people in relation to a new technology — whether the coverage frames them as <strong>at risk</strong>, <strong>left behind</strong>, <strong>empowered</strong>, or <strong>to blame</strong>.<br><br>
       Read each headline carefully. <strong>Tag what you see — not what you expect.</strong> Your classifications are the data.
     </div>
+    <div class="ai-disclaimer">AI helped me with this. There might be inaccuracies.</div>
     <div class="agenda-chips">
       <div class="agenda-chip"><div class="dot"></div>Real published headlines</div>
       <div class="agenda-chip"><div class="dot"></div>2023 – 2026</div>
@@ -188,7 +204,7 @@ input[type=range].val-slider{width:100%;accent-color:var(--hot);height:5px;curso
 
   <section class="app" id="taskCard">
     <header class="task-header">
-      <div class="task-title">✦ Read this headline and classify it — select all tags that apply</div>
+      <div class="task-title">✦ Read this headline and classify it — one question at a time</div>
       <div class="task-meta">
         <div class="meta-chip"><div class="dot"></div>Headline classification</div>
         <div class="meta-chip"><div class="dot"></div>Active</div>
@@ -201,113 +217,30 @@ input[type=range].val-slider{width:100%;accent-color:var(--hot);height:5px;curso
     </header>
 
     <div class="headline-frame" id="headlineFrame">
-      <div class="headline-counter" id="headlineCounter">Headline 1 of 12</div>
+      <div class="headline-counter" id="headlineCounter">Headline 1 of 16</div>
       <div class="headline-text" id="headlineText">Loading…</div>
       <div class="headline-deck" id="headlineDeck"></div>
       <div class="headline-outlet-row">
         <div class="headline-outlet" id="headlineOutlet"></div>
         <div class="headline-year" id="headlineYear"></div>
       </div>
-
-      <div class="reveal-overlay" id="revealOverlay">
-        <div class="reveal-headline-back" id="revealHeadline"></div>
-        <div class="reveal-your-tags" id="revealTagsRow"></div>
-        <div class="reveal-value-cards" id="revealValueCards"></div>
-        <div class="reveal-context" id="revealContext"></div>
-        <a class="reveal-source-link" id="revealSourceLink" href="#" target="_blank" rel="noopener">↗ Read the full article</a>
-        <button class="reveal-next-btn" id="revealNextBtn">Next headline ✦</button>
-      </div>
     </div>
 
-    <div class="tag-panel">
-      <div class="tag-instruction">
-        Classify this headline ✦
-        <span>Select all that apply. Go with your first reading.</span>
-      </div>
+    <div class="step-indicator">
+      <div class="step-label" id="stepLabel">Question 1 of 5</div>
+      <div class="step-dots" id="stepDots"></div>
+    </div>
 
-      <div class="tag-section">
-        <div class="tag-section-label">✦ How does this headline frame the subject?</div>
-        <div class="tag-group">
-          <div class="tag" data-group="frame" data-value="at risk / vulnerable">at risk / vulnerable</div>
-          <div class="tag" data-group="frame" data-value="left behind / excluded">left behind / excluded</div>
-          <div class="tag" data-group="frame" data-value="empowered / opportunity">empowered / opportunity</div>
-          <div class="tag" data-group="frame" data-value="to blame / responsible">to blame / responsible</div>
-          <div class="tag" data-group="frame" data-value="warned / urged to act">warned / urged to act</div>
-          <div class="tag" data-group="frame" data-value="victimized / harmed">victimized / harmed</div>
-          <div class="tag" data-group="frame" data-value="celebrated / successful">celebrated / successful</div>
-          <div class="tag" data-group="frame" data-value="absent / invisible">absent / invisible</div>
-        </div>
-      </div>
+    <div class="tag-panel" id="stepPanel"><!-- step content injected here --></div>
 
-      <div class="tag-section">
-        <div class="tag-section-label">✦ Tone of the headline</div>
-        <div class="tag-group">
-          <div class="tag" data-group="tone" data-value="alarming">alarming</div>
-          <div class="tag" data-group="tone" data-value="optimistic">optimistic</div>
-          <div class="tag" data-group="tone" data-value="neutral / informational">neutral / informational</div>
-          <div class="tag" data-group="tone" data-value="condescending">condescending</div>
-          <div class="tag" data-group="tone" data-value="urgent">urgent</div>
-          <div class="tag" data-group="tone" data-value="dismissive">dismissive</div>
-        </div>
-      </div>
-
-      <div class="tag-section">
-        <div class="tag-section-label">✦ Who holds power in this headline?</div>
-        <div class="tag-group">
-          <div class="tag" data-group="power" data-value="the subject acts">the subject acts</div>
-          <div class="tag" data-group="power" data-value="the subject is acted upon">the subject is acted upon</div>
-          <div class="tag" data-group="power" data-value="institutions / companies act">institutions / companies act</div>
-          <div class="tag" data-group="power" data-value="unclear">unclear</div>
-        </div>
-      </div>
-
-      <div class="value-section">
-        <div class="value-section-title">
-          Rate this headline ✦
-          <span>Based only on what you just read.</span>
-        </div>
-
-        <div class="value-row">
-          <div class="value-label">
-            ✦ How concerning is this headline?
-            <span class="val-readout" id="concernReadout">5 / 10</span>
-          </div>
-          <input type="range" class="val-slider" id="concernSlider" min="1" max="10" value="5" step="1"/>
-          <div class="slider-ends"><span>Not concerning</span><span>Deeply alarming</span></div>
-        </div>
-
-        <div class="value-row">
-          <div class="value-label">
-            ✦ How fairly does this headline represent its subject?
-            <span class="val-readout" id="fairnessReadout">5 / 10</span>
-          </div>
-          <input type="range" class="val-slider" id="fairnessSlider" min="1" max="10" value="5" step="1"/>
-          <div class="slider-ends"><span>Very unfairly</span><span>Very fairly</span></div>
-        </div>
-
-        <div class="value-row">
-          <div class="value-label">
-            ✦ How much responsibility does this headline place on the subject?
-            <span class="val-readout" id="responsibilityReadout">5 / 10</span>
-          </div>
-          <input type="range" class="val-slider" id="responsibilitySlider" min="1" max="10" value="5" step="1"/>
-          <div class="slider-ends"><span>None — external forces</span><span>Full — their own choice</span></div>
-        </div>
-
-        <div class="tag-section">
-          <div class="tag-section-label">✦ Your own reading (optional)</div>
-          <textarea id="freeText" class="free-input" rows="2" placeholder="What does this headline make you think or feel?"></textarea>
-        </div>
-      </div>
-
-      <div class="submit-row">
-        <div class="selection-summary" id="selectionSummary">Select tags to submit</div>
-        <button id="submitBtn" class="btn primary" disabled>Submit ✦</button>
-      </div>
+    <div class="step-nav">
+      <button id="backBtn" class="btn ghost" disabled>← Back</button>
+      <div class="nav-status" id="navStatus">Select at least one tag</div>
+      <button id="nextBtn" class="btn primary" disabled>Next ✦</button>
     </div>
   </section>
 
-  <div id="completionSlot"></div>
+  <div id="resultsSlot"></div>
 </main>
 
 <script>
@@ -325,7 +258,7 @@ const HEADLINE_CATALOG = [
   {
     id: "cnbc_gender_gap",
     headline: "Generative AI like ChatGPT is at risk of creating new gender gap at work",
-    deck: "Women were 16 percentage points less likely than men to use ChatGPT for job tasks, even when comparing workers within the same occupation.",
+    deck: "Women were 16 percentage points less likely than men to use ChatGPT for job tasks, even when comparing workers within the same occupation. (Update: by late 2025, OpenAI reported usage had roughly equalized — a reminder that adoption-gap snapshots can shift fast.)",
     outlet: "CNBC",
     year: "2025",
     category: "gap",
@@ -380,7 +313,7 @@ const HEADLINE_CATALOG = [
     year: "2025",
     category: "harm",
     url: "https://www.newsweek.com/ai-misogyny-gender-gap-bias-technology-2095557",
-    context: "One of the more comprehensive mainstream framings — it covers both the adoption gap and the harm gap in the same piece. The word <em>\"divide\"</em> is interesting: it implies two sides of a distance, which is more neutral than <em>\"threat\"</em> or <em>\"crisis.\"</em> <strong>The headline is accurate but does not convey the scale: 90% of deepfake victims are women, not 50%.</strong>"
+    context: "One of the more comprehensive mainstream framings — it covers both the adoption gap and the harm gap in the same piece. The word <em>\"divide\"</em> is interesting: it implies two sides of a distance, which is more neutral than <em>\"threat\"</em> or <em>\"crisis.\"</em> <strong>The headline is accurate but does not convey the scale: roughly 90–99% of deepfake victims are women, not 50%, by most published estimates.</strong>"
   },
   {
     id: "lse_deepfakes_misogyny",
@@ -405,12 +338,12 @@ const HEADLINE_CATALOG = [
   {
     id: "forbes_competence_penalty",
     headline: "Women Who Use AI At Work Face A Predictable 'Competence Penalty'",
-    deck: "Women who use AI tools at work are judged as less competent than men who use the same tools for the same tasks.",
-    outlet: "Forbes",
+    deck: "A Harvard Business Review study of nearly 29,000 software engineers found women who used AI received a 13% competence penalty versus 6% for men — and male non-adopters judged female AI users 26% more harshly.",
+    outlet: "Forbes (Michelle Travis, Aug. 26, 2025)",
     year: "2025",
     category: "harm",
     url: "https://womenandtech.indiana.edu/about/news/2025/mind-the-gap.html",
-    context: "This headline reveals the double bind directly: <strong>women are blamed for not using AI enough, and penalized in their competence ratings when they do.</strong> The word <em>\"predictable\"</em> is doing significant work — it signals that this is a known, documented pattern, not a surprising finding. The framing here centers women's experience, not economic productivity."
+    context: "This headline reveals the double bind directly: <strong>women are blamed for not using AI enough, and penalized in their competence ratings when they do.</strong> The word <em>\"predictable\"</em> is doing significant work — it signals that this is a known, documented pattern, not a surprising finding. The underlying research (Gai, Hou &amp; Tu, published in HBR) is one of the most-cited studies behind this whole story cluster."
   },
   {
     id: "deloitte_adoption_gap",
@@ -445,12 +378,12 @@ const HEADLINE_CATALOG = [
   {
     id: "tech_layoffs_women",
     headline: "Women were disproportionately affected by the latest tech layoffs",
-    deck: "From October 2022 to June 2023, women made up 45% of laid-off tech employees — while holding only 26% of tech roles. The departments where women had gained ground were the first cut.",
+    deck: "From October 2022 to June 2023, women made up 45% of laid-off tech employees — while holding only about 26% of tech roles. The departments where women had gained ground were the first cut.",
     outlet: "Axios",
     year: "2023",
     category: "harm",
     url: "https://www.axios.com/2023/07/06/tech-layoffs-2023-female-workers",
-    context: "This headline describes a structural pattern in neutral language — <em>\"disproportionately affected.\"</em> The data is stark: women were nearly half of layoffs while holding a quarter of jobs. The explanation offered in most coverage is that women held HR and marketing roles — the first cut. <strong>What goes unsaid: those were the roles women had actually been able to enter. The glass ceiling above; the trapdoor below.</strong>"
+    context: "This headline describes a structural pattern in neutral language — <em>\"disproportionately affected.\"</em> The data is stark: women were nearly half of layoffs while holding roughly a quarter of jobs. The explanation offered in most coverage is that women held HR and marketing roles — the first cut. <strong>What goes unsaid: those were the roles women had actually been able to enter. The glass ceiling above; the trapdoor below.</strong>"
   },
   {
     id: "ai_layoffs_potential",
@@ -495,28 +428,16 @@ function tick(){const n=new Date(),p=v=>String(v).padStart(2,'0');document.getEl
 setInterval(tick,1000);tick();
 
 const SESSION_ID='sess45-'+Math.random().toString(36).slice(2,10);
-let current=0;
+const TOTAL_STEPS=5;
+let current=0;       // which headline
+let stepIdx=0;        // which question step (0-4) within the headline
 const annotations={};
 
-document.querySelectorAll('.tag').forEach(tag=>{
-  tag.addEventListener('click',()=>{tag.classList.toggle('selected');updateSummary();});
-});
-function getSelected(){return [...document.querySelectorAll('.tag.selected')].map(t=>t.dataset.value);}
-function updateSummary(){
-  const n=getSelected().length;
-  document.getElementById('selectionSummary').textContent=n===0?'Select tags to submit':`${n} tag${n===1?'':'s'} selected`;
-  document.getElementById('submitBtn').disabled=(n===0);
-}
-document.getElementById('freeText').addEventListener('input',updateSummary);
-
-['concern','fairness','responsibility'].forEach(id=>{
-  document.getElementById(id+'Slider').addEventListener('input',function(){
-    document.getElementById(id+'Readout').textContent=this.value+' / 10';
-  });
-});
+// per-headline working state, reset on loadHeadline()
+let state={frame:[],tone:[],power:[],concern:5,fairness:5,responsibility:5,free:''};
 
 function loadHeadline(idx){
-  if(idx>=HEADLINE_CATALOG.length){showCompletion();return;}
+  if(idx>=HEADLINE_CATALOG.length){showFinalCompletion();return;}
   const h=HEADLINE_CATALOG[idx];
   document.getElementById('headlineCounter').textContent=`Headline ${idx+1} of ${HEADLINE_CATALOG.length}`;
   document.getElementById('headlineText').textContent=h.headline;
@@ -526,64 +447,181 @@ function loadHeadline(idx){
   const pct=HEADLINE_CATALOG.length>1?(idx/(HEADLINE_CATALOG.length-1))*100:0;
   document.getElementById('progressBar').style.width=pct+'%';
   document.getElementById('progressText').textContent=`Headline ${idx+1} of ${HEADLINE_CATALOG.length}  ✦  Classify to continue`;
-  updateCatChip(h);
-  document.querySelectorAll('.tag').forEach(t=>t.classList.remove('selected'));
-  document.getElementById('freeText').value='';
-  ['concern','fairness','responsibility'].forEach(id=>{
-    document.getElementById(id+'Slider').value=5;
-    document.getElementById(id+'Readout').textContent='5 / 10';
-  });
-  updateSummary();
-}
-
-function updateCatChip(h){
   const chip=document.getElementById('catChip');
-  chip.innerHTML=`<div class="dot"></div>Headline ${current+1} of ${HEADLINE_CATALOG.length}`;
-  chip.style.color='rgba(255,180,220,.6)';
+  chip.innerHTML=`<div class="dot"></div>Headline ${idx+1} of ${HEADLINE_CATALOG.length}`;
+  state={frame:[],tone:[],power:[],concern:5,fairness:5,responsibility:5,free:''};
+  stepIdx=0;
+  renderStep();
 }
 
-document.getElementById('submitBtn').addEventListener('click',()=>{
-  const tags=getSelected();
-  if(!tags.length)return;
-  const free=document.getElementById('freeText').value.trim();
-  const concern=parseInt(document.getElementById('concernSlider').value);
-  const fairness=parseInt(document.getElementById('fairnessSlider').value);
-  const responsibility=parseInt(document.getElementById('responsibilitySlider').value);
+function renderDots(){
+  const dotsWrap=document.getElementById('stepDots');
+  dotsWrap.innerHTML='';
+  for(let i=0;i<TOTAL_STEPS;i++){
+    const d=document.createElement('div');
+    d.className='step-dot'+(i<stepIdx?' done':i===stepIdx?' active':'');
+    dotsWrap.appendChild(d);
+  }
+  document.getElementById('stepLabel').textContent=`Question ${stepIdx+1} of ${TOTAL_STEPS}`;
+}
+
+function tagGroupHTML(group,options,selectedArr){
+  return `<div class="tag-group" data-group="${group}">${options.map(o=>
+    `<div class="tag${selectedArr.includes(o)?' selected':''}" data-value="${o}">${o}</div>`
+  ).join('')}</div>`;
+}
+
+function renderStep(){
+  renderDots();
+  const panel=document.getElementById('stepPanel');
+  const backBtn=document.getElementById('backBtn');
+  const nextBtn=document.getElementById('nextBtn');
+  backBtn.disabled = stepIdx===0;
+  nextBtn.textContent = stepIdx===TOTAL_STEPS-1 ? 'Submit ✦' : 'Next ✦';
+
+  if(stepIdx===0){
+    panel.innerHTML=`
+      <div class="tag-instruction">✦ How does this headline frame the subject?<span>Select all that apply.</span></div>
+      <div class="tag-section">${tagGroupHTML('frame',["at risk / vulnerable","left behind / excluded","empowered / opportunity","to blame / responsible","warned / urged to act","victimized / harmed","celebrated / successful","absent / invisible"],state.frame)}</div>`;
+  } else if(stepIdx===1){
+    panel.innerHTML=`
+      <div class="tag-instruction">✦ Tone of the headline<span>Select all that apply.</span></div>
+      <div class="tag-section">${tagGroupHTML('tone',["alarming","optimistic","neutral / informational","condescending","urgent","dismissive"],state.tone)}</div>`;
+  } else if(stepIdx===2){
+    panel.innerHTML=`
+      <div class="tag-instruction">✦ Who holds power in this headline?<span>Select all that apply.</span></div>
+      <div class="tag-section">${tagGroupHTML('power',["the subject acts","the subject is acted upon","institutions / companies act","unclear"],state.power)}</div>`;
+  } else if(stepIdx===3){
+    panel.innerHTML=`
+      <div class="tag-instruction">✦ Rate this headline<span>Based only on what you just read.</span></div>
+      <div class="value-row">
+        <div class="value-label">✦ How concerning is this headline?<span class="val-readout" id="concernReadout">${state.concern} / 10</span></div>
+        <input type="range" class="val-slider" id="concernSlider" min="1" max="10" step="1" value="${state.concern}"/>
+        <div class="slider-ends"><span>Not concerning</span><span>Deeply alarming</span></div>
+      </div>
+      <div class="value-row">
+        <div class="value-label">✦ How fairly does this headline represent its subject?<span class="val-readout" id="fairnessReadout">${state.fairness} / 10</span></div>
+        <input type="range" class="val-slider" id="fairnessSlider" min="1" max="10" step="1" value="${state.fairness}"/>
+        <div class="slider-ends"><span>Very unfairly</span><span>Very fairly</span></div>
+      </div>
+      <div class="value-row">
+        <div class="value-label">✦ How much responsibility does this headline place on the subject?<span class="val-readout" id="responsibilityReadout">${state.responsibility} / 10</span></div>
+        <input type="range" class="val-slider" id="responsibilitySlider" min="1" max="10" step="1" value="${state.responsibility}"/>
+        <div class="slider-ends"><span>None — external forces</span><span>Full — their own choice</span></div>
+      </div>`;
+    ['concern','fairness','responsibility'].forEach(id=>{
+      document.getElementById(id+'Slider').addEventListener('input',function(){
+        state[id]=parseInt(this.value);
+        document.getElementById(id+'Readout').textContent=this.value+' / 10';
+      });
+    });
+  } else if(stepIdx===4){
+    panel.innerHTML=`
+      <div class="tag-instruction">✦ Your own reading<span>Optional — what does this headline make you think or feel?</span></div>
+      <textarea id="freeText" class="free-input" rows="3" placeholder="Optional...">${state.free}</textarea>`;
+    document.getElementById('freeText').addEventListener('input',function(){state.free=this.value;});
+  }
+
+  panel.querySelectorAll('.tag').forEach(tag=>{
+    tag.addEventListener('click',()=>{
+      const group=tag.closest('.tag-group').dataset.group;
+      const val=tag.dataset.value;
+      const arr=state[group];
+      const i=arr.indexOf(val);
+      if(i>=0) arr.splice(i,1); else arr.push(val);
+      tag.classList.toggle('selected');
+      updateNav();
+    });
+  });
+
+  updateNav();
+}
+
+function stepRequiresTags(){return stepIdx>=0 && stepIdx<=2;}
+function currentGroup(){return stepIdx===0?'frame':stepIdx===1?'tone':stepIdx===2?'power':null;}
+
+function updateNav(){
+  const nextBtn=document.getElementById('nextBtn');
+  const status=document.getElementById('navStatus');
+  if(stepRequiresTags()){
+    const n=state[currentGroup()].length;
+    status.textContent = n===0 ? 'Select at least one tag' : `${n} tag${n===1?'':'s'} selected`;
+    nextBtn.disabled = n===0;
+  } else if(stepIdx===3){
+    status.textContent='Drag the sliders, then continue';
+    nextBtn.disabled=false;
+  } else {
+    status.textContent='Optional — share a thought or skip ahead';
+    nextBtn.disabled=false;
+  }
+}
+
+document.getElementById('backBtn').addEventListener('click',()=>{
+  if(stepIdx>0){stepIdx--;renderStep();}
+});
+
+document.getElementById('nextBtn').addEventListener('click',()=>{
+  if(stepIdx<TOTAL_STEPS-1){
+    stepIdx++;renderStep();
+  } else {
+    submitHeadline();
+  }
+});
+
+function submitHeadline(){
   const h=HEADLINE_CATALOG[current];
+  const tags=[...state.frame,...state.tone,...state.power];
+  const free=state.free.trim();
+  const {concern,fairness,responsibility}=state;
   annotations[current]={tags,free,concern,fairness,responsibility,category:h.category};
   if(typeof window._writeAnnotation45==='function'){
     window._writeAnnotation45({headlineId:h.id,headline:h.headline,outlet:h.outlet,year:h.year,category:h.category,tags,freeText:free,concern,fairness,responsibility,sessionId:SESSION_ID});
   }
-  showReveal(current,tags,free,concern,fairness,responsibility,h);
-});
-
-function showReveal(idx,tags,free,concern,fairness,responsibility,h){
-  const overlay=document.getElementById('revealOverlay');
-  document.getElementById('revealHeadline').textContent=h.headline;
-  const row=document.getElementById('revealTagsRow');
-  row.innerHTML='';
-  [...tags,...(free?['"'+free+'"']:[])].forEach(t=>{const d=document.createElement('div');d.className='reveal-tag';d.textContent=t;row.appendChild(d);});
-  const cards=document.getElementById('revealValueCards');
-  cards.innerHTML='';
-  [{label:'Concern',val:concern+'/10'},{label:'Fairness',val:fairness+'/10'},{label:'Responsibility',val:responsibility+'/10'}].forEach(c=>{
-    cards.innerHTML+=`<div class="reveal-vcard"><span class="reveal-vcard-num">${c.val}</span><span class="reveal-vcard-label">${c.label}</span></div>`;
-  });
-  document.getElementById('revealContext').innerHTML=h.context;
-  document.getElementById('revealSourceLink').href=h.url;
-  document.getElementById('revealSourceLink').textContent='↗ Read the full article — '+h.outlet;
-  overlay.classList.add('show');
+  showResults(tags,free,concern,fairness,responsibility,h);
 }
 
-document.getElementById('revealNextBtn').addEventListener('click',()=>{
-  document.getElementById('revealOverlay').classList.remove('show');
-  current++;
-  loadHeadline(current);
-});
-
-function showCompletion(){
-  document.getElementById('taskCard').style.opacity='.4';
+function showResults(tags,free,concern,fairness,responsibility,h){
+  document.getElementById('taskCard').style.opacity='.35';
   document.getElementById('taskCard').style.pointerEvents='none';
-  const slot=document.getElementById('completionSlot');
+
+  const tagsRowHTML=[...tags,...(free?['"'+free+'"']:[])].map(t=>`<div class="reveal-tag">${t}</div>`).join('');
+  const cardsHTML=[{label:'Concern',val:concern+'/10'},{label:'Fairness',val:fairness+'/10'},{label:'Responsibility',val:responsibility+'/10'}]
+    .map(c=>`<div class="reveal-vcard"><span class="reveal-vcard-num">${c.val}</span><span class="reveal-vcard-label">${c.label}</span></div>`).join('');
+
+  const isLast = current>=HEADLINE_CATALOG.length-1;
+
+  const slot=document.getElementById('resultsSlot');
+  slot.innerHTML=`
+    <div class="scroll-cue">↓ scroll down for your results ↓</div>
+    <div class="results-panel" id="resultsPanel">
+      <div class="results-eyebrow">✦ CAREBOT-30 · Annotation Recorded</div>
+      <div class="reveal-headline-back">${h.headline}</div>
+      <div class="reveal-your-tags">${tagsRowHTML}</div>
+      <div class="reveal-value-cards">${cardsHTML}</div>
+      <div class="reveal-context">${h.context}</div>
+      <a class="reveal-source-link" href="${h.url}" target="_blank" rel="noopener">↗ Read the full article — ${h.outlet}</a>
+      <button class="reveal-next-btn" id="revealNextBtn">${isLast?'See your summary ✦':'Next headline ✦'}</button>
+    </div>`;
+
+  document.getElementById('resultsPanel').scrollIntoView({behavior:'smooth',block:'start'});
+
+  document.getElementById('revealNextBtn').addEventListener('click',()=>{
+    document.getElementById('taskCard').style.opacity='1';
+    document.getElementById('taskCard').style.pointerEvents='auto';
+    slot.innerHTML='';
+    current++;
+    if(current>=HEADLINE_CATALOG.length){
+      showFinalCompletion();
+    } else {
+      loadHeadline(current);
+      document.getElementById('taskCard').scrollIntoView({behavior:'smooth',block:'start'});
+    }
+  });
+}
+
+function showFinalCompletion(){
+  document.getElementById('taskCard').style.display='none';
+  const slot=document.getElementById('resultsSlot');
   if(document.getElementById('final-card45'))return;
 
   const harmAnns=Object.values(annotations).filter(a=>['harm','bias'].includes(a.category));
@@ -597,7 +635,6 @@ function showCompletion(){
   const counts={};allTags.forEach(t=>{counts[t]=(counts[t]||0)+1;});
   const topTags=Object.entries(counts).sort((a,b)=>b[1]-a[1]).slice(0,4).map(([t])=>t).join(' · ');
 
-  let patternNote='';
   const lines=[];
   if(hConcern!=null&&gConcern!=null){
     if(hConcern>gConcern) lines.push(`You rated <strong>harm/violence headlines</strong> more concerning (${hConcern.toFixed(1)}/10) than <strong>adoption-gap headlines</strong> (${gConcern.toFixed(1)}/10).`);
@@ -609,7 +646,9 @@ function showCompletion(){
   if(hFair!=null&&gFair!=null){
     lines.push(`You rated <strong>${hFair>gFair?'harm':'gap'} headlines</strong> as fairer to their subject (${Math.max(hFair,gFair).toFixed(1)}/10 vs ${Math.min(hFair,gFair).toFixed(1)}/10).`);
   }
-  patternNote=lines.length?lines.join(' '):'Your classifications are recorded. CAREBOT-30 will analyze the patterns as more participants respond.';
+  const patternNote=lines.length?lines.join(' '):'Your classifications are recorded. CAREBOT-30 will analyze the patterns as more participants respond.';
+
+  const sourcesHTML=HEADLINE_CATALOG.map(h=>`<div class="source-row">${h.outlet} (${h.year}) — <a href="${h.url}" target="_blank" rel="noopener">${h.headline}</a></div>`).join('');
 
   const d=document.createElement('div');
   d.id='final-card45';d.className='completion-card';
@@ -622,13 +661,18 @@ function showCompletion(){
       ${patternNote}<br><br>
       All ${HEADLINE_CATALOG.length} headlines are about the same subject: <strong>women and AI</strong>. Some frame women as laggards who need to adopt faster. Others document AI as a weapon used against women at scale. Others show that the jobs women hold are the most likely to be automated — and that women were disproportionately laid off in the same tech wave companies blamed on AI. <em>These facts coexist in the same media landscape.</em> The paradox — women are blamed for not using a technology that simultaneously threatens their jobs, their safety, and their livelihoods — is almost never named in a single article. <strong>CAREBOT-30 is trained to name it.</strong>
     </div>
+    <div class="sources-list">
+      <div class="sources-title">✦ Sources for every headline</div>
+      ${sourcesHTML}
+    </div>
     <a class="btn primary"
        href="carebot07-hit.html"
        target="_blank" rel="noopener"
-       style="margin:0 auto;text-decoration:none;display:inline-flex;">
+       style="margin:16px auto 0;text-decoration:none;display:inline-flex;">
       Advance to the next task ✦
     </a>`;
   slot.appendChild(d);
+  d.scrollIntoView({behavior:'smooth',block:'start'});
 }
 
 loadHeadline(0);
