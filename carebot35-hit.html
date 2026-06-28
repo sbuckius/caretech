@@ -103,7 +103,6 @@ input[type=range]{width:100%;accent-color:var(--pink);height:4px;cursor:pointer;
 .cb-input{flex:1;padding:9px 13px;background:rgba(255,255,255,.05);border:1.5px solid var(--border);border-radius:11px;font-family:var(--fb);font-weight:600;font-size:13px;color:var(--cream);outline:none;transition:border-color .2s;min-width:0;}
 .cb-input:focus{border-color:var(--candy);box-shadow:0 0 0 3px rgba(255,133,179,.1);}
 .cb-input::placeholder{color:var(--muted);}
-.cb-name-in{max-width:148px;flex:0 0 148px;}
 .cb-btn{font-family:var(--fh);font-weight:900;font-size:12px;color:var(--cream);display:inline-flex;align-items:center;gap:5px;padding:9px 17px;border-radius:11px;border:1.5px solid var(--border2);cursor:pointer;transition:all .2s;white-space:nowrap;appearance:none;}
 .cb-btn.primary{background:linear-gradient(135deg,var(--pink),var(--berry));box-shadow:0 4px 16px rgba(255,60,120,.28);}
 .cb-btn.primary:hover{transform:translateY(-2px);}
@@ -145,6 +144,15 @@ input[type=range]{width:100%;accent-color:var(--pink);height:4px;cursor:pointer;
 .cb-mbtns{display:flex;gap:9px;}
 .cb-err{font-size:11px;color:var(--pink);margin-top:6px;min-height:16px;}
 .cb-wmark{font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,140,185,.1);padding-bottom:8px;}
+.fnote{font-size:9px;color:var(--candy);text-decoration:none;vertical-align:super;margin-left:1px;font-weight:700;}
+.fnote:hover{text-decoration:underline;}
+.ai-disclosure{width:100%;max-width:700px;text-align:center;font-size:10.5px;color:var(--muted);font-style:italic;padding:0 8px 2px;line-height:1.5;}
+.chip-row{display:flex;gap:7px;margin-bottom:10px;flex-wrap:wrap;}
+.chip-btn{appearance:none;font-family:var(--fb);font-weight:700;font-size:11px;padding:6px 13px;border-radius:999px;cursor:pointer;border:1.5px solid var(--border);background:rgba(255,255,255,.04);color:var(--muted);transition:all .15s;}
+.chip-btn:hover{background:rgba(255,60,120,.12);border-color:var(--border2);color:var(--blush);}
+.chip-btn.active{background:rgba(255,60,120,.22);border-color:var(--pink);color:var(--cream);}
+.mod-divider{height:1px;background:rgba(255,100,150,.15);margin:16px 0;}
+.mod-sectiontag{font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:var(--candy);font-weight:700;margin-bottom:8px;margin-top:2px;}
 </style>
 </head>
 <body>
@@ -179,11 +187,13 @@ input[type=range]{width:100%;accent-color:var(--pink);height:4px;cursor:pointer;
     <div class="irony-eyebrow">✦ CAREBOT-35 · The Irony</div>
     <div class="irony-title">Mothers have exactly the skills the AI workforce needs. Mothers are also leaving the workforce at record rates. Both of these things are true right now.</div>
     <div class="irony-body">
-      The University of Phoenix <em>M.O.M. Report</em> (2024) identifies the skills motherhood develops as <strong>adaptability, resilience, communication, time management, and leadership</strong> — the exact skills the AI economy calls most essential. LinkedIn's Work Change Report (2025) confirms communication is the top skill sought by employers. The WEF (2025) notes AI roles are twice as likely to offer parental leave. The message: <em>mothers, your skills are perfect for the AI future.</em><br><br>
-      Meanwhile: <strong>455,000 women left the workforce between January and August 2025</strong> (Bureau of Labor Statistics). Return-to-office mandates among Fortune 500 firms doubled from 13% to 24% in early 2025. Labor force participation for mothers with children under 5 dropped nearly <strong>3 percentage points</strong> in the first half of 2025. Average annual center-based infant care cost: <strong>$15,516</strong>. Childcare costs now exceed mortgage payments in most US cities. <em>The message: mothers, the system cannot accommodate you.</em><br><br>
+      The University of Phoenix <em>M.O.M. Report</em> (2024) identifies the skills motherhood develops as <strong>adaptability, resilience, communication, time management, and leadership</strong> — the exact skills the AI economy calls most essential.<a class="fnote" href="https://phoenix.edu/content/dam/edu/research/doc/white-papers/educational-instructional-technology/2024/mom-report-motherhood-skills-s-smith.pdf" target="_blank">[1]</a> LinkedIn's Work Change Report (2025) confirms communication is the top skill sought by employers.<a class="fnote" href="https://aiskills.eu/news/the-future-of-ai-skills-what-to-learn-in-2026/" target="_blank">[2]</a> The World Economic Forum (Feb 2026) finds AI roles are roughly twice as likely to offer parental leave and three times as likely to offer remote work.<a class="fnote" href="https://www.weforum.org/stories/2026/02/ai-improving-wages-job-quality/" target="_blank">[3]</a> The message: <em>mothers, your skills are perfect for the AI future.</em><br><br>
+      Meanwhile: <strong>more than 455,000 women left the workforce between January and August 2025</strong>, per Bureau of Labor Statistics data analyzed by Catalyst.<a class="fnote" href="https://www.cnbc.com/2026/02/02/catalyst-data-caregiving-is-no-1-reason-women-left-workforce-in-2025.html" target="_blank">[4]</a> Full-time return-to-office mandates among Fortune 500 firms nearly doubled, from about 13% to 24%, in the first half of 2025, and labor force participation for mothers with children under 5 dropped nearly <strong>3 percentage points</strong> over the same stretch.<a class="fnote" href="https://fortune.com/2025/10/06/why-are-working-mothers-leaving-great-exit-kpmg-labor-force-participation/" target="_blank">[5]</a> The national average cost of child care reached <strong>$13,128/year</strong> in 2024 — and center-based infant care runs even higher in most states, often exceeding the average mortgage payment.<a class="fnote" href="https://www.childcareaware.org/price-landscape24/" target="_blank">[6]</a> <em>The message: mothers, the system cannot accommodate you.</em><br><br>
       <strong>The irony is structural, not accidental.</strong> The same economy that calls motherhood a masterclass in leadership skills has built no infrastructure to keep mothers employed while raising children.
     </div>
   </div>
+
+  <div class="ai-disclosure">✦ AI helped me with this. There might be inaccuracies.</div>
 
   <!-- TWO-COLUMN EVIDENCE -->
   <div class="two-col">
@@ -213,7 +223,7 @@ input[type=range]{width:100%;accent-color:var(--pink);height:4px;cursor:pointer;
         <div class="cite-src">Source: <a href="https://fortune.com/2025/10/06/why-are-working-mothers-leaving-great-exit-kpmg-labor-force-participation/" target="_blank">Fortune / KPMG, Oct 2025</a></div>
       </div>
       <div class="cite-item">
-        <strong>Catalyst Data (2026)</strong> — Caregiving costs, including childcare, was the #1 reason women left the workforce voluntarily in 2025. Average annual center-based infant care: $15,516 (Child Care Aware of America, 2024).
+        <strong>Catalyst Data (2026)</strong> — Caregiving costs, including childcare, was the #1 reason women left the workforce voluntarily in 2025. National average annual cost of child care: $13,128 (Child Care Aware of America, 2024); center-based infant care runs higher still in most states.
         <div class="cite-src">Source: <a href="https://www.cnbc.com/2026/02/02/catalyst-data-caregiving-is-no-1-reason-women-left-workforce-in-2025.html" target="_blank">CNBC / Catalyst, Feb 2026</a></div>
       </div>
       <div class="cite-item">
@@ -282,7 +292,7 @@ input[type=range]{width:100%;accent-color:var(--pink);height:4px;cursor:pointer;
         <div style="position:absolute;top:0;left:8%;right:8%;height:1px;background:linear-gradient(90deg,transparent,#ff85b3 50%,transparent);border-radius:999px;"></div>
         <div style="font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:var(--candy);font-weight:700;margin-bottom:6px;">✦ Barrier 2</div>
         <div style="font-family:var(--fh);font-weight:900;font-size:13px;color:var(--cream);margin-bottom:6px;">Money</div>
-        <div style="font-size:11px;line-height:1.7;color:var(--muted2);">Mothers earned <strong style="color:var(--cream);">35% less than fathers in 2024</strong> — 65 cents per dollar (Bankrate). Full-time working mothers earn 71.4 cents per dollar compared to fathers (IWPR). If the pay gap doesn't close, mothers on track to earn <strong style="color:var(--cream);">$600,000 less</strong> than male counterparts over 30 years. Meanwhile, center-based infant care costs $15,516/year — in many cities more than the mortgage. The math collapses.</div>
+        <div style="font-size:11px;line-height:1.7;color:var(--muted2);">Mothers earned <strong style="color:var(--cream);">35% less than fathers in 2024</strong> — 65 cents per dollar (Bankrate). Full-time working mothers earn 71.4 cents per dollar compared to fathers (IWPR). If the pay gap doesn't close, mothers on track to earn <strong style="color:var(--cream);">$600,000 less</strong> than male counterparts over 30 years. Meanwhile, the national average cost of child care reached $13,128/year in 2024 — and in many states, infant care alone exceeds the average mortgage payment. The math collapses.</div>
         <div style="margin-top:8px;padding:7px 10px;border-radius:8px;background:rgba(255,255,255,.04);font-size:10px;line-height:1.55;color:var(--muted2);"><strong style="color:var(--candy);">Key stat:</strong> Fathers with children under 18 earn <strong style="color:var(--candy);">25% more</strong> than men without children. The fatherhood premium runs alongside the motherhood penalty — in opposite directions.</div>
         <div style="margin-top:5px;font-size:9.5px;color:var(--muted);font-style:italic;">Sources: <a href="https://www.bankrate.com/banking/savings/motherhood-penalty-study/" target="_blank" style="color:var(--candy);text-decoration:none;">Bankrate 2025</a> · <a href="https://iwpr.org/motherhood-is-hard-pay-penalties-make-it-harder/" target="_blank" style="color:var(--candy);text-decoration:none;">IWPR 2024</a></div>
       </div>
@@ -356,8 +366,8 @@ input[type=range]{width:100%;accent-color:var(--pink);height:4px;cursor:pointer;
   <div class="mod-card">
     <div class="mod-header">
       <div class="mod-eyebrow">✦ Data Module · Respond to the Irony</div>
-      <div class="mod-title">Rate the contradiction. Name what you see.</div>
-      <div class="mod-sub">The articles say mothers have exactly what the AI economy needs. The statistics say the AI economy is making it harder for mothers to stay. Rate and respond to each dimension of this irony.</div>
+      <div class="mod-title">Rate the contradiction. Name what you see. Tell us how it lands.</div>
+      <div class="mod-sub">The articles say mothers have exactly what the AI economy needs. The statistics say the AI economy is making it harder for mothers to stay. Rate the irony, then tell us how this affects you personally and how it makes you feel.</div>
     </div>
     <div class="mod-body">
       <!-- Slider 1 -->
@@ -399,6 +409,59 @@ input[type=range]{width:100%;accent-color:var(--pink);height:4px;cursor:pointer;
       </div>
       <div class="open-label">In one sentence: what would actually need to change for this irony to stop being true?</div>
       <textarea class="open-q" id="openQ" placeholder="Be specific — policy, money, culture, infrastructure, something else?"></textarea>
+
+      <div class="mod-divider"></div>
+      <div class="mod-sectiontag">✦ More about the situation</div>
+      <div class="open-label">Who do you think bears the most responsibility for closing this gap?</div>
+      <div class="rate-row" id="blameRow">
+        <button class="rate-btn" onclick="selectBlame(this,'employers')">Employers / companies</button>
+        <button class="rate-btn" onclick="selectBlame(this,'government')">Government policy</button>
+        <button class="rate-btn" onclick="selectBlame(this,'both')">Both, about equally</button>
+        <button class="rate-btn" onclick="selectBlame(this,'family')">Family / cultural norms need to shift too</button>
+        <button class="rate-btn" onclick="selectBlame(this,'unsure')">Unsure</button>
+      </div>
+      <div class="slider-wrap">
+        <div class="slider-label">How fixable do you think this is in the next 10 years?</div>
+        <div class="slider-sub">1 = not fixable at all, this is permanent · 10 = very fixable with the right policy</div>
+        <input type="range" min="1" max="10" value="5" id="sl-fixable" oninput="document.getElementById('sv-fixable').textContent=this.value">
+        <div class="slider-val" id="sv-fixable">5</div>
+        <div class="slider-ends"><span>not fixable</span><span>very fixable</span></div>
+      </div>
+
+      <div class="mod-divider"></div>
+      <div class="mod-sectiontag">✦ How this lands for you</div>
+      <div class="open-label">Does this situation affect you or someone close to you, directly?</div>
+      <div class="rate-row" id="affectRow">
+        <button class="rate-btn" onclick="selectAffect(this,'me')">Yes — me, right now</button>
+        <button class="rate-btn" onclick="selectAffect(this,'someone_close')">Yes — someone close to me</button>
+        <button class="rate-btn" onclick="selectAffect(this,'worry')">Not yet, but I worry it might</button>
+        <button class="rate-btn" onclick="selectAffect(this,'no')">Not really</button>
+        <button class="rate-btn" onclick="selectAffect(this,'prefer_not')">Prefer not to say</button>
+      </div>
+      <div class="slider-wrap">
+        <div class="slider-label">How much does this affect your own day-to-day decisions — career, family planning, finances?</div>
+        <div class="slider-sub">1 = not a factor in my life · 10 = it shapes my decisions constantly</div>
+        <input type="range" min="1" max="10" value="5" id="sl-impact" oninput="document.getElementById('sv-impact').textContent=this.value">
+        <div class="slider-val" id="sv-impact">5</div>
+        <div class="slider-ends"><span>not a factor</span><span>shapes everything</span></div>
+      </div>
+
+      <div class="mod-divider"></div>
+      <div class="mod-sectiontag">✦ How do you feel about it?</div>
+      <div class="open-label">Which feelings come up for you reading this? (Choose as many as fit.)</div>
+      <div class="chip-row" id="feelingsRow">
+        <button class="chip-btn" onclick="toggleFeeling(this,'angry')">Angry</button>
+        <button class="chip-btn" onclick="toggleFeeling(this,'sad')">Sad</button>
+        <button class="chip-btn" onclick="toggleFeeling(this,'anxious')">Anxious</button>
+        <button class="chip-btn" onclick="toggleFeeling(this,'resigned')">Resigned</button>
+        <button class="chip-btn" onclick="toggleFeeling(this,'validated')">Validated — finally, someone said it</button>
+        <button class="chip-btn" onclick="toggleFeeling(this,'hopeful')">Hopeful</button>
+        <button class="chip-btn" onclick="toggleFeeling(this,'motivated')">Motivated to act</button>
+        <button class="chip-btn" onclick="toggleFeeling(this,'numb')">Numb — heard it too many times</button>
+        <button class="chip-btn" onclick="toggleFeeling(this,'surprised')">Genuinely surprised</button>
+      </div>
+      <div class="open-label">Say a bit more about how this makes you feel, if you want to.</div>
+      <textarea class="open-q" id="impactNote" placeholder="Optional — anything you want to add about your own reaction or experience"></textarea>
     </div>
     <div class="mod-footer">
       <div class="mod-progress" id="modProg">Complete all fields to submit</div>
@@ -410,7 +473,6 @@ input[type=range]{width:100%;accent-color:var(--pink);height:4px;cursor:pointer;
   <div class="cb-card">
     <div class="cb-eyebrow">✦ Ask a Question · Showing Last 3</div>
     <div class="cb-row">
-      <input class="cb-input cb-name-in" type="text" id="userName" placeholder="Your name…">
       <input class="cb-input" type="text" id="userQuestion" placeholder="Ask about the irony, the data, motherhood and AI…" autocomplete="off">
       <button class="cb-btn primary" onclick="askQuestion()">✦ Ask</button>
       <button class="cb-btn soft" onclick="showAdminModal()">⚙</button>
@@ -447,13 +509,14 @@ setInterval(updateClock,1000);updateClock();
 (function(){const w=document.getElementById('sparkles');const c=['✦','🧺','˚','·','◦','▫'];for(let i=0;i<24;i++){const s=document.createElement('span');s.className='sp';s.textContent=c[Math.floor(Math.random()*c.length)];s.style.left=Math.random()*100+'vw';s.style.bottom=Math.random()*-60+'px';s.style.fontSize=(8+Math.random()*10)+'px';s.style.color='hsl('+(330+Math.random()*40)+',65%,'+(60+Math.random()*25)+'%)';s.style.animationDuration=(7+Math.random()*13)+'s';s.style.animationDelay=(Math.random()*13)+'s';w.appendChild(s);}})();
 
 let db,msgRef,respRef,onlineRef,fbReady=false;
-let currentUser=localStorage.getItem('cb35User')||'';
+let currentUser=localStorage.getItem('cb35Anon')||('anon_'+Math.random().toString(36).slice(2,10));
+localStorage.setItem('cb35Anon',currentUser);
 let userColor=localStorage.getItem('cb35Color')||genColor();
 function genColor(){const c=['#ff85b3','#ff2d6b','#ffb3cf','#c4005a'];const v=c[Math.floor(Math.random()*c.length)];localStorage.setItem('cb35Color',v);return v;}
 try{
   firebase.initializeApp({apiKey:"AIzaSyCZFDU-WlSmHqjXTs1Ox0nf9xeJU_xbaX0",authDomain:"collaborativemashup.firebaseapp.com",databaseURL:"https://collaborativemashup-default-rtdb.firebaseio.com",projectId:"collaborativemashup",storageBucket:"collaborativemashup.firebasestorage.app",messagingSenderId:"562437984610",appId:"1:562437984610:web:9f3711c26e097bc8ef9c3b"});
   db=firebase.database();msgRef=db.ref('cb35Messages');respRef=db.ref('cb35Responses');onlineRef=db.ref('cb35Online');fbReady=true;
-  if(currentUser)trackPresence();
+  trackPresence();
   respRef.on('value',s=>{
     const all=[];s.forEach(c=>all.push(c.val()));
     document.getElementById('st-r').textContent=all.length;
@@ -478,10 +541,9 @@ try{
     });
   });
 }catch(e){fbReady=false;document.getElementById('onlineCount').textContent='Offline';}
-function trackPresence(){if(!onlineRef||!currentUser)return;const r=onlineRef.child(currentUser.replace(/[.#$[\]]/g,'_'));r.set({name:currentUser,ts:firebase.database.ServerValue.TIMESTAMP});r.onDisconnect().remove();}
-document.getElementById('userName').addEventListener('change',function(){currentUser=this.value.trim();localStorage.setItem('cb35User',currentUser);if(currentUser&&fbReady)trackPresence();});
+function trackPresence(){if(!onlineRef||!currentUser)return;const r=onlineRef.child(currentUser.replace(/[.#$[\]]/g,'_'));r.set({ts:firebase.database.ServerValue.TIMESTAMP});r.onDisconnect().remove();}
 
-let selectedFrame=null,selectedBarrier=null;
+let selectedFrame=null,selectedBarrier=null,selectedBlame=null,selectedAffect=null,selectedFeelings=[];
 function selectFrame(btn,val){
   selectedFrame=val;
   document.querySelectorAll('#frameRow .rate-btn').forEach(b=>b.classList.remove('active'));
@@ -494,6 +556,24 @@ function selectBarrier(btn,val){
   btn.classList.add('active');
   checkSubmit();
 }
+function selectBlame(btn,val){
+  selectedBlame=val;
+  document.querySelectorAll('#blameRow .rate-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  checkSubmit();
+}
+function selectAffect(btn,val){
+  selectedAffect=val;
+  document.querySelectorAll('#affectRow .rate-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  checkSubmit();
+}
+function toggleFeeling(btn,val){
+  const i=selectedFeelings.indexOf(val);
+  if(i>-1){selectedFeelings.splice(i,1);btn.classList.remove('active');}
+  else{selectedFeelings.push(val);btn.classList.add('active');}
+  checkSubmit();
+}
 document.getElementById('openQ').addEventListener('input',checkSubmit);
 function checkSubmit(){
   const ok=selectedFrame&&document.getElementById('openQ').value.trim().length>5;
@@ -504,15 +584,19 @@ function checkSubmit(){
 let modDone=false;
 function submitResponse(){
   if(modDone)return;
-  const name=document.getElementById('userName').value.trim()||'Anon';
   const payload={
     type:'response',
     surprise:parseInt(document.getElementById('sl-surprise').value),
     intent:parseInt(document.getElementById('sl-intent').value),
     frame:selectedFrame,
     mostSurprisingBarrier:selectedBarrier,
+    mostResponsible:selectedBlame,
     text:document.getElementById('openQ').value.trim(),
-    userName:name,userColor,
+    personalImpact:parseInt(document.getElementById('sl-impact').value),
+    affectedBy:selectedAffect,
+    feelings:selectedFeelings.slice(),
+    impactNote:document.getElementById('impactNote').value.trim(),
+    userColor,
     ts:fbReady?firebase.database.ServerValue.TIMESTAMP:Date.now()
   };
   if(fbReady&&respRef)respRef.push(payload).catch(()=>{});
@@ -524,16 +608,16 @@ function q(v){return'"'+(v==null?'':String(v).replace(/"/g,'""'))+'"';}
 function downloadCSV(){
   if(!fbReady){alert('No connection.');return;}
   Promise.all([msgRef.once('value'),respRef.once('value')]).then(([ms,rs])=>{
-    let csv='Type,Timestamp,UserName,Surprise,Intent,Frame,Text\n';
-    ms.forEach(d=>{const m=d.val();csv+='question,'+q(m.ts?new Date(m.ts).toISOString():'')+','+q(m.userName)+',,,,,'+q(m.question)+'\n';});
-    rs.forEach(d=>{const r=d.val();csv+='response,'+q(r.ts?new Date(r.ts).toISOString():'')+','+q(r.userName)+','+(r.surprise||'')+','+(r.intent||'')+','+q(r.frame)+','+q(r.text)+'\n';});
+    let csv='Type,Timestamp,Surprise,Intent,Frame,MostResponsible,PersonalImpact,AffectedBy,Feelings,Text\n';
+    ms.forEach(d=>{const m=d.val();csv+='question,'+q(m.ts?new Date(m.ts).toISOString():'')+',,,,,,,,'+q(m.question)+'\n';});
+    rs.forEach(d=>{const r=d.val();csv+='response,'+q(r.ts?new Date(r.ts).toISOString():'')+','+(r.surprise||'')+','+(r.intent||'')+','+q(r.frame)+','+q(r.mostResponsible)+','+(r.personalImpact||'')+','+q(r.affectedBy)+','+q((r.feelings||[]).join('; '))+','+q(r.text)+'\n';});
     const blob=new Blob([csv],{type:'text/csv'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='carebot35-'+Date.now()+'.csv';document.body.appendChild(a);a.click();document.body.removeChild(a);URL.revokeObjectURL(url);
   });
 }
 
 const responses=[
   {text:"The University of Phoenix and Motherly's 2024 M.O.M. Report identifies five skills developed through motherhood: adaptability, resilience, communication, time management, and leadership. These are the exact five skills the World Economic Forum lists as essential for the AI-era workforce. The WEF's Future of Jobs Report (2025) ranks them at the top of every 'skills of the future' list. The maternal experience is a four-year intensive in the most in-demand skills in the global economy.",source:"University of Phoenix M.O.M. Report (2024); WEF Future of Jobs (2025)",link:"https://phoenix.edu/content/dam/edu/research/doc/white-papers/educational-instructional-technology/2024/mom-report-motherhood-skills-s-smith.pdf",moves:["1. STAND — arms open wide — you have all the skills — all of them","2. COUNT on fingers: adaptability — resilience — communication — time management — leadership","3. HOLD UP the WEF list — mime reading it — same five — same order","4. LOOK at both lists — yours and theirs — identical","5. FREEZE — call out: 'She already has them. She has had them for years.'"]},
-  {text:"455,000 women left the US workforce between January and August 2025, according to Bureau of Labor Statistics data. Caregiving — including the cost and logistics of childcare — was the number one driving factor, according to Catalyst's 2026 analysis. Average annual center-based infant care in 2024 cost $15,516. In many US cities, that exceeds the annual mortgage payment. The brutal calculation: for many mothers, staying employed literally costs more money than it earns.",source:"Catalyst / CNBC (Feb 2026); Child Care Aware of America (2024)",link:"https://www.cnbc.com/2026/02/02/catalyst-data-caregiving-is-no-1-reason-women-left-workforce-in-2025.html",moves:["1. STAND — fully in the workforce — shoulders back — employed","2. CALCULATE — mime doing math on fingers — cost in, income out","3. NUMBERS DON'T WORK — face changes — the calculation resolves wrong","4. STEP BACK — one step — 455,000 women — mime a crowd stepping back with you","5. FREEZE — call out: '$15,516 per year. In many cities: more than the mortgage.'"]},
+  {text:"455,000 women left the US workforce between January and August 2025, according to Bureau of Labor Statistics data. Caregiving — including the cost and logistics of childcare — was the number one driving factor, according to Catalyst's 2026 analysis. The national average cost of child care reached $13,128/year in 2024, and in many states, center-based infant care alone exceeds the annual mortgage payment. The brutal calculation: for many mothers, staying employed literally costs more money than it earns.",source:"Catalyst / CNBC (Feb 2026); Child Care Aware of America (2024)",link:"https://www.cnbc.com/2026/02/02/catalyst-data-caregiving-is-no-1-reason-women-left-workforce-in-2025.html",moves:["1. STAND — fully in the workforce — shoulders back — employed","2. CALCULATE — mime doing math on fingers — cost in, income out","3. NUMBERS DON'T WORK — face changes — the calculation resolves wrong","4. STEP BACK — one step — 455,000 women — mime a crowd stepping back with you","5. FREEZE — call out: '$13,128 per year, on average. In many states: more than the mortgage.'"]},
   {text:"KPMG's 2025 report 'The Great Exit' documents a specific mechanism: return-to-office mandates among Fortune 500 firms roughly doubled from 13% to 24% in early 2025. Simultaneously, labor force participation for mothers with children under 5 dropped nearly 3 percentage points from January to June 2025. The correlation is direct. The WEF (2026) found AI roles are twice as likely to offer parental leave and three times as likely to offer remote work. The economy that most needs flexible workers is building AI jobs with flexibility — and simultaneously mandating that the workers who most need flexibility must return to offices.",source:"KPMG 'The Great Exit' (Oct 2025); WEF AI Jobs Report (Feb 2026)",link:"https://fortune.com/2025/10/06/why-are-working-mothers-leaving-great-exit-kpmg-labor-force-participation/",moves:["1. AI JOB OFFER — mime receiving document — 'parental leave, remote work, flexible schedule'","2. READ IT carefully — nod — this is good","3. OFFICE MANDATE — second document arrives — '5 days in-office, starting Monday'","4. HOLD BOTH — look left and right — from WEF to KPMG — from promise to policy","5. FREEZE — call out: 'The AI sector offers flexibility. The office mandate removes it. Same year.'"]},
   {text:"Motherly's 2025 State of Motherhood report found: 54% of mothers say childcare is barely or not at all affordable. 50% of Millennial moms and 52% of Gen Z moms have considered leaving their jobs because childcare stress outweighs earnings. Among mothers under 30, 82% say childcare cost is a reason they have considered leaving the workforce. The number who said cost and stress of daycare was a reason to leave hit an all-time high at 66% — up 14 percentage points from the previous year.",source:"Motherly State of Motherhood Report (2025)",link:"https://www.mother.ly/career-money/work-and-motherhood/why-moms-are-leaving-the-workforce-2025/",moves:["1. HOLD A BABY — mime the weight — arms cradled — walk to the desk","2. SIT DOWN — baby on one side — work on the other — both need attention","3. CALCULATE — look at childcare cost — look at paycheck — look at childcare cost again","4. STAND SLOWLY — baby still held — pick up bag — walk toward the door","5. FREEZE — call out: '82% of mothers under 30. All-time high. The math ran the numbers.'"]},
   {text:"The gender pay gap widened in 2025. According to the Payscale 2026 Gender Pay Gap Report, women earn approximately 18% less than men in the uncontrolled category — up from 17% in both 2024 and 2025. The 'maternal wall' is a documented phenomenon: the false assumption by managers and colleagues that parenthood diminishes professional ambition. Mothers face it when returning from leave. They face it in performance reviews. They face it in promotion decisions. The skills gap argument ('mothers have great skills') runs headlong into the maternal wall ('but we assume she's less committed now').",source:"Payscale 2026 Gender Pay Gap Report; The Queen Zone Analysis (2026)",link:"https://www.thequeenzone.com/12-reasons-women-are-leaving-the-workforce-how-workplaces-are-contributing-to-the-shift/",moves:["1. RETURN FROM LEAVE — mime walking back in — shoulders confident — fully present","2. THE WALL — invisible resistance — mime pushing against something solid — it does not move","3. NAME IT — 'maternal wall' — trace the outline of it with both hands","4. DEMONSTRATE — promotion denied — raise denied — project not assigned","5. FREEZE — call out: '18% pay gap. Up from 17%. The wall is structural. And it is getting thicker.'"]},
@@ -549,22 +633,20 @@ function playChime(){try{if(!audioCtx)audioCtx=new(window.AudioContext||window.w
 
 function askQuestion(){
   const q2=document.getElementById('userQuestion').value.trim();
-  const name=document.getElementById('userName').value.trim();
-  if(!name){alert('Please enter your name first!');return;}
   if(!q2){alert('Please type a question!');return;}
   const resp=getResponse();const mv=generateMovement(resp);
-  const payload={question:q2,answerText:resp.text,answerSource:resp.source,answerLink:resp.link,movement:mv,userName:name,userColor,ts:fbReady?firebase.database.ServerValue.TIMESTAMP:Date.now()};
-  if(fbReady&&msgRef)msgRef.push(payload).catch(()=>localDisplay(q2,resp,mv,name));
-  else localDisplay(q2,resp,mv,name);
+  const payload={question:q2,answerText:resp.text,answerSource:resp.source,answerLink:resp.link,movement:mv,userColor,ts:fbReady?firebase.database.ServerValue.TIMESTAMP:Date.now()};
+  if(fbReady&&msgRef)msgRef.push(payload).catch(()=>localDisplay(q2,resp,mv));
+  else localDisplay(q2,resp,mv);
   document.getElementById('userQuestion').value='';
 }
 let localMessages=[];
-function localDisplay(q2,resp,mv,name){const area=document.getElementById('outputArea');localMessages.unshift({question:q2,answerText:resp.text,answerSource:resp.source,answerLink:resp.link,movement:mv,userName:name,userColor});if(localMessages.length>MAX)localMessages=localMessages.slice(0,MAX);area.innerHTML='';localMessages.forEach((msg,i)=>renderPair(msg,null,i===0));}
+function localDisplay(q2,resp,mv){const area=document.getElementById('outputArea');localMessages.unshift({question:q2,answerText:resp.text,answerSource:resp.source,answerLink:resp.link,movement:mv,userColor});if(localMessages.length>MAX)localMessages=localMessages.slice(0,MAX);area.innerHTML='';localMessages.forEach((msg,i)=>renderPair(msg,null,i===0));}
 
 function renderPair(msg,key,playAudio=false){
   const area=document.getElementById('outputArea');
   const el=document.createElement('div');el.className='cb-pair';if(key)el.id='pair-'+key;
-  el.innerHTML='<div class="cb-meta"><strong style="color:'+escH(msg.userColor||'#ff85b3')+'">'+escH(msg.userName||'Anon')+'</strong> asked:</div><div class="cb-qbubble">❓ '+escH(msg.question)+'</div><div class="cb-pcard"><div class="cb-phead"><span class="cb-plabel">🧺 From the Research Record</span></div><div class="cb-pbody"><div class="cb-ptext">'+escH(msg.answerText)+'</div><div class="cb-psrc">Source: <a href="'+escH(msg.answerLink)+'" target="_blank">'+escH(msg.answerSource)+'</a></div></div></div><div class="cb-mcard"><div class="cb-mhead"><span class="cb-mlabel">🎭 Movement Instructions</span></div><div class="cb-mbody"><div class="cb-mtext">'+escH(msg.movement)+'</div></div><div class="cb-spkrow"><button class="cb-btn soft" style="font-size:11px;padding:7px 13px;" onclick="speakText(this)">🔊 Read Aloud</button><button class="cb-btn soft" style="font-size:11px;padding:7px 13px;" onclick="stopSpeech()">⏹ Stop</button></div></div>';
+  el.innerHTML='<div class="cb-meta"><strong style="color:'+escH(msg.userColor||'#ff85b3')+'">Anonymous</strong> asked:</div><div class="cb-qbubble">❓ '+escH(msg.question)+'</div><div class="cb-pcard"><div class="cb-phead"><span class="cb-plabel">🧺 From the Research Record</span></div><div class="cb-pbody"><div class="cb-ptext">'+escH(msg.answerText)+'</div><div class="cb-psrc">Source: <a href="'+escH(msg.answerLink)+'" target="_blank">'+escH(msg.answerSource)+'</a></div></div></div><div class="cb-mcard"><div class="cb-mhead"><span class="cb-mlabel">🎭 Movement Instructions</span></div><div class="cb-mbody"><div class="cb-mtext">'+escH(msg.movement)+'</div></div><div class="cb-spkrow"><button class="cb-btn soft" style="font-size:11px;padding:7px 13px;" onclick="speakText(this)">🔊 Read Aloud</button><button class="cb-btn soft" style="font-size:11px;padding:7px 13px;" onclick="stopSpeech()">⏹ Stop</button></div></div>';
   area.insertBefore(el,area.firstChild);
   if(playAudio){playChime();setTimeout(()=>speakMovement(msg.movement),950);}
 }
