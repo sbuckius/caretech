@@ -437,7 +437,7 @@ try{
     const area=document.getElementById('outputArea');area.innerHTML='';
     const items=[];snapshot.forEach(c=>{items.push({key:c.key,val:c.val()});});
     if(!items.length){area.innerHTML='<div class="cb-empty"><h3>✦ Answers appear here</h3><p>Type a question above and tap Ask</p></div>';}
-    else{items.reverse().forEach(({key,val})=>renderPair(val,key,false));}
+    else{items.reverse().forEach(({key,val})=>renderPair(val,key));}
     initialDone=true;
     const lastKey=items.length?items[items.length-1].key:null;
     const nq=lastKey?messagesRef.orderByKey().startAfter(lastKey):messagesRef.orderByKey().limitToLast(1);
@@ -447,7 +447,7 @@ try{
       const emp=area.querySelector('.cb-empty');if(emp)emp.remove();
       const pairs=area.querySelectorAll('.cb-pair');
       if(pairs.length>=MAX_DISPLAY)pairs[pairs.length-1].remove();
-      renderPair(msg,snap.key,true);
+      renderPair(msg,snap.key);
     });
   });
 }catch(e){useFirebase=false;document.getElementById('onlineCount').textContent='Offline';}
@@ -576,20 +576,19 @@ function askQuestion(){
 }
 
 let localMessages=[];
-function localDisplay(q2,resp,mv,name){const area=document.getElementById('outputArea');localMessages.unshift({question:q2,answerText:resp.text,answerSource:resp.source,answerLink:resp.link,movement:mv,userName:name,userColor});if(localMessages.length>MAX_DISPLAY)localMessages=localMessages.slice(0,MAX_DISPLAY);area.innerHTML='';localMessages.forEach((msg,i)=>renderPair(msg,null,i===0));}
+function localDisplay(q2,resp,mv,name){const area=document.getElementById('outputArea');localMessages.unshift({question:q2,answerText:resp.text,answerSource:resp.source,answerLink:resp.link,movement:mv,userName:name,userColor});if(localMessages.length>MAX_DISPLAY)localMessages=localMessages.slice(0,MAX_DISPLAY);area.innerHTML='';localMessages.forEach(msg=>renderPair(msg,null));}
 
 let audioCtx=null;
 function playChime(){try{if(!audioCtx)audioCtx=new(window.AudioContext||window.webkitAudioContext)();const ctx=audioCtx;[[329.63,0],[415.30,0.18],[493.88,0.36]].forEach(([freq,delay])=>{const osc=ctx.createOscillator();const gain=ctx.createGain();osc.connect(gain);gain.connect(ctx.destination);osc.type='sine';osc.frequency.value=freq;const t=ctx.currentTime+delay;gain.gain.setValueAtTime(0,t);gain.gain.linearRampToValueAtTime(0.35,t+0.04);gain.gain.exponentialRampToValueAtTime(0.001,t+0.7);osc.start(t);osc.stop(t+0.72);});}catch(e){}}
 
-function renderPair(msg,key,playAudio=false){
+function renderPair(msg,key){
   const area=document.getElementById('outputArea');
   const el=document.createElement('div');el.className='cb-pair';if(key)el.id='pair-'+key;
   el.innerHTML='<div class="cb-meta"><strong style="color:'+escH(msg.userColor||'#ff85b3')+'">'+escH(msg.userName||'Anon')+'</strong><span>asked:</span></div><div class="cb-qbubble">❓ '+escH(msg.question)+'</div><div class="cb-pcard"><div class="cb-phead"><span class="cb-plabel">📐 From the Handbook Record</span></div><div class="cb-pbody"><div class="cb-ptext">'+escH(msg.answerText)+'</div><div class="cb-psrc">Source: <a href="'+escH(msg.answerLink)+'" target="_blank" rel="noopener">'+escH(msg.answerSource)+'</a></div></div></div><div class="cb-mcard"><div class="cb-mhead"><span class="cb-mlabel">🎭 Movement Instructions</span></div><div class="cb-mbody"><div class="cb-mtext">'+escH(msg.movement)+'</div></div><div class="cb-spkrow"><button class="cb-btn purple" style="font-size:11px;padding:7px 13px;" onclick="speakText(this)">🔊 Read Aloud</button><button class="cb-btn soft" style="font-size:11px;padding:7px 13px;" onclick="stopSpeech()">⏹ Stop</button></div></div>';
   area.insertBefore(el,area.firstChild);
-  if(playAudio){playChime();setTimeout(()=>speakMovement(msg.movement),950);}
 }
 
-function speakMovement(text){if(!('speechSynthesis' in window))return;window.speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(text);u.rate=0.88;u.pitch=1.2;const trySpeak=()=>{const voices=window.speechSynthesis.getVoices();const fv=voices.find(v=>['female','woman','zira','samantha','victoria','karen','moira','fiona','ava','allison','susan','sara','tessa','aria','jenny','michelle','emma'].some(k=>v.name.toLowerCase().includes(k))&&v.lang.startsWith('en'))||voices.find(v=>v.lang.startsWith('en'))||null;if(fv)u.voice=fv;window.speechSynthesis.speak(u);};if(window.speechSynthesis.getVoices().length===0){window.speechSynthesis.addEventListener('voiceschanged',trySpeak,{once:true});}else{trySpeak();}}
+function speakMovement(text){if(!('speechSynthesis' in window))return;window.speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(text);u.rate=0.88;u.pitch=1.2;const femaleNames=['female','woman','zira','samantha','victoria','karen','moira','fiona','ava','allison','susan','sara','tessa','aria','jenny','michelle','emma'];const trySpeak=()=>{const voices=window.speechSynthesis.getVoices();const fv=voices.find(v=>v.lang==='en-US'&&femaleNames.some(k=>v.name.toLowerCase().includes(k)))||voices.find(v=>v.lang.startsWith('en-US')&&femaleNames.some(k=>v.name.toLowerCase().includes(k)))||voices.find(v=>v.lang.startsWith('en-US'))||voices.find(v=>femaleNames.some(k=>v.name.toLowerCase().includes(k))&&v.lang.startsWith('en'))||voices.find(v=>v.lang.startsWith('en'))||null;if(fv)u.voice=fv;window.speechSynthesis.speak(u);};if(window.speechSynthesis.getVoices().length===0){window.speechSynthesis.addEventListener('voiceschanged',trySpeak,{once:true});}else{trySpeak();}}
 function speakText(btn){speakMovement(btn.closest('.cb-mcard').querySelector('.cb-mtext').textContent);}
 function stopSpeech(){if('speechSynthesis' in window)window.speechSynthesis.cancel();}
 function escH(s){const d=document.createElement('div');d.textContent=s||'';return d.innerHTML;}
