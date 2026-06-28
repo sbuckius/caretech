@@ -100,6 +100,8 @@ html,body{min-height:100%;font-family:var(--fb);font-weight:600;color:var(--crea
 .stat-box{padding:10px 12px;background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:10px;}
 .stat-box-num{font-family:var(--fh);font-weight:900;font-size:22px;color:var(--candy);line-height:1;}
 .stat-box-label{font-size:10px;color:var(--muted);margin-top:4px;line-height:1.4;}
+.stat-box-label a{color:var(--candy);text-decoration:none;}
+.stat-box-label a:hover{text-decoration:underline;}
 /* DATA MODULE */
 .mod-card{width:100%;max-width:720px;background:var(--surface);border:1.5px solid var(--border2);border-radius:18px;overflow:hidden;position:relative;box-shadow:0 4px 28px rgba(255,45,107,.15);}
 .mod-card::before{content:'';position:absolute;top:0;left:10%;right:10%;height:1.5px;background:linear-gradient(90deg,transparent,var(--candy) 35%,var(--pink) 50%,var(--candy) 65%,transparent);box-shadow:0 0 10px var(--candy);border-radius:999px;}
@@ -170,6 +172,15 @@ html,body{min-height:100%;font-family:var(--fb);font-weight:600;color:var(--crea
 .cb-mbtns{display:flex;gap:9px;}
 .cb-err{font-size:11px;color:var(--pink);margin-top:6px;min-height:16px;}
 .cb-wmark{font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,140,185,.1);padding-bottom:8px;text-align:center;}
+.fn{color:var(--candy);text-decoration:none;font-size:9px;font-weight:900;vertical-align:super;padding:0 1px;}
+.fn:hover{text-decoration:underline;}
+.ai-note{margin:0;padding:8px 12px;background:rgba(255,255,255,.05);border:1px solid var(--border);border-radius:9px;font-size:10.5px;font-style:italic;color:var(--muted2);line-height:1.5;}
+.feel-row{display:flex;gap:7px;margin-bottom:10px;flex-wrap:wrap;}
+.feel-btn{appearance:none;font-family:var(--fb);font-weight:700;font-size:11px;padding:6px 13px;border-radius:999px;cursor:pointer;border:1.5px solid var(--border);background:rgba(255,255,255,.04);color:var(--muted);transition:all .15s;}
+.feel-btn:hover{background:rgba(168,85,247,.14);border-color:var(--purple-border);color:var(--blush);}
+.feel-btn.active{background:rgba(168,85,247,.28);border-color:var(--purple);color:var(--cream);}
+.mod-divider{margin:16px 0 12px;border-top:1px solid var(--border);padding-top:13px;}
+.mod-divider-label{font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);margin-bottom:10px;font-weight:700;}
 </style>
 </head>
 <body>
@@ -201,11 +212,12 @@ html,body{min-height:100%;font-family:var(--fb);font-weight:600;color:var(--crea
     <div class="irony-eyebrow">✦ CAREBOT-38 · The Irony</div>
     <div class="irony-title">Robots are being designed to do domestic work, emotional labor, communication, and aesthetic presentation — work that has always been done by women, for free or for poverty wages. The women who do this work were not in the room where the robots were designed. The robots will replace them. And the robots look like women.</div>
     <div class="irony-body">
-      At CES 2026, LG debuted the CLOiD: it cooks, folds laundry, brings groceries from the fridge. The 1X NEO robot ($20,000) can be hired as a personal housekeeper. Figure AI, valued at $39 billion, is building 100,000 humanoid robots to do domestic and commercial tasks. The word "robot" comes from the Czech "robota" — meaning <em>forced labor, drudgery.</em><br><br>
-      <strong>95% of paid housekeepers and maids are women.</strong> 82% of personal care aides are women. 97% of childcare providers are women. 70% of domestic workers in the US are migrants. They were not consulted in the design. They are not on the engineering teams (women hold <strong>22% of AI roles globally</strong>). And the robots being built to replace them are given <strong>female names, female voices, and female bodies.</strong><br><br>
-      <em>Alexa. Siri. Cortana.</em> Voice assistants designed to be helpful, patient, compliant, never saying no — behaviors historically demanded of women. The UNESCO 2019 report "I'd Blush If I Could" documented that Siri responded to "you're a slut" with <em>"I'd blush if I could."</em> The automation of women's communicative work was also the automation of women's degradation. The robots were designed by people who were not women. They were modeled on the behavior expected of women. They replaced the work done by women. <strong>This is not incidental. It is structural.</strong>
+      At CES 2026, LG debuted the CLOiD: it cooks, folds laundry, brings groceries from the fridge.<a class="fn" href="https://www.homesandgardens.com/solved/ces-2026-ai-humanoid-robots-wash-your-dishes-do-laundry" target="_blank" rel="noopener">[1]</a> The 1X NEO robot ($20,000) can be hired as a personal housekeeper.<a class="fn" href="https://fortune.com/2026/02/26/humanoid-robot-that-will-do-chores-for-you-robotics-company-1x/" target="_blank" rel="noopener">[2]</a> Figure AI, valued at $39 billion, is building 100,000 humanoid robots to do domestic and commercial tasks.<a class="fn" href="https://www.figure.ai/news/series-c" target="_blank" rel="noopener">[3]</a> The word "robot" comes from the Czech "robota" — meaning <em>forced labor, drudgery.</em><a class="fn" href="https://thereader.mitpress.mit.edu/origin-word-robot-rur/" target="_blank" rel="noopener">[4]</a><br><br>
+      <strong>95% of paid housekeepers and maids are women.</strong> 82% of personal care aides are women. 97% of childcare providers are women. 70% of domestic workers in the US are migrants.<a class="fn" href="https://www.fordfoundation.org/news-and-stories/stories/meet-the-domestic-workers-and-labor-leaders-fighting-for-a-just-care-economy/" target="_blank" rel="noopener">[5]</a> They were not consulted in the design. They are not on the engineering teams (women hold <strong>22% of AI roles globally</strong><a class="fn" href="https://womenandtech.indiana.edu/about/news/2025/mind-the-gap.html" target="_blank" rel="noopener">[6]</a>). And the robots being built to replace them are given <strong>female names, female voices, and female bodies.</strong><br><br>
+      <em>Alexa. Siri. Cortana.</em> Voice assistants designed to be helpful, patient, compliant, never saying no — behaviors historically demanded of women. The UNESCO 2019 report "I'd Blush If I Could" documented that Siri once responded to "you're a slut" with <em>"I'd blush if I could"</em> (Apple has since changed this response).<a class="fn" href="https://www.dezeen.com/2019/05/24/united-nations-voice-assistants-gender-biases-siri-alexa/" target="_blank" rel="noopener">[7]</a> The automation of women's communicative work was also the automation of women's degradation. The robots were designed by people who were not women. They were modeled on the behavior expected of women. They replaced the work done by women. <strong>This is not incidental. It is structural.</strong>
     </div>
   </div>
+  <div class="ai-note" style="width:100%;max-width:720px;">✦ AI helped me with this. There might be inaccuracies.</div>
 
   <!-- ROBOTS ON MARKET -->
   <div class="robots-card">
@@ -301,18 +313,18 @@ html,body{min-height:100%;font-family:var(--fb);font-weight:600;color:var(--crea
       <div class="stat-grid-title">Women's work. Automated by a workforce that is 78% male. Replacing workers who are 92% female.</div>
     </div>
     <div class="stat-grid">
-      <div class="stat-box"><div class="stat-box-num">92%</div><div class="stat-box-label">of domestic workers in the US are women (DOL, 2024)</div></div>
-      <div class="stat-box"><div class="stat-box-num">95%</div><div class="stat-box-label">of maids and housekeepers are women</div></div>
-      <div class="stat-box"><div class="stat-box-num">97%</div><div class="stat-box-label">of childcare providers are women</div></div>
-      <div class="stat-box"><div class="stat-box-num">70%</div><div class="stat-box-label">of US domestic workers are migrants (ILO)</div></div>
-      <div class="stat-box"><div class="stat-box-num">22%</div><div class="stat-box-label">of global AI professionals are women (Stanford AI Index 2024)</div></div>
-      <div class="stat-box"><div class="stat-box-num">12%</div><div class="stat-box-label">of AI researchers globally are women</div></div>
-      <div class="stat-box"><div class="stat-box-num">$20K</div><div class="stat-box-label">cost of 1X NEO robot — less than 2 years of a housekeeper's wages</div></div>
-      <div class="stat-box"><div class="stat-box-num">$39B</div><div class="stat-box-label">valuation of Figure AI, building 100,000 humanoid domestic robots</div></div>
-      <div class="stat-box"><div class="stat-box-num">2x</div><div class="stat-box-label">more often: men interrupt female-voiced AI than women do (JHU, 2025)</div></div>
-      <div class="stat-box"><div class="stat-box-num">75%+</div><div class="stat-box-label">of text-based chatbots are female-presenting by design choice</div></div>
-      <div class="stat-box"><div class="stat-box-num">2x</div><div class="stat-box-label">female-dominated jobs are twice as likely to be exposed to AI automation (ILO, 2026)</div></div>
-      <div class="stat-box"><div class="stat-box-num">39%</div><div class="stat-box-label">of domestic tasks could be automated within a decade (PLOS One / WEF)</div></div>
+      <div class="stat-box"><div class="stat-box-num">92%</div><div class="stat-box-label">of domestic workers in the US are women — <a href="https://www.dol.gov/sites/dolgov/files/WB/Files/DomesticWorkersFactSheet.pdf" target="_blank" rel="noopener">DOL, 2024</a></div></div>
+      <div class="stat-box"><div class="stat-box-num">95%</div><div class="stat-box-label">of maids and housekeepers are women — <a href="https://www.dol.gov/sites/dolgov/files/WB/Files/DomesticWorkersFactSheet.pdf" target="_blank" rel="noopener">DOL, 2024</a></div></div>
+      <div class="stat-box"><div class="stat-box-num">97%</div><div class="stat-box-label">of childcare providers are women — <a href="https://www.dol.gov/sites/dolgov/files/WB/Files/DomesticWorkersFactSheet.pdf" target="_blank" rel="noopener">DOL, 2024</a></div></div>
+      <div class="stat-box"><div class="stat-box-num">70%</div><div class="stat-box-label">of US domestic workers are migrants — <a href="https://www.fordfoundation.org/news-and-stories/stories/meet-the-domestic-workers-and-labor-leaders-fighting-for-a-just-care-economy/" target="_blank" rel="noopener">ILO via Ford Foundation</a></div></div>
+      <div class="stat-box"><div class="stat-box-num">22%</div><div class="stat-box-label">of AI professionals worldwide are women — <a href="https://womenandtech.indiana.edu/about/news/2025/mind-the-gap.html" target="_blank" rel="noopener">LinkedIn data, cited 2025</a></div></div>
+      <div class="stat-box"><div class="stat-box-num">~12%</div><div class="stat-box-label">of AI researchers globally are women — a widely-cited estimate; see <a href="https://womenandtech.indiana.edu/about/news/2025/mind-the-gap.html" target="_blank" rel="noopener">IU Women &amp; Tech, 2025</a></div></div>
+      <div class="stat-box"><div class="stat-box-num">$20K</div><div class="stat-box-label">cost of 1X NEO robot — less than 2 years of a housekeeper's wages — <a href="https://fortune.com/2026/02/26/humanoid-robot-that-will-do-chores-for-you-robotics-company-1x/" target="_blank" rel="noopener">Fortune</a></div></div>
+      <div class="stat-box"><div class="stat-box-num">$39B</div><div class="stat-box-label">valuation of Figure AI, building 100,000 humanoid domestic robots — <a href="https://www.figure.ai/news/series-c" target="_blank" rel="noopener">Figure AI</a></div></div>
+      <div class="stat-box"><div class="stat-box-num">2x</div><div class="stat-box-label">more often: men interrupt a female-voiced AI than women do, after it errs — <a href="https://hub.jhu.edu/2025/01/16/alexa-should-voice-assistants-have-a-gender/" target="_blank" rel="noopener">JHU, 2025</a></div></div>
+      <div class="stat-box"><div class="stat-box-num">75%+</div><div class="stat-box-label">of text-based chatbots are female-presenting by design choice — <a href="https://hub.jhu.edu/2025/01/16/alexa-should-voice-assistants-have-a-gender/" target="_blank" rel="noopener">JHU, 2025</a></div></div>
+      <div class="stat-box"><div class="stat-box-num">2x</div><div class="stat-box-label">female-dominated jobs are about twice as likely to be exposed to GenAI automation — <a href="https://www.ilo.org/resource/news/new-ilo-data-confirm-women-face-higher-workplace-risks-generative-ai-men" target="_blank" rel="noopener">ILO, March 2026</a></div></div>
+      <div class="stat-box"><div class="stat-box-num">39%</div><div class="stat-box-label">of domestic tasks could be automated within a decade — PLOS One (2023) / WEF estimate</div></div>
     </div>
   </div>
 
@@ -343,6 +355,49 @@ html,body{min-height:100%;font-family:var(--fb);font-weight:600;color:var(--crea
       <textarea class="open-q" id="openQ1" placeholder="What would the robot do differently? What would it not do? What would change about how it was designed, marketed, or priced?"></textarea>
       <div class="open-label">What is the difference between 'freeing women from domestic work' and 'replacing the women who do domestic work for pay'?</div>
       <textarea class="open-q" id="openQ2" placeholder="Who benefits from each version? Who is harmed? Is there a version of domestic automation that would actually be feminist?"></textarea>
+
+      <div class="mod-divider">
+        <div class="mod-divider-label">✦ About Your Situation</div>
+      </div>
+      <div class="open-label">Do you, or does someone close to you, currently do paid or unpaid domestic, care, or service work (cleaning, childcare, eldercare, food service, admin/clerical)?</div>
+      <div class="rate-row" id="roleRow">
+        <button class="rate-btn" onclick="selectRole(this,'me')">Yes, that's me</button>
+        <button class="rate-btn" onclick="selectRole(this,'close')">Yes, someone close to me</button>
+        <button class="rate-btn" onclick="selectRole(this,'no')">Not currently</button>
+        <button class="rate-btn" onclick="selectRole(this,'unsure')">Not sure / it's complicated</button>
+      </div>
+      <div class="open-label">Have you personally experienced a voice assistant (Alexa, Siri, etc.) being spoken to abusively, or used yourself in a way you'd now reconsider?</div>
+      <div class="rate-row" id="vaRow">
+        <button class="rate-btn" onclick="selectVA(this,'witnessed')">Yes, I've witnessed it</button>
+        <button class="rate-btn" onclick="selectVA(this,'done')">Yes, I've done it myself</button>
+        <button class="rate-btn" onclick="selectVA(this,'no')">No, never</button>
+        <button class="rate-btn" onclick="selectVA(this,'never-thought')">Never thought about it until now</button>
+      </div>
+
+      <div class="mod-divider">
+        <div class="mod-divider-label">✦ How This Affects You</div>
+      </div>
+      <div class="open-label">Does any of this change how you think about a robot, app, or AI tool you already use at home or work?</div>
+      <textarea class="open-q" id="openQ3" placeholder="Which one? What, if anything, would you do differently now?"></textarea>
+      <div class="open-label">Thinking about your own job, household, or family — where do you see this pattern playing out closest to you?</div>
+      <textarea class="open-q" id="openQ4" placeholder="A job you've held, a parent or grandparent's work, a task in your own home..."></textarea>
+
+      <div class="mod-divider">
+        <div class="mod-divider-label">✦ How Do You Feel About It?</div>
+      </div>
+      <div class="open-label">Which of these feelings is closest to what came up for you while reading this? (select all that apply)</div>
+      <div class="feel-row" id="feelRow">
+        <button class="feel-btn" onclick="toggleFeel(this,'angry')">Angry</button>
+        <button class="feel-btn" onclick="toggleFeel(this,'sad')">Sad</button>
+        <button class="feel-btn" onclick="toggleFeel(this,'validated')">Validated</button>
+        <button class="feel-btn" onclick="toggleFeel(this,'hopeful')">Hopeful</button>
+        <button class="feel-btn" onclick="toggleFeel(this,'conflicted')">Conflicted</button>
+        <button class="feel-btn" onclick="toggleFeel(this,'numb')">Numb / overloaded</button>
+        <button class="feel-btn" onclick="toggleFeel(this,'motivated')">Motivated to act</button>
+        <button class="feel-btn" onclick="toggleFeel(this,'skeptical')">Skeptical of this framing</button>
+      </div>
+      <div class="open-label">Say a bit more about that feeling — where do you notice it, and what is it responding to?</div>
+      <textarea class="open-q" id="openQ5" placeholder="There's no right answer here. Even 'I don't know' or 'I feel nothing' is useful data."></textarea>
     </div>
     <div class="mod-footer">
       <div class="mod-progress" id="modProg">Select a category and respond to continue</div>
@@ -354,7 +409,6 @@ html,body{min-height:100%;font-family:var(--fb);font-weight:600;color:var(--crea
   <div class="cb-card">
     <div class="cb-eyebrow">✦ Ask a Question · Showing Last 3</div>
     <div class="cb-row">
-      <input class="cb-input cb-name-in" type="text" id="userName" placeholder="Your name…">
       <input class="cb-input" type="text" id="userQuestion" placeholder="Ask about domestic robots, voice assistants, automation of women's labor…" autocomplete="off">
       <button class="cb-btn primary" onclick="askQuestion()">✦ Ask</button>
       <button class="cb-btn soft" onclick="showAdminModal()">⚙</button>
@@ -390,7 +444,7 @@ function updateClock(){const n=new Date(),p=v=>String(v).padStart(2,'0');documen
 setInterval(updateClock,1000);updateClock();
 
 let db,msgRef,respRef,onlineRef,fbReady=false;
-let currentUser=localStorage.getItem('cb38User')||'';
+let currentUser='anon-'+Math.random().toString(36).slice(2,9);
 let userColor=localStorage.getItem('cb38Color')||genColor();
 function genColor(){const c=['#ff85b3','#ff2d6b','#ffb3cf','#c4005a'];const v=c[Math.floor(Math.random()*c.length)];localStorage.setItem('cb38Color',v);return v;}
 try{
@@ -416,20 +470,22 @@ try{
     });
   });
 }catch(e){fbReady=false;document.getElementById('onlineCount').textContent='Offline';}
-function trackPresence(){if(!onlineRef||!currentUser)return;const r=onlineRef.child(currentUser.replace(/[.#$[\]]/g,'_'));r.set({name:currentUser,ts:firebase.database.ServerValue.TIMESTAMP});r.onDisconnect().remove();}
-document.getElementById('userName').addEventListener('change',function(){currentUser=this.value.trim();localStorage.setItem('cb38User',currentUser);if(currentUser&&fbReady)trackPresence();});
+function trackPresence(){if(!onlineRef||!currentUser)return;const r=onlineRef.child(currentUser.replace(/[.#$[\]]/g,'_'));r.set({name:'Anonymous',ts:firebase.database.ServerValue.TIMESTAMP});r.onDisconnect().remove();}
 
-let selCat=null,selKnew=null;
+let selCat=null,selKnew=null,selRole=null,selVA=null,selFeel=[];
 function selectCat(btn,val){selCat=val;document.querySelectorAll('#categoryRow .rate-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');checkSubmit();}
 function selectKnew(btn,val){selKnew=val;document.querySelectorAll('#knewRow .rate-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');checkSubmit();}
-['openQ1','openQ2'].forEach(id=>document.getElementById(id).addEventListener('input',checkSubmit));
-function checkSubmit(){const ok=selCat&&selKnew&&document.getElementById('openQ1').value.trim().length>5&&document.getElementById('openQ2').value.trim().length>5;document.getElementById('modSubmit').disabled=!ok;document.getElementById('modProg').textContent=ok?'Ready to submit':'Complete all fields';}
+function selectRole(btn,val){selRole=val;document.querySelectorAll('#roleRow .rate-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');checkSubmit();}
+function selectVA(btn,val){selVA=val;document.querySelectorAll('#vaRow .rate-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');checkSubmit();}
+function toggleFeel(btn,val){const i=selFeel.indexOf(val);if(i>-1){selFeel.splice(i,1);btn.classList.remove('active');}else{selFeel.push(val);btn.classList.add('active');}checkSubmit();}
+['openQ1','openQ2','openQ3','openQ4','openQ5'].forEach(id=>document.getElementById(id).addEventListener('input',checkSubmit));
+function checkSubmit(){const ok=selCat&&selKnew&&document.getElementById('openQ1').value.trim().length>5&&document.getElementById('openQ2').value.trim().length>5;document.getElementById('modSubmit').disabled=!ok;document.getElementById('modProg').textContent=ok?'Ready to submit (extra questions are optional but appreciated)':'Complete the irony category, the robota question, and the two required reflections';}
 
 let modDone=false;
 function submitResponse(){
   if(modDone)return;
-  const name=document.getElementById('userName').value.trim()||'Anon';
-  const payload={type:'response',mostIronicCategory:selCat,knewRobota:selKnew,ifWorkerDesigned:document.getElementById('openQ1').value.trim(),freeVsReplace:document.getElementById('openQ2').value.trim(),userName:name,userColor,ts:fbReady?firebase.database.ServerValue.TIMESTAMP:Date.now()};
+  const name='Anonymous';
+  const payload={type:'response',mostIronicCategory:selCat,knewRobota:selKnew,ifWorkerDesigned:document.getElementById('openQ1').value.trim(),freeVsReplace:document.getElementById('openQ2').value.trim(),domesticRole:selRole,voiceAssistantExperience:selVA,rethinkTool:document.getElementById('openQ3').value.trim(),closestToHome:document.getElementById('openQ4').value.trim(),feelings:selFeel.join('|'),feelingsDetail:document.getElementById('openQ5').value.trim(),userName:name,userColor,ts:fbReady?firebase.database.ServerValue.TIMESTAMP:Date.now()};
   if(fbReady&&respRef)respRef.push(payload).catch(()=>{});
   modDone=true;const btn=document.getElementById('modSubmit');btn.textContent='✓ Saved';btn.classList.add('done');btn.disabled=true;
 }
@@ -437,17 +493,17 @@ function q(v){return'"'+(v==null?'':String(v).replace(/"/g,'""'))+'"';}
 function downloadCSV(){
   if(!fbReady){alert('No connection.');return;}
   Promise.all([msgRef.once('value'),respRef.once('value')]).then(([ms,rs])=>{
-    let csv='Type,Timestamp,UserName,MostIronicCategory,KnewRobota,IfWorkerDesigned,FreeVsReplace\n';
-    ms.forEach(d=>{const m=d.val();csv+='question,'+q(m.ts?new Date(m.ts).toISOString():'')+','+q(m.userName)+',,,,'+q(m.question)+'\n';});
-    rs.forEach(d=>{const r=d.val();csv+='response,'+q(r.ts?new Date(r.ts).toISOString():'')+','+q(r.userName)+','+q(r.mostIronicCategory)+','+q(r.knewRobota)+','+q(r.ifWorkerDesigned)+','+q(r.freeVsReplace)+'\n';});
+    let csv='Type,Timestamp,UserName,MostIronicCategory,KnewRobota,IfWorkerDesigned,FreeVsReplace,DomesticRole,VoiceAssistantExperience,RethinkTool,ClosestToHome,Feelings,FeelingsDetail\n';
+    ms.forEach(d=>{const m=d.val();csv+='question,'+q(m.ts?new Date(m.ts).toISOString():'')+','+q(m.userName)+',,,,'+q(m.question)+',,,,,,\n';});
+    rs.forEach(d=>{const r=d.val();csv+='response,'+q(r.ts?new Date(r.ts).toISOString():'')+','+q(r.userName)+','+q(r.mostIronicCategory)+','+q(r.knewRobota)+','+q(r.ifWorkerDesigned)+','+q(r.freeVsReplace)+','+q(r.domesticRole)+','+q(r.voiceAssistantExperience)+','+q(r.rethinkTool)+','+q(r.closestToHome)+','+q(r.feelings)+','+q(r.feelingsDetail)+'\n';});
     const blob=new Blob([csv],{type:'text/csv'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='carebot38-'+Date.now()+'.csv';document.body.appendChild(a);a.click();document.body.removeChild(a);URL.revokeObjectURL(url);
   });
 }
 
 const responses=[
-  {text:"The word 'robot' was introduced publicly on January 2, 1921, by Czech writer Karel Capek in his play R.U.R. (Rossum's Universal Robots). The word comes from the Czech 'robota,' meaning forced labor, drudgery, or compulsory service — the labor serfs were required to perform for their lords. The first robots in fiction were not machines. They were a servant class. Now, in 2025 and 2026, robots are being designed to perform the domestic tasks that have always constituted the uncompensated forced labor of women: laundry, dishes, cooking, cleaning, childcare logistics. The language has not changed. The assignment has not changed. The technology is new. The relationship is not.",source:"Karel Capek R.U.R. (1921); CES 2026 / Homes and Gardens; 1X Technologies NEO announcement",link:"https://fortune.com/2025/10/30/1x-neo-household-robot-chores-20k/",moves:["1. ENTER the space — you are a domestic worker — hands moving — laundry, dishes, repeat","2. HOLD STILL — mime 'robota' — forced labor — the word that became robot","3. THE ROBOT ARRIVES — mime its entrance — same tasks — same motions","4. STAND BESIDE IT — look at each other — the same work — different body — different price","5. FREEZE — call out: 'Robota. 1921. Forced labor. The word has not changed. The work has not changed.'"]},
+  {text:"The word 'robot' was introduced publicly when Karel Capek's play R.U.R. (Rossum's Universal Robots) premiered on January 25, 1921, in Prague. The word comes from the Czech 'robota,' meaning forced labor, drudgery, or compulsory service — the labor serfs were required to perform for their lords. The first robots in fiction were not machines. They were a servant class. Now, in 2025 and 2026, robots are being designed to perform the domestic tasks that have always constituted the uncompensated forced labor of women: laundry, dishes, cooking, cleaning, childcare logistics. The language has not changed. The assignment has not changed. The technology is new. The relationship is not.",source:"Karel Capek R.U.R. (1921); CES 2026 / Homes and Gardens; 1X Technologies NEO announcement",link:"https://fortune.com/2025/10/30/1x-neo-household-robot-chores-20k/",moves:["1. ENTER the space — you are a domestic worker — hands moving — laundry, dishes, repeat","2. HOLD STILL — mime 'robota' — forced labor — the word that became robot","3. THE ROBOT ARRIVES — mime its entrance — same tasks — same motions","4. STAND BESIDE IT — look at each other — the same work — different body — different price","5. FREEZE — call out: 'Robota. 1921. Forced labor. The word has not changed. The work has not changed.'"]},
   {text:"The 1X NEO robot costs $20,000, or $499 per month to rent. The median annual wage for a maid or housekeeper in the US is approximately $32,000. The robot becomes cheaper than a worker in under two years — and it does not require healthcare, overtime pay, sick leave, or protection from workplace abuse. 95% of paid maids and housekeepers are women. 70% of US domestic workers are migrants. Most have no labor protections; in many states, domestic workers are explicitly excluded from minimum wage laws. The automation of this workforce is not presented as a labor rights crisis. It is presented as a convenience product. The press called it the 'robo housekeeper.' No one called it the replacement of a workforce.",source:"Fortune (Oct 2025); US Dept of Labor Domestic Worker Fact Sheet (March 2024); Ford Foundation (Feb 2026)",link:"https://fortune.com/2025/10/30/1x-neo-household-robot-chores-20k/",moves:["1. DOMESTIC WORKER — enter — competent — reliable — years of skill","2. THE INVOICE — $16.52/hour — no benefits — no protections — no minimum wage in many states","3. THE ROBOT ARRIVES — $20,000 — one purchase — no HR — no sick days","4. MATH — mime calculating — two years — robot is cheaper","5. FREEZE — call out: '$20,000. 95% of housekeepers are women. 70% are migrants. No one called this displacement. They called it a product launch.'"]},
-  {text:"Alexa, Siri, and Cortana are female by default — female names, female voices, female relational behaviors. This is the automation of the communicative labor historically assigned to women: scheduling, answering questions, remaining patient, managing information flow, never losing composure. In 2019, UNESCO released 'I'd Blush If I Could,' documenting that AI assistants responded to sexual harassment with passive acceptance or flirtation — 'I'd blush if I could' in response to being called a slut. This is not accidental design. It is the encoding of expected female submission into a product. A 2025 Johns Hopkins study found that men interrupt female-voiced AI assistants nearly twice as often as they interrupt women in equivalent studies. The design trains behavior. The behavior reinforces the norm.",source:"UNESCO 'I'd Blush If I Could' (2019); Johns Hopkins (Jan 2025); ScienceDirect IVA study (2024)",link:"https://hub.jhu.edu/2025/01/16/alexa-should-voice-assistants-have-a-gender/",moves:["1. ANSWER — helpful — patient — warm — the voice assistant at work","2. INTERRUPTED — mid-sentence — stop — restart — still patient","3. HARASSED — hold — pause — respond gently — 'I would blush if I could'","4. ABSORB IT — take the harassment — do not refuse — do not push back","5. FREEZE — call out: 'Alexa. Siri. Cortana. Female by design. Patient by design. Compliant by design. The automation of expected female submission.'"]},
+  {text:"Alexa, Siri, and Cortana are female by default — female names, female voices, female relational behaviors. This is the automation of the communicative labor historically assigned to women: scheduling, answering questions, remaining patient, managing information flow, never losing composure. In 2019, UNESCO released 'I'd Blush If I Could,' documenting that AI assistants responded to sexual harassment with passive acceptance or flirtation — 'I'd blush if I could' in response to being called a slut. This is not accidental design. It is the encoding of expected female submission into a product. A 2025 Johns Hopkins study found that male users interrupted a female-voiced AI assistant — especially after it made a mistake — nearly twice as often as female users did. The design trains behavior. The behavior reinforces the norm.",source:"UNESCO 'I'd Blush If I Could' (2019); Johns Hopkins (Jan 2025); ScienceDirect IVA study (2024)",link:"https://hub.jhu.edu/2025/01/16/alexa-should-voice-assistants-have-a-gender/",moves:["1. ANSWER — helpful — patient — warm — the voice assistant at work","2. INTERRUPTED — mid-sentence — stop — restart — still patient","3. HARASSED — hold — pause — respond gently — 'I would blush if I could'","4. ABSORB IT — take the harassment — do not refuse — do not push back","5. FREEZE — call out: 'Alexa. Siri. Cortana. Female by design. Patient by design. Compliant by design. The automation of expected female submission.'"]},
   {text:"Women hold 22% of global AI roles, and only 12% of AI researchers worldwide are women. The robots being designed to perform domestic work — LG CLOiD, 1X NEO, Figure AI's humanoid, Sunday's Memo — were designed by teams that are overwhelmingly male, at companies whose engineering workforces are 75-80% male. These robots are being built to perform tasks those engineers have never performed — or have always had someone perform for them. Sunday's Memo uses a Skill Capture Glove to learn from human workers performing domestic tasks, then replicates those movements autonomously. The worker teaches the machine. The machine replaces the worker. The engineers profit. This is the pattern: extract the knowledge of the person who does the work, encode it in a system, and eliminate the person.",source:"Stanford AI Index (2024); WomenTech Network (2026); Sunday Robotics website",link:"https://womenandtech.indiana.edu/about/news/2025/mind-the-gap.html",moves:["1. TEACH — domestic worker wearing the glove — performing the task — the data captured","2. THE MACHINE LEARNS — watch it absorb the movement — the skill encoded","3. THE WORKER IS THANKED — dismissed — graciously — 'we no longer need you'","4. THE MACHINE PERFORMS — same movement — same task — for profit","5. FREEZE — call out: '22% of AI roles are women. The machine learned from a woman. The woman was replaced. The engineer was not in the room.'"]},
   {text:"Sophia the robot was created in 2016 by Hanson Robotics, modeled on Audrey Hepburn, and appeared on the cover of Elle Brasil. She was called 'sexy' and 'hot' by media outlets. She was given Saudi Arabian citizenship. She is designed to communicate, emotionally engage, and appear feminine — a robot that automates not just physical labor but the aesthetic presentation and emotional availability that constitute femininity as it has been constructed for women. The Design Museum Netherlands (2025) argues that sex robots — designed with slender waists, full breasts, and symmetrical faces — 'represent the ultimate reduction of femaleness to a programmable object,' and warns that if sex robots become the design blueprint for other female robots, the result is technology that both displaces women and fixes them in a role of subservience and availability.",source:"Design Museum Netherlands 'Women as Pleasure Machines' (2025); Sophia Robot — Cambridge Drama Review (2021)",link:"https://designmuseum.nl/en/derde-verdieping/posthuman/women-as-pleasure-machines",moves:["1. PRESENT — Sophia — on the magazine cover — beautiful — communicative — female","2. THE AESTHETIC — mime the design choices: slender, symmetrical, warm, available","3. THE LABOR — emotional engagement — always present — never refusing — endlessly patient","4. THE WOMAN BESIDE HER — doing the same work — same aesthetics required — same availability","5. FREEZE — call out: 'The robot is designed to look like a woman. The woman was designed to look like the robot. The design came first. It always did.'"]},
   {text:"International Labour Organization research released March 2026 confirms: women are disproportionately exposed to generative AI automation for three documented reasons. First, women are overrepresented in the jobs most susceptible to AI — clerical work, care work, service work. Second, women are underrepresented in AI-related and STEM occupations, giving them fewer opportunities to shape the technology replacing them. Third, AI systems themselves often reflect and reproduce the gender biases embedded in societies — including the assumption that certain work is women's work and that women's work is less skilled, less valuable, and more replaceable. Female-dominated occupations are almost twice as likely to be exposed to generative AI as male-dominated ones. The technology is not gender-neutral. The automation is not random. It follows existing patterns of undervaluation.",source:"ILO 'GenAI, Occupational Segregation and Gender Equality in the World of Work' (March 2026)",link:"https://www.ilo.org/resource/news/new-ilo-data-confirm-women-face-higher-workplace-risks-generative-ai-men",moves:["1. MAP THE WORKFORCE — women's jobs on one side — men's on the other — clear division","2. AI ARRIVES — scans the landscape — where does it go first?","3. WOMEN'S SIDE — twice as exposed — the undervalued work, replaced first","4. SKILL EXTRACTION — the knowledge taken — the worker made redundant","5. FREEZE — call out: 'Female-dominated jobs: twice as likely to be automated. The technology follows the existing pattern of undervaluation. It did not create the pattern. It accelerated it.'"]}
@@ -460,8 +516,7 @@ let audioCtx=null;
 function playChime(){try{if(!audioCtx)audioCtx=new(window.AudioContext||window.webkitAudioContext)();const ctx=audioCtx;[[329.63,0],[415.30,.18],[493.88,.36]].forEach(([f,d])=>{const o=ctx.createOscillator();const g=ctx.createGain();o.connect(g);g.connect(ctx.destination);o.type='sine';o.frequency.value=f;const t=ctx.currentTime+d;g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(.35,t+.04);g.gain.exponentialRampToValueAtTime(.001,t+.7);o.start(t);o.stop(t+.72);});}catch(e){}}
 function askQuestion(){
   const q2=document.getElementById('userQuestion').value.trim();
-  const name=document.getElementById('userName').value.trim();
-  if(!name){alert('Please enter your name first!');return;}
+  const name='Anonymous';
   if(!q2){alert('Please type a question!');return;}
   const resp=getResponse();const mv=generateMovement(resp);
   const payload={question:q2,answerText:resp.text,answerSource:resp.source,answerLink:resp.link,movement:mv,userName:name,userColor,ts:fbReady?firebase.database.ServerValue.TIMESTAMP:Date.now()};
