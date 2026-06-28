@@ -206,6 +206,22 @@ html,body{min-height:100%;font-family:var(--fb);font-weight:600;color:var(--text
     </div>
   </div>
 
+  <!-- INTRO / BIG IDEA -->
+  <div class="cb-card">
+    <div class="cb-eyebrow">✦ The Big Idea</div>
+    <div style="font-size:13px;line-height:1.75;color:var(--muted2);">
+      Women have invented some of the everyday technology we all rely on — the flat-bottomed paper bag, the ironing board, the word processor, the modern bra — yet their names rarely survive in the historical record the way men's do. This task shows you an invention with the inventor hidden. You'll guess who you picture made it, find out who really did, and then rate how original the work was and how hard she had to fight to be recognized for it. Your answers join a live, ongoing dataset about whose creativity gets remembered — and whose gets erased.
+    </div>
+    <div style="font-size:11px;font-style:italic;color:var(--muted);margin-top:10px;">AI helped me with this. There might be inaccuracies.</div>
+    <div style="font-size:10px;line-height:1.8;color:var(--muted);margin-top:12px;border-top:1px solid var(--border);padding-top:10px;">
+      Sources —
+      Paper bag (<a href="https://patents.google.com/patent/US116842A/en" target="_blank" rel="noopener" style="color:var(--candy);">patent</a>, <a href="https://en.wikipedia.org/wiki/Margaret_E._Knight" target="_blank" rel="noopener" style="color:var(--candy);">bio</a>) ·
+      Ironing board (<a href="https://patents.google.com/patent/US473653A/en" target="_blank" rel="noopener" style="color:var(--candy);">patent</a>, <a href="https://blackpast.org/african-american-history/boone-sarah-1832-1904/" target="_blank" rel="noopener" style="color:var(--candy);">bio</a>) ·
+      Word processor (<a href="https://www.invent.org/inductees/evelyn-berezin" target="_blank" rel="noopener" style="color:var(--candy);">NIHF</a>, <a href="https://www.npr.org/2018/12/12/676024428/evelyn-berezin-computer-scientist-behind-groundbreaking-word-processor-dies-at-9" target="_blank" rel="noopener" style="color:var(--candy);">NPR</a>) ·
+      Modern bra (<a href="https://patents.google.com/patent/US1115674A/en" target="_blank" rel="noopener" style="color:var(--candy);">patent</a>, <a href="https://lemelson.mit.edu/resources/mary-jacob" target="_blank" rel="noopener" style="color:var(--candy);">bio</a>)
+    </div>
+  </div>
+
   <div class="stats-bar">
     <div class="stat-chip">Responses <strong id="st-total">—</strong></div>
     <div class="stat-chip">Would share <strong id="st-share">—</strong></div>
@@ -217,11 +233,10 @@ html,body{min-height:100%;font-family:var(--fb);font-weight:600;color:var(--text
     </button>
   </div>
 
-  <!-- NAME -->
+  <!-- BEGIN -->
   <div class="cb-card">
-    <div class="cb-eyebrow">✦ CAREBOT-29 · Enter your name to begin · You will see an invention — guess who made it</div>
+    <div class="cb-eyebrow">✦ CAREBOT-29 · You'll see an invention — guess who made it</div>
     <div class="cb-row">
-      <input class="cb-input" type="text" id="userName" placeholder="Your name…" autocomplete="off">
       <button class="cb-btn primary" onclick="beginTask()">✦ Begin</button>
       <button class="cb-btn soft" onclick="showAdminModal()" title="Admin">⚙</button>
     </div>
@@ -412,7 +427,8 @@ try{
   fbReady=true;
 }catch(e){console.warn(e);}
 
-let currentUser=localStorage.getItem('cb29User')||'';
+let currentUser=localStorage.getItem('cb29User')||genUser();
+function genUser(){const id='Guest-'+Math.random().toString(36).slice(2,6).toUpperCase();localStorage.setItem('cb29User',id);return id;}
 let userColor=localStorage.getItem('cb29Color')||genColor();
 function genColor(){const c=['#ff85b3','#c084fc','#fb923c','#ff2d6b','#a78bfa'];const v=c[Math.floor(Math.random()*c.length)];localStorage.setItem('cb29Color',v);return v;}
 
@@ -451,7 +467,6 @@ if(fbReady){
 }else{document.getElementById('onlineCount').textContent='Offline';}
 
 function trackPresence(){if(!onlineRef||!currentUser)return;const r=onlineRef.child(currentUser.replace(/[.#$[\]]/g,'_'));r.set({name:currentUser,ts:firebase.database.ServerValue.TIMESTAMP});r.onDisconnect().remove();}
-document.getElementById('userName').addEventListener('change',function(){currentUser=this.value.trim();localStorage.setItem('cb29User',currentUser);if(currentUser&&fbReady)trackPresence();});
 
 /* INVENTOR DATA */
 const inventors=[
@@ -467,18 +482,18 @@ const inventors=[
     text:'Evelyn Berezin patented Control Means for an Electronic Calculator in 1961. She designed the Redactron word processor and founded the Redactron Corporation. She is considered the "mother of the word processor" though she rarely appears in computing histories.',
     obstacle:'Her company succeeded technically but collapsed due to economic recession. Despite her foundational contributions to both airline computing and word processing, she is largely absent from canonical histories of the computer industry, which tend to center male engineers at large institutions.',
     source:'U.S. Patent No. 2,973,141 (1961)',link:'https://patents.google.com/patent/US2973141'},
-  {name:'Maggie Knight',era:'1870s',
+  {name:'Margaret Knight',era:'1870s',
     mystery:'A factory worker in the 1860s invented a machine attachment that automatically folded and glued a flat paper bottom onto paper bags, replacing the envelope-style bags of the time. She built a working model from wood. A man saw her design, had a metal version made in secret, and applied for the patent himself. She sued and won — but only after a long legal battle she funded herself.',
     hint:'Era: 1860s–70s · Domain: mechanical manufacturing',
-    text:'Maggie Knight invented the machine for manufacturing flat-bottomed paper bags — the kind used in grocery stores today. A man named Charles Annan copied her wooden model, had it made in metal, and filed for the patent. Knight sued, produced her notebooks and witnesses, and won the patent in 1871.',
-    obstacle:'Charles Annan argued that a woman could not have designed such a sophisticated machine. The patent office ruled in her favor. She went on to receive at least 27 patents, but most accounts of the paper bag\'s invention omit her entirely.',
-    source:'Woman as an Inventor by Matilda Joslyn Gage (1883)',link:'https://archive.org/details/jstor-25118326'},
+    text:'Margaret Knight invented the machine for manufacturing flat-bottomed paper bags — the kind used in grocery stores today. A man named Charles Annan copied her wooden model, had it made in metal, and filed for the patent. Knight won the resulting patent interference case, producing her notebooks, sketches, and witnesses, and was awarded U.S. Patent No. 116,842 in 1871.',
+    obstacle:'Charles Annan argued in court that a woman could not have designed such a sophisticated machine. The Commissioner of Patents ruled in her favor after a 16-day hearing. She went on to receive at least 20 patents over her lifetime, but most accounts of the paper bag\'s invention omit her entirely.',
+    source:'U.S. Patent No. 116,842 (1871)',link:'https://patents.google.com/patent/US116842A/en'},
   {name:'Catharine Greene',era:'1790s',
-    mystery:'In the 1790s, a widow hosting a young engineer on her plantation provided the key insight that made his invention work. The engineer had been trying for months to build a machine to separate cotton fibers from seeds. She suggested replacing the wooden teeth with wire. Within ten days, a working model was complete. The engineer filed for the patent. Her name does not appear on it.',
-    hint:'Era: 1790s · Domain: agricultural machinery',
-    text:'The cotton gin was conceived with the essential contribution of Catharine Littlefield Greene. When Eli Whitney\'s wooden-toothed design failed, she suggested using wire — the insight that made the gin function. Whitney filed the patent. Greene received no credit, no payment, and no legal recognition.',
-    obstacle:'Women at the time could not hold patents in their own names in most US states, and convention prevented her from public claims. The invention transformed American agriculture and deepened the slave economy — a dimension of the story that is still rarely foregrounded in technical histories.',
-    source:'Woman as an Inventor by Matilda Joslyn Gage (1883)',link:'https://archive.org/details/jstor-25118326'},
+    mystery:'In the 1790s, a widow hosting a young engineer on her plantation is said to have provided a key insight that made his invention work. The engineer had been trying for months to build a machine to separate cotton fibers from seeds. According to one account, she suggested replacing the wooden teeth with wire, and within days a working model was complete. The engineer filed for the patent. Her name does not appear on it.',
+    hint:'Era: 1790s · Domain: agricultural machinery · Disputed account',
+    text:'The cotton gin is traditionally credited solely to Eli Whitney, but Catharine Littlefield Greene hosted Whitney on her plantation, financed his work, and — according to an 1883 account by Matilda Joslyn Gage and family oral history — suggested replacing his failing wooden teeth with wire, the fix that made the gin function. Whitney filed the 1794 patent; Greene is not named on it.',
+    obstacle:'Historians disagree on how large Greene\'s technical role actually was: some treat the wire-teeth story as a real but undocumented contribution, others as patronage later inflated into invention, since the supporting accounts came decades after the fact, secondhand. Women at the time also could not hold patents in their own names in most US states. What is undisputed is that the cotton gin transformed American agriculture and deepened the slave economy — a dimension of the story still rarely foregrounded in technical histories.',
+    source:'Disputed — Matilda Joslyn Gage, "Woman as an Inventor" (1883)',link:'https://www.encyclopedia.com/women/encyclopedias-almanacs-transcripts-and-maps/greene-catharine-littlefield-1755-1814'},
   {name:'Hertha Ayrton',era:'1885',
     mystery:'A mathematician and physicist in the late 19th century invented a precision drafting instrument and later did original research into the physics of electric arcs used in street lighting and cinema projectors. She was the first woman to present a paper to the Royal Society of London. She was nominated for fellowship but rejected — the Society ruled that married women were ineligible.',
     hint:'Era: 1880s–1910s · Domain: physics and precision instruments',
@@ -486,11 +501,11 @@ const inventors=[
     obstacle:'The Royal Society refused her fellowship on the grounds that she was a married woman — a legal category that, at the time, meant she had no independent legal existence. Her husband\'s support was considered to disqualify her from independent scientific standing.',
     source:'U.S. Patent No. 310,450 (1885)',link:'https://patents.google.com/patent/US310450'},
   {name:'Beulah Henry',era:'1930s',
-    mystery:'An inventor in the early 20th century held 49 patents and had over 110 inventions — including a bobbin-free sewing machine, an ice cream freezer, a vacuum ice cream cabinet, a doll with a moving mouth, and a typewriter with four-color ribbon. She worked without formal engineering training and explained her inventions through sketches because she could not read blueprints. Engineers built what she described.',
+    mystery:'An inventor in the early 20th century held 49 patents and had over 100 inventions — including a bobbin-free sewing machine, a vacuum-sealed ice cream freezer, a doll with changeable eyes, and a typewriter attachment that made four copies without carbon paper. She worked without formal engineering training and explained her inventions through sketches because she could not draft blueprints herself. Model makers and engineers built what she described.',
     hint:'Era: 1910s–1950s · Domain: mechanical devices and consumer products',
-    text:'Beulah Louise Henry, known as "Lady Edison," held 49 patents and had over 110 inventions. She worked by intuition and visualization, not engineering training. Companies hired her as a consultant and built prototypes from her verbal descriptions and sketches.',
-    obstacle:'Despite being called "Lady Edison" by her contemporaries and having more patents than many celebrated male inventors of her era, she rarely appears in histories of American invention. No biography exists. Her Wikipedia entry is a stub.',
-    source:'U.S. Patent No. 2,897,944 (1959)',link:'https://patents.google.com/patent/US2897944'},
+    text:'Beulah Louise Henry, known as "Lady Edison," held 49 patents and had over 100 inventions credited to her name. Her first, a vacuum-sealed ice cream freezer, was granted in 1912. She worked by intuition and visualization rather than engineering training — companies hired her as a consultant and built prototypes from her verbal descriptions and sketches.',
+    obstacle:'Despite being called "Lady Edison" by her contemporaries and holding more patents than many celebrated male inventors of her era, she rarely appears in general histories of American invention, and detailed biographical sources about her remain thin.',
+    source:'U.S. Patent No. 1,037,762 (1912)',link:'https://patents.google.com/patent/US1037762A/en'},
   {name:'Sarah Boone',era:'1892',
     mystery:'One of the first African American women to receive a US patent invented an improvement to a device found in almost every home today. Her design specifically addressed how the device failed to work well for women\'s clothing — particularly sleeves. Her patent was granted in 1892. Almost nothing is known about her life before or after.',
     hint:'Era: 1890s · Domain: domestic technology',
@@ -525,10 +540,6 @@ function getRandomInventor(){
 }
 
 function beginTask(){
-  const name=document.getElementById('userName').value.trim();
-  if(!name){alert('Please enter your name first!');document.getElementById('userName').focus();return;}
-  currentUser=name;
-  localStorage.setItem('cb29User',name);
   if(fbReady)trackPresence();
   currentInventor=getRandomInventor();
   document.getElementById('mysteryDesc').textContent=currentInventor.mystery;
@@ -607,10 +618,9 @@ function checkSubmitReady(){
 
 function submitResponse(){
   if(taskSubmitted)return;
-  const name=document.getElementById('userName').value.trim();
   const whyUnknown=document.getElementById('whyUnknown').value.trim();
   const payload={
-    userName:name,userColor,
+    userName:currentUser,userColor,
     inventor:currentInventor.name,era:currentInventor.era,
     genderGuess,wouldHave,
     novelty:ratings.novelty,obstacle:ratings.obstacle,
