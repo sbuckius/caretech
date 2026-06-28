@@ -57,6 +57,34 @@
   .irony-title{font-family:var(--fh);font-weight:900;font-size:clamp(13px,3.2vw,16px);color:#ffb3b3;margin-bottom:9px;line-height:1.3;}
   .irony-text{font-size:12.5px;line-height:1.75;color:rgba(255,210,210,.85);}
   .irony-text strong{color:#ffcccc;font-weight:700;}
+  .ai-note{width:100%;max-width:620px;background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:12px;padding:10px 14px;font-size:11px;line-height:1.5;color:var(--muted);text-align:center;}
+  .ai-note strong{color:var(--candy);}
+  .src-list{margin-top:9px;padding-top:9px;border-top:1px solid rgba(255,100,160,.16);font-size:10.5px;color:var(--muted);line-height:1.7;}
+  .src-list a{color:var(--candy);text-decoration:none;}
+  .src-list a:hover{text-decoration:underline;}
+  .women-card{width:100%;max-width:620px;background:var(--surface);border:1.5px solid var(--border2);border-radius:18px;padding:17px;position:relative;overflow:hidden;box-shadow:0 4px 28px rgba(255,45,107,.18);}
+  .women-card::before{content:'';position:absolute;top:0;left:10%;right:10%;height:1.5px;background:linear-gradient(90deg,transparent,var(--candy) 35%,var(--pink) 50%,var(--candy) 65%,transparent);box-shadow:0 0 10px var(--candy);border-radius:999px;}
+  .woman-block{padding:11px 0;border-bottom:1px solid rgba(255,80,150,.14);}
+  .woman-block:last-child{border-bottom:none;padding-bottom:0;}
+  .woman-name{font-family:var(--fh);font-weight:900;font-size:13px;color:var(--blush);margin-bottom:4px;}
+  .woman-role{font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-bottom:6px;}
+  .woman-desc{font-size:12px;line-height:1.65;color:rgba(255,215,235,.85);}
+  .woman-link{font-size:11px;margin-top:5px;display:inline-block;}
+  .woman-link a{color:var(--candy);text-decoration:none;}
+  .woman-link a:hover{text-decoration:underline;}
+  .survey-card{width:100%;max-width:620px;background:var(--surface);border:1.5px solid var(--border2);border-radius:18px;padding:17px;position:relative;overflow:hidden;box-shadow:0 4px 28px rgba(255,45,107,.18);}
+  .survey-card::before{content:'';position:absolute;top:0;left:10%;right:10%;height:1.5px;background:linear-gradient(90deg,transparent,var(--candy) 35%,var(--pink) 50%,var(--candy) 65%,transparent);box-shadow:0 0 10px var(--candy);border-radius:999px;}
+  .survey-q{margin-bottom:14px;}
+  .survey-q:last-of-type{margin-bottom:0;}
+  .survey-label{font-size:12.5px;color:var(--cream);margin-bottom:8px;line-height:1.5;font-weight:700;}
+  .survey-options{display:flex;flex-wrap:wrap;gap:6px;}
+  .survey-opt{font-size:11px;padding:7px 13px;border-radius:999px;background:rgba(255,255,255,.04);border:1.5px solid var(--border);color:var(--muted);cursor:pointer;transition:all .2s;}
+  .survey-opt:hover{border-color:var(--candy);color:var(--candy);}
+  .survey-opt.selected{background:linear-gradient(135deg,var(--pink),var(--berry));color:#fff;border-color:var(--pink);}
+  .survey-textarea{width:100%;padding:9px 13px;background:rgba(255,255,255,.05);border:1.5px solid var(--border);border-radius:11px;font-family:var(--fb);font-weight:600;font-size:12.5px;color:var(--cream);outline:none;resize:vertical;min-height:54px;}
+  .survey-textarea:focus{border-color:var(--candy);box-shadow:0 0 0 3px rgba(255,133,179,.1);}
+  .survey-textarea::placeholder{color:var(--muted);}
+  .survey-submit{margin-top:6px;}
 
   /* PHOTO GRID */
   .photo-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;}
@@ -196,6 +224,7 @@
   <div class="stats-bar">
     <div class="stat-chip">Questions asked <strong id="st-questions">—</strong></div>
     <div class="stat-chip">Rankings submitted <strong id="st-rankings">—</strong></div>
+    <div class="stat-chip">Reflections shared <strong id="st-surveys">—</strong></div>
     <div class="stat-chip">Online <strong id="st-online">—</strong></div>
   </div>
 
@@ -205,6 +234,50 @@
     <div class="irony-title">⚠️ She finished the most cited mathematical reference work in history. It is known by his name first.</div>
     <div class="irony-text">
       <strong>Irene Ann Stegun</strong> (1919–2008) co-edited the <em>Handbook of Mathematical Functions</em> with Milton Abramowitz at the National Bureau of Standards. With over <strong>40,000 citations</strong> — cited once every 1.5 hours of every working day through the 1990s — it is arguably the most cited scientific reference work ever produced. When Abramowitz died of a heart attack in <strong>July 1958</strong>, Stegun took over management of the entire project and carried it to completion, publishing in 1964. She was awarded the <strong>Department of Commerce Gold Medal</strong> in 1965. The book is universally known as <strong>"Abramowitz and Stegun"</strong> — his name first, always. On the Dover paperback, her name was misprinted as <strong>"Irene A. Segun."</strong> The handbook is described as <strong>"one of the very few scientific activities of the 1950s led by a woman."</strong> You would not know that from its name.
+      <div class="src-list">Sources: <a href="https://en.wikipedia.org/wiki/Irene_Stegun" target="_blank" rel="noopener">Wikipedia — Irene Stegun</a> · <a href="https://en.wikipedia.org/wiki/Abramowitz_and_Stegun" target="_blank" rel="noopener">Wikipedia — Abramowitz and Stegun</a> · <a href="https://www.nist.gov/mathematics-statistics/handbook-mathematical-functions-abramowitz-and-stegun" target="_blank" rel="noopener">NIST history of the Handbook</a></div>
+    </div>
+  </div>
+
+  <div class="ai-note">✦ <strong>AI helped me with this.</strong> There might be inaccuracies — please check the linked sources.</div>
+
+  <!-- WOMEN OF THE HANDBOOK -->
+  <div class="women-card">
+    <div class="cb-eyebrow">✦ The Women Behind the Handbook</div>
+    <div class="woman-block">
+      <div class="woman-name">Irene Ann Stegun (1919–2008)</div>
+      <div class="woman-role">Co-editor · Finished the project after Abramowitz's death</div>
+      <div class="woman-desc">Trained as a teacher, then earned a master's in mathematics at Columbia while working nights on the WPA's Mathematical Tables Project. She joined the National Bureau of Standards in 1948, rose to Assistant Chief of the Computation Laboratory, and took over the Handbook project in 1958, carrying it to publication in 1964.</div>
+      <div class="woman-link"><a href="https://en.wikipedia.org/wiki/Irene_Stegun" target="_blank" rel="noopener">Wikipedia — Irene Stegun →</a></div>
+    </div>
+    <div class="woman-block">
+      <div class="woman-name">Lucy Joan Slater (1922–2008)</div>
+      <div class="woman-role">Author, Chapter 13 — Confluent Hypergeometric Functions</div>
+      <div class="woman-desc">A British mathematician homeschooled for much of her early education, Slater earned her PhD at London University under Wilfrid Norman Bailey, publishing over 100 new Rogers–Ramanujan identities. She wrote Chapter 13 of the Handbook, and in the early 1950s helped devise an early precursor to modern computer operating systems at Cambridge University.</div>
+      <div class="woman-link"><a href="https://en.wikipedia.org/wiki/Lucy_Joan_Slater" target="_blank" rel="noopener">Wikipedia — Lucy Joan Slater →</a></div>
+    </div>
+    <div class="woman-block">
+      <div class="woman-name">Emilie Virginia Haynsworth (1916–1985)</div>
+      <div class="woman-role">Co-author, Chapter 24 — Combinatorial Analysis</div>
+      <div class="woman-desc">An American mathematician who left high school teaching to work at the Aberdeen Proving Ground during WWII, Haynsworth co-wrote Chapter 24 of the Handbook with K. Goldberg and M. Newman. She later joined Auburn University, where in 1968 she named and formalized the "Schur complement" in matrix theory — now a standard tool across numerical analysis and statistics.</div>
+      <div class="woman-link"><a href="https://en.wikipedia.org/wiki/Emilie_Virginia_Haynsworth" target="_blank" rel="noopener">Wikipedia — Emilie Virginia Haynsworth →</a></div>
+    </div>
+    <div class="woman-block">
+      <div class="woman-name">Gertrude Blanch (1897–1996)</div>
+      <div class="woman-role">Mathematical director, Mathematical Tables Project</div>
+      <div class="woman-desc">An immigrant from Poland with a PhD in algebraic geometry from Cornell, Blanch led the Planning Committee that designed the algorithms executed by roughly 450 human computers — the predecessor organization to the NBS Computation Laboratory where Stegun and Abramowitz later worked. She trained Stegun in numerical analysis.</div>
+      <div class="woman-link"><a href="https://en.wikipedia.org/wiki/Gertrude_Blanch" target="_blank" rel="noopener">Wikipedia — Gertrude Blanch →</a></div>
+    </div>
+    <div class="woman-block">
+      <div class="woman-name">Ida Rhodes</div>
+      <div class="woman-role">Planning Committee, Mathematical Tables Project</div>
+      <div class="woman-desc">Worked alongside Blanch in a supervisory role, helping direct the high-level mathematical work and checking the calculations produced on the floor, while also caring for many of the project's computers who lived with illness or disability.</div>
+      <div class="woman-link"><a href="https://thenewinquiry.com/blog/remembering-the-women-of-the-mathematical-tables-project/" target="_blank" rel="noopener">Remembering the Women of the Mathematical Tables Project →</a></div>
+    </div>
+    <div class="woman-block">
+      <div class="woman-name">The 450 human computers</div>
+      <div class="woman-role">Mathematical Tables Project, 1938–1948</div>
+      <div class="woman-desc">Most had no formal mathematics training; many were hired through the WPA specifically because they could not find other work, including disabled workers and women. Their hand calculations, broken into simple repeatable steps under Blanch's system, produced the 28 volumes of tables that became the foundation for the Handbook.</div>
+      <div class="woman-link"><a href="https://en.wikipedia.org/wiki/Mathematical_Tables_Project" target="_blank" rel="noopener">Wikipedia — Mathematical Tables Project →</a></div>
     </div>
   </div>
 
@@ -249,16 +322,52 @@
     </div>
   </div>
 
+  <!-- SURVEY / REFLECTION MODULE -->
+  <div class="survey-card">
+    <div class="cb-eyebrow">✦ CAREBOT-27 · A Few Quick Thoughts · Anonymous</div>
+    <div class="survey-q">
+      <div class="survey-label">Before today, had you heard of Irene Stegun?</div>
+      <div class="survey-options" data-qid="heard">
+        <div class="survey-opt" data-val="Yes, I knew her name">Yes, I knew her name</div>
+        <div class="survey-opt" data-val="I'd heard of the Handbook, not her">I'd heard of the Handbook, not her</div>
+        <div class="survey-opt" data-val="No, this is new to me">No, this is new to me</div>
+      </div>
+    </div>
+    <div class="survey-q">
+      <div class="survey-label">How did learning the book is known by his name first make you feel?</div>
+      <div class="survey-options" data-qid="feeling">
+        <div class="survey-opt" data-val="Frustrated / angry">Frustrated / angry</div>
+        <div class="survey-opt" data-val="Unsurprised">Unsurprised</div>
+        <div class="survey-opt" data-val="Curious to learn more">Curious to learn more</div>
+        <div class="survey-opt" data-val="Indifferent">Indifferent</div>
+      </div>
+    </div>
+    <div class="survey-q">
+      <div class="survey-label">Where do you think credit gets lost most often today?</div>
+      <div class="survey-options" data-qid="wherelost">
+        <div class="survey-opt" data-val="Academia / research">Academia / research</div>
+        <div class="survey-opt" data-val="Tech industry">Tech industry</div>
+        <div class="survey-opt" data-val="Domestic / caregiving labor">Domestic / caregiving labor</div>
+        <div class="survey-opt" data-val="All of the above">All of the above</div>
+      </div>
+    </div>
+    <div class="survey-q">
+      <div class="survey-label">Anything else you want to share? (optional)</div>
+      <textarea class="survey-textarea" id="surveyNote" placeholder="Your thoughts…"></textarea>
+    </div>
+    <button class="rank-submit survey-submit" id="surveySubmitBtn" onclick="submitSurvey()">✦ Submit Thoughts</button>
+  </div>
+
   <!-- Q&A INPUT -->
   <div class="cb-input-card">
     <div class="cb-eyebrow">✦ Ask a Question · Everyone Sees the Same Answers · Showing Last 3</div>
     <div class="cb-row">
-      <input class="cb-input cb-name-in" type="text" id="userName" placeholder="Your name…">
       <input class="cb-input" type="text" id="userQuestion" placeholder="Ask about Abramowitz &amp; Stegun…" autocomplete="off">
       <button class="cb-btn primary" onclick="askQuestion()">✦ Ask</button>
       <button class="cb-btn soft" onclick="showAdminModal()" title="Admin">⚙</button>
     </div>
   </div>
+
 
   <!-- MESSAGES -->
   <div class="cb-msgs" id="outputArea">
@@ -301,10 +410,11 @@ setInterval(updateClock,1000);updateClock();
 
 /* Firebase */
 const firebaseConfig={apiKey:"AIzaSyCEd0x2_6jCdUksa54FSkNHvLCjWnJitak",authDomain:"handbookofmathematicalfunction.firebaseapp.com",databaseURL:"https://handbookofmathematicalfunction-default-rtdb.firebaseio.com",projectId:"handbookofmathematicalfunction",storageBucket:"handbookofmathematicalfunction.firebasestorage.app",messagingSenderId:"27143907664",appId:"1:27143907664:web:e4dd29cf764fb74537e455"};
-let app,database,messagesRef,rankingsRef,onlineRef,useFirebase=true;
-let currentUser=localStorage.getItem('aandsUser')||'';
+let app,database,messagesRef,rankingsRef,onlineRef,surveysRef,useFirebase=true;
+let currentUser=localStorage.getItem('aandsUser')||genAnonId();
 let userColor=localStorage.getItem('aandsColor')||genColor();
 
+function genAnonId(){const id='Guest-'+Math.floor(1000+Math.random()*9000);localStorage.setItem('aandsUser',id);return id;}
 function genColor(){const c=['#ff85b3','#ff2d6b','#ab47bc','#ff9800','#40c8ff','#c4005a'];const v=c[Math.floor(Math.random()*c.length)];localStorage.setItem('aandsColor',v);return v;}
 
 try{
@@ -313,11 +423,13 @@ try{
   messagesRef=database.ref('aandsMessages');
   rankingsRef=database.ref('aandsRankings');
   onlineRef=database.ref('aandsOnline');
+  surveysRef=database.ref('aandsSurveys');
   if(currentUser)trackPresence();
 
   /* live stats */
   messagesRef.on('value',s=>{document.getElementById('st-questions').textContent=s.numChildren();});
   rankingsRef.on('value',s=>{document.getElementById('st-rankings').textContent=s.numChildren();});
+  surveysRef.on('value',s=>{document.getElementById('st-surveys').textContent=s.numChildren();});
   onlineRef.on('value',s=>{const c=Object.keys(s.val()||{}).length;document.getElementById('onlineCount').innerHTML='<span class="cb-pip"></span>'+c+' online';document.getElementById('st-online').textContent=c;});
 
   let initialDone=false;
@@ -341,15 +453,15 @@ try{
 }catch(e){useFirebase=false;document.getElementById('onlineCount').textContent='Offline';}
 
 function trackPresence(){if(!onlineRef||!currentUser)return;const r=onlineRef.child(currentUser.replace(/[.#$[\]]/g,'_'));r.set({name:currentUser,timestamp:firebase.database.ServerValue.TIMESTAMP});r.onDisconnect().remove();}
-document.getElementById('userName').addEventListener('change',function(){currentUser=this.value.trim();localStorage.setItem('aandsUser',currentUser);if(currentUser&&useFirebase)trackPresence();});
 
 /* CSV export */
 function downloadCSV(){
   if(!useFirebase||!database){alert('No Firebase connection.');return;}
-  Promise.all([messagesRef.once('value'),rankingsRef.once('value')]).then(([msgSnap,rankSnap])=>{
-    let csv='Type,Timestamp,UserName,Question,AnswerTheme,RankingJSON\n';
-    msgSnap.forEach(d=>{const m=d.val();const theme=(m.movement||'').match(/HIP HOP SEQUENCE: (.+)/)?.[1]||'';csv+='question,'+q(m.timestamp?new Date(m.timestamp).toISOString():'')+','+q(m.userName||'')+','+q(m.question||'')+','+q(theme)+',,\n';});
-    rankSnap.forEach(d=>{const r=d.val();csv+='ranking,'+q(r.timestamp?new Date(r.timestamp).toISOString():'')+','+q(r.userName||'')+',,,,'+q(JSON.stringify(r.ranking||[]))+'\n';});
+  Promise.all([messagesRef.once('value'),rankingsRef.once('value'),surveysRef.once('value')]).then(([msgSnap,rankSnap,surveySnap])=>{
+    let csv='Type,Timestamp,UserName,Question,AnswerTheme,RankingJSON,SurveyHeard,SurveyFeeling,SurveyWhereLost,SurveyNote\n';
+    msgSnap.forEach(d=>{const m=d.val();const theme=(m.movement||'').match(/HIP HOP SEQUENCE: (.+)/)?.[1]||'';csv+='question,'+q(m.timestamp?new Date(m.timestamp).toISOString():'')+','+q(m.userName||'')+','+q(m.question||'')+','+q(theme)+',,,,,\n';});
+    rankSnap.forEach(d=>{const r=d.val();csv+='ranking,'+q(r.timestamp?new Date(r.timestamp).toISOString():'')+','+q(r.userName||'')+',,,'+q(JSON.stringify(r.ranking||[]))+',,,,\n';});
+    surveySnap.forEach(d=>{const s=d.val();csv+='survey,'+q(s.timestamp?new Date(s.timestamp).toISOString():'')+','+q(s.userName||'')+',,,,'+q(s.heard||'')+','+q(s.feeling||'')+','+q(s.wherelost||'')+','+q(s.note||'')+'\n';});
     const blob=new Blob([csv],{type:'text/csv'});const url=URL.createObjectURL(blob);
     const a=document.createElement('a');a.href=url;a.download='carebot27-aands-'+Date.now()+'.csv';document.body.appendChild(a);a.click();document.body.removeChild(a);URL.revokeObjectURL(url);
   }).catch(e=>alert('Export failed: '+e.message));
@@ -397,10 +509,8 @@ function renderRankList(){
 
 function submitRanking(){
   if(rankingSubmitted)return;
-  const name=document.getElementById('userName').value.trim();
-  if(!name){alert('Please enter your name first!');document.getElementById('userName').focus();return;}
   const ranking=rankOrder.map((fi,pos)=>({rank:pos+1,fn:FUNCTIONS[fi].fn,name:FUNCTIONS[fi].name}));
-  const payload={userName:name,userColor,ranking,timestamp:useFirebase?firebase.database.ServerValue.TIMESTAMP:Date.now()};
+  const payload={userName:currentUser,userColor,ranking,timestamp:useFirebase?firebase.database.ServerValue.TIMESTAMP:Date.now()};
   if(useFirebase&&rankingsRef){rankingsRef.push(payload).catch(e=>console.warn(e));}
   rankingSubmitted=true;
   const btn=document.getElementById('rankSubmitBtn');
@@ -408,17 +518,43 @@ function submitRanking(){
   document.querySelectorAll('.rank-item').forEach(i=>{i.draggable=false;i.style.cursor='default';i.querySelector('.rank-drag-handle').style.opacity='.15';});
 }
 
+/* SURVEY MODULE */
+const surveyAnswers={};
+document.querySelectorAll('.survey-options').forEach(group=>{
+  const qid=group.dataset.qid;
+  group.querySelectorAll('.survey-opt').forEach(opt=>{
+    opt.addEventListener('click',()=>{
+      group.querySelectorAll('.survey-opt').forEach(o=>o.classList.remove('selected'));
+      opt.classList.add('selected');
+      surveyAnswers[qid]=opt.dataset.val;
+    });
+  });
+});
+
+let surveySubmitted=false;
+function submitSurvey(){
+  if(surveySubmitted)return;
+  const note=document.getElementById('surveyNote').value.trim();
+  const payload={userName:currentUser,heard:surveyAnswers.heard||'',feeling:surveyAnswers.feeling||'',wherelost:surveyAnswers.wherelost||'',note,timestamp:useFirebase?firebase.database.ServerValue.TIMESTAMP:Date.now()};
+  if(useFirebase&&surveysRef){surveysRef.push(payload).catch(e=>console.warn(e));}
+  surveySubmitted=true;
+  const btn=document.getElementById('surveySubmitBtn');
+  btn.textContent='✓ Thanks for sharing';btn.classList.add('done');btn.disabled=true;
+  document.querySelectorAll('.survey-opt').forEach(o=>o.style.pointerEvents='none');
+  document.getElementById('surveyNote').disabled=true;
+}
+
 renderRankList();
 
 /* RESPONSE BANK */
 const responses=[
   {text:"The Handbook of Mathematical Functions was first published in 1964 by the National Bureau of Standards. It collects formulas, graphs, and numerical tables for the special functions of applied mathematics — Bessel functions, gamma functions, elliptic integrals, hypergeometric functions, and 25 other families. It became the most widely distributed NBS publication of all time and with over 40,000 citations is arguably the most cited scientific reference work ever produced.",source:"Handbook of Mathematical Functions — Abramowitz & Stegun (1964), p. i–xiv",link:"https://personal.math.ubc.ca/~cbm/aands/abramowitz_and_stegun.pdf",theme:"THE HANDBOOK SEQUENCE",moves:["1. OPEN THE BOOK — both arms open wide from chest, slow and ceremonial — 1,046 pages of mathematics","2. TABLE SCAN — one finger traces down an invisible column of numbers, precise and methodical","3. FORMULA LOCK — arms snap into a mathematical pose — 90° angles, tight geometry","4. CITATION WAVE — arms sweep outward repeatedly — 40,000 citations, once every 1.5 hours, every working day","5. FREEZE arms wide open — call out: 'Stegun finished it. She made science possible.'"]},
-  {text:"Irene Ann Stegun was born in Yonkers, New York in 1919, the daughter of immigrants. She trained as a teacher, completed a master's degree in mathematics at Columbia University, and joined the Mathematical Tables Project of the WPA during World War II. She learned numerical analysis from Gertrude Blanch, the project's chair. She moved to the National Bureau of Standards in Washington in 1948 and rose to Assistant Chief of the Computation Laboratory.",source:"Irene Stegun biography — Wikipedia; NIST history of the Handbook",link:"https://personal.math.ubc.ca/~cbm/aands/abramowitz_and_stegun.pdf",theme:"IRENE STEGUN — THE BEGINNING",moves:["1. TEACHER POSE — stand straight, one hand extended as if writing on a board — she trained as a teacher first","2. COLUMBIA WALK — step forward with purpose, diploma held to chest — master's degree, mathematics","3. WPA TABLES — hands move across an invisible table, computing by hand — wartime mathematics work","4. COMPUTATION LAB — arms frame a laboratory space, then snap into authority — Assistant Chief","5. FREEZE in a leadership pose — call out: 'Irene Stegun. She rose. She led. She finished the work.'"]},
-  {text:"In July 1958, Milton Abramowitz died of a heart attack over a weekend. Stegun took over management of the entire Handbook project. Twelve chapters had been completed. She carried the project to completion and publication in 1964 — six years of finishing what they had begun together. The work is known as Abramowitz and Stegun. His name comes first.",source:"NIST history of the Handbook; Irene Stegun biography",link:"https://personal.math.ubc.ca/~cbm/aands/abramowitz_and_stegun.pdf",theme:"SHE FINISHED IT — JULY 1958",moves:["1. THE SETBACK — body stops mid-motion, head drops — the project loses its leader over a weekend","2. TAKE OVER — step forward into the empty space, both arms reach forward — she takes the helm","3. TWELVE CHAPTERS DONE — count twelve on fingers, precise — here is what was finished","4. SIX YEARS CARRY — arms push forward slowly, weighted — six years of completion, chapter by chapter","5. FREEZE stepping forward — call out: 'She finished it. His name comes first.'"]},
-  {text:"The tables in the Handbook were generated largely by hand on desk calculators. The Mathematical Tables Project employed a large number of staff — mostly women — who performed the hand computations. From 1938 to 1946, 37 volumes of mathematical tables were produced this way. The computers were human. Many were women. Their names are not in the title.",source:"NIST history of the Handbook; Mathematical Tables Project history",link:"https://personal.math.ubc.ca/~cbm/aands/abramowitz_and_stegun.pdf",theme:"THE HUMAN COMPUTERS",moves:["1. DESK CALCULATOR — both hands operate an invisible mechanical calculator, rhythmic and repetitive","2. TABLE BY HAND — one finger writes numbers in columns down an invisible page — row after row","3. 37 VOLUMES — arms stack invisible books upward — each one computed by hand","4. HUMAN COMPUTER — stand at full attention, precise and capable — this is what a computer looked like","5. FREEZE mid-calculation — call out: 'The computers were human. Most were women. Read their names.'"]},
+  {text:"Irene Ann Stegun was born in Yonkers, New York in 1919, the daughter of immigrants. She trained as a teacher, completed a master's degree in mathematics at Columbia University, and joined the Mathematical Tables Project of the WPA during World War II. She learned numerical analysis from Gertrude Blanch, the project's chair. She moved to the National Bureau of Standards in Washington in 1948 and rose to Assistant Chief of the Computation Laboratory.",source:"Irene Stegun biography — Wikipedia; NIST history of the Handbook",link:"https://en.wikipedia.org/wiki/Irene_Stegun",theme:"IRENE STEGUN — THE BEGINNING",moves:["1. TEACHER POSE — stand straight, one hand extended as if writing on a board — she trained as a teacher first","2. COLUMBIA WALK — step forward with purpose, diploma held to chest — master's degree, mathematics","3. WPA TABLES — hands move across an invisible table, computing by hand — wartime mathematics work","4. COMPUTATION LAB — arms frame a laboratory space, then snap into authority — Assistant Chief","5. FREEZE in a leadership pose — call out: 'Irene Stegun. She rose. She led. She finished the work.'"]},
+  {text:"In July 1958, Milton Abramowitz died of a heart attack over a weekend. Stegun took over management of the entire Handbook project. Twelve chapters had been completed. She carried the project to completion and publication in 1964 — six years of finishing what they had begun together. The work is known as Abramowitz and Stegun. His name comes first.",source:"NIST history of the Handbook; Irene Stegun biography",link:"https://www.nist.gov/mathematics-statistics/handbook-mathematical-functions-abramowitz-and-stegun",theme:"SHE FINISHED IT — JULY 1958",moves:["1. THE SETBACK — body stops mid-motion, head drops — the project loses its leader over a weekend","2. TAKE OVER — step forward into the empty space, both arms reach forward — she takes the helm","3. TWELVE CHAPTERS DONE — count twelve on fingers, precise — here is what was finished","4. SIX YEARS CARRY — arms push forward slowly, weighted — six years of completion, chapter by chapter","5. FREEZE stepping forward — call out: 'She finished it. His name comes first.'"]},
+  {text:"The tables in the Handbook were generated largely by hand on desk calculators. The Mathematical Tables Project employed a large staff of human computers, organized under Gertrude Blanch and Ida Rhodes, who performed the hand computations. Over the project's ten-year history, from 1938 to 1948, 28 volumes of mathematical tables were produced this way. The computers were human. Many were women. Their names are not in the title.",source:"NIST: Prehistory of the Math Tables Project; Wikipedia — Mathematical Tables Project",link:"https://www.nist.gov/mathematics-statistics/prehistory-math-tables-project",theme:"THE HUMAN COMPUTERS",moves:["1. DESK CALCULATOR — both hands operate an invisible mechanical calculator, rhythmic and repetitive","2. TABLE BY HAND — one finger writes numbers in columns down an invisible page — row after row","3. 28 VOLUMES — arms stack invisible books upward — each one computed by hand","4. HUMAN COMPUTER — stand at full attention, precise and capable — this is what a computer looked like","5. FREEZE mid-calculation — call out: 'The computers were human. Most were women. Read their names.'"]},
   {text:"The notation standardized in the Handbook became the de facto standard for much of applied mathematics. Before the Handbook, different authors used different symbols for the same functions. Stegun and her collaborators chose, defined, and fixed the notation that physicists, engineers, and mathematicians around the world still use today.",source:"Abramowitz & Stegun (1964) — foreword; NIST history",link:"https://personal.math.ubc.ca/~cbm/aands/abramowitz_and_stegun.pdf",theme:"THE NOTATION SEQUENCE",moves:["1. SYMBOL DRAW — one finger traces a J in the air — J for Bessel function, standard notation","2. BEFORE — two hands make different gestures simultaneously — confusion, different systems","3. STANDARDIZE — both hands come together to one fixed point — one notation, worldwide","4. WRITE THE EQUATION — mime writing a long equation across an invisible blackboard, left to right","5. FREEZE pointing at the notation — call out: 'Every equation in that notation is hers. She standardized it.'"]},
-  {text:"The Dover Publications paperback edition of the Handbook misprinted Irene Stegun's name on the cover as 'Irene A. Segun.' The woman who completed the most cited mathematical reference work in history, who was awarded the Department of Commerce Gold Medal for her efforts — her name was misprinted in the mass-market edition of her own book.",source:"Abramowitz and Stegun — Wikipedia; Dover Publications edition note",link:"https://personal.math.ubc.ca/~cbm/aands/abramowitz_and_stegun.pdf",theme:"THE MISPRINT SEQUENCE",moves:["1. WRITE THE NAME — mime writing S-T-E-G-U-N carefully in the air, letter by letter","2. THE MISPRINT — cross out one letter mid-air, replace it — Segun. The name is wrong.","3. GOLD MEDAL HOLD — mime receiving a medal with both hands, hold it to the chest — she earned this","4. COVER POINT — point to an invisible book cover, then shake your head — her name, misspelled","5. FREEZE pointing at the name — call out: 'S-T-E-G-U-N. Her name. Get it right.'"]},
-  {text:"In 1965, Irene Stegun was awarded the Department of Commerce Gold Medal for her work completing and editing the Handbook. The citation described it as 'one of the very few scientific activities of the 1950s led by a woman.' She held the position of Assistant Chief of the Computation Laboratory until she became interim director in 1965.",source:"Irene Stegun biography — Wikipedia; Department of Commerce Gold Medal citation",link:"https://personal.math.ubc.ca/~cbm/aands/abramowitz_and_stegun.pdf",theme:"THE GOLD MEDAL SEQUENCE",moves:["1. COOPERATIVE GESTURE — arms open to include everyone — this was a major cooperative endeavour","2. THE FEW — hold up one finger — one of the very few scientific activities of the 1950s led by a woman","3. GOLD MEDAL RECEIVE — both hands come forward, accept the medal, bring it to the chest","4. INTERIM DIRECTOR — step to the centre, arms at sides, authoritative — she led the laboratory","5. FREEZE in a director's stance — call out: 'One of the very few. Led by a woman. In the 1950s.'"]},
+  {text:"The Dover Publications paperback edition of the Handbook misprinted Irene Stegun's name on the cover as 'Irene A. Segun.' The woman who completed the most cited mathematical reference work in history, who was awarded the Department of Commerce Gold Medal for her efforts — her name was misprinted in the mass-market edition of her own book.",source:"Abramowitz and Stegun — Wikipedia; Dover Publications edition note",link:"https://en.wikipedia.org/wiki/Abramowitz_and_Stegun",theme:"THE MISPRINT SEQUENCE",moves:["1. WRITE THE NAME — mime writing S-T-E-G-U-N carefully in the air, letter by letter","2. THE MISPRINT — cross out one letter mid-air, replace it — Segun. The name is wrong.","3. GOLD MEDAL HOLD — mime receiving a medal with both hands, hold it to the chest — she earned this","4. COVER POINT — point to an invisible book cover, then shake your head — her name, misspelled","5. FREEZE pointing at the name — call out: 'S-T-E-G-U-N. Her name. Get it right.'"]},
+  {text:"In 1965, Irene Stegun was awarded the Department of Commerce Gold Medal for her work completing and editing the Handbook. The citation described it as 'one of the very few scientific activities of the 1950s led by a woman.' She held the position of Assistant Chief of the Computation Laboratory until she became interim director in 1965.",source:"Irene Stegun biography — Wikipedia; Department of Commerce Gold Medal citation",link:"https://en.wikipedia.org/wiki/Irene_Stegun",theme:"THE GOLD MEDAL SEQUENCE",moves:["1. COOPERATIVE GESTURE — arms open to include everyone — this was a major cooperative endeavour","2. THE FEW — hold up one finger — one of the very few scientific activities of the 1950s led by a woman","3. GOLD MEDAL RECEIVE — both hands come forward, accept the medal, bring it to the chest","4. INTERIM DIRECTOR — step to the centre, arms at sides, authoritative — she led the laboratory","5. FREEZE in a director's stance — call out: 'One of the very few. Led by a woman. In the 1950s.'"]},
   {text:"The Handbook contains 29 sets of tables, some computed to as many as 20 decimal places. It covered Bessel functions, hypergeometric functions, elliptic integrals, Mathieu functions, spheroidal wave functions, and orthogonal polynomials, among many others. Chapter 6, on the gamma function, established the telegraphic style: maximum information, minimum text.",source:"Abramowitz & Stegun (1964) — table of contents; NIST history",link:"https://personal.math.ubc.ca/~cbm/aands/abramowitz_and_stegun.pdf",theme:"29 TABLES SEQUENCE",moves:["1. TWENTY DECIMAL PLACES — fingers count rapidly to twenty, precise — each digit matters","2. TELEGRAPHIC STYLE — one hand slices through the air, sharp and efficient — maximum information, minimum words","3. BESSEL FUNCTION WAVE — one arm curves in a slow oscillating motion — J_0, J_1, J_2","4. TABLE STACK — both hands mime stacking 29 invisible heavy books — the full set of tables","5. FREEZE arms full of invisible volumes — call out: '29 tables. 20 decimal places. All by hand.'"]},
   {text:"The Handbook's impact lasted well into the computer era. Even as calculators, then computers, then software replaced the need for printed tables, researchers kept citing it for its formulas and notation. During the mid-1990s, it was cited at more than 2,000 times per year. The NIST Digital Library of Mathematical Functions, its digital successor, was not released until 2010 — 46 years after Stegun's edition.",source:"Abramowitz & Stegun (1964); NIST DLMF history; Science Citation Index data",link:"https://personal.math.ubc.ca/~cbm/aands/abramowitz_and_stegun.pdf",theme:"LASTING IMPACT SEQUENCE",moves:["1. COMPUTER ARRIVE — mime a large machine rolling in — the computer era has begun","2. HANDBOOK STAYS — one hand holds the invisible book firm against the machine's wind — it is still cited","3. 2000 CITATIONS — both arms count outward — two thousand times a year, every year through the 1990s","4. 46 YEARS — count slowly — 1964 to 2010, forty-six years before a digital replacement existed","5. FREEZE holding the invisible book — call out: 'Forty-six years. Her edition held the field.'"]},
   {text:"The Handbook was produced at the National Bureau of Standards, a government agency. Because it is the work of US federal government employees in their official capacity, it is not protected by copyright in the United States. It has been freely available and freely reproduced since publication. The PDF at the University of British Columbia is one of the most accessed mathematical documents on the internet.",source:"Abramowitz & Stegun — copyright status; UBC hosted PDF",link:"https://personal.math.ubc.ca/~cbm/aands/abramowitz_and_stegun.pdf",theme:"FREE TO THE WORLD SEQUENCE",moves:["1. GOVERNMENT STAMP — one hand mimes stamping an invisible document — National Bureau of Standards","2. NO COPYRIGHT — arms cross and then open wide — public domain, no restriction","3. FREE RELEASE — arms open outward from chest, releasing something into the world","4. INTERNET WAVE — arms ripple outward in a wide spreading motion — the PDF reaches everyone","5. FREEZE arms wide — call out: 'Stegun made it. The world made it free. It still feeds the world.'"]}
@@ -431,13 +567,11 @@ function generateMovement(resp){const theme=resp.theme||'HANDBOOK SEQUENCE';cons
 
 function askQuestion(){
   const q2=document.getElementById('userQuestion').value.trim();
-  const name=document.getElementById('userName').value.trim();
-  if(!name){alert('Please enter your name first!');document.getElementById('userName').focus();return;}
   if(!q2){alert('Please type a question!');return;}
   const resp=getResponse();const mv=generateMovement(resp);
-  const payload={question:q2,answerText:resp.text,answerSource:resp.source,answerLink:resp.link,movement:mv,userName:name,userColor,timestamp:useFirebase?firebase.database.ServerValue.TIMESTAMP:Date.now()};
-  if(useFirebase&&messagesRef){messagesRef.push(payload).catch(()=>localDisplay(q2,resp,mv,name));}
-  else{localDisplay(q2,resp,mv,name);}
+  const payload={question:q2,answerText:resp.text,answerSource:resp.source,answerLink:resp.link,movement:mv,userName:currentUser,userColor,timestamp:useFirebase?firebase.database.ServerValue.TIMESTAMP:Date.now()};
+  if(useFirebase&&messagesRef){messagesRef.push(payload).catch(()=>localDisplay(q2,resp,mv,currentUser));}
+  else{localDisplay(q2,resp,mv,currentUser);}
   document.getElementById('userQuestion').value='';
 }
 
