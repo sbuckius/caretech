@@ -14,6 +14,7 @@
   --purple:#ff2d6b;--violet:#ff85b3;--violet-soft:#ffb3cf;
   --pink:#ff2d6b;--candy:#ff85b3;
   --teal:#c4005a;--teal-soft:#ffb3cf;
+  --blush:#ffb3cf;--hot:#ff2d6b;
   --muted:rgba(255,180,210,.5);--muted2:rgba(255,210,228,.72);
   --border:rgba(255,100,150,.22);--border2:rgba(255,60,120,.5);
   --surface:rgba(14,0,32,.97);
@@ -49,6 +50,12 @@ html,body{min-height:100%;font-family:var(--fb);font-weight:600;color:var(--crea
 .cb-pip{display:inline-block;width:5px;height:5px;border-radius:50%;background:var(--hot);animation:breathe 2s ease-in-out infinite;vertical-align:middle;margin-right:4px;}
 .btn-csv{appearance:none;display:flex;align-items:center;gap:.26rem;background:rgba(255,45,107,.1);color:var(--candy);border:1.5px solid var(--border2);border-radius:9px;padding:.26rem .65rem;font-family:var(--fb);font-size:.6rem;font-weight:700;cursor:pointer;letter-spacing:.04em;transition:all .2s;white-space:nowrap;}
 .btn-csv:hover{background:rgba(255,45,107,.22);transform:translateY(-1px);}
+
+/* HERO */
+.hero{width:100%;max-width:680px;position:relative;z-index:1;text-align:center;padding:14px 8px 4px;}
+.hero-eyebrow{font-size:10px;letter-spacing:.32em;text-transform:uppercase;color:var(--blush);margin-bottom:11px;opacity:.75;}
+.hero h1{font-family:var(--fh);font-weight:900;font-size:clamp(1.5rem,6vw,2.4rem);line-height:1.08;background:linear-gradient(135deg,var(--cream) 0%,var(--blush) 40%,var(--hot) 70%,var(--candy) 100%);-webkit-background-clip:text;background-clip:text;color:transparent;margin-bottom:9px;}
+.hero p{font-size:13px;color:var(--muted);max-width:480px;margin:0 auto;line-height:1.7;}
 
 /* STATS */
 .stats-bar{width:100%;max-width:680px;display:flex;align-items:center;gap:.6rem;flex-wrap:wrap;padding:.5rem .9rem;background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:13px;}
@@ -236,6 +243,12 @@ html,body{min-height:100%;font-family:var(--fb);font-weight:600;color:var(--crea
     </div>
   </div>
 
+  <div class="hero">
+    <div class="hero-eyebrow">✦ CAREBOT-33 · Live Performance Q&A ✦</div>
+    <h1>CEO. Robot. Human.</h1>
+    <p>One performer, three identities, no resolution. Ask questions, label tasks, and tell us what you saw.</p>
+  </div>
+
   <div class="stats-bar">
     <div class="stat-chip">Questions <strong id="st-q">—</strong></div>
     <div class="stat-chip">Reflections <strong id="st-r">—</strong></div>
@@ -251,8 +264,8 @@ html,body{min-height:100%;font-family:var(--fb);font-weight:600;color:var(--crea
     <div class="arg-title">You just watched one person be three things at once. What did you see?</div>
     <div class="arg-body">
       You watched a person walk onstage in a robot costume. Rectangular head. Blue left eye scanning. Red right eye burning. LED mouth bar. Camera on top, blinking red — always recording.<br><br>
-      You watched them speak in pseudocode. <em>dataPoints++. print("Her name is Karen Diamond.").</em> You watched them sit on the floor and count inventors on their fingers and run out of fingers. You watched them pick up an apron that had been on the floor since Module 02 and tie it over the chassis.<br><br>
-      You watched a <strong>CEO</strong> — the person who built the system — speak the code that names what the system was built to name. You watched a <strong>robot</strong> — trained on domestic labor, $15/hr workers, $38 billion market — wash the dishes, fold the laundry, wipe the surface, with the camera still recording. You watched a <strong>human</strong> — Karen Diamond, Catharine Greene, Matilda Joslyn Gage, the unnamed worker — do all of it at the same time.<br><br>
+      You watched them speak in pseudocode. <em>dataPoints++. print("Her name is unrecorded.").</em> You watched them sit on the floor and count inventors on their fingers and run out of fingers. You watched them pick up an apron that had been on the floor since Module 02 and tie it over the chassis.<br><br>
+      You watched a <strong>CEO</strong> — the person who built the system — speak the code that names what the system was built to name. You watched a <strong>robot</strong> — trained on domestic labor, $15/hr gig workers, a humanoid robot market Goldman Sachs projects at $38 billion by 2035 — wash the dishes, fold the laundry, wipe the surface, with the camera still recording. You watched a <strong>human</strong> — Catharine Greene, Matilda Joslyn Gage, the unnamed worker — do all of it at the same time.<br><br>
       They did not resolve this. They walked off still wearing the apron. The contradiction ran for 35 minutes and then it stopped. It did not end. It stopped.<br><br>
       <em>You were in the room. This form is asking you what you saw.</em>
     </div>
@@ -270,7 +283,7 @@ html,body{min-height:100%;font-family:var(--fb);font-weight:600;color:var(--crea
     </div>
     <div class="id-card human">
       <div class="id-label">// the human</div>
-      <div class="id-desc">You watched them sit on the floor. Name the inventors. Run out of fingers. Stand back up slowly. Feed the invisible cards as Karen Diamond. That slowness was not theatrical. It was accurate.</div>
+      <div class="id-desc">You watched them sit on the floor. Name the inventors. Run out of fingers. Stand back up slowly. Feed the invisible cards as the unnamed woman in the 1967 IBM training film. That slowness was not theatrical. It was accurate.</div>
     </div>
   </div>
 
@@ -362,7 +375,6 @@ html,body{min-height:100%;font-family:var(--fb);font-weight:600;color:var(--crea
   <div class="cb-card">
     <div class="cb-eyebrow">✦ Ask a Question · You Just Watched This · Everyone Sees the Same Answers · Showing Last 3</div>
     <div class="cb-row">
-      <input class="cb-input cb-name-in" type="text" id="userName" placeholder="Your name…">
       <input class="cb-input" type="text" id="userQuestion" placeholder="Ask about what you just saw — the costume, the apron, the code, the 18 tasks…" autocomplete="off">
       <button class="cb-btn primary" onclick="askQuestion()">✦ Ask</button>
       <button class="cb-btn soft" onclick="showAdminModal()" title="Admin">⚙</button>
@@ -401,7 +413,8 @@ setInterval(updateClock,1000);updateClock();
 
 /* Firebase */
 let db,msgRef,respRef,onlineRef,fbReady=false;
-let currentUser=localStorage.getItem('cb33User')||'';
+let currentUser=localStorage.getItem('cb33User')||('Visitor-'+Math.random().toString(36).slice(2,7));
+localStorage.setItem('cb33User',currentUser);
 let userColor=localStorage.getItem('cb33Color')||genColor();
 function genColor(){const c=['#ffb3cf','#ff85b3','#ab47bc','#ff2d6b','#c4005a','#ff9800'];const v=c[Math.floor(Math.random()*c.length)];localStorage.setItem('cb33Color',v);return v;}
 try{
@@ -440,7 +453,6 @@ try{
 }catch(e){fbReady=false;document.getElementById('onlineCount').textContent='Offline';}
 
 function trackPresence(){if(!onlineRef||!currentUser)return;const r=onlineRef.child(currentUser.replace(/[.#$[\]]/g,'_'));r.set({name:currentUser,ts:firebase.database.ServerValue.TIMESTAMP});r.onDisconnect().remove();}
-document.getElementById('userName').addEventListener('change',function(){currentUser=this.value.trim();localStorage.setItem('cb33User',currentUser);if(currentUser&&fbReady)trackPresence();});
 
 function q(v){return'"'+(v==null?'':String(v).replace(/"/g,'""'))+'"';}
 function downloadCSV(){
@@ -470,7 +482,7 @@ function updateReflectSubmit(){document.getElementById('reflectSubmit').disabled
 let reflectDone=false;
 function submitReflection(){
   if(reflectDone||!selectedIdentity)return;
-  const name=document.getElementById('userName').value.trim()||'Anon';
+  const name=currentUser;
   const payload={type:'reflection',identity:selectedIdentity,text:document.getElementById('reflectText').value.trim(),userName:name,userColor,ts:fbReady?firebase.database.ServerValue.TIMESTAMP:Date.now()};
   if(fbReady&&respRef)respRef.push(payload).catch(()=>{});
   reflectDone=true;const btn=document.getElementById('reflectSubmit');btn.textContent='✓ Reflection Saved';btn.classList.add('done');btn.disabled=true;
@@ -510,7 +522,7 @@ function setLabel33(id,label){
 }
 function submitAnnotation33(){
   if(annotDone33)return;
-  const name=document.getElementById('userName').value.trim()||'Anon';
+  const name=currentUser;
   const payload={type:'annotation',labels:{...annotLabels33},userName:name,userColor,ts:fbReady?firebase.database.ServerValue.TIMESTAMP:Date.now()};
   if(fbReady&&respRef)respRef.push(payload).catch(()=>{});
   annotDone33=true;const btn=document.getElementById('annotSubmit33');btn.textContent='✓ Annotations Saved';btn.classList.add('done');btn.disabled=true;
@@ -528,7 +540,7 @@ function selectPoll(btn){
 }
 function submitPoll(){
   if(pollDone||!selectedPollVal)return;
-  const name=document.getElementById('userName').value.trim()||'Anon';
+  const name=currentUser;
   const payload={type:'poll',vote:selectedPollVal,userName:name,userColor,ts:fbReady?firebase.database.ServerValue.TIMESTAMP:Date.now()};
   if(fbReady&&respRef)respRef.push(payload).catch(()=>{});
   pollDone=true;
@@ -561,7 +573,7 @@ function selectResolution(n){
 }
 function submitResolution(){
   if(resolutionDone||!selectedResolution)return;
-  const name=document.getElementById('userName').value.trim()||'Anon';
+  const name=currentUser;
   const payload={type:'resolution',rating:selectedResolution,userName:name,userColor,ts:fbReady?firebase.database.ServerValue.TIMESTAMP:Date.now()};
   if(fbReady&&respRef)respRef.push(payload).catch(()=>{});
   resolutionDone=true;
@@ -573,24 +585,23 @@ function submitResolution(){
 const responses=[
   {text:"The CEO is the person who built the system that names what was unnamed. That is a real role. Institutional power. Accountability. Something was made. The CEO speaks the pseudocode. The CEO placed the apron on the floor in Module 02. The CEO is also the one who built the carebots — 33 research interfaces, each one a question the system doesn't want asked.",source:"CARETECH_CEO.exe — performance score v2.0",link:"https://sbuckius.github.io/if-carebot-research",identity:"CEO",theme:"THE CEO SPEAKS THE CODE",moves:["1. STAND at center — structured, upright, CEO posture — you built this","2. MIME the mouse — Engelbart's demo — slowly across an invisible surface","3. TYPE the code — fingers on invisible keyboard — speak what you type","4. PLACE the apron on the floor — carefully, deliberately — step back","5. FREEZE — you watched them call out: 'I am the CEO. I built the system. I placed the apron there.'"]},
   {text:"The robot is what the system is studying. The humanoid machine trained on domestic labor data collected by gig workers wearing head-mounted cameras for $15 an hour. The robot is the product. Figure AI raised $675M. Physical Intelligence raised $400M. The market is $38 billion by 2035. The workers who trained the robot earn $35,000–$45,000 per year. The robot does not own itself. The worker does not own the robot. This is not a side effect. It is the business model.",source:"CARETECH_CEO.exe — Module 07: domestic_labor_pipeline()",link:"https://sbuckius.github.io/if-carebot-research",identity:"ROBOT",theme:"THE ROBOT WEARS THE APRON",moves:["1. STRAP the camera to your forehead — adjust the strap — camera recording","2. STAND with robot precision — arms slightly away from body — panel posture","3. EYES asymmetric — left eye scanning blue / right eye burning red — hold it","4. PICK UP the apron — tie it over the chassis — begin the domestic tasks","5. FREEZE mid-task — call out: 'I am the robot. I was trained to do this. I did not choose to.'"]},
-  {text:"The human is the worker inside both. The worker who fed the training data. The worker who is inside the robot because the robot learned from her body. Karen Diamond fed the cards. She is named once. In 1883 Matilda Joslyn Gage wrote: 'That woman has not been an inventor to an equal extent with man is not so much a subject of surprise as that she should have invented at all.' The human is what neither the code nor the labor can fully contain.",source:"Woman as Inventor — Matilda Joslyn Gage (1883) · IBM 29 Card Punch film (1967)",link:"https://archive.org/details/jstor-25118326",identity:"HUMAN",theme:"THE HUMAN INSIDE THE MACHINE",moves:["1. SIT on the floor — cross-legged — close to the ground — this is 1883","2. NAME the inventors — count on fingers — run out of fingers — open both hands","3. STAND BACK UP — slowly — this is the act of being recovered","4. SIT at the invisible IBM 29 — Karen Diamond — feed the cards — punch the columns","5. FREEZE — you watched them hold the invisible deck out toward the audience. Her name is Karen Diamond. She made this. It was 1967."]},
-  {text:"The apron over the chassis is the image that holds all three at once. The CEO put the apron on the floor. The robot picked it up. The human tied it. In performance, the apron moves from the floor (Module 02, placed there when Engelbart credits his wife with 'putting up with him') to the body (Module 07, tied over the robot chassis when domestic task training begins). It is never removed at the end. The CEO walks off still wearing it.",source:"CARETECH_CEO.exe — costume design v3.0 · performance score v2.0",link:"https://sbuckius.github.io/if-carebot-research",identity:"ALL THREE",theme:"THE APRON OVER THE CHASSIS",moves:["1. PLACE the apron on the floor — Module 02 — do not explain it — step back","2. STAND in robot posture for Modules 03–06 — apron visible on floor behind you","3. WALK to the apron — pick it up — tie it over the chassis — Module 07 begins","4. PERFORM all 18 domestic tasks with the apron on — camera recording","5. FREEZE — do not remove the apron — walk off stage wearing it — the CEO layer does not return."]},
+  {text:"The human is the worker inside both. The worker who fed the training data. The worker who is inside the robot because the robot learned from her body. In a 1967 IBM instructional film, an unnamed woman demonstrates the IBM 029 card punch — her labor was recorded, but her name was not. In 1883 Matilda Joslyn Gage wrote: 'That woman has not been an inventor to an equal extent with man is not so much a subject of surprise as that she should have invented at all.' The human is what neither the code nor the labor can fully contain.",source:"Woman as Inventor — Matilda Joslyn Gage (1883) · Basic Operation of the IBM 029 Card Punch (1967)",link:"https://archive.org/details/jstor-25118273",identity:"HUMAN",theme:"THE HUMAN INSIDE THE MACHINE",moves:["1. SIT on the floor — cross-legged — close to the ground — this is 1883","2. NAME the inventors — count on fingers — run out of fingers — open both hands","3. STAND BACK UP — slowly — this is the act of being recovered","4. SIT at the invisible IBM 29 — unnamed — feed the cards — punch the columns","5. FREEZE — you watched them hold the invisible deck out toward the audience. Her name was never recorded. She made this. It was 1967."]},
+  {text:"The apron over the chassis is the image that holds all three at once. The CEO put the apron on the floor. The robot picked it up. The human tied it. In performance, the apron moves from the floor (Module 02, placed there during the Engelbart sequence) to the body (Module 07, tied over the robot chassis when domestic task training begins). It is never removed at the end. The CEO walks off still wearing it.",source:"CARETECH_CEO.exe — costume design v3.0 · performance score v2.0",link:"https://sbuckius.github.io/if-carebot-research",identity:"ALL THREE",theme:"THE APRON OVER THE CHASSIS",moves:["1. PLACE the apron on the floor — Module 02 — do not explain it — step back","2. STAND in robot posture for Modules 03–06 — apron visible on floor behind you","3. WALK to the apron — pick it up — tie it over the chassis — Module 07 begins","4. PERFORM all 18 domestic tasks with the apron on — camera recording","5. FREEZE — do not remove the apron — walk off stage wearing it — the CEO layer does not return."]},
   {text:"The performance costume is a humanoid robot — the carebot-31 chassis made physical. Rectangular robot head with blue left eye (data collection) and red right eye (who benefits?). LED mouth bar in purple segments. Head-mounted camera with blinking red light. Chest display showing patent language data — purple lines (feminine-coded words) and orange lines (masculine-coded words) interleaved. The costume has two states: DORMANT (Modules 01–06) and ACTIVATED (Module 07 onward, when the apron goes on and the 18 domestic tasks begin).",source:"Humanoid robot costume diagram — CARETECH_CEO.exe v3.0",link:"https://sbuckius.github.io/if-carebot-research",identity:"ROBOT",theme:"DORMANT TO ACTIVATED",moves:["1. STAND in DORMANT state — eyes dim — mouth bar barely lit — status: DORMANT","2. Speak the code — Module 01 through 06 — precise, methodical, expert","3. MODULE 07 — strap the camera — eyes light up full — both colors — status: ACTIVE","4. Tie the apron — chest screen scrolling — begin the 18 tasks in sequence","5. FREEZE — call out: 'CARETECH_CEO.exe is running. The program is the performance.'"]},
-  {text:"Miss Honeywell was presented at the Instruments, Electronics and Automation Exhibition at Olympia in 1963 as 'the ultimate in automation — the humanronic saleswoman of tomorrow.' Her handler, Mark Wilson, formerly a conjurer, charged Honeywell controls £2,000 for bringing her over from Hollywood. When asked to prove she was a genuine robot by taking her head off, he closed the cabinet. He said: 'There are delicate micro circuits, integrated digital logic nodules, not to be disturbed.' The question of whether she was a robot or a woman was never resolved. That was by design.",source:"Miss Honeywell — newsreel, Olympia Exhibition, 1963",link:"https://www.youtube.com/watch?v=6e8mj7r7V60",identity:"ROBOT",theme:"MISS HONEYWELL SEQUENCE",moves:["1. STAND in the cabinet — still — this is Miss Honeywell — let them look","2. SPEAK in a high-pitched voice — 'Assistant? Nothing. I'd make someone a very good wife.'","3. The journalist asks: take her head off — prove she's a robot","4. CLOSE the cabinet — mime it — 'Delicate micro circuits. Not to be disturbed.'","5. FREEZE — call out: 'She could have fooled me. We will never know. That was by design.'"]},
-  {text:"Douglas Engelbart opened the Mother of All Demos in 1968 by saying: 'I hope you'll go along with this rather unusual setting and the fact that I remain seated when I get introduced.' At the end, he dedicated the entire presentation to his wife and daughters 'for what they've put up with over these years with a husband dedicated in a monomaniac way to something very well.' They are credited with tolerance. Their names are not in the historical record. Their labor made the demo possible. It is called: putting up with.",source:"Mother of All Demos — Douglas Engelbart, SRI, December 9, 1968",link:"https://www.youtube.com/watch?v=yJDv-zdhzMY",identity:"HUMAN",theme:"PUTTING UP WITH SEQUENCE",moves:["1. MIME the mouse — right hand low — moving across an invisible surface — this is Engelbart","2. DEMONSTRATE the future — look out at the audience — show them something extraordinary","3. STOP — drop the hand — 'At the end he dedicated this to his wife and daughters.'","4. 'For what they've put up with.' — say it again — 'putting up with'","5. FREEZE — call out: 'Their labor made this. It was called tolerance.'"]},
-  {text:"Matilda Joslyn Gage wrote in 1883: 'The inventions of a nation are closely connected with the freedom of its people.' She also wrote: 'While, as has been shown, many of the world's most important inventions are due to woman, the proportion of feminine inventors is much less than of masculine, which arises from the fact that woman does not possess the same amount of freedom as man.' The cotton gin. The paper bag machine. The railroad noise deadener. The word processor. The trajectory calculations. All due to women. The census said they didn't exist.",source:"Woman as Inventor — Matilda Joslyn Gage, North American Review, 1883",link:"https://archive.org/details/jstor-25118326",identity:"HUMAN",theme:"THE CENSUS WAS WRONG",moves:["1. SIT on the floor — 1883 — furious and precise","2. LIST THE INVENTORS — count on fingers — cotton gin, paper bags, railroad, word processor, trajectory","3. 'The census said they didn't exist.' — stand up slowly","4. OPEN BOTH HANDS — the gesture of something that cannot be contained","5. FREEZE — call out: 'The census was wrong. She named them anyway. We are reading the list now.'"]},
+  {text:"Miss Honeywell was presented at the Instruments, Electronics and Automation Exhibition at Olympia, London, in 1968, billed as a futuristic 'robot girl' demonstrating equipment for Honeywell Controls Ltd. Her operator was magician Mark Wilson. The newsreel commentator was openly skeptical, noting that even Honeywell's own spokesman wouldn't say whether she was electronic, mechanical, or human. When asked what she'd say to a sales manager, she replied: 'Assistant? Nothing! I'd make someone a very good wife.' Whether she was a robot or a woman in a costume was never resolved on camera. That was by design.",source:"Miss Honeywell — British Pathé newsreel, Olympia Exhibition, London, 1968",link:"https://cyberneticzoo.com/not-quite-robots/1968-miss-honeywell-james-wilson-american/",identity:"ROBOT",theme:"MISS HONEYWELL SEQUENCE",moves:["1. STAND in the cabinet — still — this is Miss Honeywell — let them look","2. SPEAK in a high-pitched voice — 'Assistant? Nothing! I'd make someone a very good wife.'","3. The journalist asks: take her head off — prove she's a robot","4. CLOSE the cabinet — mime it — 'Not to be disturbed.'","5. FREEZE — call out: 'She could have fooled me. We will never know. That was by design.'"]},
+  {text:"Douglas Engelbart opened the Mother of All Demos on December 9, 1968 by saying: 'I hope you'll go along with this rather unusual setting and the fact that I remain seated when I get introduced.' The 90-minute demo, often credited as the birth of the computer mouse, hypertext, and the graphical interface, relied on a team of 17 collaborators at SRI — most of whom remain far less known than Engelbart himself. Their labor made the demo possible, and most of their names are absent from the popular retelling.",source:"Mother of All Demos — Douglas Engelbart, SRI, December 9, 1968",link:"https://en.wikipedia.org/wiki/The_Mother_of_All_Demos",identity:"HUMAN",theme:"PUTTING UP WITH SEQUENCE",moves:["1. MIME the mouse — right hand low — moving across an invisible surface — this is Engelbart","2. DEMONSTRATE the future — look out at the audience — show them something extraordinary","3. STOP — drop the hand — 'Seventeen people built this with him.'","4. 'Most of their names didn't make it into the story.' — say it again","5. FREEZE — call out: 'Their labor made this. It rarely gets the credit.'"]},
+  {text:"Matilda Joslyn Gage wrote in 1883: 'The inventions of a nation are closely connected with the freedom of its people.' She also wrote: 'While, as has been shown, many of the world's most important inventions are due to woman, the proportion of feminine inventors is much less than of masculine, which arises from the fact that woman does not possess the same amount of freedom as man.' The cotton gin. The paper bag machine. The deep-sea telescope. The underglaze pottery process. All due to women, by Gage's account. The census said they didn't exist.",source:"Woman as Inventor — Matilda Joslyn Gage, North American Review, 1883",link:"https://archive.org/details/jstor-25118273",identity:"HUMAN",theme:"THE CENSUS WAS WRONG",moves:["1. SIT on the floor — 1883 — furious and precise","2. LIST THE INVENTORS — count on fingers — cotton gin, paper bags, telescope, pottery process","3. 'The census said they didn't exist.' — stand up slowly","4. OPEN BOTH HANDS — the gesture of something that cannot be contained","5. FREEZE — call out: 'The census was wrong. She named them anyway. We are reading the list now.'"]},
   {text:"CAREtech is a research system at sbuckius.github.io/if-carebot-research. 33 carebots — each one a HIT (Human Intelligence Task) and a BOT (AI research assistant with a head). The heads are: necktie, abacus, piston, keyboard, punch card, apron, waveform, orbital arc, patent scroll, checkbox, QR code, name tag, CRT monitor, circuit board with heart, adding machine, pencil, compass, sigma Σ, card hopper, vial, humanoid robot, magnifying glass, and — for carebot-33 — the performance score itself. Scrolling pseudocode. The head is the program.",source:"if-carebot-research — sbuckius.github.io, 2024–2025",link:"https://sbuckius.github.io/if-carebot-research",identity:"CEO",theme:"32 CAREBOTS AND ONE MORE",moves:["1. WALK the width of the stage — each step is one carebot — count them under your breath","2. STOP at carebot-15 — the apron — look down at it on the floor","3. STEP OVER IT — continue walking","4. ARRIVE at carebot-33 — you — stop — face forward","5. FREEZE — call out: '33 carebots. Each one is a question the system doesn't want asked.'"]},
   {text:"The research question underneath all of this: can a contradiction be held without resolution? The CEO and the robot and the human are all true simultaneously. The performance does not resolve them. The costume does not resolve them. The apron over the chassis is not a resolution — it is a demonstration that all three coexist in the same body. The program does not exit cleanly. It just stops. dataPoints = 6. All names recovered. All data saved. CARETECH_CEO.exe has exited. Thank you.",source:"CARETECH_CEO.exe — Module 08: RETURN findings",link:"https://sbuckius.github.io/if-carebot-research",identity:"ALL THREE",theme:"DO NOT RESOLVE THE TENSION",moves:["1. WALK to the front of the stage — as close to the audience as you can get","2. LOOK at them — not performing — just looking — 4 full seconds","3. Raise both arms — not wide, not theatrical — just up — palms forward — a quiet offer","4. Hold for 5 counts — then lower","5. FREEZE — head slightly down — not a bow — an acknowledgment — then walk off — apron still on."]}
 ];
 
 let recentlyShown=[];
 function getResponse(){let avail=responses.filter((_,i)=>!recentlyShown.includes(i));if(avail.length<3){recentlyShown=[];avail=responses;}const ri=Math.floor(Math.random()*avail.length);const sel=avail[ri];recentlyShown.push(responses.indexOf(sel));if(recentlyShown.length>6)recentlyShown.shift();return sel;}
-function generateMovement(resp){const theme=resp.theme||'THREE IDENTITIES';const moves=resp.moves||['1. STAND — all three at once — CEO, robot, human — hold it','2. SPEAK the code — the argument — do not resolve it','3. PERFORM the labor — the 18 tasks — camera recording','4. NAME the workers — name Karen Diamond — name the inventors','5. FREEZE — call out: \'You are not resolving the contradiction. You are running it.\''];return'HIP HOP SEQUENCE: '+theme+'\nIDENTITY: '+resp.identity+'\n\n'+moves.join('\n')+'\n\nENERGY: Precise, deliberate, unresolved. Every move holds three meanings. Do not pick one.';}
+function generateMovement(resp){const theme=resp.theme||'THREE IDENTITIES';const moves=resp.moves||['1. STAND — all three at once — CEO, robot, human — hold it','2. SPEAK the code — the argument — do not resolve it','3. PERFORM the labor — the 18 tasks — camera recording','4. NAME the workers — name the inventors — name the unnamed','5. FREEZE — call out: \'You are not resolving the contradiction. You are running it.\''];return'HIP HOP SEQUENCE: '+theme+'\nIDENTITY: '+resp.identity+'\n\n'+moves.join('\n')+'\n\nENERGY: Precise, deliberate, unresolved. Every move holds three meanings. Do not pick one.';}
 
 function askQuestion(){
   const q2=document.getElementById('userQuestion').value.trim();
-  const name=document.getElementById('userName').value.trim();
-  if(!name){alert('Please enter your name first!');document.getElementById('userName').focus();return;}
+  const name=currentUser;
   if(!q2){alert('Please type a question!');return;}
   const resp=getResponse();const mv=generateMovement(resp);
   const payload={question:q2,answerText:resp.text,answerSource:resp.source,answerLink:resp.link,movement:mv,identity:resp.identity,userName:name,userColor,ts:fbReady?firebase.database.ServerValue.TIMESTAMP:Date.now()};
