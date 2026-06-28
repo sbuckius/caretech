@@ -48,6 +48,14 @@ html,body{min-height:100%;font-family:var(--fb);font-weight:600;color:var(--crea
 .irony-body{font-size:12.5px;line-height:1.78;color:rgba(245,200,255,.78);}
 .irony-body strong{color:#f3ccff;}
 .irony-body em{color:var(--teal);}
+.irony-body sup a{color:var(--teal);text-decoration:none;font-size:9px;}
+.fn-block{margin-top:13px;padding-top:11px;border-top:1px solid rgba(192,132,252,.15);}
+.fn-title{font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:7px;}
+.fn-list{margin-left:16px;font-size:10.5px;line-height:1.65;color:rgba(245,200,255,.62);}
+.fn-list li{margin-bottom:5px;}
+.fn-list a{color:var(--teal);text-decoration:none;}
+.fn-list a:hover{text-decoration:underline;}
+.ai-note{margin-top:12px;padding:9px 12px;background:rgba(192,132,252,.06);border:1px solid rgba(192,132,252,.22);border-radius:10px;font-size:10.5px;color:var(--muted2);font-style:italic;text-align:center;}
 /* TERM GRID */
 .section-title{width:100%;max-width:720px;font-family:var(--fh);font-weight:900;font-size:14px;background:linear-gradient(90deg,var(--teal),var(--candy));-webkit-background-clip:text;background-clip:text;color:transparent;margin-bottom:4px;}
 .section-sub{width:100%;max-width:720px;font-size:11px;color:var(--muted);margin-bottom:12px;line-height:1.6;}
@@ -186,63 +194,78 @@ html,body{min-height:100%;font-family:var(--fb);font-weight:600;color:var(--crea
     <div class="irony-title">Computing and engineering use the word "mother" to mean the most essential, generative, originating component in any system. The sector that encodes "mother" as its highest technical authority is the sector that has most aggressively excluded mothers from its workforce.</div>
     <div class="irony-body">
       <em>Motherboard. Mother chip. Mother die. Mother clock. Mother copy. Mother process. Mother mold. Mother gauge. Mother pipe. Mother vessel. Mother disc. Rope Mother. Mother of All Demos.</em><br><br>
-      In every case: <strong>mother = origin, source, generative authority, the controlling center from which everything derives.</strong> First attested use of "motherboard" in Electronics magazine, 1965. The first actual motherboard — the Planar Breadboard — designed by IBM engineer <strong>Patty McHugh</strong>, 1981. The "Rope Mother" who oversaw the software that landed on the moon: <strong>Margaret Hamilton</strong>, who coined the term "software engineering." The women who wove the core ropes she designed were called "little old ladies." They had previously worked at textile mills.<br><br>
-      <strong>The numbers:</strong> Women hold 22% of global AI roles. 12% of AI researchers are women. 455,000 women left the US workforce in the first 8 months of 2025. The technology that calls its central component "mother" has built no infrastructure to keep mothers employed. <em>The word is everywhere in computing. The mothers are being pushed out.</em>
+      In every case: <strong>mother = origin, source, generative authority, the controlling center from which everything derives.</strong> First attested use of "motherboard" in Electronics magazine, 1965.<sup><a href="#fn1">[1]</a></sup> The first true PC motherboard — the Planar Breadboard — designed by IBM engineer <strong>Patty McHugh</strong>, 1981.<sup><a href="#fn2">[2]</a></sup> The "Rope Mother" who oversaw the software that landed on the moon: <strong>Margaret Hamilton</strong>, who coined the term "software engineering."<sup><a href="#fn3">[3]</a></sup> The women who wove the core ropes she designed were called "little old ladies." They had previously worked at textile mills.<sup><a href="#fn3">[3]</a></sup><br><br>
+      <strong>The numbers:</strong> Women hold roughly 22% of the global AI workforce. Only about 12% of AI researchers worldwide are women.<sup><a href="#fn4">[4]</a></sup> An estimated 455,000 women left the US labor force between January and August 2025.<sup><a href="#fn5">[5]</a></sup> The US has no federal paid family leave program.<sup><a href="#fn6">[6]</a></sup> <em>The word is everywhere in computing. The mothers are being pushed out.</em>
     </div>
+    <div class="fn-block" id="fn-list">
+      <div class="fn-title">Sources for the claims above</div>
+      <ol class="fn-list">
+        <li id="fn1">"Motherboard," <em>Oxford English Dictionary</em>, earliest attestation 1965, <em>Electronics</em> magazine — via <a href="https://en.wikipedia.org/wiki/Motherboard#Etymology" target="_blank">Wikipedia, "Motherboard: Etymology"</a> and <a href="https://www.etymonline.com/word/motherboard" target="_blank">Etymonline</a>.</li>
+        <li id="fn2">Patty McHugh and the IBM Planar Breadboard (1981) — <a href="https://www.britannica.com/technology/motherboard" target="_blank">Britannica, "Motherboard"</a> and <a href="https://en.wikipedia.org/wiki/Motherboard" target="_blank">Wikipedia, "Motherboard"</a>.</li>
+        <li id="fn3">Margaret Hamilton, the "Rope Mother," and the LOLs (textile-mill weavers) — <a href="https://airandspace.si.edu/stories/editorial/rope-mother-margaret-hamilton" target="_blank">Smithsonian National Air and Space Museum</a>.</li>
+        <li id="fn4">Women in the global AI workforce (~22%) and AI research (~12%) — <a href="https://www.unesco.org/en/articles/recommendation-ethics-artificial-intelligence" target="_blank">UNESCO</a> figures as summarized by <a href="https://www.cio.com/article/201905/women-in-tech-statistics-the-hard-truths-of-an-uphill-battle.html" target="_blank">CIO, "Women in tech statistics"</a>. Different surveys (UNESCO, WEF, Deloitte) put the workforce figure anywhere from 20–30%; we use the commonly cited 22% / 12% pairing rather than a single Stanford AI Index figure.</li>
+        <li id="fn5">~455,000 women left the US labor force, Jan–Aug 2025 — Bureau of Labor Statistics data, reported in <a href="https://www.cnn.com/2025/10/17/economy/us-women-workforce-shecession-return" target="_blank">CNN Business, "Another 'she-cession' is rearing its head"</a>, with KPMG economists quoted on the trend.</li>
+        <li id="fn6">The US has no federal paid family/medical leave guarantee — <a href="https://www.dol.gov/agencies/wb/topics/leave" target="_blank">US Department of Labor, Women's Bureau</a>.</li>
+      </ol>
+    </div>
+    <div class="ai-note">✦ AI helped me with this. There might be inaccuracies.</div>
   </div>
 
   <!-- TERM GRID -->
   <div class="section-title">✦ The Full Taxonomy — "Mother" in Computing and Engineering</div>
-  <div class="section-sub">Across hardware, software, manufacturing, and systems: "mother" always means the same thing. The origin. The source. The thing that everything else depends on.</div>
+  <div class="section-sub">Across hardware, software, manufacturing, and systems: "mother" usually means the origin, the source, the thing everything else depends on. A few of these are precise, well-documented terms (motherboard, mother disc, Rope Mother); others are looser trade jargon without a single canonical source — we've flagged where we're less certain.</div>
   <div class="term-grid">
 
     <div class="term-card">
       <div class="term-eyebrow">Hardware · 1965</div>
       <div class="term-name">Motherboard</div>
       <div class="term-def">// main printed circuit board; connects CPU, RAM, storage, all peripherals</div>
-      <div class="term-body">First attested in <em>Electronics</em> magazine, 1965. "The mother of all boards" — from which all other components depend. The first true motherboard (Planar Breadboard, 1981) was designed by IBM engineer <strong>Patty McHugh</strong>. Her name does not appear in the Wikipedia article. Her board became the standard for every PC since.</div>
-      <div class="term-src">Source: <a href="https://en.wikipedia.org/wiki/Motherboard" target="_blank">Wikipedia Motherboard</a> · <a href="https://www.britannica.com/technology/motherboard" target="_blank">Britannica</a></div>
+      <div class="term-body">First attested in <em>Electronics</em> magazine, 1965 — "the mother of all boards," from which all other components depend. The first true motherboard (Planar Breadboard, 1981) was designed by IBM engineer <strong>Patty McHugh</strong>. Her board became the standard for every PC since. (Note: earlier versions of Wikipedia's "Motherboard" article didn't name her — the article now credits her by name, alongside Britannica.)</div>
+      <div class="term-src">Source: <a href="https://en.wikipedia.org/wiki/Motherboard" target="_blank">Wikipedia Motherboard</a> · <a href="https://www.britannica.com/technology/motherboard" target="_blank">Britannica</a> · <a href="https://www.etymonline.com/word/motherboard" target="_blank">Etymonline</a></div>
     </div>
 
     <div class="term-card">
       <div class="term-eyebrow">Hardware · Chip Architecture</div>
       <div class="term-name">Mother Chip / Mother Die</div>
-      <div class="term-def">// primary chip that controls subsidiary chips; primary die interconnecting chiplets</div>
-      <div class="term-body">The <strong>mother chip</strong> is the master chip — everything else is subordinate. The <strong>mother die</strong> (Intel/AMD chiplet packaging) is the central die from which all other chiplets receive their instructions. The chip architecture that runs modern AI is organized around the concept of maternal authority — even as women hold 12% of AI research positions.</div>
+      <div class="term-def">// primary chip that controls subsidiary chips; primary die interconnecting chiplets <span style="color:var(--muted);">(trade usage — not in major dictionaries)</span></div>
+      <div class="term-body">The <strong>mother chip</strong> is the master chip — everything else is subordinate. The <strong>mother die</strong> (Intel/AMD chiplet packaging) is the central die from which all other chiplets receive their instructions. The chip architecture that runs modern AI is organized around the concept of maternal authority — even as women hold roughly 12% of AI research positions.<sup><a href="#fn4">[4]</a></sup></div>
+      <div class="term-src">General usage in semiconductor/chiplet packaging literature; see <a href="https://en.wikipedia.org/wiki/Chiplet" target="_blank">Wikipedia, "Chiplet"</a>.</div>
     </div>
 
     <div class="term-card">
       <div class="term-eyebrow">Hardware · Timing</div>
       <div class="term-name">Mother Clock</div>
-      <div class="term-def">// master clock signal that drives and synchronizes all subsystems</div>
+      <div class="term-def">// master clock signal that drives and synchronizes all subsystems <span style="color:var(--muted);">(trade usage — not in major dictionaries)</span></div>
       <div class="term-body">The mother clock generates the fundamental rhythm of the entire computer. Without it, nothing synchronizes. Everything else follows the mother clock's timing. <strong>The metaphor: a mother sets the pace for everything in the household.</strong> The computing use is precise: the clock that governs all others.</div>
+      <div class="term-src">General usage in digital systems/timing literature; see <a href="https://en.wikipedia.org/wiki/Clock_signal" target="_blank">Wikipedia, "Clock signal"</a>.</div>
     </div>
 
     <div class="term-card">
       <div class="term-eyebrow">Software / Unix · 1969+</div>
-      <div class="term-name">Mother Process</div>
-      <div class="term-def">// parent process that spawns child processes in Unix/Linux</div>
-      <div class="term-body">In Unix/Linux (and every operating system since), processes run in a parent-child hierarchy. The <strong>mother process</strong> spawns child processes that inherit its properties and permissions. Every program running on every device uses this architecture. The mother process is the originating authority. Kill the mother process and the children die. The metaphor runs the internet.</div>
+      <div class="term-name">Parent Process <span style="font-size:10px;color:var(--muted);font-weight:600;">(not "mother process")</span></div>
+      <div class="term-def">// the process that spawns child processes in Unix/Linux</div>
+      <div class="term-body">Correction: the standard computing term here is <strong>parent process</strong>, not "mother process" — an earlier version of this carebot used the wrong term. In Unix/Linux (and every OS since), processes run in a parent-child hierarchy: the parent process creates child processes, which inherit its properties and permissions. Kill the parent and, by default, its children are orphaned. The hierarchy itself is gendered as "parent," not specifically "mother" — worth noting, since most of this carebot's other examples really do use "mother."</div>
+      <div class="term-src">Source: <a href="https://en.wikipedia.org/wiki/Parent_process" target="_blank">Wikipedia, "Parent process"</a></div>
     </div>
 
     <div class="term-card">
       <div class="term-eyebrow">Data / Archiving</div>
       <div class="term-name">Mother Copy</div>
-      <div class="term-def">// original authoritative version from which all copies are made</div>
+      <div class="term-def">// original authoritative version from which all copies are made <span style="color:var(--muted);">(trade usage — not in major dictionaries)</span></div>
       <div class="term-body">The <strong>mother copy</strong> (also "master copy") is the original file, disk image, or codebase from which every other version is derived. Corrupt the mother copy and all derivative copies are compromised. The mother copy is the source of truth. It is the thing that the copies try to reproduce and never fully match.</div>
     </div>
 
     <div class="term-card">
       <div class="term-eyebrow">Networking</div>
       <div class="term-name">Mother Server / Mother Node</div>
-      <div class="term-def">// origin server feeding secondary/mirror servers; parent node in tree structures</div>
+      <div class="term-def">// origin server feeding secondary/mirror servers; parent node in tree structures <span style="color:var(--muted);">(trade usage — not in major dictionaries)</span></div>
       <div class="term-body">The <strong>mother server</strong> is the primary node — it feeds data to mirror and secondary servers that replicate and distribute it. The <strong>mother node</strong> in any tree data structure is the parent relative to all children below it. The entire internet's DNS system, content delivery networks, and distributed databases run on this parent-child model.</div>
     </div>
 
     <div class="term-card">
       <div class="term-eyebrow">Machining / Manufacturing</div>
       <div class="term-name">Mother Jig · Mother Gauge · Mother Mold · Mother Tool</div>
-      <div class="term-def">// reference standards from which all working copies are derived</div>
+      <div class="term-def">// reference standards from which all working copies are derived <span style="color:var(--muted);">(machine-shop trade usage — not in major dictionaries)</span></div>
       <div class="term-body">The <strong>mother jig</strong> is the master jig used to produce identical daughter jigs on factory floors. The <strong>mother gauge</strong> is the reference gauge used to calibrate all others. The <strong>mother mold</strong> is the rigid outer shell that supports casting. The <strong>mother tool</strong> is the original precision tool from which all derivative tools are made. In manufacturing: mother = the calibration standard everything else must match.</div>
     </div>
 
@@ -250,20 +273,21 @@ html,body{min-height:100%;font-family:var(--fb);font-weight:600;color:var(--crea
       <div class="term-eyebrow">Vinyl / Optical Media</div>
       <div class="term-name">Mother Disc</div>
       <div class="term-def">// intermediate stamper from the master recording used to press all copies</div>
-      <div class="term-body">In vinyl record production, the <strong>mother disc</strong> (or lacquer) is the intermediate stamper created from the original master recording. From the mother disc, all stampers are made. From the stampers, all copies are pressed. The mother disc is the origin of every record that ever played. It is usually destroyed in the process.</div>
+      <div class="term-body">Correction: in vinyl pressing, the lacquer master is electroplated to make a "father" disc (ridges, used as a stamper), which is electroplated again to make the <strong>mother disc</strong> (grooves, a positive copy of the original). Stampers for actual pressing are then made from the mother — the mother itself is usually archived, not destroyed, so more stampers can be made later. From the mother disc, all that record's stampers — and therefore all its copies — descend.</div>
+      <div class="term-src">Source: <a href="https://hub.yamaha.com/audio/vinyl/how-a-vinyl-record-is-made/" target="_blank">Yamaha, "How a Vinyl Record Is Made"</a> · <a href="https://atlasrecords.co.uk/blogs/all-about-vinyl/how-are-vinyl-records-made" target="_blank">Atlas Records</a></div>
     </div>
 
     <div class="term-card">
       <div class="term-eyebrow">Metallurgy</div>
       <div class="term-name">Mother Alloy · Mother Ingot · Mother Metal</div>
-      <div class="term-def">// base alloy / ingot from which all derivative metals are created</div>
+      <div class="term-def">// base alloy / ingot from which all derivative metals are created <span style="color:var(--muted);">(metallurgy trade usage — not in major dictionaries)</span></div>
       <div class="term-body">The <strong>mother alloy</strong> is the base metal from which all working alloys are derived by dilution, combination, and heat treatment. The <strong>mother ingot</strong> is the primary cast form from which all billets and shapes are cut. In metallurgy: every object made of metal descends from a mother. Every alloy has a maternal origin.</div>
     </div>
 
     <div class="term-card">
       <div class="term-eyebrow">Hydraulics / Offshore</div>
       <div class="term-name">Mother Pipe · Mother Vessel</div>
-      <div class="term-def">// main supply pipe / primary ship from which everything branches or deploys</div>
+      <div class="term-def">// main supply pipe / primary ship from which everything branches or deploys <span style="color:var(--muted);">(trade usage — not in major dictionaries)</span></div>
       <div class="term-body">The <strong>mother pipe</strong> is the main supply line from which all branch pipes are tapped in hydraulic, pneumatic, and plumbing systems. The <strong>mother vessel</strong> in offshore engineering is the primary ship that deploys smaller vessels, ROVs, and support craft. In fluid systems and maritime engineering: mother = the origin from which all flow derives.</div>
     </div>
 
@@ -289,12 +313,14 @@ html,body{min-height:100%;font-family:var(--fb);font-weight:600;color:var(--crea
           Hamilton took her daughter Lauren to work at night and on weekends — she was a working mother with no other childcare option. Her daughter once crashed the simulator by "playing astronaut." This led Hamilton to build error-detection routines that later <strong>saved the Apollo 8 mission</strong> from abort. The mother brought the child. The child broke the machine. The mother fixed the machine. The machine went to the moon.<br><br>
           She received the Presidential Medal of Freedom in 2016. She was 80 years old.
         </div>
+        <div class="term-src" style="margin-top:6px;">Source: <a href="https://airandspace.si.edu/stories/editorial/rope-mother-margaret-hamilton" target="_blank">Smithsonian National Air and Space Museum, "The 'Rope Mother' Margaret Hamilton"</a></div>
       </div>
     </div>
     <div style="padding-top:4px;">
       <div class="hamilton-label">Patty McHugh · IBM Engineer · 1981</div>
       <div class="hamilton-name">She designed the first motherboard.</div>
-      <div class="hamilton-body">Patty McHugh, an IBM engineer, designed the Planar Breadboard in 1981 — the first true motherboard, used in the IBM Personal Computer. Her design: a 4.77MHz Intel microprocessor, 16KB of memory, 8-bit ISA connectors, keyboard and cassette ports. Her blueprint became the standard for every personal computer motherboard that followed. Britannica credits her. <strong>Wikipedia's Motherboard article does not name her.</strong> The "mother of all boards" was designed by a woman whose name was not in the canonical history.</div>
+      <div class="hamilton-body">Patty McHugh, an IBM engineer, designed the Planar Breadboard in 1981 — the first true motherboard, used in the IBM Personal Computer. Her design: a 4.77MHz Intel microprocessor, 16KB of memory, 8-bit ISA connectors, keyboard and cassette ports. Her blueprint became the standard for every personal computer motherboard that followed. Britannica credits her by name — and as of this writing, so does Wikipedia's Motherboard article, though that wasn't always the case. <strong>The "mother of all boards" was designed by a woman whose name took years to reach the canonical history.</strong></div>
+      <div class="term-src" style="margin-top:6px;">Source: <a href="https://www.britannica.com/technology/motherboard" target="_blank">Britannica, "Motherboard"</a> · <a href="https://en.wikipedia.org/wiki/Motherboard" target="_blank">Wikipedia, "Motherboard"</a></div>
     </div>
   </div>
 
@@ -309,9 +335,9 @@ html,body{min-height:100%;font-family:var(--fb);font-weight:600;color:var(--crea
       <div class="stat-box"><div class="stat-box-num">1965</div><div class="stat-box-label">first use of "motherboard" in Electronics magazine</div></div>
       <div class="stat-box"><div class="stat-box-num">1981</div><div class="stat-box-label">Patty McHugh designs the first motherboard — the Planar Breadboard for IBM PC</div></div>
       <div class="stat-box"><div class="stat-box-num">1968</div><div class="stat-box-label">Mother of All Demos — mouse, hypertext, video conferencing, collaborative editing, all at once</div></div>
-      <div class="stat-box"><div class="stat-box-num red">22%</div><div class="stat-box-label">of global AI roles held by women (Stanford AI Index 2024)</div></div>
-      <div class="stat-box"><div class="stat-box-num red">12%</div><div class="stat-box-label">of AI researchers globally are women</div></div>
-      <div class="stat-box"><div class="stat-box-num red">455K</div><div class="stat-box-label">women left the US workforce in the first 8 months of 2025 (KPMG)</div></div>
+      <div class="stat-box"><div class="stat-box-num red">22%</div><div class="stat-box-label">of global AI roles held by women — estimates range 20–30% across surveys (UNESCO / WEF / Deloitte)</div></div>
+      <div class="stat-box"><div class="stat-box-num red">12%</div><div class="stat-box-label">of AI researchers globally are women (UNESCO)</div></div>
+      <div class="stat-box"><div class="stat-box-num red">455K</div><div class="stat-box-label">women left the US labor force, Jan–Aug 2025 (Bureau of Labor Statistics, via CNN)</div></div>
       <div class="stat-box"><div class="stat-box-num red">$0</div><div class="stat-box-label">federal paid family leave in the US. No national childcare infrastructure. The sector that runs on "mother" built none of it.</div></div>
     </div>
   </div>
@@ -321,7 +347,7 @@ html,body{min-height:100%;font-family:var(--fb);font-weight:600;color:var(--crea
     <div class="mod-header">
       <div class="mod-eyebrow">✦ Data Module · Respond to the Etymology</div>
       <div class="mod-title">Which "mother" term surprised you most? What does it mean that these words are everywhere?</div>
-      <div class="mod-sub">"Mother" in computing means: origin, source, the thing everything depends on. The sector that chose this word has built a workforce that is 78% male and no national childcare infrastructure. Respond to the naming.</div>
+      <div class="mod-sub">"Mother" in computing usually means: origin, source, the thing everything depends on. The sector that chose this word has built a global AI workforce that's roughly 70–80% male, with no US federal paid family leave and a strained childcare system. Respond to the naming — and to how it lands for you.</div>
     </div>
     <div class="mod-body">
       <div class="open-label">Which use of "mother" in technology did you find most surprising or most striking?</div>
@@ -329,7 +355,7 @@ html,body{min-height:100%;font-family:var(--fb);font-weight:600;color:var(--crea
         <button class="rate-btn" onclick="selectTerm(this,'motherboard')">Motherboard</button>
         <button class="rate-btn" onclick="selectTerm(this,'rope_mother')">Rope Mother (Hamilton)</button>
         <button class="rate-btn" onclick="selectTerm(this,'mother_demo')">Mother of All Demos</button>
-        <button class="rate-btn" onclick="selectTerm(this,'mother_process')">Mother process (Unix)</button>
+        <button class="rate-btn" onclick="selectTerm(this,'mother_process')">Parent process (corrected from "mother process")</button>
         <button class="rate-btn" onclick="selectTerm(this,'mother_clock')">Mother clock</button>
         <button class="rate-btn" onclick="selectTerm(this,'mother_mold')">Mother mold / jig</button>
         <button class="rate-btn" onclick="selectTerm(this,'mother_disc')">Mother disc (vinyl)</button>
@@ -346,6 +372,28 @@ html,body{min-height:100%;font-family:var(--fb);font-weight:600;color:var(--crea
       <textarea class="open-q" id="openQ1" placeholder="Is this a coincidence? A contradiction? An irony? Something else? What does the naming choice reveal about how the industry thinks about mothers vs. mothering?"></textarea>
       <div class="open-label">Is there a "mother" term in computing or engineering that you already knew about — that you use in your work or field? What did you think it meant before today?</div>
       <textarea class="open-q" id="openQ2" placeholder="Optional but welcome — name the term and what it meant to you before you knew this history."></textarea>
+
+      <div class="open-label">How does this situation touch your own life — if it does at all?</div>
+      <div class="rate-row" id="affectRow">
+        <button class="rate-btn" onclick="selectAffect(this,'directly_caregiver')">Directly — I'm a mother/caregiver navigating work</button>
+        <button class="rate-btn" onclick="selectAffect(this,'tech_worker')">Directly — I work in tech/engineering</button>
+        <button class="rate-btn" onclick="selectAffect(this,'someone_close')">Indirectly — through someone close to me</button>
+        <button class="rate-btn" onclick="selectAffect(this,'not_personally')">Not personally, that I can tell</button>
+        <button class="rate-btn" onclick="selectAffect(this,'unsure')">Not sure / it's complicated</button>
+      </div>
+      <div class="open-label">Which of these feelings come up for you reading this? (Pick as many as fit.)</div>
+      <div class="rate-row" id="feelRow">
+        <button class="rate-btn" onclick="toggleFeel(this,'angry')">Angry</button>
+        <button class="rate-btn" onclick="toggleFeel(this,'sad')">Sad</button>
+        <button class="rate-btn" onclick="toggleFeel(this,'validated')">Validated</button>
+        <button class="rate-btn" onclick="toggleFeel(this,'surprised')">Surprised</button>
+        <button class="rate-btn" onclick="toggleFeel(this,'numb')">Numb / desensitized</button>
+        <button class="rate-btn" onclick="toggleFeel(this,'hopeful')">Hopeful</button>
+        <button class="rate-btn" onclick="toggleFeel(this,'conflicted')">Conflicted</button>
+        <button class="rate-btn" onclick="toggleFeel(this,'motivated')">Motivated to do something</button>
+      </div>
+      <div class="open-label">Say more, in your own words — how this affects you, and how it makes you feel. There's no wrong answer here.</div>
+      <textarea class="open-q" id="openQ3" placeholder="Optional — but if any of this landed somewhere personal, we'd like to hear about it."></textarea>
     </div>
     <div class="mod-footer">
       <div class="mod-progress" id="modProg">Select a term and respond to continue</div>
@@ -357,7 +405,6 @@ html,body{min-height:100%;font-family:var(--fb);font-weight:600;color:var(--crea
   <div class="cb-card">
     <div class="cb-eyebrow">✦ Ask a Question · Showing Last 3</div>
     <div class="cb-row">
-      <input class="cb-input cb-name-in" type="text" id="userName" placeholder="Your name…">
       <input class="cb-input" type="text" id="userQuestion" placeholder="Ask about motherboard, Margaret Hamilton, the Rope Mother, mother of all demos…" autocomplete="off">
       <button class="cb-btn primary" onclick="askQuestion()">✦ Ask</button>
       <button class="cb-btn soft" onclick="showAdminModal()">⚙</button>
@@ -393,8 +440,10 @@ function updateClock(){const n=new Date(),p=v=>String(v).padStart(2,'0');documen
 setInterval(updateClock,1000);updateClock();
 
 let db,msgRef,respRef,onlineRef,fbReady=false;
-let currentUser=localStorage.getItem('cb39User')||'';
+let currentUser=localStorage.getItem('cb39User')||genGuestName();
+localStorage.setItem('cb39User',currentUser);
 let userColor=localStorage.getItem('cb39Color')||genColor();
+function genGuestName(){return 'Guest'+Math.floor(1000+Math.random()*9000);}
 function genColor(){const c=['#c084fc','#ff85b3','#ff2d6b','#c4005a'];const v=c[Math.floor(Math.random()*c.length)];localStorage.setItem('cb39Color',v);return v;}
 try{
   firebase.initializeApp({apiKey:"AIzaSyCZFDU-WlSmHqjXTs1Ox0nf9xeJU_xbaX0",authDomain:"collaborativemashup.firebaseapp.com",databaseURL:"https://collaborativemashup-default-rtdb.firebaseio.com",projectId:"collaborativemashup",storageBucket:"collaborativemashup.firebasestorage.app",messagingSenderId:"562437984610",appId:"1:562437984610:web:9f3711c26e097bc8ef9c3b"});
@@ -420,19 +469,19 @@ try{
   });
 }catch(e){fbReady=false;document.getElementById('onlineCount').textContent='Offline';}
 function trackPresence(){if(!onlineRef||!currentUser)return;const r=onlineRef.child(currentUser.replace(/[.#$[\]]/g,'_'));r.set({name:currentUser,ts:firebase.database.ServerValue.TIMESTAMP});r.onDisconnect().remove();}
-document.getElementById('userName').addEventListener('change',function(){currentUser=this.value.trim();localStorage.setItem('cb39User',currentUser);if(currentUser&&fbReady)trackPresence();});
 
-let selTerm=null,selKnew=null;
+let selTerm=null,selKnew=null,selAffect=null,selFeels=[];
 function selectTerm(btn,val){selTerm=val;document.querySelectorAll('#termRow .rate-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');checkSubmit();}
 function selectKnew(btn,val){selKnew=val;document.querySelectorAll('#knewRow .rate-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');checkSubmit();}
-['openQ1','openQ2'].forEach(id=>document.getElementById(id).addEventListener('input',checkSubmit));
-function checkSubmit(){const ok=selTerm&&selKnew&&document.getElementById('openQ1').value.trim().length>5;document.getElementById('modSubmit').disabled=!ok;document.getElementById('modProg').textContent=ok?'Ready to submit':'Select a term, answer the history question, and write your response';}
+function selectAffect(btn,val){selAffect=val;document.querySelectorAll('#affectRow .rate-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');checkSubmit();}
+function toggleFeel(btn,val){btn.classList.toggle('active');selFeels=Array.from(document.querySelectorAll('#feelRow .rate-btn.active')).map(b=>b.textContent.trim());checkSubmit();}
+['openQ1','openQ2','openQ3'].forEach(id=>document.getElementById(id).addEventListener('input',checkSubmit));
+function checkSubmit(){const ok=selTerm&&selKnew&&selAffect&&document.getElementById('openQ1').value.trim().length>5;document.getElementById('modSubmit').disabled=!ok;document.getElementById('modProg').textContent=ok?'Ready to submit':'Select a term, answer the history question, tell us how it affects you, and write your response';}
 
 let modDone=false;
 function submitResponse(){
   if(modDone)return;
-  const name=document.getElementById('userName').value.trim()||'Anon';
-  const payload={type:'response',mostStrikingTerm:selTerm,knewHistory:selKnew,onNaming:document.getElementById('openQ1').value.trim(),knewTerm:document.getElementById('openQ2').value.trim(),userName:name,userColor,ts:fbReady?firebase.database.ServerValue.TIMESTAMP:Date.now()};
+  const payload={type:'response',mostStrikingTerm:selTerm,knewHistory:selKnew,onNaming:document.getElementById('openQ1').value.trim(),knewTerm:document.getElementById('openQ2').value.trim(),howItAffectsMe:selAffect,feelings:selFeels.join('; '),moreOnFeelings:document.getElementById('openQ3').value.trim(),userName:currentUser,userColor,ts:fbReady?firebase.database.ServerValue.TIMESTAMP:Date.now()};
   if(fbReady&&respRef)respRef.push(payload).catch(()=>{});
   modDone=true;const btn=document.getElementById('modSubmit');btn.textContent='✓ Saved';btn.classList.add('done');btn.disabled=true;
 }
@@ -440,19 +489,19 @@ function q(v){return'"'+(v==null?'':String(v).replace(/"/g,'""'))+'"';}
 function downloadCSV(){
   if(!fbReady){alert('No connection.');return;}
   Promise.all([msgRef.once('value'),respRef.once('value')]).then(([ms,rs])=>{
-    let csv='Type,Timestamp,UserName,MostStrikingTerm,KnewHistory,OnNaming,KnewTerm\n';
-    ms.forEach(d=>{const m=d.val();csv+='question,'+q(m.ts?new Date(m.ts).toISOString():'')+','+q(m.userName)+',,,,'+q(m.question)+'\n';});
-    rs.forEach(d=>{const r=d.val();csv+='response,'+q(r.ts?new Date(r.ts).toISOString():'')+','+q(r.userName)+','+q(r.mostStrikingTerm)+','+q(r.knewHistory)+','+q(r.onNaming)+','+q(r.knewTerm)+'\n';});
+    let csv='Type,Timestamp,UserName,MostStrikingTerm,KnewHistory,OnNaming,KnewTerm,HowItAffectsMe,Feelings,MoreOnFeelings\n';
+    ms.forEach(d=>{const m=d.val();csv+='question,'+q(m.ts?new Date(m.ts).toISOString():'')+','+q(m.userName)+',,,,,,,'+q(m.question)+'\n';});
+    rs.forEach(d=>{const r=d.val();csv+='response,'+q(r.ts?new Date(r.ts).toISOString():'')+','+q(r.userName)+','+q(r.mostStrikingTerm)+','+q(r.knewHistory)+','+q(r.onNaming)+','+q(r.knewTerm)+','+q(r.howItAffectsMe)+','+q(r.feelings)+','+q(r.moreOnFeelings)+'\n';});
     const blob=new Blob([csv],{type:'text/csv'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='carebot39-'+Date.now()+'.csv';document.body.appendChild(a);a.click();document.body.removeChild(a);URL.revokeObjectURL(url);
   });
 }
 
 const responses=[
   {text:"Margaret Hamilton became the lead software engineer for NASA's Apollo missions at the MIT Instrumentation Laboratory. She coined the term 'software engineering' and developed the foundational concepts of asynchronous software and priority-driven task execution that underpin all reliable software today. She was nicknamed the 'Rope Mother' because she oversaw the core rope memory system: copper wires threaded through magnetic cores, encoding ones and zeros based on whether the wire passed through or bypassed the core. The women who wove those ropes had previously worked in textile mills -- their manual dexterity developed over years of weaving fabric was considered ideal for weaving software. Hamilton called them 'LOLs' -- little old ladies. She took her daughter Lauren to work at night and on weekends. One day Lauren crashed the simulator by 'playing astronaut.' This incident led Hamilton to develop error-detection code that later saved the Apollo 8 mission from abort. She received the Presidential Medal of Freedom in 2016 from President Obama. She was 80 years old.",source:"National Air and Space Museum; DPMA Margaret Hamilton; Code Miners blog",link:"https://airandspace.si.edu/stories/editorial/rope-mother-margaret-hamilton",moves:["1. STAND in MIT lab -- software code stacked taller than you -- night, weekend -- daughter at your side","2. THREAD THE ROPE -- mime threading wire through magnetic cores -- one and zero -- one and zero","3. THE TEXTILE WORKERS -- mime the little old ladies beside you -- fabric weavers now code weavers","4. DAUGHTER CRASHES THE SIMULATOR -- freeze -- the error is real -- write the fix","5. FREEZE -- call out: 'Rope Mother. She coined the term software engineering. She took her daughter to work. The moon landing needed both.'"]},
-  {text:"The first true PC motherboard -- the Planar Breadboard -- was designed by Patty McHugh, an IBM engineer, in 1981. Her design housed the computer's CPU and RAM, provided ports for keyboard and cassette tape input, and included expansion slots that became the standard architecture for all personal computers. IBM introduced the AT motherboard in 1984, building on her design. The AT's basic structure is still familiar today. Britannica credits McHugh for the invention. The Wikipedia Motherboard article, at the time of this carebot's creation, does not name her in the main text. The word 'motherboard' was first attested in Electronics magazine in 1965. Its meaning: 'the mother of all boards' -- the board from which everything derives and depends. The board that is the mother of the computer was designed by a woman. Her name is not in the canonical record.",source:"Britannica Motherboard; Wikipedia Motherboard; Computer Hope Motherboard History",link:"https://www.britannica.com/technology/motherboard",moves:["1. DESIGN the board -- Patty McHugh -- 1981 -- place each component -- precise","2. THE STANDARD SET -- every PC since uses this architecture -- mime the lineage","3. LOOK UP THE HISTORY -- open Wikipedia -- scan the text -- her name is not there","4. OPEN BRITANNICA -- her name is here -- two accounts -- one names her, one does not","5. FREEZE -- call out: 'The mother of all boards. Designed by a woman. Her name was not in the canonical article.'"]},
+  {text:"The first true PC motherboard -- the Planar Breadboard -- was designed by Patty McHugh, an IBM engineer, in 1981. Her design housed the computer's CPU and RAM, provided ports for keyboard and cassette tape input, and included expansion slots that became the standard architecture for all personal computers. IBM introduced the AT motherboard in 1984, building on her design. The AT's basic structure is still familiar today. Britannica credits McHugh for the invention, and Wikipedia's current Motherboard article does name her too -- though that wasn't always the case, and her name still doesn't appear in most general histories of computing. The word 'motherboard' was first attested in Electronics magazine in 1965. Its meaning: 'the mother of all boards' -- the board from which everything derives and depends. The board that is the mother of the computer was designed by a woman whose name took years to reach the canonical record.",source:"Britannica Motherboard; Wikipedia Motherboard; Computer Hope Motherboard History",link:"https://www.britannica.com/technology/motherboard",moves:["1. DESIGN the board -- Patty McHugh -- 1981 -- place each component -- precise","2. THE STANDARD SET -- every PC since uses this architecture -- mime the lineage","3. LOOK UP THE HISTORY -- open Wikipedia -- scan the text -- her name is not there","4. OPEN BRITANNICA -- her name is here -- two accounts -- one names her, one does not","5. FREEZE -- call out: 'The mother of all boards. Designed by a woman. Her name was not in the canonical article.'"]},
   {text:"On December 9, 1968, Douglas Engelbart and his team at SRI gave a 90-minute demonstration in Brooks Hall, San Francisco, to an audience of 1,000 computer scientists. In that single demonstration, he introduced: the computer mouse, word processing, hypertext, shared-screen collaboration, multiple windows simultaneously, video teleconferencing, and real-time collaborative editing by multiple users. None of these had been publicly demonstrated before. The audience gave a standing ovation. The presentation was retroactively named 'The Mother of All Demos' -- named 'mother' because everything that came after was generated from it. The internet. Collaborative software. The mouse. Multiple windows. Every computer you have ever used descends from what happened in that room. It was called 'mother' because it was the origin of everything. The word was chosen exactly correctly.",source:"Smithsonian Lemelson Center; Wikipedia Mother of All Demos; SRI International",link:"https://invention.si.edu/invention-stories/mother-all-demos",moves:["1. STAND in Brooks Hall -- 1968 -- the audience does not know what they are about to see","2. MOVE THE MOUSE -- slow -- deliberate -- the audience has never seen this before","3. OPEN MULTIPLE WINDOWS -- hypertext -- video call -- collaborative edit -- all at once","4. STANDING OVATION -- hold the moment -- everything after this comes from here","5. FREEZE -- call out: 'December 9, 1968. The Mother of All Demos. Mouse. Internet. Windows. Collaboration. Everything after was born here.'"]},
-  {text:"In computing and engineering, 'mother' is used to name the origin, source, or controlling standard in at least twenty distinct technical contexts. Motherboard: the board from which everything depends. Mother chip and mother die: the primary chip controlling all subsidiary chips. Mother clock: the master timing signal synchronizing all subsystems. Mother process: the parent process in Unix/Linux that spawns all children. Mother copy: the original authoritative version. Mother server and mother node: the origin node in networks and data structures. Mother jig, mother gauge, mother mold, mother tool, mother plate: the reference standards in manufacturing from which all working copies are derived. Mother disc: the vinyl record stamper from which all copies are pressed, often destroyed in the process. Mother alloy and mother ingot: the base metals from which all derivatives come. Mother pipe and mother vessel: the main supply lines. The pattern is identical in every field: mother = the origin, the generative authority, the thing that everything else comes from and depends on.",source:"Wikipedia Motherboard; various engineering references; CAREtech research",link:"https://en.wikipedia.org/wiki/Motherboard",moves:["1. LIST the terms -- one by one -- each a different field -- same meaning every time","2. HOLD UP 'origin' -- motherboard -- mother clock -- mother process -- mother copy","3. HOLD UP 'authority' -- mother jig -- mother gauge -- mother mold -- mother alloy","4. HOLD UP 'the thing everything depends on' -- all of them -- every field -- the same word","5. FREEZE -- call out: 'Twenty technical uses. Same meaning. The origin. The source. The thing everything comes from. The technology named this precisely. Then excluded the people it named.'"]},
-  {text:"The pattern in computing and engineering is: mother = the calibration standard, the reference, the thing against which all copies are measured. The mother gauge is the gauge from which all working gauges are calibrated. If the mother gauge is wrong, everything it calibrated is wrong. The mother mold is the mold from which all castings are derived -- rigid, external, containing. The mother jig produces all daughter jigs on the factory floor. The mother tool produces all derivative tools. In manufacturing: the mother is what you return to when something is off. The mother is what you compare everything else to. And then -- in the workforce that uses all these terms -- women hold 22% of AI roles, 12% of research positions, and 455,000 left the US labor force in the first 8 months of 2025. The calibration standard has been removed from the system. The system continues. The copies drift from accuracy. No one checks them against the mother.",source:"Engineering references; ILO March 2026; Stanford AI Index 2024",link:"https://www.ilo.org/resource/news/new-ilo-data-confirm-women-face-higher-workplace-risks-generative-ai-men",moves:["1. BE THE MOTHER GAUGE -- hold the standard -- everything calibrates against you","2. REMOVE THE MOTHER GAUGE -- mime the removal -- the calibration standard is gone","3. THE WORKING GAUGES DRIFT -- check one -- slightly off -- check another -- further off","4. RETURN TO THE EMPTY SPACE -- where the mother gauge was -- nothing there now","5. FREEZE -- call out: 'The mother gauge is what everything returns to. 22% of AI roles. 12% of researchers. 455,000 left. The calibration standard is being removed. The copies drift.'"]}
+  {text:"In computing and engineering, 'mother' is used or claimed informally to name the origin, source, or controlling standard across more than a dozen technical contexts -- though the rigor of documentation varies a lot by term. Motherboard: well-documented, 1965, the board everything else plugs into. Mother disc: well-documented, the positive vinyl-pressing master from which stampers are made. Rope Mother: well-documented nickname for Margaret Hamilton's role on Apollo. By contrast, Unix/Linux actually uses 'parent process' and 'child process,' not 'mother process' -- that one doesn't hold up. Trade jargon in chip packaging (mother chip/die), timing (mother clock), networking (mother server/node), manufacturing (mother jig/gauge/mold/tool), metallurgy (mother alloy/ingot), and piping (mother pipe/vessel) does turn up in some industry usage, but none of it is in major dictionaries -- it's colloquial, field-specific shorthand, not a single unified naming convention. The honest version of this carebot's argument: where 'mother' really is the established term, it consistently means origin and authority. Where it's looser trade talk, it still leans the same direction, which is itself worth noticing -- just don't mistake colloquialism for an entry in the OED.",source:"Wikipedia Motherboard; various engineering references; CAREtech research",link:"https://en.wikipedia.org/wiki/Motherboard",moves:["1. LIST the terms -- one by one -- each a different field -- same meaning every time","2. HOLD UP 'origin' -- motherboard -- mother clock -- mother process -- mother copy","3. HOLD UP 'authority' -- mother jig -- mother gauge -- mother mold -- mother alloy","4. HOLD UP 'the thing everything depends on' -- all of them -- every field -- the same word","5. FREEZE -- call out: 'Twenty technical uses. Same meaning. The origin. The source. The thing everything comes from. The technology named this precisely. Then excluded the people it named.'"]},
+  {text:"In machine-shop and manufacturing trade jargon, a 'mother' gauge, jig, or mold is sometimes used informally to describe the calibration standard -- the reference, the thing against which all copies are measured -- though this is colloquial usage, not a standardized dictionary term. The idea: a mother gauge would be the gauge from which all working gauges are calibrated; if it were wrong, everything it calibrated would be wrong. A mother mold would be the rigid outer shell that supports casting. A mother jig would produce daughter jigs on the factory floor. The underlying concept echoes the better-documented terms like motherboard and mother disc. And in the workforce that uses all these terms -- women hold roughly 22% of global AI roles, about 12% of AI research positions, and an estimated 455,000 women left the US labor force between January and August 2025. The calibration standard has been removed from the system. The system continues. The copies drift from accuracy. No one checks them against the mother.",source:"Engineering trade references (uncertain/colloquial); UNESCO gender-in-AI data; BLS labor force data via CNN",link:"https://www.cnn.com/2025/10/17/economy/us-women-workforce-shecession-return",moves:["1. BE THE MOTHER GAUGE -- hold the standard -- everything calibrates against you","2. REMOVE THE MOTHER GAUGE -- mime the removal -- the calibration standard is gone","3. THE WORKING GAUGES DRIFT -- check one -- slightly off -- check another -- further off","4. RETURN TO THE EMPTY SPACE -- where the mother gauge was -- nothing there now","5. FREEZE -- call out: 'The mother gauge is what everything returns to. 22% of AI roles. 12% of researchers. 455,000 left. The calibration standard is being removed. The copies drift.'"]}
 ];
 
 let recentlyShown=[];
@@ -462,13 +511,11 @@ let audioCtx=null;
 function playChime(){try{if(!audioCtx)audioCtx=new(window.AudioContext||window.webkitAudioContext)();const ctx=audioCtx;[[329.63,0],[415.30,.18],[493.88,.36]].forEach(([f,d])=>{const o=ctx.createOscillator();const g=ctx.createGain();o.connect(g);g.connect(ctx.destination);o.type='sine';o.frequency.value=f;const t=ctx.currentTime+d;g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(.35,t+.04);g.gain.exponentialRampToValueAtTime(.001,t+.7);o.start(t);o.stop(t+.72);});}catch(e){}}
 function askQuestion(){
   const q2=document.getElementById('userQuestion').value.trim();
-  const name=document.getElementById('userName').value.trim();
-  if(!name){alert('Please enter your name first!');return;}
   if(!q2){alert('Please type a question!');return;}
   const resp=getResponse();const mv=generateMovement(resp);
-  const payload={question:q2,answerText:resp.text,answerSource:resp.source,answerLink:resp.link,movement:mv,userName:name,userColor,ts:fbReady?firebase.database.ServerValue.TIMESTAMP:Date.now()};
-  if(fbReady&&msgRef)msgRef.push(payload).catch(()=>localDisplay(q2,resp,mv,name));
-  else localDisplay(q2,resp,mv,name);
+  const payload={question:q2,answerText:resp.text,answerSource:resp.source,answerLink:resp.link,movement:mv,userName:currentUser,userColor,ts:fbReady?firebase.database.ServerValue.TIMESTAMP:Date.now()};
+  if(fbReady&&msgRef)msgRef.push(payload).catch(()=>localDisplay(q2,resp,mv,currentUser));
+  else localDisplay(q2,resp,mv,currentUser);
   document.getElementById('userQuestion').value='';
 }
 let localMessages=[];
@@ -480,7 +527,7 @@ function renderPair(msg,key,playAudio=false){
   area.insertBefore(el,area.firstChild);
   if(playAudio){playChime();setTimeout(()=>speakMovement(msg.movement),950);}
 }
-const MAX=3;const MC=3;
+const MC=3;
 function speakMovement(text){if(!('speechSynthesis' in window))return;window.speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(text);u.rate=0.88;const trySpeak=()=>{const voices=window.speechSynthesis.getVoices();const fv=voices.find(v=>v.lang==='en-US'&&/female|woman|samantha|karen|amy|emma/i.test(v.name))||voices.find(v=>v.lang==='en-US');if(fv)u.voice=fv;window.speechSynthesis.speak(u);};if(window.speechSynthesis.getVoices().length)trySpeak();else window.speechSynthesis.onvoiceschanged=trySpeak;}
 function speakText(btn){speakMovement(btn.closest('.cb-mcard').querySelector('.cb-mtext').textContent);}
 function stopSpeech(){if('speechSynthesis' in window)window.speechSynthesis.cancel();}
