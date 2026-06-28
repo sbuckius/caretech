@@ -83,9 +83,13 @@ html,body{min-height:100%;font-family:var(--fb);font-weight:600;color:var(--text
 .inv-body{padding:16px 17px;}
 .inv-name{font-family:var(--fh);font-weight:900;font-size:20px;background:linear-gradient(90deg,var(--blush),var(--hot));-webkit-background-clip:text;background-clip:text;color:transparent;margin-bottom:6px;}
 .inv-text{font-size:13px;line-height:1.72;color:var(--muted2);margin-bottom:10px;}
+.inv-disclaimer{font-size:10.5px;font-style:italic;color:var(--muted);margin-bottom:10px;opacity:.75;}
 .inv-src{font-size:11px;color:var(--muted);}
 .inv-src a{color:var(--candy);text-decoration:none;}
 .inv-src a:hover{text-decoration:underline;}
+.inv-more{font-size:11px;color:var(--muted);margin-top:5px;display:flex;flex-wrap:wrap;gap:10px;}
+.inv-more a{color:var(--candy);text-decoration:none;}
+.inv-more a:hover{text-decoration:underline;}
 
 /* BEFORE REVEAL — GUESS BLOCK */
 .guess-card{width:100%;max-width:640px;background:var(--surface);border:1.5px solid var(--gold-border);border-radius:18px;padding:17px;position:relative;overflow:hidden;box-shadow:var(--card-shadow);}
@@ -215,11 +219,10 @@ html,body{min-height:100%;font-family:var(--fb);font-weight:600;color:var(--text
     </button>
   </div>
 
-  <!-- NAME INPUT -->
+  <!-- BEGIN CARD -->
   <div class="cb-card">
-    <div class="cb-eyebrow">✦ CAREBOT-25 · Enter your name to begin · One inventor per session</div>
+    <div class="cb-eyebrow">✦ CAREBOT-25 · 3 inventors per session</div>
     <div class="cb-row">
-      <input class="cb-input" type="text" id="userName" placeholder="Your name…" autocomplete="off">
       <button class="cb-btn primary" onclick="beginTask()">✦ Begin</button>
       <button class="cb-btn soft" onclick="showAdminModal()" title="Admin">⚙</button>
     </div>
@@ -227,7 +230,7 @@ html,body{min-height:100%;font-family:var(--fb);font-weight:600;color:var(--text
 
   <!-- STEP 1: GUESS BEFORE REVEAL -->
   <div class="guess-card" id="guessSection" style="display:none;">
-    <div class="guess-eyebrow">✦ Step 1 of 4 · Before You See Who · Guess First</div>
+    <div class="guess-eyebrow" id="guessStepLabel">✦ Step 1 of 4 · Inventor 1 of 3 · Before You See Who · Guess First</div>
     <div class="guess-q" id="guessQ">Loading…</div>
 
     <div class="guess-eyebrow" style="margin-top:4px;">Who do you think invented this?</div>
@@ -259,7 +262,9 @@ html,body{min-height:100%;font-family:var(--fb);font-weight:600;color:var(--text
     <div class="inv-body">
       <div class="inv-name" id="revealName"></div>
       <div class="inv-text" id="revealText"></div>
-      <div class="inv-src">Source: <a id="revealLink" href="#" target="_blank" rel="noopener" id="revealSrc"></a></div>
+      <div class="inv-disclaimer">AI helped me with this. There might be inaccuracies.</div>
+      <div class="inv-src">Source: <a id="revealLink" href="#" target="_blank" rel="noopener"></a></div>
+      <div class="inv-more" id="revealMoreLinks"></div>
     </div>
   </div>
 
@@ -373,6 +378,7 @@ html,body{min-height:100%;font-family:var(--fb);font-weight:600;color:var(--text
     <div class="result-stat highlight" id="gapStatement"></div>
     <div class="result-stat" id="guessStatement"></div>
     <div class="result-stat" id="knewStatement"></div>
+    <button class="cb-btn primary" id="nextInventorBtn" style="margin-top:12px;" onclick="nextInventor()">✦ Next Inventor →</button>
   </div>
 
   <!-- LIVE FEED -->
@@ -383,7 +389,7 @@ html,body{min-height:100%;font-family:var(--fb);font-weight:600;color:var(--text
     </div>
   </div>
 
-  <div class="cb-bottom">
+  <div class="cb-bottom" id="bottomSection" style="display:none;">
     <div class="cb-btitle">✦ Task Complete · Ready for your next task?</div>
     <a class="cb-link" href="carebot07-hit.html" rel="noopener">✦ Advance to next task</a>
   </div>
@@ -426,7 +432,8 @@ try{
   fbReady=true;
 }catch(e){console.warn(e);}
 
-let currentUser=localStorage.getItem('cb25User')||'';
+let currentUser=localStorage.getItem('cb25User')||('Guest-'+Math.random().toString(36).slice(2,8));
+localStorage.setItem('cb25User',currentUser);
 let userColor=localStorage.getItem('cb25Color')||genColor();
 function genColor(){const c=['#ff85b3','#ff2d6b','#ab47bc','#00c4a7','#ffc947'];const v=c[Math.floor(Math.random()*c.length)];localStorage.setItem('cb25Color',v);return v;}
 
@@ -465,20 +472,19 @@ if(fbReady){
 }else{document.getElementById('onlineCount').textContent='Offline';}
 
 function trackPresence(){if(!onlineRef||!currentUser)return;const r=onlineRef.child(currentUser.replace(/[.#$[\]]/g,'_'));r.set({name:currentUser,ts:firebase.database.ServerValue.TIMESTAMP});r.onDisconnect().remove();}
-document.getElementById('userName').addEventListener('change',function(){currentUser=this.value.trim();localStorage.setItem('cb25User',currentUser);if(currentUser&&fbReady)trackPresence();});
 
 /* INVENTOR DATA */
 const inventors=[
-  {name:'Katherine Johnson',era:'1960',text:'Katherine G. Johnson co-authored NASA Technical Note D-233 in 1960, presenting mathematical expressions for determining satellite trajectories and orbital mechanics. Her calculations were critical for placing satellites over selected Earth positions — work that helped launch America into space.',source:'NASA Technical Note D-233 (1960)',link:'https://ntrs.nasa.gov/citations/19980227091',teaser:'A mathematician whose calculations were used to determine the trajectories of some of the first US space missions.'},
-  {name:'Mary Winter',era:'1882',text:'Mary E. Winter patented an adding machine on May 23, 1882 (Patent No. 258,518). Her sophisticated mechanical calculator used ratchet wheels, pawls, and operating keys numbered 1–10 to perform addition up to 600.',source:'U.S. Patent No. 258,518 (1882)',link:'https://patents.google.com/patent/US258518',teaser:'An inventor who patented a mechanical calculating device in the 19th century.'},
-  {name:'Edith Clarke',era:'1925',text:'Edith Clarke patented an Electrical Calculator on September 1, 1925 (Patent No. 1,552,113). She was the first woman to earn an M.S. in electrical engineering from MIT and became the first female professor of electrical engineering in the United States.',source:'U.S. Patent No. 1,552,113 (1925)',link:'https://patents.google.com/patent/US1552113',teaser:'An engineer who invented a graphical calculator used by electrical engineers to solve power transmission line problems.'},
-  {name:'Evelyn Berezin',era:'1961',text:'Evelyn Berezin patented Control Means for an Electronic Calculator in 1961 (Patent No. 2,973,141). She later designed the first true word processor and founded the Redactron Corporation, earning the title "mother of the word processor."',source:'U.S. Patent No. 2,973,141 (1961)',link:'https://patents.google.com/patent/US2973141',teaser:'An engineer and entrepreneur who designed one of the first computerized systems for airline reservations and later invented the word processor.'},
-  {name:'Sarah Boone',era:'1892',text:'Sarah Boone, an African American inventor, patented an improved Ironing-Board on April 26, 1892 (Patent No. 473,653). Her design was specifically shaped to iron the sleeves and bodies of ladies\' garments more effectively.',source:'U.S. Patent No. 473,653 (1892)',link:'https://patents.google.com/patent/US473653',teaser:'One of the first African American women to receive a US patent, for a device still found in nearly every home today.'},
-  {name:'Maggie Knight',era:'1870s',text:'Miss Maggie Knight invented the machine for manufacturing satchel-bottom paper bags — the kind we still use today. The Commissioner of Patents complimented her on its entire originality. She refused fifty thousand dollars for her patent shortly after receiving it.',source:'Woman as an Inventor by Matilda Joslyn Gage (1883)',link:'https://archive.org/details/jstor-25118326',teaser:'An inventor who created a machine that produces the flat-bottomed paper bags still used in grocery stores today.'},
-  {name:'Hertha Ayrton',era:'1885',text:'Phoebe Sarah Marks (Hertha Ayrton) patented a Draftsman\'s Dividing-Instrument on January 6, 1885 (Patent No. 310,450). This tool allowed users to divide any line into equal parts without calculation — just simple manipulation.',source:'U.S. Patent No. 310,450 (1885)',link:'https://patents.google.com/patent/US310450',teaser:'A mathematician and engineer who invented precision tools and later did foundational research on electric arcs and the physics of ripples in sand.'},
-  {name:'Beulah Henry',era:'1959',text:'Beulah Louise Henry, known as "Lady Edison," held 49 patents and had over 110 inventions to her name. Among them was a Typewriter patented in 1959 (Patent No. 2,897,944) featuring innovative improvements to the typing mechanism.',source:'U.S. Patent No. 2,897,944 (1959)',link:'https://patents.google.com/patent/US2897944',teaser:'An inventor with 49 patents and over 110 inventions who was called "Lady Edison" by her contemporaries.'},
-  {name:'Harriet Hosmer',era:'1800s',text:'Harriet Hosmer invented a process for producing artificial marble from limestone that closely simulates the finest antique varieties — a process the Italian Government had long sought without success. Her permanent magnet invention was deemed one of the most important of the century.',source:'Woman as an Inventor by Matilda Joslyn Gage (1883)',link:'https://archive.org/details/jstor-25118326',teaser:'A sculptor and inventor whose materials innovations were considered among the most significant engineering achievements of the 19th century.'},
-  {name:'Catharine Greene',era:'1790s',text:'The cotton-gin was conceived by Catharine Littlefield Greene, widow of Revolutionary General Greene. When wooden teeth failed, she suggested using wire — Whitney had wanted to give up. Within ten days of her suggestion, a perfect model was completed.',source:'Woman as an Inventor by Matilda Joslyn Gage (1883)',link:'https://archive.org/details/jstor-25118326',teaser:'The person credited with the key insight that made the cotton gin work — an invention that transformed American industry, though someone else holds the patent.'},
+  {name:'Katherine Johnson',era:'1960',text:'Katherine G. Johnson co-authored NASA Technical Note D-233 in 1960, presenting mathematical expressions for determining satellite trajectories and orbital mechanics. Her calculations were critical for placing satellites over selected Earth positions — work that helped launch America into space.',source:'NASA Technical Note D-233 (1960)',link:'https://ntrs.nasa.gov/citations/19980227091',links:[{label:'NASA biography & career history',url:'https://ieee-aess.org/post/blog/history-column-katherine-g-johnson'}],teaser:'A mathematician whose calculations were used to determine the trajectories of some of the first US space missions.'},
+  {name:'Mary Winter',era:'1882',text:'Mary E. Winter patented an adding machine on May 22, 1882 (Patent No. 258,518). Her sophisticated mechanical calculator used ratchet wheels, pawls, and operating keys numbered 1–10 to perform addition up to 600.',source:'U.S. Patent No. 258,518 (1882)',link:'https://patents.google.com/patent/US258518',links:[{label:'Women Inventors patent record',url:'https://www.womeninventorsbook.com/patents?a17f7124_page=15'}],teaser:'An inventor who patented a mechanical calculating device in the 19th century.'},
+  {name:'Edith Clarke',era:'1925',text:'Edith Clarke patented an Electrical Calculator on September 1, 1925 (Patent No. 1,552,113). She was the first woman to earn an M.S. in electrical engineering from MIT and became the first female professor of electrical engineering in the United States.',source:'U.S. Patent No. 1,552,113 (1925)',link:'https://patents.google.com/patent/US1552113',links:[{label:'National Inventors Hall of Fame bio',url:'https://www.invent.org/inductees/edith-clarke'},{label:'Wikipedia',url:'https://en.wikipedia.org/wiki/Edith_Clarke'}],teaser:'An engineer who invented a graphical calculator used by electrical engineers to solve power transmission line problems.'},
+  {name:'Evelyn Berezin',era:'1961',text:'Evelyn Berezin patented Control Means with Record Sensing for an Electronic Calculator on February 28, 1961 (Patent No. 2,973,141). She later designed the first true word processor and founded the Redactron Corporation, earning the title "mother of the word processor."',source:'U.S. Patent No. 2,973,141 (1961)',link:'https://patents.google.com/patent/US2973141',links:[{label:'Wikipedia',url:'https://en.wikipedia.org/wiki/Evelyn_Berezin'},{label:'NPR obituary & career retrospective',url:'https://www.npr.org/2018/12/12/676024428/evelyn-berezin-computer-scientist-behind-groundbreaking-word-processor-dies-at-9'}],teaser:'An engineer and entrepreneur who designed one of the first computerized systems for airline reservations and later invented the word processor.'},
+  {name:'Sarah Boone',era:'1892',text:'Sarah Boone, an African American inventor, patented an improved Ironing-Board on April 26, 1892 (Patent No. 473,653). Her design was specifically shaped to iron the sleeves and bodies of ladies\' garments more effectively.',source:'U.S. Patent No. 473,653 (1892)',link:'https://patents.google.com/patent/US473653',links:[{label:'Wikipedia',url:'https://en.wikipedia.org/wiki/Sarah_Boone'},{label:'BlackPast biography',url:'https://blackpast.org/african-american-history/boone-sarah-1832-1904/'}],teaser:'One of the first African American women to receive a US patent, for a device still found in nearly every home today.'},
+  {name:'Margaret Knight',era:'1870s',text:'Margaret Knight invented a machine for manufacturing flat-bottomed "satchel" paper bags — the kind still used today — and was granted U.S. Patent No. 116,842 in 1871 after winning a patent-interference case against a man who tried to steal her design. She went on to license the invention to the Eastern Paper Bag Company for an upfront payment plus royalties that totaled roughly $25,000.',source:'U.S. Patent No. 116,842 (1871); Smithsonian American Women\'s History Museum',link:'https://womenshistory.si.edu/blog/margaret-knight-invented-machine-shapes-way-we-shop',links:[{label:'View the original 1871 patent',url:'https://patents.google.com/patent/US116842'},{label:'Wikipedia',url:'https://en.wikipedia.org/wiki/Margaret_E._Knight'},{label:'National Inventors Hall of Fame bio',url:'https://www.invent.org/inductees/margaret-e-knight'}],teaser:'An inventor who created a machine that produces the flat-bottomed paper bags still used in grocery stores today.'},
+  {name:'Hertha Ayrton',era:'1885',text:'Phoebe Sarah Marks (Hertha Ayrton) patented a Draftsman\'s Dividing-Instrument on January 6, 1885 (Patent No. 310,450). This tool allowed users to divide any line into equal parts without calculation — just simple manipulation.',source:'U.S. Patent No. 310,450 (1885)',link:'https://patents.google.com/patent/US310450',links:[{label:'Wikipedia',url:'https://en.wikipedia.org/wiki/Hertha_Ayrton'},{label:'Physics World profile',url:'https://physicsworld.com/a/hertha-ayrton-pioneering-inventor-and-suffragette/'}],teaser:'A mathematician and engineer who invented precision tools and later did foundational research on electric arcs and the physics of ripples in sand.'},
+  {name:'Beulah Henry',era:'1959',text:'Beulah Louise Henry, known as "Lady Edison," held 49 patents and had over 110 inventions to her name. Among them was a Typewriter patented in 1959 (Patent No. 2,897,944) featuring innovative improvements to the typing mechanism.',source:'U.S. Patent No. 2,897,944 (1959)',link:'https://patents.google.com/patent/US2897944',links:[{label:'National Inventors Hall of Fame bio',url:'https://www.invent.org/inductees/beulah-louise-henry'},{label:'Engineering & Technology History Wiki',url:'https://ethw.org/Beulah_Louise_Henry'}],teaser:'An inventor with 49 patents and over 110 inventions who was called "Lady Edison" by her contemporaries.'},
+  {name:'Harriet Hosmer',era:'1800s',text:'According to Matilda Joslyn Gage\'s 1883 account, sculptor Harriet Hosmer developed a process for producing artificial marble from limestone that closely simulated fine antique varieties, and in the 1870s also devoted time to developing a perpetual-motion machine. Hosmer is well documented as one of the most successful 19th-century American sculptors; the framing of these as patentable "inventions" comes from Gage\'s contemporaneous pamphlet and has not been independently verified by patent records.',source:'Woman as an Inventor by Matilda Joslyn Gage (1883) — claims not independently verified',link:'https://archive.org/details/jstor-25118326',links:[{label:'Wikipedia',url:'https://en.wikipedia.org/wiki/Harriet_Hosmer'},{label:'New England Historical Society profile',url:'https://newenglandhistoricalsociety.com/harriet-hosmer-pioneering-woman-artist/'}],teaser:'A sculptor and inventor whose materials innovations were considered among the most significant engineering achievements of the 19th century.'},
+  {name:'Catharine Greene',era:'1790s',text:'Catharine Littlefield Greene, widow of Revolutionary War General Nathanael Greene, hosted Eli Whitney at her Mulberry Grove plantation and financially supported his work. Matilda Joslyn Gage\'s 1883 pamphlet credited Greene with the key suggestion to use wire teeth instead of wood when Whitney\'s prototype was failing. Modern historians regard the "wire teeth" story as plausible but not definitively documented — Greene\'s moral and financial support is well established, while her specific technical contribution remains debated.',source:'Woman as an Inventor by Matilda Joslyn Gage (1883); New Georgia Encyclopedia',link:'https://www.georgiaencyclopedia.org/articles/history-archaeology/catharine-greene-1755-1814/',links:[{label:'Wikipedia: Cotton gin',url:'https://en.wikipedia.org/wiki/Cotton_gin'},{label:'Encyclopedia.com biography',url:'https://www.encyclopedia.com/history/encyclopedias-almanacs-transcripts-and-maps/catherine-littlefield-greene'}],teaser:'The person credited with the key insight that made the cotton gin work — an invention that transformed American industry, though someone else holds the patent.'},
 ];
 
 /* STATE */
@@ -487,6 +493,8 @@ let ratings={importance:0,fame:0,novelty:0};
 let genderGuess='',decadeGuess='',knewBefore='',shareIntent='';
 let selectedTags=[];
 let taskSubmitted=false;
+let roundNum=1;
+const TOTAL_ROUNDS=3;
 
 function getRandomInventor(){
   const seen=JSON.parse(localStorage.getItem('cb25seen')||'[]');
@@ -501,17 +509,49 @@ function getRandomInventor(){
 }
 
 function beginTask(){
-  const name=document.getElementById('userName').value.trim();
-  if(!name){alert('Please enter your name first!');document.getElementById('userName').focus();return;}
-  currentUser=name;
-  localStorage.setItem('cb25User',name);
   if(fbReady)trackPresence();
-  currentInventor=getRandomInventor();
-  document.getElementById('guessQ').textContent=currentInventor.teaser;
-  document.getElementById('guessSection').style.display='';
+  roundNum=1;
+  startRound();
   document.querySelector('.cb-card').style.opacity='.5';
   document.querySelector('.cb-card').style.pointerEvents='none';
+}
+
+function startRound(){
+  currentInventor=getRandomInventor();
+  document.getElementById('guessStepLabel').textContent='✦ Step 1 of 4 · Inventor '+roundNum+' of '+TOTAL_ROUNDS+' · Before You See Who · Guess First';
+  document.getElementById('guessQ').textContent=currentInventor.teaser;
+  document.getElementById('guessSection').style.display='';
+  document.getElementById('guessSection').style.opacity='1';
+  document.getElementById('guessSection').style.pointerEvents='';
   window.scrollTo({top:document.getElementById('guessSection').offsetTop-20,behavior:'smooth'});
+}
+
+function nextInventor(){
+  if(roundNum>=TOTAL_ROUNDS){
+    document.getElementById('bottomSection').style.display='';
+    window.scrollTo({top:document.getElementById('bottomSection').offsetTop-20,behavior:'smooth'});
+    return;
+  }
+  roundNum++;
+  /* reset per-round state */
+  ratings={importance:0,fame:0,novelty:0};
+  genderGuess='';decadeGuess='';knewBefore='';shareIntent='';
+  selectedTags=[];
+  taskSubmitted=false;
+  document.querySelectorAll('#genderGuessOpts .guess-opt,#decadeRow .decade-btn,#knewOpts .guess-opt,#shareOpts .guess-opt,#tagGrid .tag-btn,#importanceDots .rate-dot,#fameDots .rate-dot,#noveltyDots .rate-dot').forEach(b=>b.classList.remove('selected'));
+  document.getElementById('revealBtn').disabled=true;
+  document.getElementById('toTagsBtn').disabled=true;
+  document.getElementById('submitBtn').disabled=true;
+  document.getElementById('submitBtn').textContent='✦ Submit';
+  document.getElementById('revealSection').style.display='none';
+  document.getElementById('rateSection').style.display='none';
+  document.getElementById('rateSection').style.opacity='1';
+  document.getElementById('rateSection').style.pointerEvents='';
+  document.getElementById('tagSection').style.display='none';
+  document.getElementById('tagSection').style.opacity='1';
+  document.getElementById('tagSection').style.pointerEvents='';
+  document.getElementById('resultSection').style.display='none';
+  startRound();
 }
 
 function selectGenderGuess(val){
@@ -537,6 +577,13 @@ function revealInventor(){
   document.getElementById('revealEra').textContent=inv.era;
   const link=document.getElementById('revealLink');
   link.href=inv.link;link.textContent=inv.source;
+  const moreWrap=document.getElementById('revealMoreLinks');
+  moreWrap.innerHTML='';
+  (inv.links||[]).forEach(l=>{
+    const a=document.createElement('a');
+    a.href=l.url;a.target='_blank';a.rel='noopener';a.textContent='↗ '+l.label;
+    moreWrap.appendChild(a);
+  });
   document.getElementById('revealSection').style.display='';
   document.getElementById('rateSection').style.display='';
   document.getElementById('guessSection').style.opacity='.5';
@@ -594,10 +641,9 @@ function checkSubmitReady(){
 
 function submitResponse(){
   if(taskSubmitted)return;
-  const name=document.getElementById('userName').value.trim();
   const gap=ratings.importance-ratings.fame;
   const payload={
-    userName:name,userColor,
+    userName:currentUser,userColor,
     inventor:currentInventor.name,era:currentInventor.era,
     genderGuess,decadeGuess,knewBefore,
     importance:ratings.importance,fame:ratings.fame,novelty:ratings.novelty,
@@ -625,6 +671,8 @@ function showResult(p){
   const knewMsg={yes:'You already knew this inventor.',no:'You had not heard of '+p.inventor+' before today.',vaguely:'You had heard of '+p.inventor+' vaguely.'}[p.knewBefore]||'';
   document.getElementById('knewStatement').textContent=knewMsg;
   document.getElementById('resultSection').style.display='';
+  const nextBtn=document.getElementById('nextInventorBtn');
+  nextBtn.textContent=roundNum>=TOTAL_ROUNDS?'✦ See Task Complete →':'✦ Next Inventor ('+(roundNum+1)+' of '+TOTAL_ROUNDS+') →';
   window.scrollTo({top:document.getElementById('resultSection').offsetTop-20,behavior:'smooth'});
 }
 
