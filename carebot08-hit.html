@@ -83,6 +83,7 @@ body{cursor:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' wi
 .hero-eyebrow{display:inline-block;font-size:.68rem;letter-spacing:.22em;text-transform:uppercase;color:var(--candy);font-weight:800;margin-bottom:.7rem;background:rgba(255,45,107,.12);border:1px solid rgba(255,45,107,.25);border-radius:999px;padding:.28rem .9rem;}
 .hero-title{font-family:var(--fh);font-size:2.6rem;font-weight:900;letter-spacing:-.045em;line-height:1.12;margin-bottom:.9rem;background:linear-gradient(135deg,var(--blush) 10%,var(--hot) 45%,var(--candy) 80%);-webkit-background-clip:text;background-clip:text;color:transparent;}
 .hero-sub{font-size:.95rem;color:var(--muted2);line-height:1.75;max-width:580px;margin:0 auto 1.5rem;font-weight:600;}
+.ai-note{font-size:.72rem;color:var(--muted);line-height:1.5;max-width:520px;margin:-.8rem auto 1.4rem;font-weight:600;font-style:italic;letter-spacing:.01em;}
 
 .instructions{position:relative;z-index:2;max-width:760px;margin:0 auto 2rem;padding:0 1.5rem;}
 .instr-card{background:linear-gradient(135deg,rgba(50,8,30,.95),rgba(40,5,55,.92));border:1.5px solid var(--border);border-radius:var(--radius);padding:1.4rem 1.7rem;box-shadow:var(--card-shadow);position:relative;overflow:hidden;}
@@ -146,6 +147,9 @@ body{cursor:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' wi
 .irony-block.alt .irony-head{color:#d4a8ff;}
 .irony-block.alt3 .irony-head{color:#ff9fcc;}
 .irony-body{font-size:.82rem;color:rgba(255,225,240,.8);line-height:1.7;font-weight:600;}
+.irony-sources{font-size:.68rem;color:var(--muted);line-height:1.5;margin-top:.55rem;font-weight:600;}
+.irony-sources a{color:var(--candy);text-decoration:underline;text-decoration-color:rgba(255,133,179,.4);}
+.irony-sources a:hover{color:var(--blush);}
 
 .stat-row{display:flex;gap:.8rem;flex-wrap:wrap;justify-content:center;margin-bottom:1.8rem;}
 .stat-pill{background:rgba(255,255,255,.07);border:1.5px solid rgba(255,133,179,.3);border-radius:14px;padding:.9rem 1.2rem;min-width:110px;text-align:center;backdrop-filter:blur(4px);}
@@ -316,6 +320,7 @@ body{cursor:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' wi
   <div class="hero-eyebrow">✦ CAREBOT-08 · Human Intelligence Task · CAREtech Research</div>
   <h1 class="hero-title">Who Does the Work?<br>Who Gets the Credit?</h1>
   <p class="hero-sub">Answer each question honestly. Your responses help us understand the relationship between human labor, gender, and the rise of automation — and reveal a striking irony hiding in plain sight.</p>
+  <p class="ai-note">✦ AI helped me with this. There might be inaccuracies.</p>
 </div>
 
 <div class="instructions">
@@ -365,6 +370,7 @@ body{cursor:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' wi
       <div class="irony-block alt">
         <div class="irony-head">👩🏿 👩🏽 👩🏻 👩🏾 👩🏼 Who Actually Does Those Tasks?</div>
         <div class="irony-body">According to U.S. Bureau of Labor Statistics data: nursing is <strong style="color:#d4a8ff">88% female</strong>. Social work is <strong style="color:#d4a8ff">83% female</strong>. Teaching is <strong style="color:#d4a8ff">73% female</strong>. Childcare is <strong style="color:#d4a8ff">over 90% female</strong>. Women also perform 4hrs 25min of unpaid care work per day — versus 1hr 23min for men.</div>
+        <div class="irony-sources">Sources: <a href="https://www.bls.gov/cps/cpsaat11.htm" target="_blank" rel="noopener noreferrer">BLS, Household Data Table 11</a> · <a href="https://www.unwomen.org/sites/default/files/2023-10/technical-brief-forecasting-time-spent-in-unpaid-care-and-domestic-work-en.pdf" target="_blank" rel="noopener noreferrer">UN Women / ILO unpaid care work data</a></div>
       </div>
       <div class="irony-block alt3">
         <div class="irony-head">💸 So Why Is AI Being Built for These Tasks?</div>
@@ -373,6 +379,7 @@ body{cursor:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' wi
       <div class="irony-block" style="border-left-color:#ffcc00;background:rgba(255,200,0,.05)">
         <div class="irony-head" style="color:#ffd060;">⚡ The Double Displacement Risk</div>
         <div class="irony-body">Researchers project that by 2030, <strong style="color:#ffd060">40–160 million women</strong> will need to transition jobs as automation targets the sectors where they are most concentrated — sectors that were never compensated fairly to begin with.</div>
+        <div class="irony-sources">Source: <a href="https://www.mckinsey.com/featured-insights/gender-equality/the-future-of-women-at-work-transitions-in-the-age-of-automation" target="_blank" rel="noopener noreferrer">McKinsey Global Institute, "The Future of Women at Work"</a></div>
       </div>
     </div>
     <div class="answers-grid" id="answer-chips"></div>
