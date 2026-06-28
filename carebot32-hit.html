@@ -54,6 +54,14 @@ html,body{min-height:100%;font-family:'Lato',sans-serif;color:var(--cream);backg
 .disc-icon{font-size:15px;flex-shrink:0;margin-top:1px}
 .disc-text{font-size:11px;color:rgba(255,200,224,.6);line-height:1.6;font-weight:300}
 .disc-text strong{color:var(--candy);font-weight:700}
+.intro-blurb{background:rgba(255,255,255,.035);border:1.5px solid var(--border);border-radius:18px;padding:18px 22px;}
+.intro-blurb p{font-size:13px;color:var(--text-dim);line-height:1.75;font-weight:300}
+.intro-blurb p+p{margin-top:10px}
+.intro-blurb strong{color:var(--candy);font-weight:700}
+.intro-blurb a{color:var(--blush);text-decoration:underline;text-decoration-color:rgba(255,160,200,.35);text-underline-offset:2px}
+.intro-blurb a:hover{color:var(--candy)}
+.ai-note{display:flex;align-items:center;gap:7px;font-size:10.5px;color:var(--text-faint);letter-spacing:.02em;padding:0 4px;margin-top:-2px}
+.ai-note .note-icon{font-size:12px}
 .picker-card{background:rgba(255,255,255,.045);border:1.5px solid var(--border);border-radius:24px;box-shadow:var(--soft-glow);backdrop-filter:blur(20px);overflow:hidden;position:relative}
 .picker-card::before{content:'';position:absolute;top:0;left:16px;right:16px;height:1px;background:linear-gradient(90deg,transparent,var(--candy) 30%,var(--hot) 50%,var(--candy) 70%,transparent);box-shadow:0 0 10px var(--candy);border-radius:999px;pointer-events:none}
 .picker-header{padding:20px 24px 16px;border-bottom:1px solid rgba(255,160,200,.1)}
@@ -231,6 +239,15 @@ html,body{min-height:100%;font-family:'Lato',sans-serif;color:var(--cream);backg
 .pl-text em{font-style:italic;color:var(--candy)}
 .pl-sub{font-size:12px;color:rgba(255,210,230,.52);line-height:1.7}
 .comp-foot{padding:16px 28px 28px;display:flex;justify-content:center}
+.patents-link-section{margin:0 28px 24px;background:rgba(255,255,255,.03);border:1.5px solid var(--border);border-radius:18px;overflow:hidden}
+.pls-header{padding:16px 20px 10px}
+.pls-title{font-family:'Playfair Display',serif;font-weight:700;font-size:14px;color:var(--cream);margin-bottom:3px}
+.pls-sub{font-size:11px;color:var(--text-dim);line-height:1.6}
+.pls-grid{padding:6px 20px 18px;display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:6px 14px}
+.pls-link{display:flex;align-items:baseline;gap:6px;font-size:11px;color:var(--text-dim);text-decoration:none;padding:4px 0;border-bottom:1px dotted rgba(255,160,200,.12)}
+.pls-link:hover{color:var(--candy)}
+.pls-link .pls-id{font-family:'DM Mono',monospace;color:var(--blush);flex-shrink:0;font-size:10.5px}
+.pls-link .pls-name{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .proceed-btn{appearance:none;font-family:'Lato',sans-serif;font-weight:700;font-size:13px;letter-spacing:.06em;cursor:pointer;padding:12px 32px;border-radius:16px;border:1.5px solid var(--hot);background:linear-gradient(135deg,rgba(255,45,107,.6),rgba(180,0,80,.65));color:var(--cream);box-shadow:0 4px 20px rgba(255,45,107,.3),inset 0 1px 0 rgba(255,255,255,.12);transition:all .2s cubic-bezier(.34,1.56,.64,1);display:inline-flex;align-items:center;gap:8px;text-decoration:none}
 .proceed-btn:hover{box-shadow:0 8px 32px rgba(255,45,107,.45);transform:translateY(-3px) scale(1.03)}
 </style>
@@ -258,6 +275,12 @@ html,body{min-height:100%;font-family:'Lato',sans-serif;color:var(--cream);backg
       </button>
     </div>
   </div>
+
+  <div class="intro-blurb">
+    <p>Women have always invented things — sewing attachments, looms, calculators, undergarments, typewriter improvements — but the patent record has long obscured them. <strong>Only around 3,000 women inventors</strong> were identified in the first hundred years of the U.S. patent system, compared with roughly 375,000 patents granted to men between 1836 and 1888 (<a href="https://www.nature.com/articles/s41599-025-06038-6" target="_blank" rel="noopener">source</a>). As recently as 2019, women still made up only <strong>12.8% of U.S. patent-holders</strong> (<a href="https://www.uspto.gov/about-us/news-updates/uspto-releases-updated-study-participation-women-us-innovation-economy-0" target="_blank" rel="noopener">source</a>).</p>
+    <p>This carebot pulls real language from 80 patents filed by women, from 1873 through the 20th century. See if you can predict which words an AI model flags as "masculine-coded" or "feminine-coded" — based on rules abstracted from Gaucher et al.'s 2011 job-ad research — and then see what that prediction game reveals (and gets wrong) about gender and invention.</p>
+  </div>
+  <div class="ai-note"><span class="note-icon">✦</span> AI helped me with this. There might be inaccuracies.</div>
 
   <div class="stats-bar">
     <div class="stat-chip">Sessions saved <strong id="st-sessions">—</strong></div>
@@ -352,6 +375,13 @@ html,body{min-height:100%;font-family:'Lato',sans-serif;color:var(--cream);backg
       <div class="pl-eyebrow">✦ The finding — despite all of the above</div>
       <div class="pl-text">Every single patent by a woman used <em>both</em> masculine-coded and feminine-coded language.</div>
       <div class="pl-sub">AI's classifications are flawed, context-blind, and sometimes absurd. But even by its own imperfect rules, these women's patents refuse to be sorted into a single gender register. The language did whatever the invention needed. The rules couldn't keep up.</div>
+    </div>
+    <div class="patents-link-section" id="patentsLinkSection">
+      <div class="pls-header">
+        <div class="pls-title">Read the patents yourself ✦</div>
+        <div class="pls-sub">Links to all 80 patents in this dataset, via Google Patents.</div>
+      </div>
+      <div class="pls-grid" id="patentsLinkGrid"></div>
     </div>
     <div class="comp-foot">
       <a class="proceed-btn" href="carebot07-hit.html">Proceed to next task ✦</a>
@@ -595,10 +625,25 @@ function showCompletion(){
   /* save to Firebase */
   saveSession({patentsCompleted:done.length,totalCorrect:tc,totalAttempted:ta,accuracy:pct,patentIds:done.map(p=>p.id),patentDetails:done.map(p=>({id:p.id,title:p.title,correct:STATE[p.id].correct,attempted:STATE[p.id].attempted}))});
 
+  buildPatentLinks();
   document.getElementById('pickerCard').style.display='none';
   document.getElementById('quizSlot').innerHTML='';
   document.getElementById('completionCard').classList.add('show');
   document.getElementById('completionCard').scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+function buildPatentLinks(){
+  const grid=document.getElementById('patentsLinkGrid');
+  if(!grid)return;
+  grid.innerHTML='';
+  const sorted=[...PATENTS].sort((a,b)=>a.year-b.year);
+  sorted.forEach(p=>{
+    const a=document.createElement('a');
+    a.className='pls-link';a.target='_blank';a.rel='noopener';
+    a.href='https://patents.google.com/patent/'+p.id;
+    a.innerHTML=`<span class="pls-id">${p.id}</span><span class="pls-name">${p.title} — ${p.inventor}</span>`;
+    grid.appendChild(a);
+  });
 }
 
 buildPicker();
