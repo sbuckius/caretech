@@ -59,6 +59,15 @@
   .irony-text{font-size:12.5px;line-height:1.78;color:rgba(220,190,255,.85);}
   .irony-text strong{color:#e0b8ff;font-weight:700;}
   .irony-text em{color:#ffb3cf;}
+  .fn-link{color:var(--candy);text-decoration:none;font-weight:700;font-size:9px;margin-left:1px;}
+  .fn-link:hover{text-decoration:underline;}
+  .footnotes{margin-top:11px;padding-top:9px;border-top:1px solid rgba(180,100,255,.18);}
+  .footnotes ol{list-style:decimal;padding-left:18px;margin:0;display:flex;flex-direction:column;gap:4px;}
+  .footnotes li{font-size:10.5px;line-height:1.6;color:rgba(220,190,255,.65);}
+  .footnotes li:target{color:rgba(255,215,235,.95);}
+  .footnotes a{color:var(--candy);text-decoration:none;}
+  .footnotes a:hover{text-decoration:underline;}
+  .ai-disclaimer{margin-top:10px;font-size:10.5px;font-style:italic;color:rgba(220,190,255,.55);}
 
   /* CARDS */
   .cb-card{width:100%;max-width:660px;background:var(--surface);border:1.5px solid var(--border2);border-radius:18px;padding:17px;position:relative;overflow:hidden;box-shadow:0 4px 28px rgba(255,45,107,.15),inset 0 1px 0 rgba(255,140,185,.05);}
@@ -186,8 +195,16 @@
     <div class="irony-eyebrow">✦ Critical Context · CAREBOT-31</div>
     <div class="irony-title">⚠️ Workers are strapping cameras to their heads and doing housework to train AI. The robots they are training will not belong to them.</div>
     <div class="irony-text">
-      Companies including <strong>Figure AI</strong>, <strong>Physical Intelligence (π)</strong>, <strong>1X Technologies</strong>, and <strong>Apptronik</strong> are paying workers — often through gig platforms — to perform domestic tasks while wearing head-mounted cameras and motion sensors. The data trains neural networks for <em>humanoid robots</em>: machines that can do dishes, fold laundry, load dishwashers, wipe surfaces. Workers are paid <strong>$10–$25 per hour</strong> for data collection sessions. Some are recruited through Amazon Mechanical Turk, Prolific, or direct contracting. The work is <strong>tedious, repetitive, and physically demanding</strong> — involving the same motions hundreds of times, in environments staged to look like homes. The workers are not told what the footage will be used for, who will own the resulting robots, or whether those robots will displace human domestic workers. The humanoid robot market is projected to reach <strong>$38 billion by 2035</strong>. The workers collecting the training data will not own shares in it. The robots, when deployed, will primarily be available to <strong>wealthy households, corporations, and institutions</strong> that can afford the $20,000–$200,000 purchase price. The labor that makes automation possible is performed by the people least likely to benefit from it.
+      Companies including <strong>Figure AI</strong>, <strong>Physical Intelligence (π)</strong>, <strong>1X Technologies</strong>, and <strong>Apptronik</strong> — along with data-collection firms like <strong>Micro1</strong> and <strong>Scale AI</strong> — are paying workers, often through gig platforms, to perform domestic tasks while wearing head-mounted cameras and motion sensors.<sup><a href="#fn1" class="fn-link">1</a></sup> The data trains neural networks for <em>humanoid robots</em>: machines that can do dishes, fold laundry, load dishwashers, wipe surfaces. Pay varies sharply by region: U.S.-based workers can earn roughly <strong>$15–$25 per hour</strong> for this work, while workers in countries such as India and Nigeria — who supply much of the footage — are typically paid closer to <strong>$2–$15 per hour</strong> for the same tasks.<sup><a href="#fn2" class="fn-link">2</a></sup> Workers are recruited through gig platforms, direct contracting, and specialized data companies. The work is <strong>tedious, repetitive, and physically demanding</strong> — involving the same motions hundreds of times, in environments staged to look like homes. Many workers report not being told what the footage will be used for, who will own the resulting robots, or whether those robots will eventually displace human domestic workers.<sup><a href="#fn1" class="fn-link">1</a></sup> The humanoid robot market is projected to reach <strong>$38 billion by 2035</strong> — a sixfold increase from earlier forecasts.<sup><a href="#fn3" class="fn-link">3</a></sup> The workers collecting the training data will not own shares in it. Per-unit manufacturing costs are currently estimated at roughly <strong>$30,000–$150,000</strong>, putting early deployment within reach mainly of wealthy households, corporations, and institutions.<sup><a href="#fn3" class="fn-link">3</a></sup> The labor that makes automation possible is performed by people who are among the least likely to benefit from it.
     </div>
+    <div class="footnotes">
+      <ol>
+        <li id="fn1">MIT Technology Review — <a href="https://www.technologyreview.com/2026/04/01/1134863/humanoid-data-training-gig-economy-2026-breakthrough-technology/" target="_blank" rel="noopener">"The gig workers who are training humanoid robots at home"</a> (April 2026)</li>
+        <li id="fn2">CNN Business — <a href="https://edition.cnn.com/2026/04/04/tech/humanoid-robot-training-jobs-intl-hnk-dst" target="_blank" rel="noopener">"How filming your chores could train the android butlers of the future"</a> (April 2026)</li>
+        <li id="fn3">Goldman Sachs Research — <a href="https://www.goldmansachs.com/insights/articles/the-global-market-for-robots-could-reach-38-billion-by-2035" target="_blank" rel="noopener">humanoid robot market forecast</a> (Feb 2024)</li>
+      </ol>
+    </div>
+    <div class="ai-disclaimer">✦ AI helped me with this. There might be inaccuracies.</div>
   </div>
 
   <!-- ANNOTATION MODULE -->
@@ -214,7 +231,6 @@
   <div class="cb-card">
     <div class="cb-eyebrow">✦ Ask a Question · Everyone Sees the Same Answers · Showing Last 3</div>
     <div class="cb-row">
-      <input class="cb-input cb-name-in" type="text" id="userName" placeholder="Your name…">
       <input class="cb-input" type="text" id="userQuestion" placeholder="Ask about AI training, domestic labor, humanoid robots…" autocomplete="off">
       <button class="cb-btn primary" onclick="askQuestion()">✦ Ask</button>
       <button class="cb-btn soft" onclick="showAdminModal()" title="Admin">⚙</button>
@@ -267,7 +283,8 @@ try{
   fbReady=true;
 }catch(e){console.warn(e);}
 
-let currentUser=localStorage.getItem('d31User')||'';
+let currentUser=localStorage.getItem('d31User');
+if(!currentUser){currentUser='Guest'+Math.floor(1000+Math.random()*9000);localStorage.setItem('d31User',currentUser);}
 let userColor=localStorage.getItem('d31Color')||genColor();
 function genColor(){const c=['#ff85b3','#ff2d6b','#ab47bc','#7c4dff','#00bcd4','#ff9800'];const v=c[Math.floor(Math.random()*c.length)];localStorage.setItem('d31Color',v);return v;}
 
@@ -284,7 +301,7 @@ if(fbReady){
     document.getElementById('st-top-paid').textContent=top?top[0].replace(/-/g,' '):'—';
   });
   onlineRef.on('value',s=>{const c=Object.keys(s.val()||{}).length;document.getElementById('onlineCount').innerHTML='<span class="cb-pip"></span>'+c+' online';document.getElementById('st-online').textContent=c;});
-  if(currentUser)trackPresence();
+  trackPresence();
 
   let initialDone=false;
   messagesRef.orderByKey().limitToLast(MAX_DISPLAY).once('value',snapshot=>{
@@ -307,7 +324,6 @@ if(fbReady){
 }else{document.getElementById('onlineCount').textContent='Offline';}
 
 function trackPresence(){if(!onlineRef||!currentUser)return;const r=onlineRef.child(currentUser.replace(/[.#$[\]]/g,'_'));r.set({name:currentUser,ts:firebase.database.ServerValue.TIMESTAMP});r.onDisconnect().remove();}
-document.getElementById('userName').addEventListener('change',function(){currentUser=this.value.trim();localStorage.setItem('d31User',currentUser);if(currentUser&&fbReady)trackPresence();});
 
 /* CSV */
 function downloadCSV(){
@@ -371,9 +387,7 @@ function updateAnnotProgress(){
 
 function submitAnnotation(){
   if(annotationSubmitted)return;
-  const name=document.getElementById('userName').value.trim();
-  if(!name){alert('Please enter your name first!');document.getElementById('userName').focus();return;}
-  const payload={userName:name,userColor,labels:{...labels},ts:fbReady?firebase.database.ServerValue.TIMESTAMP:Date.now()};
+  const payload={userName:currentUser,userColor,labels:{...labels},ts:fbReady?firebase.database.ServerValue.TIMESTAMP:Date.now()};
   if(fbReady&&annotationsRef){annotationsRef.push(payload).catch(e=>console.warn(e));}
   annotationSubmitted=true;
   const btn=document.getElementById('annotSubmitBtn');
@@ -385,13 +399,13 @@ renderAnnotGrid();
 
 /* RESPONSE BANK */
 const responses=[
-  {text:"Figure AI, Physical Intelligence (π), 1X Technologies, and Apptronik are paying workers $10–$25/hr to perform domestic tasks while wearing head-mounted cameras and motion sensors. The data trains neural networks for humanoid robots that can do dishes, fold laundry, load dishwashers, and wipe surfaces. Workers are often recruited through gig platforms including Amazon Mechanical Turk. The footage records every motion, every grip, every adjustment of a human body doing housework — to teach a machine to replicate it.",source:"Figure AI, Physical Intelligence, 1X Technologies — company reports and press coverage, 2023–2025",link:"https://www.figure.ai"},
-  {text:"The humanoid robot market is projected to reach $38 billion by 2035. Tesla's Optimus, Figure AI's Figure 02, and Boston Dynamics' Atlas are targeting domestic deployment. Current price points range from $20,000 to $200,000 per unit. The workers collecting training data earn $10–$25 per hour. There is no equity participation, no ownership stake, and no guarantee that the robots trained on their labor will not displace them or their communities from paid domestic work.",source:"Goldman Sachs Humanoid Robot Report (2023); Boston Consulting Group projections (2024)",link:"https://www.goldmansachs.com/insights/pages/gs-research/robots-humanoids.html"},
+  {text:"Figure AI, Physical Intelligence (π), 1X Technologies, and Apptronik are racing to build humanoid robots, and data-collection firms like Micro1 and Scale AI supply much of the training footage. Workers wear head-mounted cameras or phone rigs and motion sensors while performing domestic tasks. Pay varies sharply by region: a U.S.-based worker can earn $15-25/hr, while workers in countries such as India or Nigeria — who supply much of this footage — are often paid closer to $2-15/hr for the same tasks. The footage records every motion, every grip, every adjustment of a human body doing housework — to teach a machine to replicate it.",source:"MIT Technology Review — 'The gig workers who are training humanoid robots at home' (2026)",link:"https://www.technologyreview.com/2026/04/01/1134863/humanoid-data-training-gig-economy-2026-breakthrough-technology/"},
+  {text:"The humanoid robot market is projected to reach $38 billion by 2035 — a sixfold increase from Goldman Sachs' earlier $6 billion estimate. Tesla's Optimus, Figure AI's robots, and Boston Dynamics' Atlas are among those targeting eventual home use. Estimated per-unit manufacturing costs currently range from about $30,000 to $150,000. Workers collecting training data earn anywhere from $2 to $25 per hour depending on where they're located. There is no equity participation, no ownership stake, and no guarantee that the robots trained on their labor will not displace them or their communities from paid domestic work.",source:"Goldman Sachs Research — humanoid robot market forecast (2024)",link:"https://www.goldmansachs.com/insights/articles/the-global-market-for-robots-could-reach-38-billion-by-2035"},
   {text:"Women perform 4 hours and 25 minutes of unpaid domestic labor per day on average, compared to 1 hour and 23 minutes for men (ILO, 2018). When domestic work is paid, it is performed disproportionately by women of color and immigrant women — among the most economically vulnerable workers in any labor market. These are the workers being recruited to train humanoid robots. The work they are paid $15/hr to perform for training data is the same work they or people like them perform for $12/hr or for free.",source:"International Labour Organization — Care Work and Care Jobs (2018)",link:"https://www.ilo.org/wcmsp5/groups/public/---dgreports/---dcomm/---publ/documents/publication/wcms_633135.pdf"},
   {text:"The training data for humanoid robots is not just motion capture — it is the encoding of human judgment into machine behavior. When a worker wipes a counter, they are making dozens of micro-decisions: how much pressure, where to start, when it is clean enough, how to handle a spill at the edge. These decisions are the labor. The robot learns not just the motion but the embedded expertise of people who have been doing this work for years. That expertise has never been compensated as expertise.",source:"Physical Intelligence (π) — research publications and company documentation, 2024",link:"https://www.physicalintelligence.company"},
   {text:"Who will own the first home humanoid robots? Based on current pricing and deployment plans, the primary markets are: high-income households in the US, Europe, and East Asia; corporate facilities management (hotels, hospitals, airports); warehousing and logistics (Amazon, Walmart); and government and military applications. The gig workers training these robots — who earn median incomes of $35,000–$45,000/yr — are not in any of these markets. They are training machines they will never be able to afford.",source:"McKinsey Global Institute — The Future of Work (2023); Figure AI investor materials (2024)",link:"https://www.mckinsey.com/featured-insights/future-of-work"},
-  {text:"Amazon Mechanical Turk has been used to recruit domestic labor data collectors, following the same model used for AI image labeling and text annotation tasks. The work is listed as 'data collection' or 'activity recording' with vague descriptions. Workers are often not told what the footage will train, who owns the resulting intellectual property, or what the downstream applications will be. The opacity is structural — it keeps labor costs low by preventing workers from pricing their contribution accurately.",source:"Turkopticon worker reports; MTurk task listings analysis, 2023–2024",link:"https://turkopticon.net"},
-  {text:"Physical Intelligence (π), founded in 2023, raised $400 million in its Series B round. The company's model, π0, was trained on data collected from workers performing household tasks. The company's research describes learning 'dexterous manipulation' — the fine motor skill of human hands doing housework. The workers who provided that manipulation data received hourly wages. The investors who funded that data collection received equity. The valuation of that equity is now in the billions.",source:"Physical Intelligence Series B announcement (October 2024); company research blog",link:"https://www.physicalintelligence.company/blog/pi0"},
+  {text:"Domestic-labor data collection for humanoid robots is largely run through specialized data companies — Micro1, Scale AI, Objectways, and similar firms — rather than the older crowdsourcing platforms like Amazon Mechanical Turk that built the earlier AI-labeling economy. Tasks are often listed with vague descriptions like 'data collection' or 'activity recording.' Workers have reported not being told what the footage will train, who owns the resulting intellectual property, or what the downstream applications will be. That opacity makes it harder for workers to price their contribution accurately.",source:"MIT Technology Review; CNN Business reporting on humanoid-robot data work (2026)",link:"https://www.technologyreview.com/2026/04/01/1134863/humanoid-data-training-gig-economy-2026-breakthrough-technology/"},
+  {text:"Physical Intelligence (π), founded in 2024, raised $400 million in its Series A round at a $2.4 billion valuation, then $600 million in a Series B round about a year later at a $5.6 billion valuation. The company's model, π0, was trained on data collected from workers performing household tasks. The company's research describes learning 'dexterous manipulation' — the fine motor skill of human hands doing housework. The workers who provided that manipulation data received hourly wages. The investors who funded that data collection received equity now worth billions.",source:"Bloomberg; The Robot Report — Physical Intelligence funding coverage (2024–2025)",link:"https://www.therobotreport.com/physical-intelligence-raises-600m-advance-robot-foundation-models/"},
   {text:"The framing used by humanoid robot companies to recruit domestic training workers emphasizes 'helping' and 'contributing to the future.' Workers are told they are 'helping robots learn' or 'shaping the future of AI.' This language obscures the labor relationship. The worker is not a contributor or collaborator — they are a data source. The distinction matters because it determines whether their contribution is compensated as labor (wages, benefits, rights) or as participation (flat fees, no ongoing stake).",source:"Figure AI recruitment materials; 1X Technologies hiring documentation, 2024",link:"https://www.1x.tech"},
   {text:"The domestic tasks being used to train humanoid robots are also the tasks that care workers, house cleaners, and domestic employees currently perform for wages — wages that are already among the lowest in the formal labor market. If humanoid robots become capable of performing these tasks at scale and become affordable to employers (hotels, hospitals, care homes), the displacement of paid domestic workers is not speculative — it is the explicit business model. The question of who benefits from automation is inseparable from the question of who performs the labor that makes automation possible.",source:"ILO Care Economy reports; humanoid robot deployment projections, Goldman Sachs (2023)",link:"https://www.ilo.org/global/topics/care-economy"},
   {text:"The question of who benefits from home automation has a history. The 1960s 'Kitchen Computer' (Honeywell H316) was marketed to wealthy households as a domestic tool — and never sold a single unit. Roombas reached mainstream markets in 2002 and were primarily purchased by middle and upper-income households. The history of domestic automation suggests that each new technology follows the same distribution pattern: available first to the wealthy, adopted broadly only when costs fall dramatically, and providing labor relief primarily to those whose labor was already supplemented by paid workers.",source:"CAREtech research archive; Honeywell H316 history; iRobot market data",link:"https://sbuckius.github.io/if-carebot-research"}
@@ -402,12 +416,10 @@ function getResponse(){let avail=responses.filter((_,i)=>!recentlyShown.includes
 
 function askQuestion(){
   const q2=document.getElementById('userQuestion').value.trim();
-  const name=document.getElementById('userName').value.trim();
-  if(!name){alert('Please enter your name first!');document.getElementById('userName').focus();return;}
   if(!q2){alert('Please type a question!');return;}
-  const resp=getResponse();const payload={question:q2,answerText:resp.text,answerSource:resp.source,answerLink:resp.link,userName:name,userColor,ts:fbReady?firebase.database.ServerValue.TIMESTAMP:Date.now()};
-  if(fbReady&&messagesRef){messagesRef.push(payload).catch(()=>localDisplay(q2,resp,name));}
-  else{localDisplay(q2,resp,name);}
+  const resp=getResponse();const payload={question:q2,answerText:resp.text,answerSource:resp.source,answerLink:resp.link,userName:currentUser,userColor,ts:fbReady?firebase.database.ServerValue.TIMESTAMP:Date.now()};
+  if(fbReady&&messagesRef){messagesRef.push(payload).catch(()=>localDisplay(q2,resp,currentUser));}
+  else{localDisplay(q2,resp,currentUser);}
   document.getElementById('userQuestion').value='';
 }
 
