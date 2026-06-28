@@ -61,6 +61,11 @@ html,body{min-height:100%;font-family:var(--fb);font-weight:600;color:var(--crea
 .ctx-body{font-size:12.5px;line-height:1.78;color:rgba(255,210,210,.82);}
 .ctx-body strong{color:#ffcccc;font-weight:700;}
 .ctx-body em{color:var(--candy);}
+.ctx-body sup a{color:var(--candy);text-decoration:none;font-weight:700;padding:0 1px;}
+.ctx-body sup a:hover{text-decoration:underline;}
+.ctx-aidisclosure{margin-top:12px;padding:8px 11px;background:rgba(255,255,255,.05);border:1px solid rgba(255,160,160,.3);border-radius:9px;font-size:10.5px;line-height:1.5;color:rgba(255,200,200,.78);font-style:italic;}
+.ctx-sources{margin-top:9px;font-size:9.5px;line-height:1.7;color:rgba(255,190,190,.55);}
+.ctx-sources a{color:rgba(255,180,200,.85);text-decoration:underline;}
 
 /* SHARED CARD */
 .mod-card{width:100%;max-width:700px;background:var(--surface);border:1.5px solid var(--border2);border-radius:18px;overflow:hidden;position:relative;box-shadow:0 4px 28px rgba(255,45,107,.15);}
@@ -276,14 +281,16 @@ html,body{min-height:100%;font-family:var(--fb);font-weight:600;color:var(--crea
     <div class="ctx-eyebrow">✦ Critical Context · CAREBOT-34</div>
     <div class="ctx-title">⚠️ The demographics of tech power have barely changed in 50 years.</div>
     <div class="ctx-body">
-      As of 2024, <strong>women held <strong>10.4%</strong> of Fortune 500 CEO positions in 2024 — rising to <strong>11%</strong> in 2025 (55 women). In tech specifically, the number is lower. Of the 10 largest tech companies by market cap, <strong>8 are led by men</strong> — 6 of whom are white, 2 are South Asian. <strong>No Black woman</strong> has ever been CEO of a top-10 tech company. The Forbes Tech Rich List is <strong>over 90% male</strong> and <strong>over 80% white or South Asian</strong>. The median tech billionaire is a <em>white American man, 50s, founded or co-founded his company</em>. The boardroom demographics of the S&P 500 tech sector show modest progress: women now hold roughly <strong>28% of board seats</strong>, up from 16% in 2016. But CEO pipelines tell a different story. <strong>The chair has a demographic profile.</strong> This carebot asks you to interact with that data directly — before telling you what it is.
+      Women held <strong>10.4%</strong> of Fortune 500 CEO positions in 2024 — rising slightly to <strong>11%</strong> in 2025.<sup><a href="https://fortune.com/2025/09/23/safra-catz-oracle-ceo-exit-female-fortune-500/" target="_blank" rel="noopener">[1]</a></sup> In tech specifically, the picture is starker: as of Safra Catz's departure from Oracle in September 2025, <strong>all 10 of the largest US tech companies by market cap are led by men</strong> — 6 of whom are white, 3 South Asian, and 1 Taiwanese-American.<sup><a href="https://www.techradar.com/pro/oracle-appoints-not-one-but-two-co-ceos-as-safra-catz-leaves-top-job" target="_blank" rel="noopener">[2]</a></sup> <strong>No Black woman</strong> has ever been CEO of a top-10 tech company. The Forbes Billionaires list is <strong>over 90% male</strong>, and the median tech billionaire is a <em>white American man in his 50s who founded or co-founded his company</em>.<sup><a href="https://www.forbes.com/billionaires/" target="_blank" rel="noopener">[3]</a></sup> Corporate boards have made more visible progress than the C-suite: women now hold roughly <strong>33% of S&amp;P 500 board seats</strong>, up from about 25% five years earlier.<sup><a href="https://www.conference-board.org/publications/women-in-the-boardroom-recent-progress-and-the-road-ahead" target="_blank" rel="noopener">[4]</a></sup> But the pipeline underneath that progress is still uneven: for every 100 men promoted to manager, only 72 women are.<sup><a href="https://leanin.org/women-in-the-workplace" target="_blank" rel="noopener">[5]</a></sup> <strong>The chair has a demographic profile.</strong> This carebot asks you to interact with that data directly — before telling you what it is.
     </div>
+    <div class="ctx-aidisclosure">⚠️ AI helped me with this. There might be inaccuracies.</div>
+    <div class="ctx-sources">Sources: [1] <a href="https://fortune.com/2025/09/23/safra-catz-oracle-ceo-exit-female-fortune-500/" target="_blank" rel="noopener">Fortune, Fortune 500 women CEOs</a> · [2] <a href="https://www.techradar.com/pro/oracle-appoints-not-one-but-two-co-ceos-as-safra-catz-leaves-top-job" target="_blank" rel="noopener">TechRadar, Oracle co-CEOs</a> · [3] <a href="https://www.forbes.com/billionaires/" target="_blank" rel="noopener">Forbes Billionaires List</a> · [4] <a href="https://www.conference-board.org/publications/women-in-the-boardroom-recent-progress-and-the-road-ahead" target="_blank" rel="noopener">The Conference Board, board diversity</a> · [5] <a href="https://leanin.org/women-in-the-workplace" target="_blank" rel="noopener">LeanIn.Org &amp; McKinsey, Women in the Workplace</a></div>
   </div>
 
   <!-- MODULE 1: GUESS THE CEO -->
   <div class="mod-card" id="mod1">
     <div class="mod-header">
-      <div class="mod-eyebrow">✦ Module 1 of 4 · Guess the CEO</div>
+      <div class="mod-eyebrow">✦ Module 1 of 5 · Guess the CEO</div>
       <div class="mod-title">Before you see the answer — guess the demographics</div>
       <div class="mod-sub">For each company, select your best guess for the current CEO's gender and race/ethnicity, then reveal the answer.</div>
     </div>
@@ -297,11 +304,11 @@ html,body{min-height:100%;font-family:var(--fb);font-weight:600;color:var(--crea
   <!-- MODULE 2: SORT THE BILLIONAIRES -->
   <div class="mod-card" id="mod2">
     <div class="mod-header">
-      <div class="mod-eyebrow">✦ Module 2 of 4 · Sort the Billionaires</div>
+      <div class="mod-eyebrow">✦ Module 2 of 5 · Sort the Billionaires</div>
       <div class="mod-title">Sort each tech billionaire by demographic category</div>
       <div class="mod-sub">Use your knowledge or best guess. Categories: White man · White woman · Man of color · Woman of color. The actual breakdown is revealed after you sort.</div>
     </div>
-    <div class="sort-instructions">Sort each person before revealing. There are 15 names. Your sort is saved regardless of accuracy.</div>
+    <div class="sort-instructions">Sort each person before revealing. There are 15 names. Your sort is saved regardless of accuracy. Wealth figures are approximate as of late June 2026 and shift daily with stock prices — see <a href="https://www.bloomberg.com/billionaires/" target="_blank" rel="noopener" style="color:var(--candy);">Bloomberg Billionaires Index</a>.</div>
     <div class="sort-area" id="sortArea"></div>
     <div class="mod-footer">
       <div class="mod-progress" id="sortProgress">0 / 15 sorted</div>
@@ -313,7 +320,7 @@ html,body{min-height:100%;font-family:var(--fb);font-weight:600;color:var(--crea
   <!-- MODULE 3: FILL THE BOARDROOM -->
   <div class="mod-card" id="mod3">
     <div class="mod-header">
-      <div class="mod-eyebrow">✦ Module 3 of 4 · Fill the Boardroom</div>
+      <div class="mod-eyebrow">✦ Module 3 of 5 · Fill the Boardroom</div>
       <div class="mod-title">How do you think a typical S&amp;P 500 tech board is composed?</div>
       <div class="mod-sub">There are 12 board seats. Click a demographic from the palette, then click each seat to fill it with your guess. Then submit to see the actual average composition.</div>
     </div>
@@ -337,7 +344,7 @@ html,body{min-height:100%;font-family:var(--fb);font-weight:600;color:var(--crea
   <!-- MODULE 4: TIMELINE -->
   <div class="mod-card" id="mod4">
     <div class="mod-header">
-      <div class="mod-eyebrow">✦ Module 4 of 4 · Timeline</div>
+      <div class="mod-eyebrow">✦ Module 4 of 5 · Timeline</div>
       <div class="mod-title">When did each CEO take the role? Which demographic groups have held power and when?</div>
       <div class="mod-sub">Guess the year each person became CEO of their company, then annotate what you notice about who held power and when. Both your guess and your annotation are saved.</div>
     </div>
@@ -359,11 +366,37 @@ html,body{min-height:100%;font-family:var(--fb);font-weight:600;color:var(--crea
     </div>
   </div>
 
+  <!-- MODULE 5: REFLECT -->
+  <div class="mod-card" id="mod5">
+    <div class="mod-header">
+      <div class="mod-eyebrow">✦ Module 5 of 5 · Reflect</div>
+      <div class="mod-title">Now make it personal.</div>
+      <div class="mod-sub">The data above describes a pattern. These questions ask about your relationship to that pattern — what you've seen, how it touches your own life, and how it sits with you.</div>
+    </div>
+    <div class="timeline-wrap">
+      <div class="tl-anno-wrap">
+        <div class="mod-sub" style="margin-bottom:6px;">Have you personally witnessed or experienced this pattern — in your own workplace, field, or industry? What did it look like?</div>
+        <textarea class="tl-anno" id="reflWitness" style="min-height:64px;" placeholder="A specific moment, a meeting, a hiring decision, a comment you've heard more than once…"></textarea>
+      </div>
+      <div class="tl-anno-wrap" style="margin-top:12px;">
+        <div class="mod-sub" style="margin-bottom:6px;">How does this affect you — your own career expectations, the opportunities you imagine are available to you, or how you picture your future at the top of an organization?</div>
+        <textarea class="tl-anno" id="reflImpact" style="min-height:64px;" placeholder="Does it change what you aim for, who you picture in the chair, or how hard you think you'll have to push?"></textarea>
+      </div>
+      <div class="tl-anno-wrap" style="margin-top:12px;">
+        <div class="mod-sub" style="margin-bottom:6px;">Sit with the data for a moment. What do you actually feel — frustration, recognition, numbness, anger, hope, something else? Name it.</div>
+        <textarea class="tl-anno" id="reflFeel" style="min-height:64px;" placeholder="There's no wrong answer here — even 'nothing, I already knew this' is a real response."></textarea>
+      </div>
+      <div class="mod-footer" style="border-top:1px solid var(--border);padding:10px 0 0;margin-top:12px;">
+        <div class="mod-progress" id="reflProgress">Optional — answer any or all</div>
+        <button class="mod-submit" id="reflSubmit" onclick="submitReflection()">✦ Save Reflection</button>
+      </div>
+    </div>
+  </div>
+
   <!-- Q&A -->
   <div class="cb-card">
     <div class="cb-eyebrow">✦ Ask a Question · Everyone Sees the Same Answers · Showing Last 3</div>
     <div class="cb-row">
-      <input class="cb-input cb-name-in" type="text" id="userName" placeholder="Your name…">
       <input class="cb-input" type="text" id="userQuestion" placeholder="Ask about tech CEO demographics, the boardroom, wealth concentration…" autocomplete="off">
       <button class="cb-btn primary" onclick="askQuestion()">✦ Ask</button>
       <button class="cb-btn soft" onclick="showAdminModal()" title="Admin">⚙</button>
@@ -402,13 +435,14 @@ setInterval(updateClock,1000);updateClock();
 
 /* Firebase */
 let db,msgRef,respRef,onlineRef,fbReady=false;
-let currentUser=localStorage.getItem('cb34User')||'';
+let currentUser=localStorage.getItem('cb34User')||('Guest-'+Math.random().toString(36).slice(2,6).toUpperCase());
+localStorage.setItem('cb34User',currentUser);
 let userColor=localStorage.getItem('cb34Color')||genColor();
 function genColor(){const c=['#ff85b3','#ff2d6b','#ffb3cf','#c4005a','#f5c842','#93c5fd'];const v=c[Math.floor(Math.random()*c.length)];localStorage.setItem('cb34Color',v);return v;}
 try{
   firebase.initializeApp({apiKey:"AIzaSyCZFDU-WlSmHqjXTs1Ox0nf9xeJU_xbaX0",authDomain:"collaborativemashup.firebaseapp.com",databaseURL:"https://collaborativemashup-default-rtdb.firebaseio.com",projectId:"collaborativemashup",storageBucket:"collaborativemashup.firebasestorage.app",messagingSenderId:"562437984610",appId:"1:562437984610:web:9f3711c26e097bc8ef9c3b"});
   db=firebase.database();msgRef=db.ref('cb34Messages');respRef=db.ref('cb34Responses');onlineRef=db.ref('cb34Online');fbReady=true;
-  if(currentUser)trackPresence();
+  trackPresence();
   msgRef.on('value',s=>document.getElementById('st-s').textContent=s.numChildren());
   respRef.on('value',s=>{
     const all=[];s.forEach(c=>all.push(c.val()));
@@ -439,19 +473,19 @@ try{
   });
 }catch(e){fbReady=false;document.getElementById('onlineCount').textContent='Offline';}
 function trackPresence(){if(!onlineRef||!currentUser)return;const r=onlineRef.child(currentUser.replace(/[.#$[\]]/g,'_'));r.set({name:currentUser,ts:firebase.database.ServerValue.TIMESTAMP});r.onDisconnect().remove();}
-document.getElementById('userName').addEventListener('change',function(){currentUser=this.value.trim();localStorage.setItem('cb34User',currentUser);if(currentUser&&fbReady)trackPresence();});
 
 function q(v){return'"'+(v==null?'':String(v).replace(/"/g,'""'))+'"';}
 function downloadCSV(){
   if(!fbReady){alert('No connection.');return;}
   Promise.all([msgRef.once('value'),respRef.once('value')]).then(([ms,rs])=>{
-    let csv='Type,Timestamp,UserName,Content,Company,GuessGender,GuessRace,ActualGender,ActualRace,Correct,BoardAccuracy,YearGuess,ActualYear,Annotation\n';
-    ms.forEach(d=>{const m=d.val();csv+='question,'+q(m.ts?new Date(m.ts).toISOString():'')+','+q(m.userName||'')+','+q(m.question||'')+',,,,,,,,,,\n';});
+    let csv='Type,Timestamp,UserName,Content,Company,GuessGender,GuessRace,ActualGender,ActualRace,Correct,BoardAccuracy,YearGuess,ActualYear,Annotation,ReflectionWitness,ReflectionImpact,ReflectionFeel\n';
+    ms.forEach(d=>{const m=d.val();csv+='question,'+q(m.ts?new Date(m.ts).toISOString():'')+','+q(m.userName||'')+','+q(m.question||'')+',,,,,,,,,,,,,\n';});
     rs.forEach(d=>{const r=d.val();
-      if(r.type==='ceo_guesses'&&r.guesses)r.guesses.forEach(g=>{csv+='ceo_guess,'+q(r.ts?new Date(r.ts).toISOString():'')+','+q(r.userName||'')+',,'+q(g.company||'')+','+q(g.guessGender||'')+','+q(g.guessRace||'')+','+q(g.actualGender||'')+','+q(g.actualRace||'')+','+(g.correct?'1':'0')+',,,,\n';});
-      else if(r.type==='sort')csv+='sort,'+q(r.ts?new Date(r.ts).toISOString():'')+','+q(r.userName||'')+','+q(JSON.stringify(r.sorts||{}))+',,,,,,,,,,\n';
-      else if(r.type==='boardroom')csv+='boardroom,'+q(r.ts?new Date(r.ts).toISOString():'')+','+q(r.userName||'')+','+q(JSON.stringify(r.seats||[]))+',,,,,,,'+(r.accuracy||0)+',,,\n';
-      else if(r.type==='timeline')csv+='timeline,'+q(r.ts?new Date(r.ts).toISOString():'')+','+q(r.userName||'')+',,,,,,,,,,,'+q(r.annotation||'')+'\n';
+      if(r.type==='ceo_guesses'&&r.guesses)r.guesses.forEach(g=>{csv+='ceo_guess,'+q(r.ts?new Date(r.ts).toISOString():'')+','+q(r.userName||'')+',,'+q(g.company||'')+','+q(g.guessGender||'')+','+q(g.guessRace||'')+','+q(g.actualGender||'')+','+q(g.actualRace||'')+','+(g.correct?'1':'0')+',,,,,,,\n';});
+      else if(r.type==='sort')csv+='sort,'+q(r.ts?new Date(r.ts).toISOString():'')+','+q(r.userName||'')+','+q(JSON.stringify(r.sorts||{}))+',,,,,,,,,,,,,\n';
+      else if(r.type==='boardroom')csv+='boardroom,'+q(r.ts?new Date(r.ts).toISOString():'')+','+q(r.userName||'')+','+q(JSON.stringify(r.seats||[]))+',,,,,,,'+(r.accuracy||0)+',,,,,,\n';
+      else if(r.type==='timeline')csv+='timeline,'+q(r.ts?new Date(r.ts).toISOString():'')+','+q(r.userName||'')+',,,,,,,,,,,'+q(r.annotation||'')+',,,\n';
+      else if(r.type==='reflection')csv+='reflection,'+q(r.ts?new Date(r.ts).toISOString():'')+','+q(r.userName||'')+',,,,,,,,,,,,'+q(r.witness||'')+','+q(r.impact||'')+','+q(r.feel||'')+'\n';
     });
     const blob=new Blob([csv],{type:'text/csv'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='carebot34-'+Date.now()+'.csv';document.body.appendChild(a);a.click();document.body.removeChild(a);URL.revokeObjectURL(url);
   }).catch(e=>alert('Export failed: '+e.message));
@@ -459,7 +493,7 @@ function downloadCSV(){
 
 /* ── DATA ── */
 const CEOS=[
-  {company:'Apple',ceoName:'Tim Cook',gender:'man',race:'white',note:'CEO since 2011. Cook is openly gay — the first openly gay CEO of a Fortune 1 company.'},
+  {company:'Apple',ceoName:'Tim Cook',gender:'man',race:'white',note:'CEO since 2011. Cook is openly gay — the first openly gay CEO of a Fortune 1 company. Apple announced in April 2026 that Cook will step down as CEO on September 1, 2026, becoming Executive Chairman — John Ternus (also a white man) succeeds him.'},
   {company:'Microsoft',ceoName:'Satya Nadella',gender:'man',race:'South Asian',note:'CEO since 2014. Born in Hyderabad, India. Moved to the US for graduate school.'},
   {company:'Alphabet / Google',ceoName:'Sundar Pichai',gender:'man',race:'South Asian',note:'CEO since 2015 (Google), 2019 (Alphabet). Born in Chennai, India.'},
   {company:'Amazon',ceoName:'Andy Jassy',gender:'man',race:'white',note:'CEO since 2021. Replaced Jeff Bezos. Harvard Business School graduate.'},
@@ -472,18 +506,18 @@ const CEOS=[
 ];
 
 const BILLIONAIRES=[
-  {name:'Elon Musk',co:'Tesla / SpaceX / X',wealth:'$200B+',actual:'wm'},
-  {name:'Jeff Bezos',co:'Amazon',wealth:'$170B+',actual:'wm'},
-  {name:'Mark Zuckerberg',co:'Meta',wealth:'$160B+',actual:'wm'},
-  {name:'Larry Ellison',co:'Oracle',wealth:'$140B+',actual:'wm'},
-  {name:'Bill Gates',co:'Microsoft',wealth:'$130B+',actual:'wm'},
-  {name:'Jensen Huang',co:'NVIDIA',wealth:'$90B+',actual:'mc'},
-  {name:'Larry Page',co:'Alphabet',wealth:'$110B+',actual:'wm'},
-  {name:'Sergey Brin',co:'Alphabet',wealth:'$100B+',actual:'wm'},
-  {name:'Steve Ballmer',co:'Microsoft',wealth:'$100B+',actual:'wm'},
-  {name:'Michael Dell',co:'Dell',wealth:'$90B+',actual:'wm'},
+  {name:'Elon Musk',co:'Tesla / SpaceX / X',wealth:'$900B+',actual:'wm'},
+  {name:'Jeff Bezos',co:'Amazon',wealth:'$250B+',actual:'wm'},
+  {name:'Mark Zuckerberg',co:'Meta',wealth:'$220B+',actual:'wm'},
+  {name:'Larry Ellison',co:'Oracle',wealth:'$200B+',actual:'wm'},
+  {name:'Bill Gates',co:'Microsoft',wealth:'$105B+',actual:'wm'},
+  {name:'Jensen Huang',co:'NVIDIA',wealth:'$170B+',actual:'mc'},
+  {name:'Larry Page',co:'Alphabet',wealth:'$280B+',actual:'wm'},
+  {name:'Sergey Brin',co:'Alphabet',wealth:'$260B+',actual:'wm'},
+  {name:'Steve Ballmer',co:'Microsoft',wealth:'$140B+',actual:'wm'},
+  {name:'Michael Dell',co:'Dell',wealth:'$200B+',actual:'wm'},
   {name:'MacKenzie Scott',co:'Amazon (ex)',wealth:'$35B+',actual:'ww'},
-  {name:'Laurene Powell Jobs',co:'Apple (ex-spouse)',wealth:'$13B+',actual:'ww'},
+  {name:'Laurene Powell Jobs',co:'Apple (ex-spouse)',wealth:'$10B+',actual:'ww'},
   {name:'Judy Faulkner',co:'Epic Systems',wealth:'$7B+',actual:'ww'},
   {name:'Oprah Winfrey',co:'OWN / Harpo',wealth:'$2.8B+',actual:'wc'},
   {name:'Rihanna (Robyn Fenty)',co:'Fenty Beauty / Savage X',wealth:'$1.4B+',actual:'wc'},
@@ -502,7 +536,7 @@ const TIMELINE_CEOS=[
   {name:'Mark Zuckerberg',co:'Meta',year:2004,demo:'wm',note:'Co-founded Facebook at 19. Has been CEO continuously since 2004.'},
   {name:'Safra Catz',co:'Oracle',year:2014,demo:'ww',note:'Co-CEO from 2014, sole CEO from 2019. One of the highest-paid women CEOs in tech.'},
   {name:'Sundar Pichai',co:'Google / Alphabet',year:2015,demo:'mc',note:'First non-white, non-founder CEO of Google. Born in Chennai. CEO since 2015.'},
-  {name:'Tim Cook',co:'Apple',year:2011,demo:'wm',note:'Became CEO after Steve Jobs stepped down in 2011. The first openly gay CEO of a Fortune 1 company.'},
+  {name:'Tim Cook',co:'Apple',year:2011,demo:'wm',note:'Became CEO after Steve Jobs stepped down in 2011. The first openly gay CEO of a Fortune 1 company. Steps down Sept. 1, 2026, succeeded by John Ternus, also a white man.'},
   {name:'Arvind Krishna',co:'IBM',year:2020,demo:'mc',note:'CEO since 2020. IBM has a longer history of diversity at the top than many tech companies.'},
 ];
 
@@ -564,9 +598,8 @@ function revealCEO(idx){
 let ceoDone=false;
 function submitCEOGuesses(){
   if(ceoDone)return;
-  const name=document.getElementById('userName').value.trim()||'Anon';
   const guessArr=CEOS.map((ceo,idx)=>{const g=ceoGuesses[idx]||{};return{company:ceo.company,guessGender:g.gender||'',guessRace:g.race||'',actualGender:ceo.gender,actualRace:ceo.race,correct:(g.gender===ceo.gender?1:0)+(g.race===ceo.race?1:0)};});
-  const payload={type:'ceo_guesses',guesses:guessArr,userName:name,userColor,ts:fbReady?firebase.database.ServerValue.TIMESTAMP:Date.now()};
+  const payload={type:'ceo_guesses',guesses:guessArr,userName:currentUser,userColor,ts:fbReady?firebase.database.ServerValue.TIMESTAMP:Date.now()};
   if(fbReady&&respRef)respRef.push(payload).catch(()=>{});
   ceoDone=true;const btn=document.getElementById('ceoSubmit');btn.textContent='✓ Guesses Saved';btn.classList.add('done');btn.disabled=true;
 }
@@ -601,8 +634,7 @@ function sortBill(idx,cat,btn){
 }
 function submitSort(){
   if(billDone)return;
-  const name=document.getElementById('userName').value.trim()||'Anon';
-  const payload={type:'sort',sorts:billSorts,userName:name,userColor,ts:fbReady?firebase.database.ServerValue.TIMESTAMP:Date.now()};
+  const payload={type:'sort',sorts:billSorts,userName:currentUser,userColor,ts:fbReady?firebase.database.ServerValue.TIMESTAMP:Date.now()};
   if(fbReady&&respRef)respRef.push(payload).catch(()=>{});
   billDone=true;
   const btn=document.getElementById('sortSubmit');btn.textContent='✓ Sorted & Saved';btn.classList.add('done');btn.disabled=true;
@@ -646,12 +678,10 @@ function fillSeat(i){
 }
 function submitBoard(){
   if(boardDone)return;
-  const name=document.getElementById('userName').value.trim()||'Anon';
-  // calc accuracy vs real
   const guess={wm:boardSeats.filter(s=>s==='wm').length,ww:boardSeats.filter(s=>s==='ww').length,mc:boardSeats.filter(s=>s==='mc').length,wc:boardSeats.filter(s=>s==='wc').length};
   const totalDiff=Math.abs(guess.wm-BOARD_REAL.wm)+Math.abs(guess.ww-BOARD_REAL.ww)+Math.abs(guess.mc-BOARD_REAL.mc)+Math.abs(guess.wc-BOARD_REAL.wc);
   const accuracy=Math.max(0,Math.round((1-totalDiff/24)*100));
-  const payload={type:'boardroom',seats:[...boardSeats],guess,accuracy,userName:name,userColor,ts:fbReady?firebase.database.ServerValue.TIMESTAMP:Date.now()};
+  const payload={type:'boardroom',seats:[...boardSeats],guess,accuracy,userName:currentUser,userColor,ts:fbReady?firebase.database.ServerValue.TIMESTAMP:Date.now()};
   if(fbReady&&respRef)respRef.push(payload).catch(()=>{});
   boardDone=true;const btn=document.getElementById('boardSubmit');btn.textContent='✓ Saved';btn.classList.add('done');btn.disabled=true;
   // show result
@@ -705,13 +735,24 @@ document.getElementById('tlAnnotation').addEventListener('input',function(){
 });
 function submitTimeline(){
   if(tlDone)return;
-  const name=document.getElementById('userName').value.trim()||'Anon';
   const annotation=document.getElementById('tlAnnotation').value.trim();
-  const payload={type:'timeline',annotation,userName:name,userColor,ts:fbReady?firebase.database.ServerValue.TIMESTAMP:Date.now()};
+  const payload={type:'timeline',annotation,userName:currentUser,userColor,ts:fbReady?firebase.database.ServerValue.TIMESTAMP:Date.now()};
   if(fbReady&&respRef)respRef.push(payload).catch(()=>{});
   tlDone=true;const btn=document.getElementById('tlSubmit');btn.textContent='✓ Timeline Saved';btn.classList.add('done');btn.disabled=true;
 }
 renderTimeline();
+
+let reflDone=false;
+function submitReflection(){
+  if(reflDone)return;
+  const witness=document.getElementById('reflWitness').value.trim();
+  const impact=document.getElementById('reflImpact').value.trim();
+  const feel=document.getElementById('reflFeel').value.trim();
+  if(!witness&&!impact&&!feel){alert('Write at least one response before saving.');return;}
+  const payload={type:'reflection',witness,impact,feel,userName:currentUser,userColor,ts:fbReady?firebase.database.ServerValue.TIMESTAMP:Date.now()};
+  if(fbReady&&respRef)respRef.push(payload).catch(()=>{});
+  reflDone=true;const btn=document.getElementById('reflSubmit');btn.textContent='✓ Reflection Saved';btn.classList.add('done');btn.disabled=true;
+}
 
 /* ── Q&A ── */
 const responses=[
@@ -721,9 +762,9 @@ const responses=[
   {text:"Safra Catz has been CEO of Oracle since 2014 (co-CEO) and 2019 (sole CEO). Born in Israel, she is one of the highest-paid women executives in tech history — earning over $100 million in compensation in some years. She is frequently the only woman on lists of the most powerful tech executives. 'Frequently the only' is not a compliment. It is a data point.",source:"Oracle annual reports; Fortune Most Powerful Women list (2024)",link:"https://fortune.com/ranking/most-powerful-women/",theme:"FREQUENTLY THE ONLY",moves:["1. ENTER a long table of chairs — all occupied — look for a seat","2. FIND the one empty chair — sit in it — you are the only woman in the room","3. LOOK LEFT AND RIGHT — rows of identical faces — this is not unusual","4. TAKE OUT A DOCUMENT — begin presenting — the meeting goes on","5. FREEZE — call out: '\"Frequently the only.\" That is not a compliment. That is a data point.'"]},
   {text:"The pipeline argument says: if we fix the pipeline — hire more diverse people at entry level — the leadership will follow. The counter-evidence: tech companies have been running this argument for 30 years. Google has published diversity reports since 2014. In 2014, 1.9% of Google's workforce was Black. In 2023, it was 4.4%. At the leadership level, the number is lower. The pipeline is not broken. It has a drain.",source:"Google Diversity Annual Reports (2014–2023)",link:"https://about.google/belonging/diversity-annual-report/",theme:"THE PIPELINE HAS A DRAIN",moves:["1. FILL THE PIPELINE — mime pouring people into a funnel at the top — diverse, hopeful","2. WATCH THE DRAIN — crouch low — watch where they go — out at the sides, through the bottom","3. COUNT WHAT REMAINS — count on fingers — at leadership level — 4.4% Black workers","4. CHECK THE REPORT — mime reading a document — year after year, same finding","5. FREEZE — call out: 'The pipeline is not broken. It has a drain. The drain is structural.'"]},
   {text:"Carly Fiorina became CEO of HP in 1999 — the first woman to lead a Fortune 20 company. She was fired by the board in 2005. Meg Whitman became CEO of eBay in 1998 and ran it for a decade — one of the most successful tech CEO tenures of the era. Both women are remembered primarily through the lens of controversy or departure. The men who preceded and followed them at comparable companies are remembered for what they built.",source:"HP and eBay company histories; Harvard Business School case studies",link:"https://hbr.org",theme:"REMEMBERED DIFFERENTLY",moves:["1. BUILD THE COMPANY — mime constructing something, floor by floor, confident and expert","2. THE BOARD MEETING — sit at an invisible table — the decision is announced — you are fired","3. LEGACY QUESTION — what do you remember about Carly Fiorina? About HP's acquisition strategy?","4. COMPARE — mime two columns — men remembered for what they built / women remembered for how they left","5. FREEZE — call out: 'She built it. She was fired. She is remembered for the firing.'"]},
-  {text:"The wealthiest self-made woman in tech is Judy Faulkner, founder and CEO of Epic Systems — the healthcare software company that runs much of the US hospital system. She founded it in 1979 in her basement. She has never taken the company public. Her net worth is approximately $7 billion. She is not a household name. Every hospital that uses Epic software — which is most of them — runs on work she started in a basement 45 years ago.",source:"Epic Systems company history; Forbes profile of Judy Faulkner",link:"https://www.forbes.com/profile/judith-faulkner/",theme:"JUDY FAULKNER SEQUENCE",moves:["1. BASEMENT FOUNDING — crouch low — 1979 — a basement in Madison, Wisconsin — begin","2. BUILD THE HOSPITAL SYSTEM — arms reach wide — floor by floor — every hospital in America","3. NEVER GO PUBLIC — hold both hands in, arms crossed — I am not for sale","4. NOT A HOUSEHOLD NAME — look out at the audience — have you heard of her?","5. FREEZE — call out: 'She built the system that runs every hospital. 1979. Her basement. Not a household name.'"]},
-  {text:"Mark Zuckerberg has been CEO of Meta (formerly Facebook) since he co-founded it in 2004 — over 20 years. He is 40 years old. He controls the company through a dual-class share structure that gives him approximately 57% of the voting power regardless of how many shares he sells. He cannot be fired by the board. The structure was specifically designed to prevent that. The question of who sits in the chair is not always about merit or election. Sometimes it is about how the chair was designed.",source:"Meta Platforms SEC filings; dual-class share structure documentation",link:"https://investor.fb.com",theme:"THE CHAIR WAS DESIGNED",moves:["1. DESIGN THE CHAIR — mime building it carefully — this leg, that leg — the voting structure","2. SIT IN IT — settle in — 57% voting power — nobody can move you","3. THE SHAREHOLDERS ARRIVE — other people enter — they vote — nothing changes","4. 20 YEARS — look at a clock — still here — the chair holds","5. FREEZE — call out: 'Who sits in the chair is not always about merit. Sometimes it is about how the chair was designed.'"]},
-  {text:"In 2023, the top 5 tech companies (Apple, Microsoft, Alphabet, Amazon, Meta) collectively employed over 1.4 million people. Their combined market cap was over $9 trillion. The CEOs of all five are men. Four are over 50. Three are white. Two are South Asian. The average compensation for these five CEOs in 2023 was approximately $43 million per year. The median tech worker at these companies earned approximately $160,000 per year. The ratio of CEO pay to median worker pay is approximately 270:1.",source:"SEC proxy statements (2023); company annual reports; Equilar CEO pay data",link:"https://www.equilar.com",theme:"270 TO ONE",moves:["1. STACK THE COINS — mime building two piles — worker pay / CEO pay — one pile grows very fast","2. COUNT THE WORKERS: 1.4 million — arms sweep wide — all of them","3. COUNT THE CEOS: five — hold up one hand — five fingers","4. THE RATIO: 270 to one — one arm shoots up — the other barely moves","5. FREEZE — call out: '$43 million to $160,000. 270 to one. Five men. 1.4 million people.'"]},
+  {text:"The wealthiest self-made woman in tech is Judy Faulkner, founder and CEO of Epic Systems — the healthcare software company that runs much of the US hospital system. She founded it in 1979 in her basement. She has never taken the company public. Her net worth is approximately $7 billion. She is not a household name. Every hospital that uses Epic software — which is most of them — runs on work she started in a basement nearly half a century ago.",source:"Epic Systems company history; Forbes profile of Judy Faulkner",link:"https://www.forbes.com/profile/judith-faulkner/",theme:"JUDY FAULKNER SEQUENCE",moves:["1. BASEMENT FOUNDING — crouch low — 1979 — a basement in Madison, Wisconsin — begin","2. BUILD THE HOSPITAL SYSTEM — arms reach wide — floor by floor — every hospital in America","3. NEVER GO PUBLIC — hold both hands in, arms crossed — I am not for sale","4. NOT A HOUSEHOLD NAME — look out at the audience — have you heard of her?","5. FREEZE — call out: 'She built the system that runs every hospital. 1979. Her basement. Not a household name.'"]},
+  {text:"Mark Zuckerberg has been CEO of Meta (formerly Facebook) since he co-founded it in 2004 — over 20 years. He controls the company through a dual-class share structure: he owns nearly 100% of Class B stock, which carries 10 votes per share, giving him approximately 61% of total voting power while holding only about 13-14% of the economic ownership. He cannot be fired by the board. The structure was specifically designed to prevent that. The question of who sits in the chair is not always about merit or election. Sometimes it is about how the chair was designed.",source:"Meta Platforms proxy statement (DEF 14A, 2025-26); Harvard Law School Forum on Corporate Governance",link:"https://corpgov.law.harvard.edu/2025/02/11/shareholder-democracy-and-the-challenge-of-dual-class-share-structures/",theme:"THE CHAIR WAS DESIGNED",moves:["1. DESIGN THE CHAIR — mime building it carefully — this leg, that leg — the voting structure","2. SIT IN IT — settle in — 61% voting power on 14% economic ownership — nobody can move you","3. THE SHAREHOLDERS ARRIVE — other people enter — they vote — nothing changes","4. 20 YEARS — look at a clock — still here — the chair holds","5. FREEZE — call out: 'Who sits in the chair is not always about merit. Sometimes it is about how the chair was designed.'"]},
+  {text:"The top 5 tech companies by market cap (Apple, Microsoft, Alphabet, Amazon, Meta) are collectively worth well over $16 trillion as of mid-2026, driven by the AI infrastructure boom — and together employ well over a million people. The CEOs of all five are men; three are white, two are South Asian. None has ever been a woman or a Black executive. For broader context on what that kind of leadership concentration tends to mean in compensation: across the S&P 500 as a whole, the average CEO made 285 times their company's median worker pay in 2024, according to the AFL-CIO's Executive Paywatch analysis of SEC filings — the average S&P 500 CEO took home $18.9 million while the median worker made about $49,500.",source:"Company market-cap data (mid-2026); AFL-CIO Executive Paywatch 2025 (S&P 500 CEO pay ratio analysis, SEC filings)",link:"https://aflcio.org/paywatch",theme:"285 TO ONE",moves:["1. STACK THE COINS — mime building two piles — worker pay / CEO pay — one pile grows very fast","2. COUNT THE COMPANIES: five, worth $16 trillion — arms sweep wide to show the scale","3. COUNT THE CEOS: five men — hold up one hand — five fingers","4. THE RATIO: 285 to one, S&P 500-wide — one arm shoots up — the other barely moves","5. FREEZE — call out: '$18.9 million to $49,500. 285 to one, on average. Five men running $16 trillion.'"]},
   {text:"'The chair has a demographic profile.' This is the central finding of carebot-34. When you looked at the top 10 tech CEOs and guessed their demographics, how often were you right? When you filled the boardroom, how close were you to the actual composition? When you placed the billionaires in categories, what did the distribution show? The chair is not neutral. It was built in a specific image. The question carebot-34 is asking is: can you see the image? And having seen it, what do you do with that?",source:"CAREBOT-34 · CAREtech Research System · 2024–2025",link:"https://sbuckius.github.io/if-carebot-research",theme:"THE CHAIR IS NOT NEUTRAL",moves:["1. APPROACH THE CHAIR — walk toward it slowly — look at it — really look at it","2. DESCRIBE IT — what shape is the person who usually sits here?","3. SIT IN IT — slowly — feel the fit — or the lack of fit","4. STAND BACK UP — step away — leave it empty again","5. FREEZE — call out: 'The chair is not neutral. It was built in a specific image. Now you can see it.'"]}
 ];
 
@@ -736,13 +777,11 @@ function playChime(){try{if(!audioCtx)audioCtx=new(window.AudioContext||window.w
 
 function askQuestion(){
   const q2=document.getElementById('userQuestion').value.trim();
-  const name=document.getElementById('userName').value.trim();
-  if(!name){alert('Please enter your name first!');document.getElementById('userName').focus();return;}
   if(!q2){alert('Please type a question!');return;}
   const resp=getResponse();const mv=generateMovement(resp);
-  const payload={question:q2,answerText:resp.text,answerSource:resp.source,answerLink:resp.link,movement:mv,userName:name,userColor,ts:fbReady?firebase.database.ServerValue.TIMESTAMP:Date.now()};
-  if(fbReady&&msgRef){msgRef.push(payload).catch(()=>localDisplay(q2,resp,mv,name));}
-  else{localDisplay(q2,resp,mv,name);}
+  const payload={question:q2,answerText:resp.text,answerSource:resp.source,answerLink:resp.link,movement:mv,userName:currentUser,userColor,ts:fbReady?firebase.database.ServerValue.TIMESTAMP:Date.now()};
+  if(fbReady&&msgRef){msgRef.push(payload).catch(()=>localDisplay(q2,resp,mv,currentUser));}
+  else{localDisplay(q2,resp,mv,currentUser);}
   document.getElementById('userQuestion').value='';
 }
 let localMessages=[];
