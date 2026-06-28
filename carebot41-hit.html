@@ -65,6 +65,9 @@ html,body{min-height:100%;font-family:var(--fb);font-weight:600;color:var(--crea
 .source-link:hover{background:rgba(192,132,252,.15);border-color:rgba(192,132,252,.4);}
 .source-tag{font-size:8px;letter-spacing:.14em;text-transform:uppercase;color:var(--teal-dim);font-family:var(--fh);font-weight:800;}
 .source-title{font-size:11px;color:rgba(245,200,255,.8);line-height:1.45;}
+.fn{color:var(--teal);text-decoration:none;font-size:10px;vertical-align:super;font-weight:800;}
+.fn:hover{color:var(--candy);}
+.ai-note{font-size:10.5px;color:rgba(255,208,96,.85);background:rgba(255,208,96,.07);border:1px solid rgba(255,208,96,.22);border-radius:8px;padding:7px 11px;margin:10px 0;display:inline-block;font-style:italic;}
 
 /* PROGRESS */
 .prog-strip{padding:14px 18px;border-bottom:1px solid rgba(192,132,252,.1);}
@@ -196,42 +199,71 @@ input[type=range].rate-slider{width:100%;accent-color:var(--hot);height:5px;curs
     <div class="ctx-eyebrow">✦ CAREBOT-41 · Research Briefing</div>
     <div class="ctx-title">Research says mothers and tech workers need the same skills. Who gets paid for them?</div>
     <div class="ctx-body">
-      <strong>The research on what mothers must be skilled at</strong> — problem-solving under pressure, emotional regulation, multitasking, adaptive prioritisation, communication across developmental stages, crisis management, long-term planning, building trust and psychological safety — maps almost exactly onto <strong>what tech employers say they want from engineers and product teams in 2025.</strong><br><br>
+      <strong>The research on what mothers must be skilled at</strong> — problem-solving under pressure<a class="fn" href="#src1" title="University of Phoenix, 2024">[1]</a>, emotional regulation<a class="fn" href="#src3" title="PMC/NIH, 2015">[3]</a>, multitasking<a class="fn" href="#src1" title="University of Phoenix, 2024">[1]</a>, adaptive prioritisation<a class="fn" href="#src6" title="McKinsey via WEF, 2021">[6]</a>, communication across developmental stages<a class="fn" href="#src1" title="University of Phoenix, 2024">[1]</a>, crisis management<a class="fn" href="#src5" title="Simply Talented, 2024">[5]</a>, long-term planning<a class="fn" href="#src1" title="University of Phoenix, 2024">[1]</a>, building trust and psychological safety<a class="fn" href="#src9" title="Google re:Work, Project Aristotle">[9]</a> — maps almost exactly onto <strong>what tech employers say they want from engineers and product teams in 2025</strong><a class="fn" href="#src2" title="NTI, 2025">[2]</a><a class="fn" href="#src4" title="CodePath, 2023">[4]</a>.
+      <div class="ai-note">AI helped me with this. There might be inaccuracies.</div>
       This task shows you 16 skills identified by researchers in both fields. For each one, tell us: does this apply to mothers, to tech workers, to both, or to neither? Your responses build a live map of the overlap — as you and other participants see it.<br><br>
-      <strong>The research sources behind this task:</strong>
+      <strong>The research sources behind this task</strong> (numbered footnotes above link here):
     </div>
     <div class="sources-grid">
-      <a class="source-link" href="https://www.phoenix.edu/content/dam/edu/research/doc/white-papers/educational-instructional-technology/2024/mom-report-motherhood-skills-s-smith.pdf" target="_blank" rel="noopener">
-        <span class="source-tag">University of Phoenix · 2024</span>
+      <a class="source-link" id="src1" href="https://www.phoenix.edu/content/dam/edu/research/doc/white-papers/educational-instructional-technology/2024/mom-report-motherhood-skills-s-smith.pdf" target="_blank" rel="noopener">
+        <span class="source-tag">[1] University of Phoenix · 2024</span>
         <span class="source-title">Unlocking Potential: The Transferability of Skills from Motherhood to the Workplace</span>
       </a>
-      <a class="source-link" href="https://ntinow.edu/soft-skills-employers-look-for-in-it-careers/" target="_blank" rel="noopener">
-        <span class="source-tag">NTI · 2025</span>
+      <a class="source-link" id="src2" href="https://ntinow.edu/soft-skills-employers-look-for-in-it-careers/" target="_blank" rel="noopener">
+        <span class="source-tag">[2] NTI · 2025</span>
         <span class="source-title">Why Soft Skills Are The Hidden Skills Employers Look For in Tech</span>
       </a>
-      <a class="source-link" href="https://pmc.ncbi.nlm.nih.gov/articles/PMC4445866/" target="_blank" rel="noopener">
-        <span class="source-tag">PMC / NIH · 2015</span>
+      <a class="source-link" id="src3" href="https://pmc.ncbi.nlm.nih.gov/articles/PMC4445866/" target="_blank" rel="noopener">
+        <span class="source-tag">[3] PMC / NIH · 2015</span>
         <span class="source-title">Maternal Emotion and Cognitive Control Capacities and Parenting</span>
       </a>
-      <a class="source-link" href="https://www.codepath.org/news/engineer-soft-skills" target="_blank" rel="noopener">
-        <span class="source-tag">CodePath · 2023</span>
+      <a class="source-link" id="src4" href="https://www.codepath.org/news/engineer-soft-skills" target="_blank" rel="noopener">
+        <span class="source-tag">[4] CodePath · 2023</span>
         <span class="source-title">Building Bridges, Shipping Code: Top Soft Skills for Engineers</span>
       </a>
-      <a class="source-link" href="https://wearesimplytalented.com/balancing-motherhood-and-leadership-reasons-why-moms-shine-as-managers/" target="_blank" rel="noopener">
-        <span class="source-tag">Simply Talented · 2024</span>
+      <a class="source-link" id="src5" href="https://wearesimplytalented.com/balancing-motherhood-and-leadership-reasons-why-moms-shine-as-managers/" target="_blank" rel="noopener">
+        <span class="source-tag">[5] Simply Talented · 2024</span>
         <span class="source-title">Balancing Motherhood and Leadership: Why Moms Shine as Managers</span>
       </a>
-      <a class="source-link" href="https://toggl.com/blog/most-in-demand-skills" target="_blank" rel="noopener">
-        <span class="source-tag">Toggl · 2025</span>
-        <span class="source-title">The 25+ Most In-Demand Skills in 2025 & Beyond</span>
+      <a class="source-link" id="src6" href="https://www.weforum.org/stories/2021/06/defining-the-skills-citizens-will-need-in-the-future-world-of-work/" target="_blank" rel="noopener">
+        <span class="source-tag">[6] McKinsey via World Economic Forum</span>
+        <span class="source-title">Which skills will be needed for the future of work? (self-leadership/adaptability-linked DELTAs &amp; employment odds)</span>
       </a>
-      <a class="source-link" href="https://www.fdmgroup.com/news-insights/8-parenting-skills-that-make-you-better-at-your-job-2/" target="_blank" rel="noopener">
-        <span class="source-tag">FDM Group · 2023</span>
+      <a class="source-link" id="src7" href="https://www.fdmgroup.com/news-insights/8-parenting-skills-that-make-you-better-at-your-job-2/" target="_blank" rel="noopener">
+        <span class="source-tag">[7] FDM Group · 2023</span>
         <span class="source-title">8 Parenting Skills That Make You Better at Your Job</span>
       </a>
-      <a class="source-link" href="https://www.ptechpartners.com/2024/10/03/key-skills-for-it-professionals-in-2025/" target="_blank" rel="noopener">
-        <span class="source-tag">Peterson Technology Partners · 2024</span>
+      <a class="source-link" id="src8" href="https://www.ptechpartners.com/2024/10/03/key-skills-for-it-professionals-in-2025/" target="_blank" rel="noopener">
+        <span class="source-tag">[8] Peterson Technology Partners · 2024</span>
         <span class="source-title">Key Skills for IT Professionals in 2025</span>
+      </a>
+      <a class="source-link" id="src9" href="https://rework.withgoogle.com/intl/en/guides/understand-team-effectiveness" target="_blank" rel="noopener">
+        <span class="source-tag">[9] Google re:Work · Project Aristotle</span>
+        <span class="source-title">Understand team effectiveness — psychological safety as the top predictor</span>
+      </a>
+      <a class="source-link" id="src10" href="https://www.360training.com/blog/5-mommy-skills-transfer-workplace" target="_blank" rel="noopener">
+        <span class="source-tag">[10] 360training · 2022</span>
+        <span class="source-title">5 "Mommy Skills" That Transfer to the Workplace</span>
+      </a>
+      <a class="source-link" id="src11" href="https://www.parentspivot.com/blog-page/mom-transferable-skills-prepping-you-for-the-workplace" target="_blank" rel="noopener">
+        <span class="source-tag">[11] Parents Pivot · Annie Brown</span>
+        <span class="source-title">Mom Transferable Skills — maternal empathy &amp; social-cognition research</span>
+      </a>
+      <a class="source-link" id="src12" href="https://www.techelevator.com/tech-skills-in-demand-what-software-developers-should-know-in-2024/" target="_blank" rel="noopener">
+        <span class="source-tag">[12] Tech Elevator · 2024</span>
+        <span class="source-title">Tech Skills in Demand: What Software Developers Should Know</span>
+      </a>
+      <a class="source-link" id="src13" href="https://en.wikipedia.org/wiki/Margaret_Hamilton_(software_engineer)" target="_blank" rel="noopener">
+        <span class="source-tag">[13] Wikipedia / Smithsonian</span>
+        <span class="source-title">Margaret Hamilton — Apollo error-detection software</span>
+      </a>
+      <a class="source-link" id="src14" href="https://www.etymonline.com/word/multitasking" target="_blank" rel="noopener">
+        <span class="source-tag">[14] Online Etymology Dictionary</span>
+        <span class="source-title">"Multitasking" — coined 1966, originally in computing</span>
+      </a>
+      <a class="source-link" id="src15" href="https://toggl.com/blog/most-in-demand-skills" target="_blank" rel="noopener">
+        <span class="source-tag">[15] Toggl · 2025</span>
+        <span class="source-title">The 25+ Most In-Demand Skills in 2025 &amp; Beyond</span>
       </a>
     </div>
   </div>
@@ -334,91 +366,91 @@ const SKILLS = [
     id: 'problem_solving',
     name: 'Problem-solving under pressure',
     eyebrow: 'Cognitive capacity',
-    research: 'Named the #1 soft skill employers will demand by 2025 (NTI/LinkedIn). Also identified as a core maternal capacity: mothers "deal with unexpected challenges with limited time and resources" requiring "creativity, thinking on your feet, and swift prioritising" (360training). University of Phoenix (2024) identifies problem-solving as one of five primary skills developed through motherhood that directly transfer to the workforce.',
+    research: 'Identified as one of the most in-demand soft skills employers are seeking (<a href="https://ntinow.edu/soft-skills-employers-look-for-in-it-careers/" target="_blank" rel="noopener">NTI, 2025</a>). Also identified as a core maternal capacity: mothers "deal with unexpected challenges with limited time and resources" requiring "creativity, thinking on your feet, and swift prioritising" (<a href="https://www.360training.com/blog/5-mommy-skills-transfer-workplace" target="_blank" rel="noopener">360training</a>). <a href="https://www.phoenix.edu/content/dam/edu/research/doc/white-papers/educational-instructional-technology/2024/mom-report-motherhood-skills-s-smith.pdf" target="_blank" rel="noopener">University of Phoenix (2024)</a> identifies problem-solving as one of five primary skills developed through motherhood that directly transfer to the workforce.',
     openLabel: 'Describe a moment when this skill was required — in a caregiving or professional context, or both.'
   },
   {
     id: 'adaptability',
     name: 'Adaptability and flexibility',
     eyebrow: 'Resilience capacity',
-    research: 'LinkedIn identified adaptability as the skill with the biggest year-over-year growth in 2024. McKinsey found candidates demonstrating adaptability were 24% more likely to be employed. University of Phoenix (2024) lists adaptability as one of five core skills developed through motherhood. The WEF identifies it as one of the top ten skills for success in the Fourth Industrial Revolution.',
+    research: '<a href="https://www.cnbc.com/2026/02/24/the-fastest-growing-skills-in-the-us-according-to-linkedin-theyre-career-currency.html" target="_blank" rel="noopener">LinkedIn\'s "Skills on the Rise" research</a> has repeatedly ranked adaptability among the fastest-growing in-demand skills. A widely-cited <a href="https://www.weforum.org/stories/2021/06/defining-the-skills-citizens-will-need-in-the-future-world-of-work/" target="_blank" rel="noopener">McKinsey/WEF analysis</a> found that people with stronger self-leadership skills (a category that includes adaptability) were meaningfully more likely to be employed — often summarised as "24% more likely." <a href="https://www.phoenix.edu/content/dam/edu/research/doc/white-papers/educational-instructional-technology/2024/mom-report-motherhood-skills-s-smith.pdf" target="_blank" rel="noopener">University of Phoenix (2024)</a> lists adaptability as one of five core skills developed through motherhood, and identifies it as one of the World Economic Forum\'s top ten skills for the Fourth Industrial Revolution.',
     openLabel: 'Who has more practice at adaptability — mothers or tech workers? What does your answer reveal?'
   },
   {
     id: 'emotional_intelligence',
     name: 'Emotional intelligence and empathy',
     eyebrow: 'Social-emotional capacity',
-    research: 'WEF ranks emotional intelligence as the #1 leadership skill for the future. Peterson Technology Partners (2024) identifies it as essential for IT professionals: "Leading in times of change requires agility, empathy, and emotional intelligence." Research shows mothers\' brains neurologically rewire during pregnancy to enhance empathy and social cognition (Parents Pivot / Annie Brown). The PMC/NIH review identifies maternal emotion regulation as critical to parenting effectiveness.',
+    research: 'Emotional intelligence is widely ranked among the most important leadership skills for the future by groups including the World Economic Forum. <a href="https://www.ptechpartners.com/2024/10/03/key-skills-for-it-professionals-in-2025/" target="_blank" rel="noopener">Peterson Technology Partners (2024)</a> identifies it as essential for IT professionals: "Leading in times of change requires agility, empathy, and emotional intelligence." Research summarised by <a href="https://www.parentspivot.com/blog-page/mom-transferable-skills-prepping-you-for-the-workplace" target="_blank" rel="noopener">Parents Pivot (citing neuroscientist Annie Brown)</a> describes how mothers\' brains undergo measurable changes during pregnancy that fine-tune empathy and social-cognition regions. The <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC4445866/" target="_blank" rel="noopener">PMC/NIH review</a> identifies maternal emotion regulation as critical to parenting effectiveness.',
     openLabel: 'Is emotional intelligence recognised and compensated the same way in caregiving contexts as in technology leadership? Why or why not?'
   },
   {
     id: 'multitasking',
     name: 'Multitasking and parallel prioritisation',
     eyebrow: 'Executive function',
-    research: 'The term "multitasking" was coined in the computer industry — derived from a computer\'s ability to run multiple processes simultaneously. FDM Group (2023) notes it "is a fantastic skill to have when entering a career in technology, as it is a fast-paced environment that may require you to work on multiple projects with many different priorities." University of Phoenix (2024) identifies multitasking as one of five primary skills transferred from motherhood to the workforce.',
+    research: 'The term "<a href="https://www.etymonline.com/word/multitasking" target="_blank" rel="noopener">multitasking</a>" was coined in 1965-66, originally describing a computer\'s single processor performing multiple jobs. <a href="https://www.fdmgroup.com/news-insights/8-parenting-skills-that-make-you-better-at-your-job-2/" target="_blank" rel="noopener">FDM Group (2023)</a> notes it "is a fantastic skill to have when entering a career in technology, as it is a fast-paced environment that may require you to work on multiple projects with many different priorities." <a href="https://www.phoenix.edu/content/dam/edu/research/doc/white-papers/educational-instructional-technology/2024/mom-report-motherhood-skills-s-smith.pdf" target="_blank" rel="noopener">University of Phoenix (2024)</a> identifies multitasking as one of five primary skills transferred from motherhood to the workforce.',
     openLabel: 'The word "multitasking" was invented to describe computers. Mothers are routinely described as expert multitaskers. What does that naming history tell you?'
   },
   {
     id: 'communication',
     name: 'Communication across different audiences',
     eyebrow: 'Interpersonal capacity',
-    research: 'Communication ranked as the most requested skill across nearly 2 million recent tech job postings (NTI, 2025). 180 Engineering notes tech workers "must be able to adapt their message for their audience." University of Phoenix (2024) identifies communication as one of five core maternal skills that transfer to the workforce. Mothers communicate with children, schools, healthcare providers, and partners across vastly different cognitive and emotional registers simultaneously.',
+    research: 'Communication ranks as the most-requested skill across nearly 2 million recent tech job postings (<a href="https://ntinow.edu/soft-skills-employers-look-for-in-it-careers/" target="_blank" rel="noopener">NTI, 2025</a>). Tech professionals are routinely expected to adapt the same technical message for engineers, executives, and customers. <a href="https://www.phoenix.edu/content/dam/edu/research/doc/white-papers/educational-instructional-technology/2024/mom-report-motherhood-skills-s-smith.pdf" target="_blank" rel="noopener">University of Phoenix (2024)</a> identifies communication as one of five core maternal skills that transfer to the workforce. Mothers communicate with children, schools, healthcare providers, and partners across vastly different cognitive and emotional registers simultaneously.',
     openLabel: 'Tech communication and maternal communication are both about adapting your message to who is listening. Is this recognised as the same skill? Should it be?'
   },
   {
     id: 'crisis_management',
     name: 'Crisis management and rapid decision-making',
     eyebrow: 'Executive response capacity',
-    research: 'Simply Talented (2024) identifies crisis management as a key maternal skill that transfers to management: "Mothers often employ an all-hazards approach, similar to emergency preparedness, which involves cross-compatible skills." CodePath (2023) identifies resilience and adaptability as essential for engineers handling "unplanned work and problems" — the most common challenges software engineers face (2022 study).',
+    research: '<a href="https://wearesimplytalented.com/balancing-motherhood-and-leadership-reasons-why-moms-shine-as-managers/" target="_blank" rel="noopener">Simply Talented (2024)</a> identifies crisis management as a key maternal skill that transfers to management: "Mothers often employ an all-hazards approach, similar to emergency preparedness, which involves cross-compatible skills." <a href="https://www.codepath.org/news/engineer-soft-skills" target="_blank" rel="noopener">CodePath (2023)</a> identifies resilience and adaptability as essential for engineers handling unplanned work and problems, which it describes as among the most common challenges software engineers report facing.',
     openLabel: 'When a mother handles a medical emergency and a tech team handles a production outage, what is the same about those two situations?'
   },
   {
     id: 'long_term_planning',
     name: 'Long-term planning and goal-setting',
     eyebrow: 'Strategic capacity',
-    research: '360training: "With parenting and working, you identify goals, create a plan, allocate resources." Strategic planning and roadmapping are foundational engineering and product management skills. The PMC/NIH review of maternal cognitive capacities specifically identifies "planning" as one of the executive functions critical to effective mothering — the same executive functions tested in product management interviews.',
+    research: '<a href="https://www.360training.com/blog/5-mommy-skills-transfer-workplace" target="_blank" rel="noopener">360training</a>: "With parenting and working, you identify goals, create a plan, allocate resources." Strategic planning and roadmapping are foundational engineering and product management skills. The <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC4445866/" target="_blank" rel="noopener">PMC/NIH review</a> of maternal cognitive capacities specifically identifies "planning" as one of the executive functions critical to effective mothering — the same executive functions tested in product management interviews.',
     openLabel: 'A parent planning a child\'s development and a product manager planning a product roadmap are both making strategic decisions under uncertainty. Is one of these work?'
   },
   {
     id: 'trust_building',
     name: 'Building psychological safety and trust',
     eyebrow: 'Relational capacity',
-    research: 'Harvard Business Review found businesses prioritising empathy and customer experience outperform competitors by up to 85% in revenue growth. Deloitte found companies prioritising communication and collaboration experience a 20-25% boost in team productivity. The PMC study on maternal sensitivity identifies psychological safety as the foundation of child development. These are the same conditions described in Google\'s Project Aristotle as the #1 predictor of high-performing teams.',
+    research: 'Customer-empathy research published in connection with Harvard Business Review has found that the most empathetic companies grow in monetary value at roughly twice the rate of the least empathetic ones — though the often-repeated "85% revenue growth" figure circulating online doesn\'t trace cleanly back to a single study, so it should be read as a popularised estimate rather than a precise stat. Similarly, "20-25% productivity" figures tied to workplace communication and collaboration are widely cited by workplace-platform research but vary by source. What is robustly documented is Google\'s <a href="https://rework.withgoogle.com/intl/en/guides/understand-team-effectiveness" target="_blank" rel="noopener">Project Aristotle</a> finding that psychological safety is the strongest predictor of team effectiveness, identified across 180 teams studied over two years. The <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC4445866/" target="_blank" rel="noopener">PMC study</a> on maternal sensitivity identifies psychological safety as foundational to child development.',
     openLabel: 'Google\'s research found psychological safety is the most important factor in team performance. Maternal sensitivity research says the same about child development. Does this surprise you?'
   },
   {
     id: 'error_detection',
     name: 'Error detection and course correction',
     eyebrow: 'Quality assurance capacity',
-    research: 'Software testing and debugging are core engineering competencies. Margaret Hamilton\'s daughter accidentally crashed the Apollo simulator — Hamilton\'s response was to build error-detection and recovery code that saved the Apollo 8 mission. Noticing when something is wrong before it becomes catastrophic, and correcting course, is both a maternal vigilance skill and a foundational engineering discipline.',
-    openLabel: 'Hamilton built error-detection code because she was a working mother who brought her child to the lab. What other engineering innovations might have come from people doing care work and technical work simultaneously?'
+    research: 'Software testing and debugging are core engineering competencies. <a href="https://en.wikipedia.org/wiki/Margaret_Hamilton_(software_engineer)" target="_blank" rel="noopener">Margaret Hamilton\'s daughter Lauren</a> accidentally crashed the Apollo simulator while playing astronaut at the lab where Hamilton worked nights and weekends as a single working mother. Hamilton asked to add error-detection and recovery code for that exact scenario, but NASA initially refused, insisting a trained astronaut would never make that mistake — until astronaut Jim Lovell made precisely that error during Apollo 8, forcing a tense nine-hour fix. Only then was Hamilton\'s recovery code approved; her team\'s error-detection and priority-display systems went on to help avert an abort during the Apollo 11 moon landing. Noticing when something is wrong before it becomes catastrophic, and correcting course, is both a maternal vigilance skill and a foundational engineering discipline.',
+    openLabel: 'Hamilton pushed for error-detection code because her own working-mother circumstances put her child in the room where the flaw surfaced. What other engineering innovations might have come from people doing care work and technical work simultaneously?'
   },
   {
     id: 'resource_management',
     name: 'Resource management under constraint',
     eyebrow: 'Operational capacity',
-    research: '360training identifies mothers as expert at "efficient and strategic thinking about how to get everything done" with limited resources. Resource allocation and constraint-based optimisation are core engineering skills — from memory management in code to budget allocation in product teams. The skills are structurally identical: maximise output, minimise waste, under conditions you do not fully control.',
+    research: '<a href="https://www.360training.com/blog/5-mommy-skills-transfer-workplace" target="_blank" rel="noopener">360training</a> identifies mothers as expert at "efficient and strategic thinking about how to get everything done" with limited resources. Resource allocation and constraint-based optimisation are core engineering skills — from memory management in code to budget allocation in product teams. The skills are structurally identical: maximise output, minimise waste, under conditions you do not fully control.',
     openLabel: 'Managing a household budget and managing an engineering sprint are both resource allocation problems. Is the person who does one prepared to do the other?'
   },
   {
     id: 'continuous_learning',
     name: 'Continuous learning and knowledge updating',
     eyebrow: 'Growth capacity',
-    research: 'LinkedIn (2024): adaptability and continuous learning have the highest year-over-year growth in employer demand. Tech Elevator (2024): "the ability to learn on the fly to adapt to new tech and evolving challenges" is foundational to software development. Parenting requires continuous updating — developmental stages, medical guidance, educational approaches, and social norms change constantly. Both require staying current in a domain that never stops changing.',
+    research: '<a href="https://www.cnbc.com/2026/02/24/the-fastest-growing-skills-in-the-us-according-to-linkedin-theyre-career-currency.html" target="_blank" rel="noopener">LinkedIn\'s skills research</a> consistently ranks adaptability and continuous learning among the fastest-growing skills employers demand. <a href="https://www.techelevator.com/tech-skills-in-demand-what-software-developers-should-know-in-2024/" target="_blank" rel="noopener">Tech Elevator (2024)</a> describes "the ability to learn on the fly to adapt to new tech and evolving challenges" as foundational to software development. Parenting requires continuous updating — developmental stages, medical guidance, educational approaches, and social norms change constantly. Both require staying current in a domain that never stops changing.',
     openLabel: 'Both mothers and tech workers are required to continuously update their knowledge in domains that change constantly. Is one of these recognised as professional development?'
   },
   {
     id: 'stakeholder_management',
     name: 'Managing competing needs and expectations',
     eyebrow: 'Stakeholder capacity',
-    research: 'Stakeholder management — balancing competing priorities from engineers, product, design, business, and users — is a core tech skill. Maternal stakeholder management involves balancing the needs of children at different developmental stages, partners, schools, healthcare systems, and extended family simultaneously. Simply Talented (2024) describes this as "multitasking and prioritising, skills honed through the demands of parenting."',
+    research: 'Stakeholder management — balancing competing priorities from engineers, product, design, business, and users — is a core tech skill. Maternal stakeholder management involves balancing the needs of children at different developmental stages, partners, schools, healthcare systems, and extended family simultaneously. <a href="https://wearesimplytalented.com/balancing-motherhood-and-leadership-reasons-why-moms-shine-as-managers/" target="_blank" rel="noopener">Simply Talented (2024)</a> describes this as "multitasking and prioritising, skills honed through the demands of parenting."',
     openLabel: 'A product manager balancing engineers, designers, sales, and users and a mother balancing a toddler, a school-age child, a partner, and a healthcare provider are both doing stakeholder management. Is one paid for it?'
   },
   {
     id: 'pattern_recognition',
     name: 'Pattern recognition and diagnostic reasoning',
     eyebrow: 'Analytical capacity',
-    research: 'Debugging requires pattern recognition — identifying what is wrong from incomplete information. The PMC/NIH maternal cognition review identifies "paying attention and detecting relevant patterns" as a core maternal executive function. A mother diagnosing why a child is distressed from limited signals and an engineer debugging a system from error logs are performing structurally identical cognitive tasks.',
+    research: 'Debugging requires pattern recognition — identifying what is wrong from incomplete information. The <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC4445866/" target="_blank" rel="noopener">PMC/NIH maternal cognition review</a> identifies "paying attention and detecting relevant patterns" as a core maternal executive function. A mother diagnosing why a child is distressed from limited signals and an engineer debugging a system from error logs are performing structurally similar cognitive tasks.',
     openLabel: 'Reading a child\'s behaviour for early signs of a problem and reading system logs for early signs of failure are both diagnostic reasoning tasks. How similar are they to you?'
   },
   {
@@ -432,14 +464,14 @@ const SKILLS = [
     id: 'user_empathy',
     name: 'Understanding the needs of others before they articulate them',
     eyebrow: 'User empathy / anticipatory capacity',
-    research: 'User research, UX, and product empathy — understanding what users need before they can say it — are among the most valued skills in tech (FutureCode IT Consulting, 2024). Maternal anticipatory care — reading a pre-verbal child\'s needs, anticipating developmental transitions, preventing problems before they escalate — is the same skill applied to a human who literally cannot yet speak their needs. This is described in maternal neuroscience as a neurologically supported capacity.',
+    research: 'User research, UX, and product empathy — understanding what users need before they can say it — are consistently named among the most valued skills in tech hiring. Maternal anticipatory care — reading a pre-verbal child\'s needs, anticipating developmental transitions, preventing problems before they escalate — is the same skill applied to a human who literally cannot yet speak their needs, and research summarised by <a href="https://www.parentspivot.com/blog-page/mom-transferable-skills-prepping-you-for-the-workplace" target="_blank" rel="noopener">Parents Pivot</a> ties this to measurable neurological changes in mothers.',
     openLabel: 'UX researchers are paid to understand what users need before they can articulate it. Mothers do this from day one of a child\'s life, often without sleep, often without pay. What does that gap reveal?'
   },
   {
     id: 'resilience',
     name: 'Resilience, persistence and sustained effort under uncertainty',
     eyebrow: 'Endurance capacity',
-    research: 'CompuNnel (2025): "Organizations are facing constant disruptions... Professionals with adaptability, resilience, and problem-solving abilities can better navigate these uncertainties." CodePath (2023): "Resilience helps engineers adapt and use critical thinking and creativity during unexpected circumstances." Motherhood under economic pressure, with inadequate support infrastructure, requires sustained effort under conditions of structural uncertainty that few professional environments match.',
+    research: 'Resilience and adaptability are consistently named by workforce researchers as critical for navigating organizational disruption and uncertainty. <a href="https://www.codepath.org/news/engineer-soft-skills" target="_blank" rel="noopener">CodePath (2023)</a>: "Resilience helps engineers adapt and use critical thinking and creativity during unexpected circumstances." Motherhood under economic pressure, with inadequate support infrastructure, requires sustained effort under conditions of structural uncertainty that few professional environments match.',
     openLabel: 'Resilience is listed as a top required skill in tech job postings. How is resilience developed, measured, and compensated differently in caregiving versus professional contexts?'
   }
 ];

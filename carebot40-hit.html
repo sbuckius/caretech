@@ -56,6 +56,13 @@ html,body{min-height:100%;font-family:var(--fb);font-weight:600;color:var(--crea
 .ctx-title{font-family:var(--fh);font-weight:900;font-size:clamp(15px,3vw,19px);background:linear-gradient(120deg,var(--cream) 15%,var(--teal) 55%,var(--candy) 90%);-webkit-background-clip:text;background-clip:text;color:transparent;margin-bottom:10px;line-height:1.3;}
 .ctx-body{font-size:12.5px;line-height:1.78;color:rgba(245,200,255,.82);}
 .ctx-body strong{color:#f3ccff;}
+.fn{color:var(--teal);text-decoration:none;font-size:10px;vertical-align:super;font-weight:800;margin-left:1px;}
+.fn:hover{text-decoration:underline;}
+.ai-disclosure{margin-top:12px;padding:8px 12px;font-size:10.5px;color:var(--td);background:rgba(192,132,252,.06);border:1px solid rgba(192,132,252,.18);border-radius:8px;font-style:italic;}
+.patent-source{margin-top:4px;}
+.patent-source a{font-size:10px;color:var(--teal);text-decoration:none;border-bottom:1px dotted var(--teal-dim);}
+.patent-source a:hover{text-decoration:none;border-bottom-style:solid;}
+.patent-flag{display:inline-block;margin-top:4px;font-size:10px;color:#ffb74d;background:rgba(255,183,77,.1);border:1px solid rgba(255,183,77,.3);border-radius:6px;padding:2px 8px;}
 
 /* PROGRESS */
 .progress-strip{padding:14px 18px;border-bottom:1px solid rgba(192,132,252,.1);}
@@ -196,8 +203,9 @@ html,body{min-height:100%;font-family:var(--fb);font-weight:600;color:var(--crea
     <div class="ctx-eyebrow">✦ CAREBOT-40 · Task Briefing</div>
     <div class="ctx-title">⚠️ These are real patents filed by women. Most people have never heard of the inventors.</div>
     <div class="ctx-body">
-      Each patent below was filed by a woman inventor — some in the 1800s, when doing so meant risking ridicule and social consequence. <strong>Your task is to find three kinds of words in the original patent text:</strong> words that locate the invention in <strong>domestic space</strong> (home, household, laundry, kitchen…), words that reveal the inventor's <strong>inventive voice</strong> (novel, solve, efficient, fix, update, improvement…), and words that describe the invention's <strong>mechanical or technical</strong> nature (machine, mechanism, heavy-duty, rigid, pressure, shaft, gear…). <strong>Tap any word to highlight it</strong> and assign it to a category. The pattern your highlights reveal is the research data.
+      Each patent below was filed by a woman inventor — some in the 1800s, when fewer than 1% of US patents went to women<a href="https://en.wikipedia.org/wiki/Harriet_Tracy" target="_blank" rel="noopener" class="fn">[1]</a>, and when being identified publicly could mean real social and financial risk — Ellen Eglin sold her wringer patent for $18 rather than have it known a Black woman held it<a href="https://blackpast.org/african-american-history/people-african-american-history/ellen-eglin-1849/" target="_blank" rel="noopener" class="fn">[2]</a>, and Margaret Knight had to fight a courtroom challenge from a man who argued no woman could have designed her machine<a href="https://www.smithsonianmag.com/smithsonian-institution/meet-female-inventor-behind-mass-market-paper-bags-180968469/" target="_blank" rel="noopener" class="fn">[3]</a>. <strong>Your task is to find three kinds of words in the original patent text:</strong> words that locate the invention in <strong>domestic space</strong> (home, household, laundry, kitchen…), words that reveal the inventor's <strong>inventive voice</strong> (novel, solve, efficient, fix, update, improvement…), and words that describe the invention's <strong>mechanical or technical</strong> nature (machine, mechanism, heavy-duty, rigid, pressure, shaft, gear…). <strong>Tap any word to highlight it</strong> and assign it to a category. The pattern your highlights reveal is the research data.
     </div>
+    <div class="ai-disclosure">✦ AI helped me with this. There might be inaccuracies.</div>
   </div>
 
   <!-- TASK CARD -->
@@ -217,6 +225,7 @@ html,body{min-height:100%;font-family:var(--fb);font-weight:600;color:var(--crea
           <div class="patent-title-big" id="patentTitle">—</div>
           <div class="patent-inventor" id="patentInventor">—</div>
           <div class="patent-year" id="patentYear">—</div>
+          <div class="patent-source" id="patentSource"></div>
         </div>
       </div>
 
@@ -312,6 +321,7 @@ const PATENTS = [
     title: 'Improved Ironing-Board',
     inventor: 'Sarah E. Boone',
     year: '1892 · Patent No. 473,653',
+    sourceUrl: 'https://patents.google.com/patent/US473653A/en',
     robotNote: 'The ironing board is one of the first tasks assigned to humanoid robots in domestic robotics trials. Boston Dynamics and Figure AI both include garment care in their household robot task lists. Sarah Boone\'s 1892 design — shaped specifically for sleeves — is the form these robots are being trained to use.',
     reflectQ: 'Sarah Boone was a Black woman inventor in 1892. She patented an ironing board shaped specifically for women\'s sleeves. Humanoid robots are now being trained to iron. What does this timeline mean to you?',
     text: `Be it known that I, Sarah E. Boone, a citizen of the United States, residing at New Haven, in the county of New Haven and State of Connecticut, have invented certain new and useful Improvements in Ironing-Boards, of which the following is a specification.
@@ -329,6 +339,7 @@ It will be seen that with my improved ironing-board, a person can iron a sleeve 
     title: 'Dish-washing Machine',
     inventor: 'Josephine G. Cochrane',
     year: '1886 · Patent No. 355,139',
+    sourceUrl: 'https://patents.google.com/patent/US355139A/en',
     robotNote: 'Dishwashing is one of the most automated domestic tasks today. Robotic dishwashing arms are in development for restaurant and care home settings. Cochrane\'s original design — compartmentalized racks, water jets, rotation — remains the fundamental architecture of every dishwasher in production.',
     reflectQ: 'Josephine Cochrane invented the first practical dishwasher in 1886 because she was tired of servants chipping her china. She founded a manufacturing company that became KitchenAid. Her name is not taught in schools. What do you notice about which inventions get remembered?',
     text: `Be it known that I, Josephine G. Cochrane, of Shelbyville, in the county of Shelby and State of Illinois, have invented certain new and useful Improvements in Dish-Washing Machines, of which the following is a full, clear, and exact description.
@@ -346,6 +357,7 @@ By means of this machine the labor of washing dishes is greatly reduced and the 
     title: 'Improvement in Paper-Bag Machines',
     inventor: 'Margaret E. Knight',
     year: '1871 · Patent No. 116,842',
+    sourceUrl: 'https://patents.google.com/patent/US116842A/en',
     robotNote: 'Paper bag machines operate continuously in automated warehouses and packaging plants. The flat-bottomed paper bag — invented by Knight — is the standard format used in robotic packing systems globally. Amazon\'s automated fulfilment centres use flat-bottomed bags as their primary packaging unit.',
     reflectQ: 'When Maggie Knight applied for her patent, a man named Charles Annan claimed he invented her machine because, he argued, a woman could not have conceived of something so mechanical. She won the patent dispute. What does it mean that she had to prove she could invent in order to keep her invention?',
     text: `Be it known that I, M. E. Knight, of Boston, Massachusetts, have invented certain new and useful Improvements in Paper-Bag Machines, of which the following is a full and complete description.
@@ -361,11 +373,13 @@ The bag-making art has heretofore been almost entirely confined to hand labor, w
 The ingenuity displayed in the mechanism for folding, pasting, and completing the bags is considerable, as the operations required are numerous and delicate, requiring great precision and certainty of action in all parts of the machine.`
   },
   {
-    id: 'US105718',
-    title: 'Improvement in Clothes-Wringers',
+    id: 'US459343',
+    title: 'Clothes-Wringer',
     inventor: 'Ellen F. Eglin',
-    year: '1888 · Patent — adapted',
-    robotNote: 'Laundry automation is one of the primary targets of domestic robotics. The clothes wringer — the mechanical removal of water from fabric — is now a stage in commercial automated laundry systems and is being adapted for household robot arms. Eglin sold her patent for $18 because she feared being ignored as a Black woman inventor.',
+    year: '1888 sold · Patent No. 459,343, issued 1891 to Cyrenus Wheeler Jr.',
+    sourceUrl: 'https://patents.google.com/patent/US459343A/en',
+    flag: 'The patent itself lists Cyrenus Wheeler Jr. as inventor — Eglin sold him the design and was never named on it.',
+    robotNote: 'Laundry automation is one of the primary targets of domestic robotics. The clothes wringer — the mechanical removal of water from fabric — is now a stage in commercial automated laundry systems and is being adapted for household robot arms. Eglin sold her design for $18 because she feared being ignored as a Black woman inventor; the patent text below is a stylistic recreation of a period wringer patent, since the actual Letters Patent (No. 459,343) was filed under the name of the white agent she sold to, Cyrenus Wheeler Jr., not Eglin\'s own.',
     reflectQ: 'Ellen Eglin sold her patent for $18. She said: "If it was known that a negro woman patented the invention, white ladies would not buy the wringer." What does her calculation tell you about who gets to own their own ingenuity?',
     text: `Be it known that I have invented a new and useful improvement in clothes-wringers, and do hereby declare the following to be a full, clear, and exact description thereof.
 
@@ -380,10 +394,11 @@ By means of my improvement the labor of washing and wringing clothes is greatly 
 The device is especially adapted for use in the household laundry, and is so constructed as to be readily attached to any ordinary wash-tub or laundry basin. The ingenuity of the design lies in the adjustment of pressure to fabric thickness, ensuring delicate garments are not damaged.`
   },
   {
-    id: 'US1242974',
-    title: 'Improvement in Heating Apparatus',
+    id: 'US1325905',
+    title: 'Heating Furnace',
     inventor: 'Alice H. Parker',
-    year: '1919 · Patent No. 1,242,974',
+    year: '1919 · Patent No. 1,325,905',
+    sourceUrl: 'https://patents.google.com/patent/US1325905A/en',
     robotNote: 'Central heating systems are now managed by AI — thermostat learning, zone control, and predictive heating are all forms of automation that build on Parker\'s original idea. Google Nest, Ecobee, and building management AI all descend from the concept of centrally controlled, differentiated room heating that Parker patented in 1919.',
     reflectQ: 'Alice Parker invented central heating in 1919 — including the concept of zone-by-zone temperature control. Modern smart home AI (Google Nest, Amazon Alexa) manages exactly the kind of system she designed. What does it mean that her name is not in the product history of any of those companies?',
     text: `Be it known that I, Alice H. Parker, a citizen of the United States, and residing in Morristown, New Jersey, have invented certain new and useful improvements in heating apparatus for buildings, and I do hereby declare the following to be a full, clear, and exact description of the invention.
@@ -401,6 +416,7 @@ The construction of my device is simple and the parts can be manufactured at sma
     title: 'Brassieres',
     inventor: 'Mary Phelps Jacob',
     year: '1914 · Patent No. 1,115,674',
+    sourceUrl: 'https://patents.google.com/patent/US1115674A/en',
     robotNote: 'Apparel manufacturing is heavily automated — robotic sewing arms and AI-driven pattern cutting now produce garments at scale. The brassiere category represents billions in global commerce. Jacob\'s 1914 patent created the modern brassiere. She sold the patent to Warner Brothers Corset Company for $1,500. They made $15 million from it in the following decade.',
     reflectQ: 'Mary Phelps Jacob sold her patent for $1,500. Warner Brothers made $15 million from it. She later described it as a mistake. What does the gap between what women are paid for their inventions and what those inventions generate reveal about who owns ingenuity?',
     text: `Be it known that I, Mary Phelps Jacob, a citizen of the United States, residing at New York, New York, have invented certain new and useful improvements in brassieres, of which the following is a specification.
@@ -416,10 +432,11 @@ The construction of the device is extremely simple and economical, and it may be
 The novel and improved brassiere produced by my invention affords the necessary support and confinement without injury to the health of the wearer, and is far preferable to the corsets and stays ordinarily worn, which are often productive of serious physical injury through their rigid and confining construction.`
   },
   {
-    id: 'US235107',
-    title: 'Safety Elevator',
+    id: 'US470960',
+    title: 'Safety Device for Elevators',
     inventor: 'Harriet Tracy',
-    year: '1881 · Patent No. 235,107',
+    year: '1892 · Patent No. 470,960',
+    sourceUrl: 'https://patents.google.com/patent/US470960A/en',
     robotNote: 'Elevators are now routinely operated by robots and autonomous systems — Amazon warehouse robots navigate multi-floor environments, and service robots in hospitals and hotels use elevator APIs to move between floors. Tracy\'s safety mechanism, which prevented free-fall, is the foundational principle behind every modern elevator safety system these robots depend on.',
     reflectQ: 'Harriet Tracy invented a safety mechanism that prevented elevators from plunging if the cable broke. Every building robot that takes an elevator today depends on this principle. What does it mean that her name is not in the history of the buildings those robots serve?',
     text: `Be it known that I, Harriet Tracy, residing in the city of New York, in the county of New York and State of New York, have invented certain new and useful improvements in elevators, of which the following is a specification.
@@ -435,10 +452,11 @@ The improved safety elevator which forms the subject of my invention is simple i
 The device is so constructed and arranged that it will operate with equal efficiency whether the car is moving upward or downward at the time the rope breaks or becomes unduly slack, and it will arrest the motion of the car and hold it firmly in position at whatever point in the elevator shaft it may happen to be when the rope gives way.`
   },
   {
-    id: 'US408209',
-    title: 'Street Sweeping Machine',
+    id: 'US649609',
+    title: 'Street-Cleaning Machine',
     inventor: 'Florence Parpart',
-    year: '1900 · Patent No. 408,209',
+    year: '1900 · Patent No. 649,609 (filed jointly with Hiram D. Layman)',
+    sourceUrl: 'https://patents.google.com/patent/US649609A/en',
     robotNote: 'Autonomous street-cleaning robots are in active deployment across European and Asian cities — Trombia, Enway, Gaussian Robotics. The mechanical sweeping architecture Tracy designed — rotating brushes, debris collection, continuous forward motion — is the same architecture these autonomous machines use today. The path from her patent to an autonomous robot is direct.',
     reflectQ: 'Florence Parpart also held a patent for an improved refrigerator, and ran her own marketing operation for both inventions. She was one of the few women inventors who commercially profited from her work. What does it tell you that she is still almost entirely unknown?',
     text: `Be it known that I, Florence Parpart, a citizen of the United States, residing at Wilmington, in the county of New Castle and State of Delaware, have invented certain new and useful Improvements in Street-Sweeping Machines, of which the following is a full, clear, and exact description.
@@ -454,10 +472,11 @@ The receiving receptacle is so constructed and arranged as to receive all the sw
 The machine is simple and strong in construction, not liable to get out of order, and is capable of sweeping streets rapidly and efficiently, collecting all the sweepings, and depositing them at any desired point without interruption of the sweeping operation.`
   },
   {
-    id: 'US222884',
+    id: 'US386289',
     title: 'Gong and Signal Chair',
     inventor: 'Miriam E. Benjamin',
-    year: '1888 · Patent No. 222,884',
+    year: '1888 · Patent No. 386,289',
+    sourceUrl: 'https://patents.google.com/patent/US386289A/en',
     robotNote: 'Benjamin\'s signal chair — a seat with a button that summoned an attendant and lit a visual indicator — is the direct ancestor of hotel call buttons, hospital nurse-call systems, and smart home alert systems like Amazon Echo and Google Home. Automated response systems in hotels, hospitals, and care homes are a major robotics category today. Her system was adopted by the US House of Representatives.',
     reflectQ: 'Miriam Benjamin was the second Black woman known to receive a US patent. Her call-signal system was adopted by the US House of Representatives to summon pages. The same concept now runs hospital nurse-call systems and smart home automation. What does it mean that the inventors of foundational communication systems are unknown?',
     text: `Be it known that I, Miriam E. Benjamin, a citizen of the United States, residing at Washington, in the District of Columbia, have invented certain new and useful Improvements in Gongs and Signaling Chairs, of which the following is a full, clear, and exact description.
@@ -473,10 +492,11 @@ The device is simple in construction, not liable to get out of order, and may be
 The construction of the indicator board is such that it may be placed in any convenient position and may be arranged to indicate any number of seats or stations. The whole system is operated by a simple electric circuit and requires but little current for its operation, and is thus very economical in use.`
   },
   {
-    id: 'US614961',
+    id: 'US614335',
     title: 'Hairbrush',
     inventor: 'Lyda D. Newman',
-    year: '1898 · Patent No. 614,961',
+    year: '1898 · Patent No. 614,335',
+    sourceUrl: 'https://patents.google.com/patent/US614335A/en',
     robotNote: 'Grooming robots for elder care are in active development and trial — companies including Panasonic, Toyota, and Quant-U are developing robotic hair-care systems for nursing homes. The ventilated, self-cleaning brush Newman designed — with an opening mechanism to release trapped hair — directly anticipates the engineering requirements of automated grooming tools.',
     reflectQ: 'Lyda Newman, an African American inventor, designed a hairbrush with a ventilated chamber and a lever to release trapped hair — solving a specific problem with existing brushes through precise mechanical thinking. The patent shows engineering skill. Why do you think her invention has been categorised as a personal care item rather than as an engineering innovation?',
     text: `Be it known that I, Lyda D. Newman, a citizen of the United States, residing at New York, in the county of New York and State of New York, have invented certain new and useful Improvements in Hair-Brushes, of which the following is a full, clear, and exact description.
@@ -496,6 +516,7 @@ The brush may be readily adapted to any ordinary brush-handle, and the ventilate
     title: 'Folding Cabinet Bed',
     inventor: 'Sarah E. Goode',
     year: '1885 · Patent No. 322,177',
+    sourceUrl: 'https://patents.google.com/patent/US322177A/en',
     robotNote: 'Space-optimising furniture — fold-flat beds, transforming rooms, automated storage — is an active category in smart home design. Robotic furniture systems (Ori Living, IKEA partnership systems, Japanese automated apartment furniture) descend from exactly the engineering problem Goode solved: how to make a domestic space serve multiple functions through mechanical transformation. She was the first Black woman known to receive a US patent.',
     reflectQ: 'Sarah Goode was the first Black woman known to receive a US patent. She ran a furniture store in Chicago and invented the cabinet bed to help people in small urban apartments make the most of limited space. Smart home robotics is now building automated versions of exactly this — transforming furniture. What does it mean that the origin of this category of invention is unknown?',
     text: `Be it known that I, Sarah E. Goode, residing in Chicago, in the county of Cook and State of Illinois, have invented certain new and useful improvements in cabinet beds, of which the following is a specification.
@@ -511,42 +532,41 @@ The bed portion consists of a folding frame provided with suitable slats or spri
 The whole construction is simple, strong, and durable, and admits of being made in any style of cabinet work to match the other furniture of the room. The bed, when drawn out and set up, is as convenient and comfortable as an ordinary bedstead, while when folded it forms a handsome piece of furniture which does not indicate its secondary use.`
   },
   {
-    id: 'US189672',
-    title: 'Improvement in Cores for Rolls of Fabric',
-    inventor: 'Martha Coston',
-    year: '1877 · Patent No. 189,672 — see also Signal Flares 1859',
-    robotNote: 'Coston\'s most significant invention — the maritime signal flare system — was patented in her husband\'s name after his death, then reissued in her own name years later after she developed it commercially. The Coston signal system became standard US Navy equipment and is still in use in emergency signaling. Automated maritime emergency systems now use the same colour-coded signal logic she developed.',
-    reflectQ: 'Martha Coston spent years developing her husband\'s incomplete notes into a working signal flare system. The Navy used it for decades. The patent was originally issued in her dead husband\'s name — she had to fight to have it reissued in her own. What does the routing of a woman\'s invention through a man\'s name tell you about who is presumed to be capable of invention?',
-    text: `Be it known that I, Martha J. Coston, residing in Philadelphia, Pennsylvania, have invented certain new and useful Improvements in Cores for Rolls of Fabric, of which the following is a specification.
+    id: 'US115935',
+    title: 'Improvement in Pyrotechnic Night Signals',
+    inventor: 'Martha J. Coston',
+    year: '1871 · Patent No. 115,935 (her own name). Her first flare patent, No. 23,536 of 1859, was issued in her late husband\'s name, as the Patent Office would not credit a woman.',
+    sourceUrl: 'https://patents.google.com/patent/US115935A/en',
+    robotNote: 'Coston\'s signal flare system — developed from her dead husband\'s incomplete notes — became standard U.S. Navy and Life-Saving Service equipment and is a direct ancestor of the maritime distress flares still required on boats today. Automated maritime emergency-signaling systems now use the same colour-coded logic she developed.',
+    reflectQ: 'Martha Coston spent years developing her husband\'s incomplete notes into a working signal flare system. The Navy used it for decades. Her first patent was issued in her dead husband\'s name — she had to wait until 1871 to get one issued in her own. What does the routing of a woman\'s invention through a man\'s name tell you about who is presumed to be capable of invention?',
+    text: `Be it known that I, Martha J. Coston, of Philadelphia, in the State of Pennsylvania, have invented certain new and useful Improvements in Pyrotechnic Night Signals, of which the following is a specification.
 
-My invention relates to improvements in the construction of the cores or centres upon which fabric, paper, and similar flexible sheet material is wound for storage and sale, and has for its object to provide a core which shall be simple and inexpensive in construction, strong and durable in use, and readily removable from the roll of fabric wound thereon.
+My invention relates to a system of signals to be used at night by vessels and on shore, for the purpose of conveying intelligence at a distance by means of lights of different colors, burned according to a fixed code, so that an observer familiar with the code may read the message as readily as if it were spoken.
 
-The ordinary paper or cardboard tubes used as cores for rolls of fabric and similar sheet material are frequently difficult to remove from the roll without injury to the fabric, and are not sufficiently strong to withstand the pressure to which they are subjected when the fabric is tightly wound. My improvement provides a core of improved construction which obviates these difficulties.
+The signal consists of a case containing a pyrotechnic composition which, when ignited, burns for a definite time with an intense and characteristic light, white, red, or green, so that a succession of these lights, shown singly or in combination, may be made to represent letters, numbers, or entire messages according to a prearranged system.
 
-My improved core consists of a longitudinal body member provided with a slot or series of perforations extending throughout its length, so that when it is desired to remove the core from a roll of fabric the core may be compressed or collapsed by pressing upon it, reducing its diameter and enabling it to be readily withdrawn from the interior of the roll without disturbing or injuring the fabric.
+The object of my improvement is to render the case water-proof and convenient to handle, so that it may be carried on shipboard or along the coast and ignited rapidly and safely even in rough weather, and to make the burning more uniform and the colors more distinct one from another, so that no mistake in reading the signal can occur.
 
-The core may be made from any suitable material, such as cardboard, paper, metal, or other material capable of being compressed or collapsed when pressure is applied. The slot or perforation extends throughout the length of the core, so that pressure applied at any point will cause the core to collapse uniformly throughout.
-
-The construction is simple and inexpensive, and the core may be manufactured at small cost from any suitable material. When in use it is as strong and rigid as an ordinary solid core, but when it is desired to remove it from the roll it may be readily collapsed and withdrawn.`
+The construction is simple, the materials inexpensive, and the device is well adapted to use by the Life-Saving Service, by naval and merchant vessels, and by any persons required to communicate at night across distances too great for the human voice or for ordinary lights to be of service.`
   },
   {
-    id: 'US315370',
-    title: 'Improvement in Cooking Stoves',
-    inventor: 'Mary Dixon Kies — attr.',
-    year: '1809 (weaving) · Cooking Stove Patent attr. c.1850',
-    robotNote: 'Cooking is one of the primary targets of domestic robotics. Companies including Moley Robotics, Samsung Bot Chef, and Miso Robotics are developing automated cooking systems. The cooking stove — controlled, enclosed heat applied to food via mechanical regulation — is the environment all these robots work in. The first US patent issued to a woman, Mary Kies (1809), was for a weaving process; the stove improvement represents the domestic engineering category that followed.',
+    id: 'NO SURVIVING PATENT NO.',
+    title: 'Improvement in Weaving Straw with Silk or Thread',
+    inventor: 'Mary Dixon Kies',
+    year: '1809 · First US patent issued to a woman — original document destroyed in the 1836 Patent Office fire',
+    sourceUrl: 'https://www.invent.org/inductees/mary-dixon-kies',
+    flag: 'No copy of this patent survives — the text below is an illustrative recreation in period patent style, not the original document.',
+    robotNote: 'Cooking is one of the primary targets of domestic robotics today — companies including Moley Robotics, Samsung Bot Chef, and Miso Robotics are developing automated cooking systems. Mary Dixon Kies\'s actual invention had nothing to do with stoves: it was a technique for weaving straw with silk and thread, used to manufacture hats. It is included here because she is, by Patent Office tradition, the first woman issued a US patent in her own name — a foundational fact for every other inventor in this archive, even though her own patent record no longer exists to verify it.',
     reflectQ: 'Mary Dixon Kies received the first US patent issued to a woman in 1809 — for a method of weaving straw with silk and thread. President Madison\'s wife Dolley congratulated her personally. Her patent is lost; no copy survives. What does it mean that the first patent issued to a woman in the United States no longer exists?',
-    text: `Be it known that improvements in cooking stoves have been devised for the purpose of producing a more efficient, economical, and convenient apparatus for the preparation of food in the household, and of which the following is a description.
+    text: `Be it known that I, Mary Kies, of Killingly, in the county of Windham and State of Connecticut, have invented a new and useful improvement in the art of weaving straw, of which the following is a description.
 
-The object of this improvement is to provide a cooking stove which shall consume fuel more economically than existing stoves, distribute heat more evenly to the vessels placed upon it, and afford greater convenience to the operator in the management of the fire and in the regulation of the heat applied to each cooking vessel.
+My improvement relates to a method of weaving straw together with silk or thread, so that the bonnets, hats, and other articles made from the resulting fabric are stronger and better finished than those made from straw alone.
 
-The stove consists of a cast-iron body of improved form, provided with a firebox of increased capacity and improved arrangement, a series of cooking holes or openings in the top plate of suitable sizes for receiving cooking vessels of various dimensions, and an oven of improved construction arranged within the body of the stove in such a position as to receive an equal and uniform distribution of heat from the fire.
+The object of my invention is to furnish a process by which straw bonnets and hats may be manufactured more economically and with greater durability, employing materials produced within the United States in place of the imported goods heretofore relied upon.
 
-The draft and damper arrangements are improved so as to give the operator more complete control over the fire and the distribution of heat. By means of these improvements the heat may be concentrated upon any one of the cooking holes, or distributed equally to all of them, as desired, and the temperature of the oven may be regulated independently of the heat applied to the cooking holes.
+In the practice of my invention, strands of silk or thread are interwoven with the straw at the seams and points of greatest strain, binding the cross-hatching firmly together and preventing the unraveling that occurs in straw goods woven by the ordinary method.
 
-The construction of the stove is simple and durable, and it may be manufactured at no greater cost than existing stoves, while its efficiency and convenience in use are greatly superior. The improvements in the draft and damper arrangements enable the operator to manage the fire with great facility, and to regulate the heat applied to each cooking vessel with precision and certainty.
-
-The improved oven is so constructed and arranged as to receive and retain heat equally throughout its interior, and to maintain a uniform temperature for the baking of bread, pastry, and other articles of food requiring even and steady heat for their proper preparation.`
+This improvement is well suited to household and small-shop manufacture, requiring no machinery beyond that already in common use, and may be readily taught to and practiced by women engaged in the domestic straw-hat trade.`
   }
 ];
 
@@ -734,6 +754,9 @@ function loadPatent(idx) {
   document.getElementById('patentInventor').innerHTML = 'Inventor: <strong>' + p.inventor + '</strong>';
   document.getElementById('patentYear').textContent = p.year;
   document.getElementById('robotNote').textContent = p.robotNote;
+  document.getElementById('patentSource').innerHTML =
+    (p.sourceUrl ? '<a href="' + p.sourceUrl + '" target="_blank" rel="noopener">✦ Verify this patent →</a>' : '')
+    + (p.flag ? ' <span class="patent-flag">⚠ ' + p.flag + '</span>' : '');
 
   // Progress bar
   document.getElementById('progFill').style.width = (idx / PATENTS.length * 100) + '%';
@@ -1003,6 +1026,7 @@ function showCompletion() {
     }
   })();
 
+  const inventorList = allSessionData.map(d => d.patent.inventor).join(', ');
   slot.innerHTML = `
     <div class="completion">
       <div class="ctx-eyebrow">✦ CAREBOT-40 · Session Complete</div>
@@ -1014,7 +1038,7 @@ function showCompletion() {
         <div class="stat-bubble"><div class="sb-num" style="background:linear-gradient(135deg,#40c4ff,#0288d1);-webkit-background-clip:text;background-clip:text;color:transparent">${totalMechanical}</div><div class="sb-lbl">Mechanical words</div></div>
         <div class="stat-bubble"><div class="sb-num" style="color:var(--cream)">${totalWords}</div><div class="sb-lbl">Total found</div></div>
       </div>
-      <div class="insight-block">✦ <strong>What CAREBOT-40 sees in your data:</strong><br><br>${insight}<br><br>The inventors whose patents you just read: Sarah Boone, Josephine Cochrane, Margaret Knight, Ellen Eglin, Alice Parker, Mary Phelps Jacob. Their inventions are now used by humanoid robots in domestic automation trials. The domestic and the technical were never separate. The patents prove it. <strong>The robots prove it again.</strong></div>
+      <div class="insight-block">✦ <strong>What CAREBOT-40 sees in your data:</strong><br><br>${insight}<br><br>The inventors whose patents you just read: ${inventorList}. Several of their inventions are now used by humanoid robots in domestic automation trials. The domestic and the technical were never separate. The patents prove it. <strong>The robots prove it again.</strong></div>
       <a class="btn primary" href="carebot07-hit.html" style="text-decoration:none;display:inline-flex;margin:0 auto;">✦ Advance to next task</a>
     </div>`;
 }
