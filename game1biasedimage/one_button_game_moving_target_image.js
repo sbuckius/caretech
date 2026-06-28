@@ -40,13 +40,13 @@ function draw() {
     fill('pink');
     textAlign(CENTER, CENTER);
     // Dynamically scale text to fit any screen size
-    let tSize = min(width, height) / 25; // smaller on phones
+    let tSize = min(width, height) / 10; // smaller on phones
     text("You win! You clicked the biased image!", width / 2, height / 2.2);
 
     // Draw clickable link below message
     fill('red');
-    textSize(tSize * .9);
-    text("→ Go To Next HIT!", width / 2, height / 2 + tSize * 1.5);
+    textSize(tSize * 2);
+    text("→ ", width / 2, height / 2 + tSize * 1.5);
     noLoop();
     return;
   }
