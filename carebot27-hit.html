@@ -33,7 +33,7 @@
   .screen{position:relative;z-index:2;min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:max(16px,env(safe-area-inset-top)) clamp(12px,4vmin,22px) calc(44px + env(safe-area-inset-bottom));gap:13px;}
 
   /* TOPBAR */
-  .cb-topbar{width:100%;max-width:620px;display:flex;align-items:center;justify-content:space-between;}
+  .cb-topbar{width:100%;max-width:620px;display:flex;align-items:center;justify-content:space-between;position:relative;z-index:56;}
   .cb-logo{display:flex;align-items:center;gap:10px;}
   .cb-icon{width:40px;height:40px;border-radius:12px;background:rgba(255,60,120,.16);border:1.5px solid var(--border2);display:flex;align-items:center;justify-content:center;font-size:18px;animation:wobble 4s ease-in-out infinite;}
   @keyframes wobble{0%,100%{transform:rotate(-2deg) scale(1)}25%{transform:rotate(1.5deg) scale(1.04)}50%{transform:rotate(-1deg)}75%{transform:rotate(2deg) scale(1.03)}}
@@ -104,7 +104,7 @@
   .pdf-link:hover{transform:translateY(-2px);box-shadow:0 6px 18px rgba(255,60,120,.46);}
 
   /* STATS BAR */
-  .stats-bar{width:100%;max-width:620px;display:flex;align-items:center;gap:.6rem;flex-wrap:wrap;padding:.5rem .9rem;background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:13px;}
+  .stats-bar{width:100%;max-width:620px;display:flex;align-items:center;gap:.6rem;flex-wrap:wrap;padding:.5rem .9rem;background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:13px;position:relative;z-index:56;}
   .stat-chip{display:flex;align-items:center;gap:.3rem;font-size:.62rem;font-weight:700;color:var(--muted);letter-spacing:.06em;text-transform:uppercase;background:rgba(255,60,120,.06);border:1px solid rgba(255,60,120,.13);border-radius:999px;padding:.18rem .6rem;}
   .stat-chip strong{color:var(--candy);}
 
@@ -122,6 +122,11 @@
   .rank-item.drag-over{border-color:var(--pink);background:rgba(255,60,120,.12);transform:translateY(-2px);box-shadow:0 4px 16px rgba(255,60,120,.2);}
   .rank-num{width:22px;height:22px;border-radius:50%;background:linear-gradient(135deg,rgba(255,60,120,.28),rgba(200,0,80,.22));border:1px solid rgba(255,80,150,.3);display:flex;align-items:center;justify-content:center;font-family:var(--fh);font-weight:900;font-size:10px;color:var(--candy);flex-shrink:0;}
   .rank-drag-handle{color:rgba(255,140,185,.3);font-size:13px;flex-shrink:0;cursor:grab;}
+  .rank-arrows{display:flex;flex-direction:column;gap:3px;flex-shrink:0;}
+  .rank-arrow-btn{appearance:none;width:30px;height:24px;border-radius:7px;border:1px solid rgba(255,80,150,.3);background:rgba(255,60,120,.1);color:var(--candy);font-size:12px;line-height:1;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .15s;-webkit-tap-highlight-color:transparent;touch-action:manipulation;}
+  .rank-arrow-btn:hover{background:rgba(255,60,120,.22);}
+  .rank-arrow-btn:active{transform:scale(.92);}
+  .rank-arrow-btn:disabled{opacity:.2;cursor:not-allowed;}
   .rank-info{flex:1;min-width:0;}
   .rank-fn{font-family:'Courier New',monospace;font-size:13px;font-weight:700;color:var(--cream);letter-spacing:.04em;}
   .rank-desc{font-size:10px;color:var(--muted);margin-top:2px;line-height:1.4;}
@@ -132,6 +137,32 @@
   .rank-submit:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(255,60,120,.44);}
   .rank-submit:disabled{opacity:.4;cursor:not-allowed;transform:none;box-shadow:none;}
   .rank-submit.done{background:linear-gradient(135deg,rgba(100,200,100,.4),rgba(60,160,60,.5));box-shadow:none;cursor:default;}
+
+  /* PAGE GATE — full-screen slideshow before the task */
+  .page-card{display:none;}
+  .page-card.active{
+    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;
+    position:fixed;left:0;right:0;bottom:0;top:0;z-index:55;
+    padding:20px clamp(14px,5vmin,28px) calc(28px + env(safe-area-inset-bottom));
+    background:linear-gradient(155deg,#2c0014,#1e000c 55%,#120007);
+    overflow-y:auto;
+    animation:slideFade .38s ease-out;
+  }
+  @keyframes slideFade{from{opacity:0;transform:translateX(22px)}to{opacity:1;transform:translateX(0)}}
+  .page-card.active.back-nav{animation:slideFadeBack .38s ease-out;}
+  @keyframes slideFadeBack{from{opacity:0;transform:translateX(-22px)}to{opacity:1;transform:translateX(0)}}
+  .page-card > *:not(.slide-nav):not(.page-dots){width:100%;max-width:620px;flex-shrink:0;}
+  .slide-counter{font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);text-align:center;}
+  .page-dots{display:flex;align-items:center;justify-content:center;gap:7px;width:100%;max-width:620px;}
+  .page-dot{width:7px;height:7px;border-radius:50%;background:rgba(255,140,185,.2);transition:all .2s;cursor:pointer;}
+  .page-dot.done{background:var(--candy);}
+  .page-dot.active{background:var(--pink);width:18px;border-radius:4px;}
+  .slide-nav{width:100%;max-width:620px;display:flex;align-items:center;justify-content:space-between;gap:10px;}
+  .slide-back-btn{appearance:none;font-family:var(--fh);font-weight:900;font-size:11px;letter-spacing:.06em;color:var(--muted);background:rgba(255,255,255,.04);border:1.5px solid var(--border);border-radius:10px;padding:9px 16px;cursor:pointer;transition:all .2s;white-space:nowrap;}
+  .slide-back-btn:hover{border-color:var(--candy);color:var(--candy);}
+  .slide-back-btn:disabled{opacity:0;visibility:hidden;cursor:default;}
+  .page-continue-btn{appearance:none;font-family:var(--fh);font-weight:900;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--cream);background:linear-gradient(135deg,var(--pink),var(--berry));border:none;border-radius:10px;padding:9px 20px;cursor:pointer;box-shadow:0 3px 14px rgba(255,60,120,.3);transition:all .2s;white-space:nowrap;margin-left:auto;}
+  .page-continue-btn:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(255,60,120,.44);}
 
   /* INPUT */
   .cb-input-card{width:100%;max-width:620px;background:var(--surface);border:1.5px solid var(--border2);border-radius:18px;padding:17px;position:relative;overflow:hidden;}
@@ -228,6 +259,10 @@
     <div class="stat-chip">Online <strong id="st-online">—</strong></div>
   </div>
 
+  <!-- PAGE 1 -->
+  <div class="page-card" id="page1">
+  <div class="slide-counter">Slide 1 of 4 · Critical context</div>
+  <div class="page-dots" id="dots1"></div>
   <!-- CONTEXT BANNER -->
   <div class="irony-card">
     <div class="irony-eyebrow">✦ Critical Context · Read Before Asking</div>
@@ -240,6 +275,16 @@
 
   <div class="ai-note">✦ <strong>AI helped me with this.</strong> There might be inaccuracies — please check the linked sources.</div>
 
+  <div class="slide-nav">
+    <button class="slide-back-btn" onclick="goToPage(0)" disabled>← Back</button>
+    <button class="page-continue-btn" onclick="goToPage(2)">Continue ✦</button>
+  </div>
+  </div>
+
+  <!-- PAGE 2 -->
+  <div class="page-card" id="page2">
+  <div class="slide-counter">Slide 2 of 4 · The women behind the Handbook</div>
+  <div class="page-dots" id="dots2"></div>
   <!-- WOMEN OF THE HANDBOOK -->
   <div class="women-card">
     <div class="cb-eyebrow">✦ The Women Behind the Handbook</div>
@@ -281,6 +326,16 @@
     </div>
   </div>
 
+  <div class="slide-nav">
+    <button class="slide-back-btn" onclick="goToPage(1)">← Back</button>
+    <button class="page-continue-btn" onclick="goToPage(3)">Continue ✦</button>
+  </div>
+  </div>
+
+  <!-- PAGE 3 -->
+  <div class="page-card" id="page3">
+  <div class="slide-counter">Slide 3 of 4 · Archive images</div>
+  <div class="page-dots" id="dots3"></div>
   <!-- PHOTO GRID -->
   <div class="cb-card">
     <div class="cb-eyebrow">✦ Archive Images · Place files in /images/ named aands01.png through aands06.png</div>
@@ -294,6 +349,16 @@
     </div>
   </div>
 
+  <div class="slide-nav">
+    <button class="slide-back-btn" onclick="goToPage(2)">← Back</button>
+    <button class="page-continue-btn" onclick="goToPage(4)">Continue ✦</button>
+  </div>
+  </div>
+
+  <!-- PAGE 4 -->
+  <div class="page-card" id="page4">
+  <div class="slide-counter">Slide 4 of 4 · Primary source</div>
+  <div class="page-dots" id="dots4"></div>
   <!-- PDF LINK -->
   <div class="cb-card">
     <div class="cb-eyebrow">✦ Primary Source · Full Handbook PDF</div>
@@ -308,8 +373,14 @@
     </div>
   </div>
 
-  <!-- RANKING MODULE -->
-  <div class="rank-card">
+  <div class="slide-nav">
+    <button class="slide-back-btn" onclick="goToPage(3)">← Back</button>
+    <button class="page-continue-btn" onclick="goToPage(5)">Continue to the task ✦</button>
+  </div>
+  </div>
+
+  <!-- RANKING MODULE (gated — appears after page 4) -->
+  <div class="rank-card" id="rankCard" style="display:none;">
     <div class="rank-header">
       <div class="rank-eyebrow">✦ CAREBOT-27 · Ranking Task · Drag to Reorder</div>
       <div class="rank-title">Which mathematical functions from the Handbook are most cited in AI &amp; machine learning today?</div>
@@ -317,7 +388,7 @@
     </div>
     <div class="rank-list" id="rankList"></div>
     <div class="rank-footer">
-      <div class="rank-hint">✦ Drag items to reorder · Then submit your ranking</div>
+      <div class="rank-hint">✦ Drag to reorder (desktop) or tap ▲▼ (mobile) · Then submit your ranking</div>
       <button class="rank-submit" id="rankSubmitBtn" onclick="submitRanking()">✦ Submit Ranking</button>
     </div>
   </div>
@@ -404,6 +475,64 @@ const MAX_DISPLAY=3;
 /* clock */
 function updateClock(){const n=new Date(),p=v=>String(v).padStart(2,'0');document.getElementById('sysTime').textContent=p(n.getHours())+':'+p(n.getMinutes());}
 setInterval(updateClock,1000);updateClock();
+
+/* PAGE GATE — slideshow */
+const TOTAL_PAGES=4;
+let currentPage=1;
+function renderDots(current){
+  for(let p=1;p<=TOTAL_PAGES;p++){
+    const wrap=document.getElementById('dots'+p);
+    if(!wrap)continue;
+    wrap.innerHTML='';
+    for(let i=1;i<=TOTAL_PAGES;i++){
+      const d=document.createElement('span');
+      d.className='page-dot'+(i===current?' active':i<current?' done':'');
+      if(i<current)d.onclick=()=>goToPage(i);
+      wrap.appendChild(d);
+    }
+  }
+}
+function positionSlide(el){
+  const statsBar=document.querySelector('.stats-bar');
+  const top=statsBar?statsBar.getBoundingClientRect().bottom+13:0;
+  el.style.top=top+'px';
+}
+function goToPage(next){
+  const dir=next<currentPage?'back':'forward';
+  const curEl=document.getElementById('page'+currentPage);
+  if(curEl)curEl.classList.remove('active','back-nav');
+  if(next>TOTAL_PAGES){
+    document.getElementById('rankCard').style.display='';
+    window.scrollTo({top:0,behavior:'smooth'});
+    currentPage=TOTAL_PAGES+1;
+    return;
+  }
+  if(next<1)return;
+  currentPage=next;
+  const nextEl=document.getElementById('page'+next);
+  nextEl.classList.add('active');
+  positionSlide(nextEl);
+  if(dir==='back')nextEl.classList.add('back-nav');
+  nextEl.scrollTop=0;
+  renderDots(next);
+}
+document.addEventListener('keydown',e=>{
+  if(currentPage>TOTAL_PAGES)return;
+  if(e.key==='ArrowRight')goToPage(currentPage+1);
+  if(e.key==='ArrowLeft')goToPage(currentPage-1);
+});
+let touchStartX=null;
+document.addEventListener('touchstart',e=>{if(currentPage<=TOTAL_PAGES)touchStartX=e.touches[0].clientX;},{passive:true});
+document.addEventListener('touchend',e=>{
+  if(touchStartX===null||currentPage>TOTAL_PAGES)return;
+  const dx=e.changedTouches[0].clientX-touchStartX;
+  if(Math.abs(dx)>60)goToPage(currentPage+(dx<0?1:-1));
+  touchStartX=null;
+});
+document.getElementById('page1').classList.add('active');
+positionSlide(document.getElementById('page1'));
+renderDots(1);
+window.addEventListener('resize',()=>{if(currentPage<=TOTAL_PAGES)positionSlide(document.getElementById('page'+currentPage));});
 
 /* sparkles */
 (function(){const w=document.getElementById('sparkles');const c=['✦','✧','∑','∫','π','∞','·','◦','Γ','ζ'];for(let i=0;i<28;i++){const s=document.createElement('span');s.className='sp';s.textContent=c[Math.floor(Math.random()*c.length)];s.style.left=Math.random()*100+'vw';s.style.bottom=Math.random()*-60+'px';s.style.fontSize=(9+Math.random()*10)+'px';s.style.color='hsl('+(315+Math.random()*45)+',75%,'+(65+Math.random()*22)+'%)';s.style.animationDuration=(7+Math.random()*13)+'s';s.style.animationDelay=(Math.random()*13)+'s';w.appendChild(s);}})();
@@ -495,16 +624,21 @@ function renderRankList(){
     item.className='rank-item';
     item.dataset.idx=fi;
     item.draggable=true;
-    item.innerHTML='<span class="rank-num">'+(pos+1)+'</span><span class="rank-drag-handle">⠿</span><div class="rank-info"><div class="rank-fn">'+escH(f.fn)+' — '+escH(f.name)+'</div><div class="rank-desc">'+escH(f.desc)+'</div></div><span class="rank-tag">'+escH(f.tag)+'</span>';
+    item.innerHTML='<span class="rank-num">'+(pos+1)+'</span><span class="rank-drag-handle">⠿</span><div class="rank-info"><div class="rank-fn">'+escH(f.fn)+' — '+escH(f.name)+'</div><div class="rank-desc">'+escH(f.desc)+'</div></div><span class="rank-tag">'+escH(f.tag)+'</span><div class="rank-arrows"><button class="rank-arrow-btn" type="button" aria-label="Move up" '+(pos===0?'disabled':'')+' onclick="moveItem('+pos+',-1)">▲</button><button class="rank-arrow-btn" type="button" aria-label="Move down" '+(pos===rankOrder.length-1?'disabled':'')+' onclick="moveItem('+pos+',1)">▼</button></div>';
     item.addEventListener('dragstart',e=>{dragSrcIdx=pos;item.classList.add('dragging');e.dataTransfer.effectAllowed='move';});
     item.addEventListener('dragend',()=>{item.classList.remove('dragging');document.querySelectorAll('.rank-item').forEach(i=>i.classList.remove('drag-over'));});
     item.addEventListener('dragover',e=>{e.preventDefault();e.dataTransfer.dropEffect='move';document.querySelectorAll('.rank-item').forEach(i=>i.classList.remove('drag-over'));item.classList.add('drag-over');});
     item.addEventListener('drop',e=>{e.preventDefault();if(dragSrcIdx===null||dragSrcIdx===pos)return;const moved=rankOrder.splice(dragSrcIdx,1)[0];rankOrder.splice(pos,0,moved);dragSrcIdx=null;renderRankList();});
-    // touch support
-    item.addEventListener('touchstart',e=>{dragSrcIdx=pos;item.classList.add('dragging');},{passive:true});
-    item.addEventListener('touchend',()=>{item.classList.remove('dragging');});
     list.appendChild(item);
   });
+}
+
+function moveItem(pos,dir){
+  if(rankingSubmitted)return;
+  const target=pos+dir;
+  if(target<0||target>=rankOrder.length)return;
+  const tmp=rankOrder[pos];rankOrder[pos]=rankOrder[target];rankOrder[target]=tmp;
+  renderRankList();
 }
 
 function submitRanking(){
@@ -515,7 +649,7 @@ function submitRanking(){
   rankingSubmitted=true;
   const btn=document.getElementById('rankSubmitBtn');
   btn.textContent='✓ Ranking Submitted';btn.classList.add('done');btn.disabled=true;
-  document.querySelectorAll('.rank-item').forEach(i=>{i.draggable=false;i.style.cursor='default';i.querySelector('.rank-drag-handle').style.opacity='.15';});
+  document.querySelectorAll('.rank-item').forEach(i=>{i.draggable=false;i.style.cursor='default';i.querySelector('.rank-drag-handle').style.opacity='.15';i.querySelectorAll('.rank-arrow-btn').forEach(b=>b.disabled=true);});
 }
 
 /* SURVEY MODULE */
