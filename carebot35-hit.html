@@ -153,6 +153,27 @@ input[type=range]{width:100%;accent-color:var(--pink);height:4px;cursor:pointer;
 .chip-btn.active{background:rgba(255,60,120,.22);border-color:var(--pink);color:var(--cream);}
 .mod-divider{height:1px;background:rgba(255,100,150,.15);margin:16px 0;}
 .mod-sectiontag{font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:var(--candy);font-weight:700;margin-bottom:8px;margin-top:2px;}
+
+/* SLIDE DECK */
+.deck{width:100%;max-width:700px;}
+.deck-progress{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:9px;padding:0 2px;}
+.deck-progress-txt{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-weight:700;}
+.deck-dots{display:flex;gap:5px;}
+.deck-dot{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.14);transition:all .2s;}
+.deck-dot.active{background:var(--pink);width:16px;border-radius:4px;}
+.deck-dot.done{background:rgba(255,133,179,.5);}
+.slide{display:none;}
+.slide.active{display:block;animation:slideUp .3s ease-out;}
+.deck-nav{display:flex;gap:9px;margin-top:13px;}
+.deck-nav .cb-btn{flex:1;justify-content:center;}
+.rank-list{display:flex;flex-direction:column;gap:7px;margin-top:4px;}
+.rank-item{display:flex;align-items:center;gap:10px;background:rgba(255,255,255,.05);border:1.5px solid var(--border);border-radius:11px;padding:9px 11px;transition:border-color .2s;}
+.rank-num{font-family:var(--fh);font-weight:900;font-size:13px;color:var(--candy);width:20px;text-align:center;flex-shrink:0;}
+.rank-label{flex:1;font-size:12px;font-weight:700;color:var(--cream);line-height:1.4;}
+.rank-arrows{display:flex;flex-direction:column;gap:2px;}
+.rank-arrow{appearance:none;background:rgba(255,60,120,.14);border:1px solid var(--border2);color:var(--candy);border-radius:6px;width:24px;height:19px;font-size:10px;cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1;}
+.rank-arrow:hover{background:rgba(255,60,120,.28);}
+.rank-arrow:disabled{opacity:.25;cursor:not-allowed;}
 </style>
 </head>
 <body>
@@ -178,10 +199,19 @@ input[type=range]{width:100%;accent-color:var(--pink);height:4px;cursor:pointer;
 
   <div class="stats-bar">
     <div class="stat-chip">Responses <strong id="st-r">—</strong></div>
+    <div class="stat-chip">Rankings <strong id="st-k">—</strong></div>
     <div class="stat-chip">Avg irony score <strong id="st-i">—</strong></div>
     <div class="stat-chip">Online <strong id="st-o">—</strong></div>
   </div>
 
+  <!-- SLIDE DECK -->
+  <div class="deck">
+    <div class="deck-progress">
+      <div class="deck-progress-txt" id="deckProgTxt">Slide 1 of 4 · The Irony</div>
+      <div class="deck-dots" id="deckDots"></div>
+    </div>
+
+  <div class="slide active" data-slide="1">
   <!-- IRONY CARD -->
   <div class="irony-card">
     <div class="irony-eyebrow">✦ CAREBOT-35 · The Irony</div>
@@ -194,7 +224,10 @@ input[type=range]{width:100%;accent-color:var(--pink);height:4px;cursor:pointer;
   </div>
 
   <div class="ai-disclosure">✦ AI helped me with this. There might be inaccuracies.</div>
+  <div class="deck-nav"><button class="cb-btn primary full" onclick="deckGo(2)">Continue ✦</button></div>
+  </div><!-- end slide 1 -->
 
+  <div class="slide" data-slide="2">
   <!-- TWO-COLUMN EVIDENCE -->
   <div class="two-col">
     <div class="col-card pro">
@@ -236,8 +269,10 @@ input[type=range]{width:100%;accent-color:var(--pink);height:4px;cursor:pointer;
       </div>
     </div>
   </div>
+  <div class="deck-nav"><button class="cb-btn soft" onclick="deckGo(1)">← Back</button><button class="cb-btn primary full" onclick="deckGo(3)">Continue ✦</button></div>
+  </div><!-- end slide 2 -->
 
-  
+  <div class="slide" data-slide="3">
   <!-- BARRIERS SECTION -->
   <div class="barriers-section" style="width:100%;max-width:700px;">
     <div style="font-family:var(--fh);font-weight:900;font-size:14px;background:linear-gradient(90deg,var(--blush),var(--pink));-webkit-background-clip:text;background-clip:text;color:transparent;margin-bottom:4px;">✦ The Specific Barriers — What the Articles Don't Say</div>
@@ -324,6 +359,17 @@ input[type=range]{width:100%;accent-color:var(--pink);height:4px;cursor:pointer;
         <div style="margin-top:5px;font-size:9.5px;color:var(--muted);font-style:italic;">Sources: <a href="https://scholarworks.merrimack.edu/cgi/viewcontent.cgi?article=1131&context=soe_student_ce" target="_blank" style="color:var(--candy);text-decoration:none;">Torres et al. (2024) Motherhood Penalty</a> · <a href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC12793722/" target="_blank" style="color:var(--candy);text-decoration:none;">PMC Social Mobility Study (2025)</a></div>
       </div>
 
+    </div><!-- end barriers grid slide3 -->
+  </div><!-- end barriers section slide3 -->
+  <div class="deck-nav"><button class="cb-btn soft" onclick="deckGo(2)">← Back</button><button class="cb-btn primary full" onclick="deckGo(4)">Continue ✦</button></div>
+  </div><!-- end slide 3 -->
+
+  <div class="slide" data-slide="4">
+  <div class="barriers-section" style="width:100%;max-width:700px;">
+    <div style="font-family:var(--fh);font-weight:900;font-size:14px;background:linear-gradient(90deg,var(--blush),var(--pink));-webkit-background-clip:text;background-clip:text;color:transparent;margin-bottom:4px;">✦ The Specific Barriers, Continued — 6 Through 9</div>
+    <div style="font-size:11px;color:var(--muted);margin-bottom:12px;line-height:1.6;">Four more documented, named barriers — none of them personal failings.</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+
       <div class="barrier-card" style="background:rgba(255,60,120,.07);border:1.5px solid rgba(255,60,120,.28);border-radius:14px;padding:14px;position:relative;overflow:hidden;">
         <div style="position:absolute;top:0;left:8%;right:8%;height:1px;background:linear-gradient(90deg,transparent,#ff85b3 50%,transparent);border-radius:999px;"></div>
         <div style="font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:var(--candy);font-weight:700;margin-bottom:6px;">✦ Barrier 6</div>
@@ -361,6 +407,24 @@ input[type=range]{width:100%;accent-color:var(--pink);height:4px;cursor:pointer;
 
     </div><!-- end barriers grid -->
   </div><!-- end barriers section -->
+  <div class="deck-nav"><button class="cb-btn soft" onclick="deckGo(3)">← Back</button><button class="cb-btn primary full" onclick="deckGo(5)">Continue to the task ✦</button></div>
+  </div><!-- end slide 4 -->
+
+  </div><!-- end deck -->
+
+<div id="taskSection" style="width:100%;display:flex;flex-direction:column;align-items:center;gap:13px;">
+
+<!-- RANKING TASK -->
+  <div class="cb-card">
+    <div class="cb-eyebrow">✦ Ranking Task · What Would Actually Help</div>
+    <div style="font-family:var(--fh);font-weight:900;font-size:14px;color:var(--blush);margin-bottom:6px;line-height:1.4;">Rank these interventions from most likely to keep mothers in the workforce (#1) to least (#8).</div>
+    <div style="font-size:11px;color:var(--muted);margin-bottom:10px;line-height:1.6;">Trust your own judgment — there's no single correct order. Use the ▲▼ buttons to reorder.</div>
+    <div class="rank-list" id="rankList"></div>
+    <div class="mod-footer" style="padding:13px 0 0;border-top:none;">
+      <div class="mod-progress" id="rankProg">Reorder, then submit</div>
+      <button class="mod-submit" id="rankSubmit" onclick="submitRanking()">✦ Submit Ranking</button>
+    </div>
+  </div>
 
 <!-- DATA MODULE -->
   <div class="mod-card">
@@ -407,8 +471,16 @@ input[type=range]{width:100%;accent-color:var(--pink);height:4px;cursor:pointer;
         <button class="rate-btn" onclick="selectBarrier(this,'dependents')">Dependents</button>
         <button class="rate-btn" onclick="selectBarrier(this,'ideal_worker')">Ideal worker assumption</button>
       </div>
-      <div class="open-label">In one sentence: what would actually need to change for this irony to stop being true?</div>
-      <textarea class="open-q" id="openQ" placeholder="Be specific — policy, money, culture, infrastructure, something else?"></textarea>
+      <div class="open-label">What would actually need to change for this irony to stop being true?</div>
+      <div class="rate-row" id="changeRow">
+        <button class="rate-btn" onclick="selectChange(this,'childcare')">Subsidized / affordable childcare</button>
+        <button class="rate-btn" onclick="selectChange(this,'leave')">Paid family leave policy</button>
+        <button class="rate-btn" onclick="selectChange(this,'flex')">Remote / flexible work norms</button>
+        <button class="rate-btn" onclick="selectChange(this,'pay')">Pay equity enforcement</button>
+        <button class="rate-btn" onclick="selectChange(this,'healthcare')">Healthcare decoupled from employment</button>
+        <button class="rate-btn" onclick="selectChange(this,'culture')">Cultural shift in who does unpaid labor</button>
+        <button class="rate-btn" onclick="selectChange(this,'nothing')">Nothing — this won't meaningfully change</button>
+      </div>
 
       <div class="mod-divider"></div>
       <div class="mod-sectiontag">✦ More about the situation</div>
@@ -445,6 +517,25 @@ input[type=range]{width:100%;accent-color:var(--pink);height:4px;cursor:pointer;
         <div class="slider-val" id="sv-impact">5</div>
         <div class="slider-ends"><span>not a factor</span><span>shapes everything</span></div>
       </div>
+      <div class="open-label">Have you personally made a career or work decision because of barriers like these?</div>
+      <div class="rate-row" id="decisionRow">
+        <button class="rate-btn" onclick="selectDecision(this,'currently')">Yes — I'm doing it right now</button>
+        <button class="rate-btn" onclick="selectDecision(this,'past')">Yes — in the past</button>
+        <button class="rate-btn" onclick="selectDecision(this,'considered')">Considered it, haven't yet</button>
+        <button class="rate-btn" onclick="selectDecision(this,'no')">No, not applicable to me</button>
+        <button class="rate-btn" onclick="selectDecision(this,'prefer_not')">Prefer not to say</button>
+      </div>
+      <div class="open-label">Which of these would most help YOU personally, right now? (Choose as many as fit.)</div>
+      <div class="chip-row" id="helpRow">
+        <button class="chip-btn" onclick="toggleHelp(this,'flex_hours')">More flexible hours</button>
+        <button class="chip-btn" onclick="toggleHelp(this,'childcare')">Affordable / subsidized childcare</button>
+        <button class="chip-btn" onclick="toggleHelp(this,'partner')">Partner / family doing more</button>
+        <button class="chip-btn" onclick="toggleHelp(this,'employer_policy')">Employer policy change</button>
+        <button class="chip-btn" onclick="toggleHelp(this,'financial')">Financial cushion / savings</button>
+        <button class="chip-btn" onclick="toggleHelp(this,'eldercare')">Eldercare support</button>
+        <button class="chip-btn" onclick="toggleHelp(this,'support_network')">Stronger support network</button>
+        <button class="chip-btn" onclick="toggleHelp(this,'none')">None of these apply to me</button>
+      </div>
 
       <div class="mod-divider"></div>
       <div class="mod-sectiontag">✦ How do you feel about it?</div>
@@ -460,7 +551,14 @@ input[type=range]{width:100%;accent-color:var(--pink);height:4px;cursor:pointer;
         <button class="chip-btn" onclick="toggleFeeling(this,'numb')">Numb — heard it too many times</button>
         <button class="chip-btn" onclick="toggleFeeling(this,'surprised')">Genuinely surprised</button>
       </div>
-      <div class="open-label">Say a bit more about how this makes you feel, if you want to.</div>
+      <div class="open-label">How likely are you to share this information with someone else?</div>
+      <div class="rate-row" id="shareRow">
+        <button class="rate-btn" onclick="selectShare(this,'very')">Very likely</button>
+        <button class="rate-btn" onclick="selectShare(this,'somewhat')">Somewhat likely</button>
+        <button class="rate-btn" onclick="selectShare(this,'unlikely')">Unlikely</button>
+        <button class="rate-btn" onclick="selectShare(this,'already')">I already have, with someone</button>
+      </div>
+      <div class="open-label">Anything else you want to add? (optional)</div>
       <textarea class="open-q" id="impactNote" placeholder="Optional — anything you want to add about your own reaction or experience"></textarea>
     </div>
     <div class="mod-footer">
@@ -487,6 +585,7 @@ input[type=range]{width:100%;accent-color:var(--pink);height:4px;cursor:pointer;
     <a class="cb-link" href="carebot07-hit.html">✦ Advance to next task</a>
   </div>
   <div class="cb-wmark">✦ carebot-35 · your skills are invaluable · also please leave · caretech ✦</div>
+</div><!-- end taskSection -->
 </div>
 
 <div class="cb-modal" id="adminModal">
@@ -508,14 +607,14 @@ function updateClock(){const n=new Date(),p=v=>String(v).padStart(2,'0');documen
 setInterval(updateClock,1000);updateClock();
 (function(){const w=document.getElementById('sparkles');const c=['✦','🧺','˚','·','◦','▫'];for(let i=0;i<24;i++){const s=document.createElement('span');s.className='sp';s.textContent=c[Math.floor(Math.random()*c.length)];s.style.left=Math.random()*100+'vw';s.style.bottom=Math.random()*-60+'px';s.style.fontSize=(8+Math.random()*10)+'px';s.style.color='hsl('+(330+Math.random()*40)+',65%,'+(60+Math.random()*25)+'%)';s.style.animationDuration=(7+Math.random()*13)+'s';s.style.animationDelay=(Math.random()*13)+'s';w.appendChild(s);}})();
 
-let db,msgRef,respRef,onlineRef,fbReady=false;
+let db,msgRef,respRef,rankRef,onlineRef,fbReady=false;
 let currentUser=localStorage.getItem('cb35Anon')||('anon_'+Math.random().toString(36).slice(2,10));
 localStorage.setItem('cb35Anon',currentUser);
 let userColor=localStorage.getItem('cb35Color')||genColor();
 function genColor(){const c=['#ff85b3','#ff2d6b','#ffb3cf','#c4005a'];const v=c[Math.floor(Math.random()*c.length)];localStorage.setItem('cb35Color',v);return v;}
 try{
   firebase.initializeApp({apiKey:"AIzaSyCZFDU-WlSmHqjXTs1Ox0nf9xeJU_xbaX0",authDomain:"collaborativemashup.firebaseapp.com",databaseURL:"https://collaborativemashup-default-rtdb.firebaseio.com",projectId:"collaborativemashup",storageBucket:"collaborativemashup.firebasestorage.app",messagingSenderId:"562437984610",appId:"1:562437984610:web:9f3711c26e097bc8ef9c3b"});
-  db=firebase.database();msgRef=db.ref('cb35Messages');respRef=db.ref('cb35Responses');onlineRef=db.ref('cb35Online');fbReady=true;
+  db=firebase.database();msgRef=db.ref('cb35Messages');respRef=db.ref('cb35Responses');rankRef=db.ref('cb35Rankings');onlineRef=db.ref('cb35Online');fbReady=true;
   trackPresence();
   respRef.on('value',s=>{
     const all=[];s.forEach(c=>all.push(c.val()));
@@ -523,6 +622,7 @@ try{
     if(all.length){const avg=(all.reduce((a,b)=>a+(b.surprise||0),0)/all.length).toFixed(1);document.getElementById('st-i').textContent=avg+'/10';}
   });
   onlineRef.on('value',s=>{const c=Object.keys(s.val()||{}).length;document.getElementById('onlineCount').innerHTML='<span class="cb-pip"></span>'+c+' online';document.getElementById('st-o').textContent=c;});
+  rankRef.on('value',s=>{document.getElementById('st-k').textContent=Object.keys(s.val()||{}).length;});
   let initDone=false;
   msgRef.orderByKey().limitToLast(MAX).once('value',snap=>{
     const area=document.getElementById('outputArea');area.innerHTML='';
@@ -574,11 +674,35 @@ function toggleFeeling(btn,val){
   else{selectedFeelings.push(val);btn.classList.add('active');}
   checkSubmit();
 }
-document.getElementById('openQ').addEventListener('input',checkSubmit);
+let selectedChange=null,selectedDecision=null,selectedShare=null,selectedHelp=[];
+function selectChange(btn,val){
+  selectedChange=val;
+  document.querySelectorAll('#changeRow .rate-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  checkSubmit();
+}
+function selectDecision(btn,val){
+  selectedDecision=val;
+  document.querySelectorAll('#decisionRow .rate-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  checkSubmit();
+}
+function selectShare(btn,val){
+  selectedShare=val;
+  document.querySelectorAll('#shareRow .rate-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  checkSubmit();
+}
+function toggleHelp(btn,val){
+  const i=selectedHelp.indexOf(val);
+  if(i>-1){selectedHelp.splice(i,1);btn.classList.remove('active');}
+  else{selectedHelp.push(val);btn.classList.add('active');}
+  checkSubmit();
+}
 function checkSubmit(){
-  const ok=selectedFrame&&document.getElementById('openQ').value.trim().length>5;
+  const ok=selectedFrame&&selectedChange&&selectedBlame&&selectedAffect&&selectedDecision&&selectedShare;
   document.getElementById('modSubmit').disabled=!ok;
-  document.getElementById('modProg').textContent=ok?'Ready to submit':'Select a frame and write your response';
+  document.getElementById('modProg').textContent=ok?'Ready to submit':'Answer the highlighted questions to submit';
 }
 
 let modDone=false;
@@ -590,11 +714,15 @@ function submitResponse(){
     intent:parseInt(document.getElementById('sl-intent').value),
     frame:selectedFrame,
     mostSurprisingBarrier:selectedBarrier,
+    changeNeeded:selectedChange,
     mostResponsible:selectedBlame,
-    text:document.getElementById('openQ').value.trim(),
+    fixable:parseInt(document.getElementById('sl-fixable').value),
     personalImpact:parseInt(document.getElementById('sl-impact').value),
     affectedBy:selectedAffect,
+    decisionMade:selectedDecision,
+    wouldHelp:selectedHelp.slice(),
     feelings:selectedFeelings.slice(),
+    likelyToShare:selectedShare,
     impactNote:document.getElementById('impactNote').value.trim(),
     userColor,
     ts:fbReady?firebase.database.ServerValue.TIMESTAMP:Date.now()
@@ -607,13 +735,73 @@ function submitResponse(){
 function q(v){return'"'+(v==null?'':String(v).replace(/"/g,'""'))+'"';}
 function downloadCSV(){
   if(!fbReady){alert('No connection.');return;}
-  Promise.all([msgRef.once('value'),respRef.once('value')]).then(([ms,rs])=>{
-    let csv='Type,Timestamp,Surprise,Intent,Frame,MostResponsible,PersonalImpact,AffectedBy,Feelings,Text\n';
-    ms.forEach(d=>{const m=d.val();csv+='question,'+q(m.ts?new Date(m.ts).toISOString():'')+',,,,,,,,'+q(m.question)+'\n';});
-    rs.forEach(d=>{const r=d.val();csv+='response,'+q(r.ts?new Date(r.ts).toISOString():'')+','+(r.surprise||'')+','+(r.intent||'')+','+q(r.frame)+','+q(r.mostResponsible)+','+(r.personalImpact||'')+','+q(r.affectedBy)+','+q((r.feelings||[]).join('; '))+','+q(r.text)+'\n';});
+  Promise.all([msgRef.once('value'),respRef.once('value'),rankRef.once('value')]).then(([ms,rs,rk])=>{
+    let csv='Type,Timestamp,Surprise,Intent,Frame,ChangeNeeded,MostResponsible,Fixable,PersonalImpact,AffectedBy,DecisionMade,WouldHelp,Feelings,LikelyToShare,ImpactNote,Ranking\n';
+    ms.forEach(d=>{const m=d.val();csv+='question,'+q(m.ts?new Date(m.ts).toISOString():'')+',,,,,,,,,,,,,,'+q(m.question)+'\n';});
+    rs.forEach(d=>{const r=d.val();csv+='response,'+q(r.ts?new Date(r.ts).toISOString():'')+','+(r.surprise||'')+','+(r.intent||'')+','+q(r.frame)+','+q(r.changeNeeded)+','+q(r.mostResponsible)+','+(r.fixable||'')+','+(r.personalImpact||'')+','+q(r.affectedBy)+','+q(r.decisionMade)+','+q((r.wouldHelp||[]).join('; '))+','+q((r.feelings||[]).join('; '))+','+q(r.likelyToShare)+','+q(r.impactNote)+',\n';});
+    rk.forEach(d=>{const r=d.val();csv+='ranking,'+q(r.ts?new Date(r.ts).toISOString():'')+',,,,,,,,,,,,,,'+q((r.order||[]).join(' > '))+'\n';});
     const blob=new Blob([csv],{type:'text/csv'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='carebot35-'+Date.now()+'.csv';document.body.appendChild(a);a.click();document.body.removeChild(a);URL.revokeObjectURL(url);
   });
 }
+
+/* RANKING TASK */
+const rankItems=[
+  {id:'childcare',label:'Subsidized / affordable childcare'},
+  {id:'leave',label:'Paid family leave'},
+  {id:'flex',label:'Remote / flexible work'},
+  {id:'pay',label:'Pay equity enforcement'},
+  {id:'eldercare',label:'Eldercare support'},
+  {id:'reentry',label:'Returnship / re-entry programs'},
+  {id:'culture',label:'Cultural shift in division of labor'},
+  {id:'healthcare',label:'Healthcare decoupled from employment'}
+];
+let rankOrder=rankItems.map(r=>r.id);
+function renderRankList(){
+  const wrap=document.getElementById('rankList');wrap.innerHTML='';
+  rankOrder.forEach((id,i)=>{
+    const item=rankItems.find(r=>r.id===id);
+    const row=document.createElement('div');row.className='rank-item';
+    row.innerHTML='<div class="rank-num">'+(i+1)+'</div><div class="rank-label">'+item.label+'</div><div class="rank-arrows"><button class="rank-arrow" '+(i===0?'disabled':'')+' onclick="moveRank('+i+',-1)">▲</button><button class="rank-arrow" '+(i===rankOrder.length-1?'disabled':'')+' onclick="moveRank('+i+',1)">▼</button></div>';
+    wrap.appendChild(row);
+  });
+}
+function moveRank(i,dir){
+  const j=i+dir;
+  if(j<0||j>=rankOrder.length)return;
+  [rankOrder[i],rankOrder[j]]=[rankOrder[j],rankOrder[i]];
+  renderRankList();
+}
+renderRankList();
+let rankDone=false;
+function submitRanking(){
+  if(rankDone)return;
+  const payload={order:rankOrder.slice(),userColor,ts:fbReady?firebase.database.ServerValue.TIMESTAMP:Date.now()};
+  if(fbReady&&rankRef)rankRef.push(payload).catch(()=>{});
+  rankDone=true;
+  document.getElementById('rankProg').textContent='✓ Ranking saved — thank you';
+  const btn=document.getElementById('rankSubmit');btn.textContent='✓ Saved';btn.classList.add('done');btn.disabled=true;
+}
+
+/* SLIDE DECK NAV */
+const deckTitles={1:'The Irony',2:'The Evidence',3:'The Barriers, Part 1',4:'The Barriers, Part 2'};
+function renderDeckDots(){
+  const dots=document.getElementById('deckDots');dots.innerHTML='';
+  for(let i=1;i<=4;i++){
+    const d=document.createElement('div');d.className='deck-dot'+(i===currentSlide?' active':i<currentSlide?' done':'');
+    dots.appendChild(d);
+  }
+}
+let currentSlide=1;
+function deckGo(n){
+  if(n>4){document.getElementById('taskSection').scrollIntoView({behavior:'smooth',block:'start'});return;}
+  document.querySelectorAll('.slide').forEach(s=>s.classList.remove('active'));
+  document.querySelector('.slide[data-slide="'+n+'"]').classList.add('active');
+  currentSlide=n;
+  document.getElementById('deckProgTxt').textContent='Slide '+n+' of 4 · '+deckTitles[n];
+  renderDeckDots();
+  document.querySelector('.deck').scrollIntoView({behavior:'smooth',block:'start'});
+}
+renderDeckDots();
 
 const responses=[
   {text:"The University of Phoenix and Motherly's 2024 M.O.M. Report identifies five skills developed through motherhood: adaptability, resilience, communication, time management, and leadership. These are the exact five skills the World Economic Forum lists as essential for the AI-era workforce. The WEF's Future of Jobs Report (2025) ranks them at the top of every 'skills of the future' list. The maternal experience is a four-year intensive in the most in-demand skills in the global economy.",source:"University of Phoenix M.O.M. Report (2024); WEF Future of Jobs (2025)",link:"https://phoenix.edu/content/dam/edu/research/doc/white-papers/educational-instructional-technology/2024/mom-report-motherhood-skills-s-smith.pdf",moves:["1. STAND — arms open wide — you have all the skills — all of them","2. COUNT on fingers: adaptability — resilience — communication — time management — leadership","3. HOLD UP the WEF list — mime reading it — same five — same order","4. LOOK at both lists — yours and theirs — identical","5. FREEZE — call out: 'She already has them. She has had them for years.'"]},
