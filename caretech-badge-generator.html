@@ -64,6 +64,7 @@
   .side-label{font-family:'Nunito',sans-serif;font-weight:800;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--candy);}
   .canvas-shell{background:rgba(0,0,0,.2);border-radius:24px;padding:18px;box-shadow:var(--pop-glow);}
   .badge-canvas{display:block;width:min(100%,260px);height:auto;border-radius:14px;box-shadow:0 10px 50px rgba(0,0,0,.5);}
+  .poster-canvas{width:min(100%,300px);}
 </style>
 </head>
 <body>
@@ -108,8 +109,14 @@
 
       <div class="divider"></div>
 
+      <h2>✦ Back — Poster Sizes</h2>
+      <button class="btn btn-primary btn-full" id="downloadPoster28Btn">⬇ Download Back Poster — 22″×28″</button>
+      <button class="btn btn-primary btn-full" id="downloadPoster14Btn" style="margin-top:8px;">⬇ Download Back Poster — 14″×22″</button>
+
+      <div class="divider"></div>
+
       <div class="note">
-        Place this file in the same folder as your <code>images/id_00.png</code> … <code>id_40.png</code> files so the badge artwork loads correctly. Each badge has a front (photo + worker ID) and a back (QR code) — both rendered at <code>690×1050px</code>, a 2.3″×3.5″ card at 300 DPI.
+        Place this file in the same folder as your <code>images/id_00.png</code> … <code>id_40.png</code> files so the badge artwork loads correctly. Each badge has a front (photo + worker ID) and a back (QR code) — both rendered at <code>690×1050px</code>, a 2.3″×3.5″ card at 300 DPI. The two poster downloads are blown-up, fully vertical/portrait versions of the back design only (it's identical across all badges) — rendered at <code>150 DPI</code>: <code>3300×4200px</code> for 22″×28″, and <code>2100×3300px</code> for 14″×22″. Let me know if you'd like 300 DPI poster files instead — they'll be much larger.
       </div>
     </div>
 
@@ -129,6 +136,21 @@
       </div>
     </div>
 
+    <div class="preview-col" style="margin-top:24px;">
+      <div class="badge-side">
+        <div class="side-label">✦ Back Poster · 22″×28″</div>
+        <div class="canvas-shell">
+          <canvas id="posterCanvas28" class="badge-canvas poster-canvas" width="3300" height="4200"></canvas>
+        </div>
+      </div>
+      <div class="badge-side">
+        <div class="side-label">✦ Back Poster · 14″×22″</div>
+        <div class="canvas-shell">
+          <canvas id="posterCanvas14" class="badge-canvas poster-canvas" width="2100" height="3300"></canvas>
+        </div>
+      </div>
+    </div>
+
   </div>
 
 </main>
@@ -139,7 +161,7 @@ const TOTAL_IMAGES=41;
 const IMAGE_PREFIX='images/id_';
 const IMAGE_EXT='.png';
 const QR_URL='https://care-tech.org/carebot21-hit.html';
-const CANVAS_W=690, CANVAS_H=1050;
+let CANVAS_W=690, CANVAS_H=1050;
 
 const COLORS={
   cream:'#fff5f8',blush:'#ffb3cf',candy:'#ff85b3',hot:'#ff2d6b',
@@ -282,11 +304,11 @@ function drawShadedHeart(ctx,cx,cy,sizePx,colorLight,colorDark){
 }
 
 /* ── shared card chrome (used by both front & back) ── */
-function drawCardBackground(ctx){
+function drawCardBackground(ctx,scale=1){
   const bgGrad=ctx.createLinearGradient(0,0,0,CANVAS_H);
-  bgGrad.addColorStop(0,'#220008');
-  bgGrad.addColorStop(.5,'#180008');
-  bgGrad.addColorStop(1,'#120005');
+  bgGrad.addColorStop(0,'#3a0014');
+  bgGrad.addColorStop(.5,'#2c0010');
+  bgGrad.addColorStop(1,'#22000a');
   ctx.fillStyle=bgGrad;
   ctx.fillRect(0,0,CANVAS_W,CANVAS_H);
 
@@ -297,24 +319,25 @@ function drawCardBackground(ctx){
     ctx.beginPath();ctx.arc(cx,cy,r,0,Math.PI*2);ctx.fill();
     ctx.globalAlpha=1;
   }
-  blob(CANVAS_W*0.14,CANVAS_H*0.06,260,'#c80032',.32);
-  blob(CANVAS_W*0.88,CANVAS_H*0.95,230,'#8c0028',.28);
+  blob(CANVAS_W*0.14,CANVAS_H*0.06,260*scale,'#d4003a',.34);
+  blob(CANVAS_W*0.88,CANVAS_H*0.95,230*scale,'#9c002e',.3);
 
   ctx.textAlign='center';
   ctx.textBaseline='alphabetic';
 }
 
-function drawOuterBorder(ctx){
+function drawOuterBorder(ctx,scale=1){
+  const inset=34*scale;
   ctx.strokeStyle='rgba(255,100,160,.55)';
-  ctx.lineWidth=4;
-  roundRectPath(ctx,12,12,CANVAS_W-24,CANVAS_H-24,28);
+  ctx.lineWidth=4*scale;
+  roundRectPath(ctx,inset,inset,CANVAS_W-inset*2,CANVAS_H-inset*2,28*scale);
   ctx.stroke();
 }
 
 /* a decorative divider made of a row of small hearts */
-function drawHeartLine(ctx,y,totalWidth,count,size){
+function drawHeartLine(ctx,y,totalWidth,count,size,centerX=CANVAS_W/2){
   const gap=(totalWidth-count*size)/(count-1);
-  let x=CANVAS_W/2-totalWidth/2+size/2;
+  let x=centerX-totalWidth/2+size/2;
   for(let i=0;i<count;i++){
     drawShadedHeart(ctx,x,y,size,COLORS.blush,COLORS.berry);
     x+=size+gap;
@@ -323,12 +346,12 @@ function drawHeartLine(ctx,y,totalWidth,count,size){
 
 /* CARE♥tech logo — shaded hearts + gradient wordmark, shared by both sides */
 const LOGO_BASELINE_Y=100;
-function drawLogoTitle(ctx){
-  const baselineY=LOGO_BASELINE_Y;
-  const heartFont='900 60px Quicksand, sans-serif';
-  const careFont='900 56px Nunito, sans-serif';
-  const techFont='800 40px Nunito, sans-serif';
-  const gap=12;
+function drawLogoTitle(ctx,scale=1){
+  const baselineY=LOGO_BASELINE_Y*scale;
+  const heartFont=`900 ${60*scale}px Quicksand, sans-serif`;
+  const careFont=`900 ${56*scale}px Nunito, sans-serif`;
+  const techFont=`800 ${40*scale}px Nunito, sans-serif`;
+  const gap=12*scale;
 
   ctx.font=heartFont; const heartW=ctx.measureText('♥').width;
   ctx.font=careFont; const careW=ctx.measureText('CARE').width;
@@ -338,7 +361,7 @@ function drawLogoTitle(ctx){
   let tx=CANVAS_W/2-total/2;
   ctx.textAlign='left';
 
-  drawShadedHeart(ctx,tx+heartW/2,baselineY-14,58,COLORS.blush,COLORS.berry);
+  drawShadedHeart(ctx,tx+heartW/2,baselineY-14*scale,58*scale,COLORS.blush,COLORS.berry);
   tx+=heartW+gap;
 
   const careGrad=ctx.createLinearGradient(tx,0,tx+careW,0);
@@ -355,13 +378,14 @@ function drawLogoTitle(ctx){
   ctx.fillText('tech',tx,baselineY);
   tx+=techW+gap;
 
-  drawShadedHeart(ctx,tx+heartW/2,baselineY-14,58,COLORS.blush,COLORS.berry);
+  drawShadedHeart(ctx,tx+heartW/2,baselineY-14*scale,58*scale,COLORS.blush,COLORS.berry);
 
   ctx.textAlign='center';
 }
 
 /* ── FRONT: logo, HIT worker subtitle, worker ID, big image ── */
 async function renderFront(index,workerID){
+  CANVAS_W=690; CANVAS_H=1050;
   const canvas=document.getElementById('frontCanvas');
   canvas.width=CANVAS_W;canvas.height=CANVAS_H;
   const ctx=canvas.getContext('2d');
@@ -397,10 +421,10 @@ async function renderFront(index,workerID){
   ctx.font='900 52px Nunito, sans-serif';
   ctx.fillText(workerID,CANVAS_W/2,256);
 
-  /* image holder — big, but leaves room for info text below */
-  const boxW=CANVAS_W*0.88;
+  /* image holder */
+  const boxW=CANVAS_W*0.78;
   const boxX=(CANVAS_W-boxW)/2, boxY=280;
-  const boxH=540;
+  const boxH=440;
   ctx.fillStyle='rgba(255,45,107,.08)';
   ctx.strokeStyle='rgba(255,160,200,.28)';
   ctx.lineWidth=2;
@@ -411,34 +435,35 @@ async function renderFront(index,workerID){
   /* heart-line divider */
   let y=boxY+boxH+44;
   drawHeartLine(ctx,y,260,7,16);
-  y+=30;
+  y+=54;
 
   /* about this image */
-  ctx.font='700 20px Quicksand, sans-serif';
+  ctx.font='700 25px Quicksand, sans-serif';
   ctx.fillStyle=COLORS.blush;
   setLetterSpacing(ctx,'1.5px');
   ctx.fillText('ABOUT THIS IMAGE',CANVAS_W/2,y);
   setLetterSpacing(ctx,'0px');
-  y+=26;
-  ctx.font='600 21px Quicksand, sans-serif';
+  y+=30;
+  ctx.font='600 24px Quicksand, sans-serif';
   ctx.fillStyle=COLORS.textDim;
   const textW=CANVAS_W*0.84;
-  wrapText(ctx,'This badge artwork is one of 41 AI-generated images created from the prompts "worker ID badge" and "technology worker ID badge."',CANVAS_W/2,y,textW,26);
+  wrapText(ctx,'This badge artwork is one of 41 AI-generated images created from the prompts "worker ID badge" and "technology worker ID badge."',CANVAS_W/2,y,textW,30);
 
   drawOuterBorder(ctx);
 }
 
-/* ── BACK: logo, about-image text, big QR code ── */
-async function renderBack(index,workerID){
-  const canvas=document.getElementById('backCanvas');
-  canvas.width=CANVAS_W;canvas.height=CANVAS_H;
+/* ── BACK (generic): logo, mission, QR, scan, about-this-work — reused at badge size and poster sizes ── */
+async function renderBackGeneric(canvasId,cw,ch,scale){
+  CANVAS_W=cw; CANVAS_H=ch;
+  const canvas=document.getElementById(canvasId);
+  canvas.width=cw;canvas.height=ch;
   const ctx=canvas.getContext('2d');
 
-  drawCardBackground(ctx);
-  drawLogoTitle(ctx);
+  drawCardBackground(ctx,scale);
+  drawLogoTitle(ctx,scale);
 
   const textW=CANVAS_W*0.84;
-  let y=180;
+  let y=180*scale;
 
   /* mission statement */
   const missionGrad=ctx.createLinearGradient(CANVAS_W*0.1,0,CANVAS_W*0.9,0);
@@ -446,72 +471,86 @@ async function renderBack(index,workerID){
   missionGrad.addColorStop(.5,COLORS.candy);
   missionGrad.addColorStop(1,COLORS.fuchsia);
   ctx.fillStyle=missionGrad;
-  ctx.font='800 22px Nunito, sans-serif';
-  y=wrapText(ctx,'Amplifying Diverse HUMAN Voices in Technology',CANVAS_W/2,y,textW,26);
-  y+=24;
-  ctx.font='600 18px Quicksand, sans-serif';
+  ctx.font=`800 ${25*scale}px Nunito, sans-serif`;
+  y=wrapText(ctx,'Amplifying Diverse HUMAN Voices in Technology',CANVAS_W/2,y,textW,30*scale);
+  y+=22*scale;
+  ctx.font=`600 ${24*scale}px Quicksand, sans-serif`;
   ctx.fillStyle=COLORS.textDim;
-  y=wrapText(ctx,'We are creating caring technologies that include diverse voices, challenge bias, uncover underamplified histories, and build a more CARE-centered, equitable future for technology —',CANVAS_W/2,y,textW,23);
-  y+=23;
+  y=wrapText(ctx,'We are creating caring technologies that include diverse voices, challenge bias, uncover underamplified histories, and build a more CARE-centered, equitable future for technology —',CANVAS_W/2,y,textW,30*scale);
+  y+=30*scale;
   ctx.fillText('one carebot at a time.',CANVAS_W/2,y);
 
   /* qr — fills remaining space */
-  y+=44;
-  const qrSize=360;
+  y+=36*scale;
+  const qrSize=280*scale;
   const qrX=(CANVAS_W-qrSize)/2;
   const qrModules=getQRModules(QR_URL);
   if(qrModules){
-    const pad=14;
+    const pad=13*scale;
     ctx.fillStyle='rgba(255,245,248,.06)';
     ctx.strokeStyle='rgba(255,160,200,.35)';
-    ctx.lineWidth=2.5;
-    roundRectPath(ctx,qrX-pad,y-pad,qrSize+pad*2,qrSize+pad*2,22);
+    ctx.lineWidth=2.5*scale;
+    roundRectPath(ctx,qrX-pad,y-pad,qrSize+pad*2,qrSize+pad*2,22*scale);
     ctx.fill();ctx.stroke();
 
     drawQR(ctx,qrX,y,qrSize,qrModules,COLORS.maroon,'#fff5f8');
 
-    const heartSize=28;
-    drawShadedHeart(ctx,qrX-pad+2,y-pad+2,heartSize,COLORS.blush,COLORS.berry);
-    drawShadedHeart(ctx,qrX+qrSize+pad-2,y-pad+2,heartSize,COLORS.blush,COLORS.berry);
-    drawShadedHeart(ctx,qrX-pad+2,y+qrSize+pad-2,heartSize,COLORS.blush,COLORS.berry);
-    drawShadedHeart(ctx,qrX+qrSize+pad-2,y+qrSize+pad-2,heartSize,COLORS.blush,COLORS.berry);
+    const heartSize=26*scale;
+    drawShadedHeart(ctx,qrX-pad+2*scale,y-pad+2*scale,heartSize,COLORS.blush,COLORS.berry);
+    drawShadedHeart(ctx,qrX+qrSize+pad-2*scale,y-pad+2*scale,heartSize,COLORS.blush,COLORS.berry);
+    drawShadedHeart(ctx,qrX-pad+2*scale,y+qrSize+pad-2*scale,heartSize,COLORS.blush,COLORS.berry);
+    drawShadedHeart(ctx,qrX+qrSize+pad-2*scale,y+qrSize+pad-2*scale,heartSize,COLORS.blush,COLORS.berry);
 
-    y+=qrSize+pad+26;
+    y+=qrSize+pad+22*scale;
   } else {
-    ctx.font='600 13px Quicksand, sans-serif';
+    ctx.font=`600 ${13*scale}px Quicksand, sans-serif`;
     ctx.fillStyle='rgba(255,200,224,.5)';
-    ctx.fillText('(QR code unavailable — check your connection)',CANVAS_W/2,y+20);
-    y+=50;
+    ctx.fillText('(QR code unavailable — check your connection)',CANVAS_W/2,y+20*scale);
+    y+=50*scale;
   }
 
   /* scan to begin */
-  ctx.font='700 19px Quicksand, sans-serif';
+  ctx.font=`700 ${19*scale}px Quicksand, sans-serif`;
   ctx.fillStyle=COLORS.blush;
-  setLetterSpacing(ctx,'1.5px');
+  setLetterSpacing(ctx,`${1.5*scale}px`);
   ctx.fillText('✦ SCAN TO BEGIN YOUR WORK ✦',CANVAS_W/2,y);
   setLetterSpacing(ctx,'0px');
-  y+=22;
-  ctx.font='600 16px Quicksand, sans-serif';
+  y+=18*scale;
+  ctx.font=`600 ${16*scale}px Quicksand, sans-serif`;
   ctx.fillStyle='rgba(255,200,224,.45)';
   ctx.fillText('care-tech.org',CANVAS_W/2,y);
 
   /* heart-line divider */
-  y+=30;
-  drawHeartLine(ctx,y,260,7,16);
-  y+=30;
+  y+=24*scale;
+  drawHeartLine(ctx,y,260*scale,7,16*scale);
+  y+=44*scale;
 
   /* about this work */
-  ctx.font='700 20px Quicksand, sans-serif';
+  ctx.font=`700 ${24*scale}px Quicksand, sans-serif`;
   ctx.fillStyle=COLORS.blush;
-  setLetterSpacing(ctx,'1.5px');
+  setLetterSpacing(ctx,`${1.5*scale}px`);
   ctx.fillText('ABOUT THIS WORK',CANVAS_W/2,y);
   setLetterSpacing(ctx,'0px');
-  y+=27;
-  ctx.font='600 21px Quicksand, sans-serif';
+  y+=28*scale;
+  ctx.font=`600 ${23*scale}px Quicksand, sans-serif`;
   ctx.fillStyle=COLORS.textDim;
-  y=wrapText(ctx,'A Human Intelligence Task — originally from Amazon Mechanical Turk. Humans are paid to label data, verify images, and train AI systems. The irony: the task exists because machines can\'t do it — but the humans who do it are often unnamed, underpaid, and invisible in the final product.',CANVAS_W/2,y,textW,26);
+  y=wrapText(ctx,'A Human Intelligence Task — originally from Amazon Mechanical Turk. Humans are paid to label data, verify images, and train AI systems. The irony: the task exists because machines can\'t do it — but the humans who do it are often unnamed, underpaid, and invisible in the final product.',CANVAS_W/2,y,textW,27*scale);
 
-  drawOuterBorder(ctx);
+  drawOuterBorder(ctx,scale);
+}
+
+async function renderBack(index,workerID){
+  await renderBackGeneric('backCanvas',690,1050,1);
+}
+
+/* ── BACK POSTER 22"×28" (portrait, 150 DPI = 3300×4200px) ── */
+async function renderBackPoster28(){
+  await renderBackGeneric('posterCanvas28',3300,4200,4);
+}
+
+/* ── BACK POSTER 14"×22" (portrait, 150 DPI = 2100×3300px) ── */
+async function renderBackPoster14(){
+  await renderBackGeneric('posterCanvas14',2100,3300,3300/1050);
 }
 
 /* ── UI wiring ── */
@@ -623,6 +662,34 @@ document.getElementById('downloadAllBtn').addEventListener('click',async()=>{
   allBtn.disabled=false;oneBtn.disabled=false;prevBtn.disabled=false;nextBtn.disabled=false;
 });
 
+document.getElementById('downloadPoster28Btn').addEventListener('click',async()=>{
+  const btn=document.getElementById('downloadPoster28Btn');
+  btn.disabled=true;
+  progressText.textContent='Rendering 22″×28″ poster…';
+  try{
+    await renderBackPoster28();
+    await downloadCanvas('posterCanvas28','caretech-back-poster-22x28in-150dpi.png');
+    progressText.textContent='✓ Downloaded 22″×28″ poster.';
+  }catch(err){
+    showDownloadError(err);
+  }
+  btn.disabled=false;
+});
+
+document.getElementById('downloadPoster14Btn').addEventListener('click',async()=>{
+  const btn=document.getElementById('downloadPoster14Btn');
+  btn.disabled=true;
+  progressText.textContent='Rendering 14″×22″ poster…';
+  try{
+    await renderBackPoster14();
+    await downloadCanvas('posterCanvas14','caretech-back-poster-14x22in-150dpi.png');
+    progressText.textContent='✓ Downloaded 14″×22″ poster.';
+  }catch(err){
+    showDownloadError(err);
+  }
+  btn.disabled=false;
+});
+
 /* ── init ── */
 (async function init(){
   try{
@@ -634,7 +701,11 @@ document.getElementById('downloadAllBtn').addEventListener('click',async()=>{
       document.fonts.load('700 13px Quicksand'),
     ]);
   }catch(e){}
-  showIndex(0);
+  await showIndex(0);
+  try{
+    await renderBackPoster28();
+    await renderBackPoster14();
+  }catch(e){ console.error('Poster render failed:',e); }
 })();
 </script>
 </body>
