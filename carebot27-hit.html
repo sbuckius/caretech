@@ -379,8 +379,11 @@
   </div>
   </div>
 
-  <!-- RANKING MODULE (gated — appears after page 4) -->
-  <div class="rank-card" id="rankCard" style="display:none;">
+  <!-- EVERYTHING BELOW IS GATED BEHIND THE SLIDESHOW -->
+  <div id="workSection" style="display:none;width:100%;flex-direction:column;align-items:center;gap:13px;">
+
+  <!-- RANKING MODULE -->
+  <div class="rank-card" id="rankCard">
     <div class="rank-header">
       <div class="rank-eyebrow">✦ CAREBOT-27 · Ranking Task · Drag to Reorder</div>
       <div class="rank-title">Which mathematical functions from the Handbook are most cited in AI &amp; machine learning today?</div>
@@ -452,7 +455,9 @@
   </div>
 
   <div class="cb-wmark">✦ carebot-27 · abramowitz &amp; stegun · irene stegun · caretech ✦</div>
+  </div>
 </div>
+
 
 <!-- Admin Modal -->
 <div class="cb-modal" id="adminModal">
@@ -502,7 +507,8 @@ function goToPage(next){
   const curEl=document.getElementById('page'+currentPage);
   if(curEl)curEl.classList.remove('active','back-nav');
   if(next>TOTAL_PAGES){
-    document.getElementById('rankCard').style.display='';
+    const work=document.getElementById('workSection');
+    work.style.display='flex';
     window.scrollTo({top:0,behavior:'smooth'});
     currentPage=TOTAL_PAGES+1;
     return;
