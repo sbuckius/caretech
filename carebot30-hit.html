@@ -95,6 +95,9 @@ html,body{min-height:100%;font-family:'Quicksand',sans-serif;font-weight:600;col
 .headline-outlet-row{display:flex;align-items:center;gap:8px;margin-top:14px;}
 .headline-outlet{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,180,220,.35);}
 .headline-year{font-size:10px;letter-spacing:.1em;color:rgba(255,180,220,.25);}
+.headline-link-row{margin-top:8px;}
+.headline-source-link{font-size:11px;color:var(--rose);text-decoration:none;border-bottom:1px dashed rgba(232,69,138,.4);transition:color .2s ease,border-color .2s ease;}
+.headline-source-link:hover{color:var(--hot);border-color:var(--hot);}
 
 .step-indicator{display:flex;align-items:center;justify-content:space-between;padding:16px 22px 0;}
 .step-label{font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--hot);}
@@ -223,6 +226,9 @@ input[type=range].val-slider{width:100%;accent-color:var(--hot);height:5px;curso
       <div class="headline-outlet-row">
         <div class="headline-outlet" id="headlineOutlet"></div>
         <div class="headline-year" id="headlineYear"></div>
+      </div>
+      <div class="headline-link-row">
+        <a class="headline-source-link" id="headlineSourceLink" href="#" target="_blank" rel="noopener">↗ Read the original article</a>
       </div>
     </div>
 
@@ -444,6 +450,7 @@ function loadHeadline(idx){
   document.getElementById('headlineDeck').textContent=h.deck||'';
   document.getElementById('headlineOutlet').textContent=h.outlet;
   document.getElementById('headlineYear').textContent=h.year;
+  document.getElementById('headlineSourceLink').href=h.url;
   const pct=HEADLINE_CATALOG.length>1?(idx/(HEADLINE_CATALOG.length-1))*100:0;
   document.getElementById('progressBar').style.width=pct+'%';
   document.getElementById('progressText').textContent=`Headline ${idx+1} of ${HEADLINE_CATALOG.length}  ✦  Classify to continue`;
