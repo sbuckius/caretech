@@ -40,12 +40,12 @@ html,body{min-height:100%;font-family:var(--fb);font-weight:600;color:var(--crea
 .stats-bar{width:100%;max-width:720px;display:flex;align-items:center;gap:.6rem;flex-wrap:wrap;padding:.5rem .9rem;background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:13px;}
 .stat-chip{display:flex;align-items:center;gap:.3rem;font-size:.62rem;font-weight:700;color:var(--muted);letter-spacing:.06em;text-transform:uppercase;background:rgba(255,60,120,.06);border:1px solid rgba(255,60,120,.13);border-radius:999px;padding:.18rem .6rem;}
 .stat-chip strong{color:var(--candy);}
-.irony-card{width:100%;max-width:720px;background:linear-gradient(135deg,rgba(111,0,30,.88),rgba(50,0,15,.95));border:1.5px solid rgba(255,60,80,.4);border-radius:18px;padding:18px;position:relative;overflow:hidden;}
+.irony-card{width:100%;max-width:720px;background:linear-gradient(135deg,rgba(130,0,55,.88),rgba(60,0,35,.95));border:1.5px solid rgba(255,50,130,.4);border-radius:18px;padding:18px;position:relative;overflow:hidden;}
 .irony-card::before{content:'';position:absolute;top:0;left:10%;right:10%;height:1.5px;background:linear-gradient(90deg,transparent,var(--candy) 35%,var(--pink) 50%,var(--candy) 65%,transparent);box-shadow:0 0 10px var(--candy);border-radius:999px;}
-.irony-eyebrow{font-size:9px;letter-spacing:.22em;text-transform:uppercase;color:rgba(255,160,160,.55);margin-bottom:6px;}
-.irony-title{font-family:var(--fh);font-weight:900;font-size:clamp(14px,3vw,18px);color:#ffcccc;margin-bottom:10px;line-height:1.3;}
-.irony-body{font-size:12.5px;line-height:1.78;color:rgba(255,210,210,.82);}
-.irony-body strong{color:#ffcccc;}
+.irony-eyebrow{font-size:9px;letter-spacing:.22em;text-transform:uppercase;color:rgba(255,140,190,.55);margin-bottom:6px;}
+.irony-title{font-family:var(--fh);font-weight:900;font-size:clamp(14px,3vw,18px);color:#ffd1e8;margin-bottom:10px;line-height:1.3;}
+.irony-body{font-size:12.5px;line-height:1.78;color:rgba(255,200,225,.82);}
+.irony-body strong{color:#ffd1e8;}
 .irony-body em{color:var(--candy);}
 /* COLOR HISTORY */
 .history-section{width:100%;max-width:720px;}
@@ -73,7 +73,7 @@ html,body{min-height:100%;font-family:var(--fb);font-weight:600;color:var(--crea
 .tile-stat{margin-top:8px;padding:6px 9px;border-radius:8px;background:rgba(255,255,255,.04);font-size:10px;line-height:1.55;color:var(--muted2);}
 .tile-stat strong{color:var(--candy);}
 /* PINK TAX CARD */
-.tax-card{width:100%;max-width:720px;background:linear-gradient(135deg,rgba(111,0,30,.88),rgba(50,0,15,.95));border:1.5px solid rgba(255,60,80,.4);border-radius:18px;padding:18px;position:relative;overflow:hidden;}
+.tax-card{width:100%;max-width:720px;background:linear-gradient(135deg,rgba(130,0,55,.88),rgba(60,0,35,.95));border:1.5px solid rgba(255,50,130,.4);border-radius:18px;padding:18px;position:relative;overflow:hidden;}
 .tax-card::before{content:'';position:absolute;top:0;left:10%;right:10%;height:1.5px;background:linear-gradient(90deg,transparent,var(--candy) 35%,var(--pink) 50%,var(--candy) 65%,transparent);box-shadow:0 0 10px var(--candy);border-radius:999px;}
 .tax-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:8px;margin-top:12px;}
 .tax-box{padding:10px 12px;background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:10px;}
@@ -86,16 +86,16 @@ html,body{min-height:100%;font-family:var(--fb);font-weight:600;color:var(--crea
 .sort-zone{border-radius:13px;padding:12px;border:1.5px solid;min-height:100px;}
 .sort-zone.pink-zone{border-color:rgba(255,60,120,.35);background:rgba(255,60,120,.06);}
 .sort-zone.blue-zone{border-color:var(--boy-border);background:var(--boy-bg);}
-.sort-zone.neutral-zone{border-color:rgba(200,200,200,.2);background:rgba(200,200,200,.04);}
+.sort-zone.neutral-zone{border-color:rgba(225,190,205,.22);background:rgba(225,190,205,.05);}
 .sort-label{font-family:var(--fh);font-weight:900;font-size:10px;letter-spacing:.12em;text-transform:uppercase;margin-bottom:8px;}
 .sort-zone.pink-zone .sort-label{color:var(--candy);}
 .sort-zone.blue-zone .sort-label{color:var(--boy);}
-.sort-zone.neutral-zone .sort-label{color:rgba(200,200,200,.5);}
+.sort-zone.neutral-zone .sort-label{color:rgba(225,190,205,.55);}
 .sort-items{display:flex;flex-wrap:wrap;gap:6px;min-height:40px;}
 .sort-item{padding:5px 11px;border-radius:999px;font-size:11px;font-weight:700;cursor:grab;user-select:none;border:1px solid;transition:all .15s;}
 .sort-item.in-pink{background:rgba(255,60,120,.18);border-color:var(--pink);color:var(--blush);}
 .sort-item.in-blue{background:rgba(75,139,255,.18);border-color:var(--boy);color:#93c5fd;}
-.sort-item.in-neutral{background:rgba(200,200,200,.1);border-color:rgba(200,200,200,.3);color:rgba(200,200,200,.7);}
+.sort-item.in-neutral{background:rgba(225,190,205,.12);border-color:rgba(225,190,205,.32);color:rgba(225,190,205,.75);}
 .sort-item.unsorted{background:rgba(255,255,255,.06);border-color:var(--border);color:var(--muted);}
 .sort-bank{display:flex;flex-wrap:wrap;gap:6px;padding:12px;background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:11px;min-height:50px;margin-bottom:10px;}
 .sort-instruction{font-size:10px;color:var(--muted);margin-bottom:8px;font-style:italic;}
@@ -120,7 +120,7 @@ html,body{min-height:100%;font-family:var(--fb);font-weight:600;color:var(--crea
 .mod-progress{font-size:10px;color:var(--muted);font-weight:700;flex:1;}
 .mod-submit{appearance:none;font-family:var(--fh);font-weight:900;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--cream);background:linear-gradient(135deg,var(--pink),var(--berry));border:none;border-radius:10px;padding:9px 18px;cursor:pointer;transition:all .2s;}
 .mod-submit:disabled{opacity:.4;cursor:not-allowed;}
-.mod-submit.done{background:linear-gradient(135deg,rgba(100,200,100,.4),rgba(60,160,60,.5));cursor:default;}
+.mod-submit.done{background:linear-gradient(135deg,rgba(255,110,170,.45),rgba(200,20,95,.55));cursor:default;}
 /* Q&A */
 .cb-card{width:100%;max-width:720px;background:var(--surface);border:1.5px solid var(--border2);border-radius:18px;padding:17px;position:relative;overflow:hidden;}
 .cb-card::before{content:'';position:absolute;top:0;left:10%;right:10%;height:1.5px;background:linear-gradient(90deg,transparent,var(--candy) 35%,var(--pink) 50%,var(--candy) 65%,transparent);box-shadow:0 0 10px var(--candy);border-radius:999px;}
@@ -155,7 +155,7 @@ html,body{min-height:100%;font-family:var(--fb);font-weight:600;color:var(--crea
 .cb-mbody{padding:13px;}
 .cb-mtext{font-family:var(--fm);font-size:11.5px;line-height:1.85;color:rgba(255,180,210,.85);white-space:pre-wrap;}
 .cb-spkrow{padding:7px 13px 11px;display:flex;gap:7px;}
-.cb-bottom{width:100%;max-width:720px;background:linear-gradient(135deg,rgba(111,0,30,.8),rgba(50,0,15,.92));border:1.5px solid var(--border2);border-radius:18px;padding:17px;text-align:center;position:relative;overflow:hidden;}
+.cb-bottom{width:100%;max-width:720px;background:linear-gradient(135deg,rgba(130,0,55,.8),rgba(60,0,35,.92));border:1.5px solid var(--border2);border-radius:18px;padding:17px;text-align:center;position:relative;overflow:hidden;}
 .cb-bottom::before{content:'';position:absolute;top:0;left:10%;right:10%;height:1.5px;background:linear-gradient(90deg,transparent,var(--candy) 35%,var(--pink) 50%,var(--candy) 65%,transparent);border-radius:999px;}
 .cb-btitle{font-family:var(--fh);font-weight:900;font-size:15px;background:linear-gradient(90deg,var(--blush),var(--pink),var(--candy));-webkit-background-clip:text;background-clip:text;color:transparent;margin-bottom:11px;}
 .cb-link{display:inline-flex;align-items:center;gap:5px;font-family:var(--fh);font-weight:900;font-size:13px;color:var(--cream);background:linear-gradient(135deg,var(--pink),var(--berry));padding:11px 23px;border-radius:13px;text-decoration:none;box-shadow:0 4px 18px rgba(255,60,120,.32);transition:all .2s;}
@@ -169,6 +169,16 @@ html,body{min-height:100%;font-family:var(--fb);font-weight:600;color:var(--crea
 .cb-mbtns{display:flex;gap:9px;}
 .cb-err{font-size:11px;color:var(--pink);margin-top:6px;min-height:16px;}
 .cb-wmark{font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,140,185,.1);padding-bottom:8px;text-align:center;}
+/* SLIDES / CLICK-THROUGH */
+.hidden{display:none!important;}
+.slides-wrap{display:flex;flex-direction:column;align-items:center;width:100%;}
+.slide{display:none;width:100%;flex-direction:column;align-items:center;gap:13px;}
+.slide.active{display:flex;animation:slideUp .35s ease-out;}
+.slide-progress{font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);text-align:center;width:100%;max-width:720px;}
+.slide-nav{display:flex;justify-content:space-between;gap:10px;width:100%;max-width:720px;}
+.slide-nav .cb-btn{flex:1;justify-content:center;}
+.slide-nav .cb-btn:disabled{opacity:.35;cursor:not-allowed;}
+.task-wrap{display:flex;flex-direction:column;align-items:center;width:100%;gap:13px;}
 </style>
 </head>
 <body>
@@ -195,6 +205,10 @@ html,body{min-height:100%;font-family:var(--fb);font-weight:600;color:var(--crea
     <div class="stat-chip">Online <strong id="st-o">—</strong></div>
   </div>
 
+
+  <div class="slides-wrap" id="slidesWrap">
+  <div class="slide active" data-slide="1">
+    <div class="slide-progress">Slide 1 of 4 · Critical context</div>
   <!-- IRONY CARD -->
   <div class="irony-card">
     <div class="irony-eyebrow">✦ CAREBOT-37 · The Irony</div>
@@ -205,6 +219,13 @@ html,body{min-height:100%;font-family:var(--fb);font-weight:600;color:var(--crea
     <div style="font-size:10px;color:var(--muted);font-style:italic;margin-top:10px;padding-top:9px;border-top:1px solid rgba(255,100,160,.15);">✦ AI helped me with this. There might be inaccuracies.</div>
   </div>
 
+    <div class="slide-nav">
+      <button class="cb-btn soft slide-back" disabled>← Back</button>
+      <button class="cb-btn primary slide-next">Continue ✦</button>
+    </div>
+  </div>
+  <div class="slide" data-slide="2">
+    <div class="slide-progress">Slide 2 of 4 · A short history of pink</div>
   <!-- COLOR HISTORY TIMELINE -->
   <div class="history-section">
     <div class="section-title">✦ A Short History of Pink</div>
@@ -245,6 +266,13 @@ html,body{min-height:100%;font-family:var(--fb);font-weight:600;color:var(--crea
     </div>
   </div>
 
+    <div class="slide-nav">
+      <button class="cb-btn soft slide-back">← Back</button>
+      <button class="cb-btn primary slide-next">Continue ✦</button>
+    </div>
+  </div>
+  <div class="slide" data-slide="3">
+    <div class="slide-progress">Slide 3 of 4 · The irony of pink objects</div>
   <!-- IRONY GRID: THE OBJECTS -->
   <div class="irony-grid">
 
@@ -308,6 +336,13 @@ html,body{min-height:100%;font-family:var(--fb);font-weight:600;color:var(--crea
     </div>
   </div>
 
+    <div class="slide-nav">
+      <button class="cb-btn soft slide-back">← Back</button>
+      <button class="cb-btn primary slide-next">Continue ✦</button>
+    </div>
+  </div>
+  <div class="slide" data-slide="4">
+    <div class="slide-progress">Slide 4 of 4 · The pink tax</div>
   <!-- PINK TAX -->
   <div class="tax-card">
     <div class="irony-eyebrow">✦ The Pink Tax — The Color Costs More</div>
@@ -323,6 +358,14 @@ html,body{min-height:100%;font-family:var(--fb);font-weight:600;color:var(--crea
     </div>
   </div>
 
+    <div class="slide-nav">
+      <button class="cb-btn soft slide-back">← Back</button>
+      <button class="cb-btn primary" onclick="revealTask()">Continue to the task ✦</button>
+    </div>
+  </div>
+  </div>
+
+  <div class="task-wrap hidden" id="taskWrap">
   <!-- OBJECT SORT MODULE -->
   <div class="sort-section">
     <div class="section-title">✦ Sort the Objects — Who Does This Work?</div>
@@ -363,6 +406,27 @@ html,body{min-height:100%;font-family:var(--fb);font-weight:600;color:var(--crea
         <button class="rate-btn" onclick="selectKnew(this,'no')">No, this is new to me</button>
         <button class="rate-btn" onclick="selectKnew(this,'vaguely')">Vaguely — had heard it</button>
       </div>
+      <div class="open-label">Setting the history aside — how do you personally feel about the color pink itself?</div>
+      <div class="rate-row" id="pinkFeelingRow">
+        <button class="rate-btn" onclick="selectPinkFeeling(this,'love')">Love it</button>
+        <button class="rate-btn" onclick="selectPinkFeeling(this,'like')">Like it</button>
+        <button class="rate-btn" onclick="selectPinkFeeling(this,'neutral')">Neutral</button>
+        <button class="rate-btn" onclick="selectPinkFeeling(this,'dislike')">Dislike it</button>
+        <button class="rate-btn" onclick="selectPinkFeeling(this,'complicated')">It's complicated</button>
+      </div>
+      <div class="open-label">What does the color pink bring to mind for you? (select all that apply)</div>
+      <div class="rate-row" id="pinkAssocRow">
+        <button class="rate-btn" onclick="togglePinkAssoc(this,'femininity')">Femininity</button>
+        <button class="rate-btn" onclick="togglePinkAssoc(this,'childhood')">Childhood</button>
+        <button class="rate-btn" onclick="togglePinkAssoc(this,'softness')">Softness / care</button>
+        <button class="rate-btn" onclick="togglePinkAssoc(this,'strength')">Strength (historically)</button>
+        <button class="rate-btn" onclick="togglePinkAssoc(this,'cheapness')">Cheapness / decoration</button>
+        <button class="rate-btn" onclick="togglePinkAssoc(this,'power')">Power / confidence</button>
+        <button class="rate-btn" onclick="togglePinkAssoc(this,'nostalgia')">Nostalgia</button>
+        <button class="rate-btn" onclick="togglePinkAssoc(this,'nothing')">Nothing in particular</button>
+      </div>
+      <div class="open-label">Has your relationship to pink changed over your life — and if so, what changed it?</div>
+      <textarea class="open-q" id="openQ4" placeholder="Optional — did you avoid it, embrace it, reclaim it? Was there a moment your feelings about it shifted?"></textarea>
       <div class="open-label">What does pink do to an object? What changes when something is pink?</div>
       <textarea class="open-q" id="openQ1" placeholder="When you see a pink ironing board, a pink vacuum, a pink laptop — what does the color communicate? What does it assume? What does it charge?"></textarea>
       <div class="open-label">Is there a pink object you own or have owned? What did the pink mean — to you, to others who saw it?</div>
@@ -424,6 +488,7 @@ html,body{min-height:100%;font-family:var(--fb);font-weight:600;color:var(--crea
     <a class="cb-link" href="carebot07-hit.html">✦ Advance to next task</a>
   </div>
   <div class="cb-wmark">✦ carebot-37 · pretty in pink · the color that once meant strength now marks the labor nobody pays for · caretech ✦</div>
+  </div>
 </div>
 
 <div class="cb-modal" id="adminModal">
@@ -443,6 +508,18 @@ html,body{min-height:100%;font-family:var(--fb);font-weight:600;color:var(--crea
 const ADMIN='pinkisnew37';const MAX=3;
 function updateClock(){const n=new Date(),p=v=>String(v).padStart(2,'0');document.getElementById('sysTime').textContent=p(n.getHours())+':'+p(n.getMinutes());}
 setInterval(updateClock,1000);updateClock();
+
+/* SLIDE NAVIGATION */
+let curSlide=1;const totalSlides=4;
+function showSlide(n){
+  document.querySelectorAll('.slide').forEach(s=>s.classList.remove('active'));
+  document.querySelector('.slide[data-slide="'+n+'"]').classList.add('active');
+  curSlide=n;
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+document.querySelectorAll('.slide-next').forEach(btn=>btn.addEventListener('click',()=>{if(curSlide<totalSlides)showSlide(curSlide+1);}));
+document.querySelectorAll('.slide-back').forEach(btn=>btn.addEventListener('click',()=>{if(curSlide>1)showSlide(curSlide-1);}));
+function revealTask(){document.getElementById('slidesWrap').classList.add('hidden');document.getElementById('taskWrap').classList.remove('hidden');window.scrollTo({top:0,behavior:'smooth'});}
 
 /* SORT MODULE */
 const OBJECTS=['Ironing board','Laundry basket','Vacuum','Watering can','Desk','Pink wig','Electronics','Tablecloth','Iron','Armour','Rolling chair','Teapot','Sunglasses','Clothes rack'];
@@ -499,25 +576,27 @@ try{
       if(!initDone)return;
       const area=document.getElementById('outputArea');area.querySelector('.cb-empty')?.remove();
       const pairs=area.querySelectorAll('.cb-pair');if(pairs.length>=MAX)pairs[pairs.length-1].remove();
-      renderPair(snap.val(),snap.key,true);
+      renderPair(snap.val(),snap.key);
     });
   });
 }catch(e){fbReady=false;document.getElementById('onlineCount').textContent='Offline';}
 function trackPresence(){if(!onlineRef||!currentUser)return;const r=onlineRef.child(currentUser.replace(/[.#$[\]]/g,'_'));r.set({name:currentUser,ts:firebase.database.ServerValue.TIMESTAMP});r.onDisconnect().remove();}
 
-let selObject=null,selKnew=null,selFeelings=[],selFuture=null;
+let selObject=null,selKnew=null,selFeelings=[],selFuture=null,selPinkFeeling=null,selPinkAssoc=[];
 function selectObject(btn,val){selObject=val;document.querySelectorAll('#objectRow .rate-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');checkSubmit();}
 function selectKnew(btn,val){selKnew=val;document.querySelectorAll('#knewRow .rate-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');checkSubmit();}
 function toggleFeeling(btn,val){const i=selFeelings.indexOf(val);if(i>-1){selFeelings.splice(i,1);btn.classList.remove('active');}else{selFeelings.push(val);btn.classList.add('active');}checkSubmit();}
 function selectFuture(btn,val){selFuture=val;document.querySelectorAll('#futureRow .rate-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');checkSubmit();}
-['openQ1','openQ2','openQ3'].forEach(id=>document.getElementById(id).addEventListener('input',checkSubmit));
+function selectPinkFeeling(btn,val){selPinkFeeling=val;document.querySelectorAll('#pinkFeelingRow .rate-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');checkSubmit();}
+function togglePinkAssoc(btn,val){const i=selPinkAssoc.indexOf(val);if(i>-1){selPinkAssoc.splice(i,1);btn.classList.remove('active');}else{selPinkAssoc.push(val);btn.classList.add('active');}checkSubmit();}
+['openQ1','openQ2','openQ3','openQ4'].forEach(id=>document.getElementById(id).addEventListener('input',checkSubmit));
 function checkSubmit(){const ok=selObject&&selKnew&&document.getElementById('openQ1').value.trim().length>5;document.getElementById('modSubmit').disabled=!ok;document.getElementById('modProg').textContent=ok?'Ready to submit':'Select an object, answer the pink question, and write your response';}
 
 let modDone=false;
 function submitResponse(){
   if(modDone)return;
   const name='Anonymous';
-  const payload={type:'response',mostIronicObject:selObject,knewPinkWasBoysColor:selKnew,whatPinkDoes:document.getElementById('openQ1').value.trim(),personalObject:document.getElementById('openQ2').value.trim(),personalImpact:document.getElementById('openQ3').value.trim(),feelings:JSON.stringify(selFeelings),affectsFuture:selFuture,sortData:JSON.stringify(sortState),userName:name,userColor,ts:fbReady?firebase.database.ServerValue.TIMESTAMP:Date.now()};
+  const payload={type:'response',mostIronicObject:selObject,knewPinkWasBoysColor:selKnew,whatPinkDoes:document.getElementById('openQ1').value.trim(),personalObject:document.getElementById('openQ2').value.trim(),personalImpact:document.getElementById('openQ3').value.trim(),feelings:JSON.stringify(selFeelings),affectsFuture:selFuture,pinkFeeling:selPinkFeeling,pinkAssociations:JSON.stringify(selPinkAssoc),pinkRelationshipChange:document.getElementById('openQ4').value.trim(),sortData:JSON.stringify(sortState),userName:name,userColor,ts:fbReady?firebase.database.ServerValue.TIMESTAMP:Date.now()};
   if(fbReady&&respRef)respRef.push(payload).catch(()=>{});
   modDone=true;const btn=document.getElementById('modSubmit');btn.textContent='✓ Saved';btn.classList.add('done');btn.disabled=true;
 }
@@ -525,9 +604,9 @@ function q(v){return'"'+(v==null?'':String(v).replace(/"/g,'""'))+'"';}
 function downloadCSV(){
   if(!fbReady){alert('No connection.');return;}
   Promise.all([msgRef.once('value'),respRef.once('value')]).then(([ms,rs])=>{
-    let csv='Type,Timestamp,UserName,MostIronicObject,KnewPinkHistory,WhatPinkDoes,PersonalObject,PersonalImpact,Feelings,AffectsFuture,SortData\n';
-    ms.forEach(d=>{const m=d.val();csv+='question,'+q(m.ts?new Date(m.ts).toISOString():'')+','+q(m.userName)+',,,,'+q(m.question)+',,,,\n';});
-    rs.forEach(d=>{const r=d.val();csv+='response,'+q(r.ts?new Date(r.ts).toISOString():'')+','+q(r.userName)+','+q(r.mostIronicObject)+','+q(r.knewPinkWasBoysColor)+','+q(r.whatPinkDoes)+','+q(r.personalObject)+','+q(r.personalImpact)+','+q(r.feelings)+','+q(r.affectsFuture)+','+q(r.sortData)+'\n';});
+    let csv='Type,Timestamp,UserName,MostIronicObject,KnewPinkHistory,WhatPinkDoes,PersonalObject,PersonalImpact,Feelings,AffectsFuture,PinkFeeling,PinkAssociations,PinkRelationshipChange,SortData\n';
+    ms.forEach(d=>{const m=d.val();csv+='question,'+q(m.ts?new Date(m.ts).toISOString():'')+','+q(m.userName)+',,,,'+q(m.question)+',,,,,,,\n';});
+    rs.forEach(d=>{const r=d.val();csv+='response,'+q(r.ts?new Date(r.ts).toISOString():'')+','+q(r.userName)+','+q(r.mostIronicObject)+','+q(r.knewPinkWasBoysColor)+','+q(r.whatPinkDoes)+','+q(r.personalObject)+','+q(r.personalImpact)+','+q(r.feelings)+','+q(r.affectsFuture)+','+q(r.pinkFeeling)+','+q(r.pinkAssociations)+','+q(r.pinkRelationshipChange)+','+q(r.sortData)+'\n';});
     const blob=new Blob([csv],{type:'text/csv'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='carebot37-'+Date.now()+'.csv';document.body.appendChild(a);a.click();document.body.removeChild(a);URL.revokeObjectURL(url);
   });
 }
@@ -543,9 +622,7 @@ const responses=[
 
 let recentlyShown=[];
 function getResponse(){let avail=responses.filter((_,i)=>!recentlyShown.includes(i));if(avail.length<2){recentlyShown=[];avail=responses;}const ri=Math.floor(Math.random()*avail.length);const sel=avail[ri];recentlyShown.push(responses.indexOf(sel));if(recentlyShown.length>4)recentlyShown.shift();return sel;}
-function generateMovement(r){return'HIP HOP SEQUENCE\n\n'+r.moves.join('\n')+'\n\nENERGY: Precise. The color is data. Every freeze names the mechanism. The pink is not decoration — it is argument.';}
-let audioCtx=null;
-function playChime(){try{if(!audioCtx)audioCtx=new(window.AudioContext||window.webkitAudioContext)();const ctx=audioCtx;[[329.63,0],[415.30,.18],[493.88,.36]].forEach(([f,d])=>{const o=ctx.createOscillator();const g=ctx.createGain();o.connect(g);g.connect(ctx.destination);o.type='sine';o.frequency.value=f;const t=ctx.currentTime+d;g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(.35,t+.04);g.gain.exponentialRampToValueAtTime(.001,t+.7);o.start(t);o.stop(t+.72);});}catch(e){}}
+function generateMovement(r){return'MOVEMENT SEQUENCE\n\n'+r.moves.join('\n')+'\n\nENERGY: Precise. The color is data. Every freeze names the mechanism. The pink is not decoration — it is argument.';}
 function askQuestion(){
   const q2=document.getElementById('userQuestion').value.trim();
   if(!q2){alert('Please type a question!');return;}
@@ -556,13 +633,12 @@ function askQuestion(){
   document.getElementById('userQuestion').value='';
 }
 let localMessages=[];
-function localDisplay(q2,resp,mv){const area=document.getElementById('outputArea');localMessages.unshift({question:q2,answerText:resp.text,answerSource:resp.source,answerLink:resp.link,movement:mv,userName:'Anonymous',userColor});if(localMessages.length>MAX)localMessages=localMessages.slice(0,MAX);area.innerHTML='';localMessages.forEach((msg,i)=>renderPair(msg,null,i===0));}
-function renderPair(msg,key,playAudio=false){
+function localDisplay(q2,resp,mv){const area=document.getElementById('outputArea');localMessages.unshift({question:q2,answerText:resp.text,answerSource:resp.source,answerLink:resp.link,movement:mv,userName:'Anonymous',userColor});if(localMessages.length>MAX)localMessages=localMessages.slice(0,MAX);area.innerHTML='';localMessages.forEach((msg,i)=>renderPair(msg,null));}
+function renderPair(msg,key){
   const area=document.getElementById('outputArea');
   const el=document.createElement('div');el.className='cb-pair';if(key)el.id='pair-'+key;
   el.innerHTML='<div class="cb-meta"><strong style="color:'+escH(msg.userColor||'#ff85b3')+'">'+escH(msg.userName||'Anon')+'</strong> asked:</div><div class="cb-qbubble">\u2753 '+escH(msg.question)+'</div><div class="cb-pcard"><div class="cb-phead"><span class="cb-plabel">\ud83c\udf80 From the Research Record</span></div><div class="cb-pbody"><div class="cb-ptext">'+escH(msg.answerText)+'</div><div class="cb-psrc">Source: <a href="'+escH(msg.answerLink)+'" target="_blank">'+escH(msg.answerSource)+'</a></div></div></div><div class="cb-mcard"><div class="cb-mhead"><span class="cb-mlabel">\ud83c\udfad Movement Instructions</span></div><div class="cb-mbody"><div class="cb-mtext">'+escH(msg.movement)+'</div></div><div class="cb-spkrow"><button class="cb-btn soft" style="font-size:11px;padding:7px 13px;" onclick="speakText(this)">\ud83d\udd0a Read Aloud</button><button class="cb-btn soft" style="font-size:11px;padding:7px 13px;" onclick="stopSpeech()">\u23f9 Stop</button></div></div>';
   area.insertBefore(el,area.firstChild);
-  if(playAudio){playChime();setTimeout(()=>speakMovement(msg.movement),950);}
 }
 function speakMovement(text){if(!('speechSynthesis' in window))return;window.speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(text);u.rate=0.88;const trySpeak=()=>{const voices=window.speechSynthesis.getVoices();const fv=voices.find(v=>v.lang==='en-US'&&/female|woman|samantha|karen|amy|emma/i.test(v.name))||voices.find(v=>v.lang==='en-US');if(fv)u.voice=fv;window.speechSynthesis.speak(u);};if(window.speechSynthesis.getVoices().length)trySpeak();else window.speechSynthesis.onvoiceschanged=trySpeak;}
 function speakText(btn){speakMovement(btn.closest('.cb-mcard').querySelector('.cb-mtext').textContent);}
