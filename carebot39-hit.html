@@ -162,6 +162,19 @@ html,body{min-height:100%;font-family:var(--fb);font-weight:600;color:var(--crea
 .cb-mbtns{display:flex;gap:9px;}
 .cb-err{font-size:11px;color:var(--candy);margin-top:6px;min-height:16px;}
 .cb-wmark{font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:rgba(192,132,252,.07);padding-bottom:8px;text-align:center;}
+/* CLICK-THROUGH READING GATE */
+.reading-page{display:flex;flex-direction:column;align-items:center;gap:13px;width:100%;animation:slideUp .35s ease-out;}
+.reading-page.hidden{display:none;}
+.page-track{width:100%;max-width:720px;display:flex;align-items:center;gap:6px;margin-bottom:-3px;}
+.page-dot{flex:1;height:3px;border-radius:999px;background:rgba(192,132,252,.15);}
+.page-dot.done{background:linear-gradient(90deg,var(--teal),var(--candy));}
+.page-dot.current{background:rgba(192,132,252,.45);}
+.continue-wrap{width:100%;max-width:720px;display:flex;flex-direction:column;align-items:center;gap:8px;padding:4px 0 2px;}
+.continue-label{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);}
+.continue-btn{appearance:none;font-family:var(--fh);font-weight:900;font-size:12.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--cream);background:linear-gradient(135deg,var(--teal),rgba(140,0,160,1));border:none;border-radius:13px;padding:12px 26px;cursor:pointer;box-shadow:0 4px 18px rgba(192,132,252,.28);transition:transform .2s;}
+.continue-btn:hover{transform:translateY(-2px);}
+#surveySection.hidden{display:none;}
+#surveySection{display:flex;flex-direction:column;align-items:center;gap:13px;width:100%;animation:slideUp .4s ease-out;}
 </style>
 </head>
 <body>
@@ -188,6 +201,11 @@ html,body{min-height:100%;font-family:var(--fb);font-weight:600;color:var(--crea
     <div class="stat-chip">Online <strong id="st-o">—</strong></div>
   </div>
 
+  <!-- READING GATE: PAGE 1 -->
+  <div class="reading-page" id="page1">
+  <div class="page-track">
+    <div class="page-dot current"></div><div class="page-dot"></div><div class="page-dot"></div><div class="page-dot"></div>
+  </div>
   <!-- IRONY CARD -->
   <div class="irony-card">
     <div class="irony-eyebrow">✦ CAREBOT-39 · The Irony</div>
@@ -211,6 +229,18 @@ html,body{min-height:100%;font-family:var(--fb);font-weight:600;color:var(--crea
     <div class="ai-note">✦ AI helped me with this. There might be inaccuracies.</div>
   </div>
 
+  <div class="continue-wrap">
+    <div class="continue-label">Step 1 of 5 — read, then continue</div>
+    <button class="continue-btn" onclick="nextPage(1)">Continue ✦</button>
+  </div>
+  </div>
+  <!-- END PAGE 1 -->
+
+  <!-- READING GATE: PAGE 2 -->
+  <div class="reading-page hidden" id="page2">
+  <div class="page-track">
+    <div class="page-dot done"></div><div class="page-dot current"></div><div class="page-dot"></div><div class="page-dot"></div>
+  </div>
   <!-- TERM GRID -->
   <div class="section-title">✦ The Full Taxonomy — "Mother" in Computing and Engineering</div>
   <div class="section-sub">Across hardware, software, manufacturing, and systems: "mother" usually means the origin, the source, the thing everything else depends on. A few of these are precise, well-documented terms (motherboard, mother disc, Rope Mother); others are looser trade jargon without a single canonical source — we've flagged where we're less certain.</div>
@@ -301,6 +331,18 @@ html,body{min-height:100%;font-family:var(--fb);font-weight:600;color:var(--crea
 
   </div>
 
+  <div class="continue-wrap">
+    <div class="continue-label">Step 2 of 5 — read, then continue</div>
+    <button class="continue-btn" onclick="nextPage(2)">Continue ✦</button>
+  </div>
+  </div>
+  <!-- END PAGE 2 -->
+
+  <!-- READING GATE: PAGE 3 -->
+  <div class="reading-page hidden" id="page3">
+  <div class="page-track">
+    <div class="page-dot done"></div><div class="page-dot done"></div><div class="page-dot current"></div><div class="page-dot"></div>
+  </div>
   <!-- MARGARET HAMILTON + PATTY McHUGH -->
   <div class="women-card">
     <div class="irony-eyebrow" style="color:rgba(255,133,179,.5);">✦ The Women at the Origin</div>
@@ -324,6 +366,18 @@ html,body{min-height:100%;font-family:var(--fb);font-weight:600;color:var(--crea
     </div>
   </div>
 
+  <div class="continue-wrap">
+    <div class="continue-label">Step 3 of 5 — read, then continue</div>
+    <button class="continue-btn" onclick="nextPage(3)">Continue ✦</button>
+  </div>
+  </div>
+  <!-- END PAGE 3 -->
+
+  <!-- READING GATE: PAGE 4 -->
+  <div class="reading-page hidden" id="page4">
+  <div class="page-track">
+    <div class="page-dot done"></div><div class="page-dot done"></div><div class="page-dot done"></div><div class="page-dot current"></div>
+  </div>
   <!-- STAT GRID -->
   <div class="stat-grid-wrap">
     <div class="stat-grid-header">
@@ -341,6 +395,16 @@ html,body{min-height:100%;font-family:var(--fb);font-weight:600;color:var(--crea
       <div class="stat-box"><div class="stat-box-num red">$0</div><div class="stat-box-label">federal paid family leave in the US. No national childcare infrastructure. The sector that runs on "mother" built none of it.</div></div>
     </div>
   </div>
+
+  <div class="continue-wrap">
+    <div class="continue-label">Step 4 of 5 — read, then continue to the questions</div>
+    <button class="continue-btn" onclick="nextPage(4)">Continue to Questions ✦</button>
+  </div>
+  </div>
+  <!-- END PAGE 4 -->
+
+  <!-- SURVEY + Q&A (hidden until reading is complete) -->
+  <div id="surveySection" class="hidden">
 
   <!-- DATA MODULE -->
   <div class="mod-card">
@@ -419,6 +483,8 @@ html,body{min-height:100%;font-family:var(--fb);font-weight:600;color:var(--crea
     <a class="cb-link" href="carebot07-hit.html">✦ Advance to next task</a>
   </div>
   <div class="cb-wmark">✦ carebot-39 · mother in the machine · the origin · the source · caretech ✦</div>
+  </div>
+  <!-- END SURVEY SECTION -->
 </div>
 
 <div class="cb-modal" id="adminModal">
@@ -506,8 +572,21 @@ const responses=[
 
 let recentlyShown=[];
 function getResponse(){let avail=responses.filter((_,i)=>!recentlyShown.includes(i));if(avail.length<2){recentlyShown=[];avail=responses;}const ri=Math.floor(Math.random()*avail.length);const sel=avail[ri];recentlyShown.push(responses.indexOf(sel));if(recentlyShown.length>4)recentlyShown.shift();return sel;}
-function generateMovement(r){return'HIP HOP SEQUENCE\n\n'+r.moves.join('\n')+'\n\nENERGY: Precise. The word "mother" is in the technology. The movement honors what the technology named and forgot.';}
+function generateMovement(r){return'MOVEMENT SEQUENCE\n\n'+r.moves.join('\n')+'\n\nENERGY: Precise. The word "mother" is in the technology. The movement honors what the technology named and forgot.';}
 let audioCtx=null;
+const TOTAL_READING_PAGES=4;
+function nextPage(n){
+  const cur=document.getElementById('page'+n);
+  if(cur)cur.classList.add('hidden');
+  if(n<TOTAL_READING_PAGES){
+    const nxt=document.getElementById('page'+(n+1));
+    if(nxt)nxt.classList.remove('hidden');
+  }else{
+    const survey=document.getElementById('surveySection');
+    if(survey)survey.classList.remove('hidden');
+  }
+  window.scrollTo({top:0,behavior:'smooth'});
+}
 function playChime(){try{if(!audioCtx)audioCtx=new(window.AudioContext||window.webkitAudioContext)();const ctx=audioCtx;[[329.63,0],[415.30,.18],[493.88,.36]].forEach(([f,d])=>{const o=ctx.createOscillator();const g=ctx.createGain();o.connect(g);g.connect(ctx.destination);o.type='sine';o.frequency.value=f;const t=ctx.currentTime+d;g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(.35,t+.04);g.gain.exponentialRampToValueAtTime(.001,t+.7);o.start(t);o.stop(t+.72);});}catch(e){}}
 function askQuestion(){
   const q2=document.getElementById('userQuestion').value.trim();
@@ -525,7 +604,6 @@ function renderPair(msg,key,playAudio=false){
   const el=document.createElement('div');el.className='cb-pair';if(key)el.id='pair-'+key;
   el.innerHTML='<div class="cb-meta"><strong style="color:'+escH(msg.userColor||'#c084fc')+'">'+escH(msg.userName||'Anon')+'</strong> asked:</div><div class="cb-qbubble">&#x2753; '+escH(msg.question)+'</div><div class="cb-pcard"><div class="cb-phead"><span class="cb-plabel">&#x1F5A5;&#xFE0F; From the Research Record</span></div><div class="cb-pbody"><div class="cb-ptext">'+escH(msg.answerText)+'</div><div class="cb-psrc">Source: <a href="'+escH(msg.answerLink)+'" target="_blank">'+escH(msg.answerSource)+'</a></div></div></div><div class="cb-mcard"><div class="cb-mhead"><span class="cb-mlabel">&#x1F3AD; Movement Instructions</span></div><div class="cb-mbody"><div class="cb-mtext">'+escH(msg.movement)+'</div></div><div class="cb-spkrow"><button class="cb-btn soft" style="font-size:11px;padding:7px 13px;" onclick="speakText(this)">&#x1F50A; Read Aloud</button><button class="cb-btn soft" style="font-size:11px;padding:7px 13px;" onclick="stopSpeech()">&#x23F9; Stop</button></div></div>';
   area.insertBefore(el,area.firstChild);
-  if(playAudio){playChime();setTimeout(()=>speakMovement(msg.movement),950);}
 }
 const MC=3;
 function speakMovement(text){if(!('speechSynthesis' in window))return;window.speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(text);u.rate=0.88;const trySpeak=()=>{const voices=window.speechSynthesis.getVoices();const fv=voices.find(v=>v.lang==='en-US'&&/female|woman|samantha|karen|amy|emma/i.test(v.name))||voices.find(v=>v.lang==='en-US');if(fv)u.voice=fv;window.speechSynthesis.speak(u);};if(window.speechSynthesis.getVoices().length)trySpeak();else window.speechSynthesis.onvoiceschanged=trySpeak;}
