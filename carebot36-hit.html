@@ -42,6 +42,17 @@ html,body{min-height:100%;font-family:var(--fb);font-weight:600;color:var(--crea
 .stats-bar{width:100%;max-width:720px;display:flex;align-items:center;gap:.6rem;flex-wrap:wrap;padding:.5rem .9rem;background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:13px;}
 .stat-chip{display:flex;align-items:center;gap:.3rem;font-size:.62rem;font-weight:700;color:var(--muted);letter-spacing:.06em;text-transform:uppercase;background:rgba(255,60,120,.06);border:1px solid rgba(255,60,120,.13);border-radius:999px;padding:.18rem .6rem;}
 .stat-chip strong{color:var(--candy);}
+/* SLIDE DECK */
+.slide-progress{width:100%;max-width:720px;font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);text-align:center;padding:2px 0;}
+.slide-track{width:100%;max-width:720px;height:3px;background:rgba(255,255,255,.06);border-radius:999px;overflow:hidden;}
+.slide-fill{height:100%;background:linear-gradient(90deg,var(--candy),var(--pink));border-radius:999px;transition:width .3s ease;}
+.cb-slide{display:none;width:100%;max-width:720px;flex-direction:column;align-items:center;gap:13px;}
+.cb-slide.active{display:flex;}
+.slide-nav{width:100%;display:flex;gap:10px;margin-top:2px;}
+.nav-btn{appearance:none;font-family:var(--fb);font-weight:700;font-size:12px;padding:11px 16px;border-radius:11px;cursor:pointer;border:1.5px solid var(--border2);background:rgba(255,255,255,.04);color:var(--muted);flex:1;text-align:center;transition:all .15s;}
+.nav-btn.next{background:linear-gradient(135deg,var(--pink),var(--berry));color:#fff;border-color:transparent;font-weight:900;}
+.nav-btn.next:hover{transform:translateY(-1px);}
+.nav-btn.back:disabled{opacity:.3;cursor:default;}
 /* IRONY CARD */
 .irony-card{width:100%;max-width:720px;background:linear-gradient(135deg,rgba(111,0,30,.88),rgba(50,0,15,.95));border:1.5px solid rgba(255,60,80,.4);border-radius:18px;padding:18px;position:relative;overflow:hidden;}
 .irony-card::before{content:'';position:absolute;top:0;left:10%;right:10%;height:1.5px;background:linear-gradient(90deg,transparent,var(--candy) 35%,var(--pink) 50%,var(--candy) 65%,transparent);box-shadow:0 0 10px var(--candy);border-radius:999px;}
@@ -50,6 +61,7 @@ html,body{min-height:100%;font-family:var(--fb);font-weight:600;color:var(--crea
 .irony-body{font-size:12.5px;line-height:1.78;color:rgba(255,210,210,.82);}
 .irony-body strong{color:#ffcccc;}
 .irony-body em{color:var(--candy);}
+.irony-body a{color:var(--candy);}
 /* ADVICE TICKER */
 .advice-ticker{width:100%;max-width:720px;background:var(--blue-bg);border:1.5px solid var(--blue-border);border-radius:14px;padding:14px 16px;}
 .ticker-label{font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:rgba(147,197,253,.55);margin-bottom:10px;}
@@ -109,7 +121,10 @@ html,body{min-height:100%;font-family:var(--fb);font-weight:600;color:var(--crea
 .stat-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:8px;padding:14px 17px;}
 .stat-box{padding:10px 12px;background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:10px;}
 .stat-box-num{font-family:var(--fh);font-weight:900;font-size:22px;color:var(--candy);line-height:1;}
+.stat-box-num a{color:inherit;text-decoration:none;border-bottom:1px dotted rgba(255,133,179,.5);}
+.stat-box-num a:hover{border-bottom-style:solid;}
 .stat-box-label{font-size:10px;color:var(--muted);margin-top:4px;line-height:1.4;}
+.stat-box-src{font-size:8.5px;color:rgba(255,190,220,.35);margin-top:4px;font-style:italic;}
 /* DATA MODULE */
 .mod-card{width:100%;max-width:720px;background:var(--surface);border:1.5px solid var(--border2);border-radius:18px;overflow:hidden;position:relative;box-shadow:0 4px 28px rgba(255,45,107,.15);}
 .mod-card::before{content:'';position:absolute;top:0;left:10%;right:10%;height:1.5px;background:linear-gradient(90deg,transparent,var(--candy) 35%,var(--pink) 50%,var(--candy) 65%,transparent);box-shadow:0 0 10px var(--candy);border-radius:999px;}
@@ -118,9 +133,10 @@ html,body{min-height:100%;font-family:var(--fb);font-weight:600;color:var(--crea
 .mod-title{font-family:var(--fh);font-weight:900;font-size:14px;background:linear-gradient(90deg,var(--blush),var(--pink));-webkit-background-clip:text;background-clip:text;color:transparent;line-height:1.3;}
 .mod-sub{font-size:11px;color:var(--muted);margin-top:4px;line-height:1.6;}
 .mod-body{padding:14px 17px;}
-.open-label{font-size:11px;color:var(--cream);font-weight:700;margin-bottom:6px;margin-top:12px;line-height:1.5;}
+.open-label{font-size:11px;color:var(--cream);font-weight:700;margin-bottom:6px;margin-top:14px;line-height:1.5;}
 .open-label:first-child{margin-top:0;}
-.open-q{width:100%;padding:9px 13px;background:rgba(255,255,255,.05);border:1.5px solid var(--border);border-radius:11px;font-family:var(--fb);font-weight:600;font-size:12px;color:var(--cream);outline:none;transition:border-color .2s;resize:vertical;min-height:68px;}
+.open-label .opt-tag{font-size:8.5px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.08em;margin-left:5px;}
+.open-q{width:100%;padding:9px 13px;background:rgba(255,255,255,.05);border:1.5px solid var(--border);border-radius:11px;font-family:var(--fb);font-weight:600;font-size:12px;color:var(--cream);outline:none;transition:border-color .2s;resize:vertical;min-height:60px;}
 .open-q:focus{border-color:var(--candy);}
 .open-q::placeholder{color:var(--muted);}
 .rate-row{display:flex;gap:7px;margin-bottom:10px;flex-wrap:wrap;}
@@ -202,206 +218,314 @@ html,body{min-height:100%;font-family:var(--fb);font-weight:600;color:var(--crea
   </div>
 
   <div class="stats-bar">
-    <div class="stat-chip">Responses <strong id="st-r">—</strong></div>
+    <div class="stat-chip">Questions asked <strong id="st-q">—</strong></div>
+    <div class="stat-chip">Responses submitted <strong id="st-r">—</strong></div>
     <div class="stat-chip">Online <strong id="st-o">—</strong></div>
   </div>
 
-  <!-- IRONY CARD -->
-  <div class="irony-card">
-    <div class="irony-eyebrow">✦ CAREBOT-36 · The Irony</div>
-    <div class="irony-title">College graduates can't find entry-level jobs. The advice: just become a CEO. The reality: the CEO chair has been occupied by almost exclusively one demographic for decades — and specific, documented barriers keep it that way.</div>
-    <div class="irony-body">
-      <strong><a href="https://www.cengagegroup.com/news/press-releases/2025/cengage-group-2025-employability-report/" target="_blank">30%</a></strong> of 2025 graduates secured jobs in their field. <strong><a href="https://www.cengagegroup.com/news/press-releases/2025/cengage-group-2025-employability-report/" target="_blank">33%</a></strong> are unemployed. The advice given by Indeed, GCU, Crummer, Crimson Education, and Inc. Magazine: pivot to entrepreneurship, <em>become a CEO.</em><br><br>
-      ~<strong><a href="https://www.researchgate.net/figure/White-male-CEOs-and-New-CEOs-in-the-Fortune-500-2000-2020_fig1_346081966" target="_blank">85%</a></strong> of Fortune 500 CEOs are white men. Women hold <strong><a href="https://fortune.com/2025/06/02/fortune-500-companies-run-by-female-ceos-women-2025/" target="_blank">11%</a></strong>, an all-time high. Only two Black women have ever run a Fortune 500 company, and none has ever led a top-10 tech company. Black founders received <strong><a href="https://peopleofcolorintech.com/articles/black-founders-received-just-0-4-of-all-startup-funding-in-2024/" target="_blank">0.48%</a></strong> of US venture capital in 2024. The advice does not mention the <a href="https://www.mckinsey.com/capabilities/people-and-organizational-performance/our-insights/women-in-the-workplace" target="_blank">broken rung</a>, the <a href="https://www.catalyst.org/en-us/insights/2024/black-women-glass-cliff-workplace-systems" target="_blank">glass cliff</a>, the <a href="https://www.keystonepartners.com/resources/breaking-through-women-in-leadership/" target="_blank">sponsorship gap</a>, the <a href="https://knowledge.insead.edu/leadership-organisations/female-ceo-problem-solutions" target="_blank">double bind</a>, or the <a href="https://verdict.co.uk/?p=352276" target="_blank">4.8-year tenure penalty</a>. It addresses the individual. It ignores the structure.
+  <!-- ============ SLIDE DECK ============ -->
+  <div id="slideDeck">
+    <div class="slide-progress" id="slideProgress">Slide 1 of 5 · Critical context</div>
+    <div class="slide-track"><div class="slide-fill" id="slideFill" style="width:20%;"></div></div>
+
+    <!-- SLIDE 1: IRONY CARD -->
+    <div class="cb-slide active" data-slide="1">
+      <div class="irony-card">
+        <div class="irony-eyebrow">✦ CAREBOT-36 · The Irony</div>
+        <div class="irony-title">College graduates can't find entry-level jobs. The advice: just become a CEO. The reality: the CEO chair has been occupied by almost exclusively one demographic for decades — and specific, documented barriers keep it that way.</div>
+        <div class="irony-body">
+          <strong><a href="https://www.cengagegroup.com/news/press-releases/2025/cengage-group-2025-employability-report/" target="_blank">30%</a></strong> of 2025 graduates secured jobs in their field. <strong><a href="https://www.cengagegroup.com/news/press-releases/2025/cengage-group-2025-employability-report/" target="_blank">33%</a></strong> are unemployed. The advice given by Indeed, GCU, Crummer, Crimson Education, and Inc. Magazine: pivot to entrepreneurship, <em>become a CEO.</em><br><br>
+          ~<strong><a href="https://www.researchgate.net/figure/White-male-CEOs-and-New-CEOs-in-the-Fortune-500-2000-2020_fig1_346081966" target="_blank">85%</a></strong> of Fortune 500 CEOs are white men. Women hold <strong><a href="https://fortune.com/2025/06/02/fortune-500-companies-run-by-female-ceos-women-2025/" target="_blank">11%</a></strong>, an all-time high. Only two Black women have ever run a Fortune 500 company, and none has ever led a top-10 tech company. Black founders received <strong><a href="https://peopleofcolorintech.com/articles/black-founders-received-just-0-4-of-all-startup-funding-in-2024/" target="_blank">0.48%</a></strong> of US venture capital in 2024. The advice does not mention the <a href="https://www.mckinsey.com/capabilities/people-and-organizational-performance/our-insights/women-in-the-workplace" target="_blank">broken rung</a>, the <a href="https://www.catalyst.org/en-us/insights/2024/black-women-glass-cliff-workplace-systems" target="_blank">glass cliff</a>, the <a href="https://www.keystonepartners.com/resources/breaking-through-women-in-leadership/" target="_blank">sponsorship gap</a>, the <a href="https://knowledge.insead.edu/leadership-organisations/female-ceo-problem-solutions" target="_blank">double bind</a>, or the <a href="https://verdict.co.uk/?p=352276" target="_blank">4.8-year tenure penalty</a>. It addresses the individual. It ignores the structure.
+        </div>
+      </div>
+      <div style="width:100%;font-size:10.5px;color:var(--muted);text-align:center;font-style:italic;padding:2px 4px;">✦ AI helped me with this. There might be inaccuracies — please check the linked sources. ✦</div>
+      <div class="slide-nav">
+        <button class="nav-btn back" disabled>← Back</button>
+        <button class="nav-btn next" onclick="nextSlide()">Continue ✦</button>
+      </div>
+    </div>
+
+    <!-- SLIDE 2: ADVICE TICKER -->
+    <div class="cb-slide" data-slide="2">
+      <div class="advice-ticker" style="width:100%;">
+        <div class="ticker-label">✦ Actual advice being given to graduates who can't find jobs</div>
+        <div class="ticker-item" id="tickerItem"></div>
+        <div class="ticker-src" id="tickerSrc"></div>
+        <div class="ticker-nav">
+          <button class="ticker-btn" onclick="prevAdvice()">← Previous quote</button>
+          <button class="ticker-btn" onclick="nextAdvice()">Next quote →</button>
+          <span class="ticker-counter" id="tickerCount"></span>
+        </div>
+      </div>
+      <div class="slide-nav">
+        <button class="nav-btn back" onclick="prevSlide()">← Back</button>
+        <button class="nav-btn next" onclick="nextSlide()">Continue ✦</button>
+      </div>
+    </div>
+
+    <!-- SLIDE 3: TWO-COL ADVICE VS REALITY -->
+    <div class="cb-slide" data-slide="3">
+      <div class="two-col">
+        <div class="col-card advice">
+          <div class="col-label">✦ The advice</div>
+          <div class="cite-item"><strong>Entrepreneur.com (Mar 2026)</strong> — Entry-level hiring dropped 6% Dec 2025–Feb 2026. The pivot: entrepreneurship, starting a company.
+            <div class="cite-src"><a href="https://www.entrepreneur.com/business-news/new-graduates-facing-toughest-job-market-since-pandemic" target="_blank">Entrepreneur.com, Mar 2026</a></div></div>
+          <div class="cite-item"><strong>Indeed Career Advice</strong> — "While you can become the CEO of an existing organization, you can also pursue this position by starting a company."
+            <div class="cite-src"><a href="https://www.indeed.com/career-advice/career-development/how-to-become-ceo" target="_blank">Indeed</a></div></div>
+          <div class="cite-item"><strong>Crummer / Rollins (2025)</strong> — "Early Advantage MBA for recent college graduates looking to jumpstart their career" toward becoming a CEO.
+            <div class="cite-src"><a href="https://crummer.rollins.edu/resources/how-to-become-a-ceo-of-a-company-in-5-steps/" target="_blank">Crummer, 2025</a></div></div>
+          <div class="cite-item"><strong>Inc. Magazine (Jan 2025)</strong> — More Gen-Zers are moving into entrepreneurship than older cohorts — cited as response to the job market.
+            <div class="cite-src"><a href="https://www.inc.com/kit-eaton/college-degrees-arent-landing-new-graduates-the-jobs-they-want-whats-going-on/91139574" target="_blank">Inc. Magazine, Jan 2025</a></div></div>
+        </div>
+        <div class="col-card reality">
+          <div class="col-label">✦ Who actually becomes a CEO</div>
+          <div class="cite-item"><strong>~85% of Fortune 500 CEOs are white men (2024)</strong> — In 2000 it was 96.4%. The gains went largely to white women.
+            <div class="cite-src"><a href="https://verdict.co.uk/?p=352276" target="_blank">Verdict / Zweigenhaft research</a></div></div>
+          <div class="cite-item"><strong>Women: 11% of Fortune 500 CEOs (2025)</strong> — All-time high. No Black woman has ever led a top-10 tech company.
+            <div class="cite-src"><a href="https://blog.aboveboard.com/fortune-500-diversity-2023" target="_blank">AboveBoard F500 Tracker</a></div></div>
+          <div class="cite-item"><strong>Black CEO tenure: 4.8 years vs 6.9 overall</strong> — shorter path, shorter tenure, harsher scrutiny.
+            <div class="cite-src"><a href="https://verdict.co.uk/?p=352276" target="_blank">Zweigenhaft / Verdict</a></div></div>
+          <div class="cite-item"><strong>Recent grads: 7% of new hires in 2024</strong> — down 25% from 2023. 33% of 2025 grads unemployed (Cengage Group).
+            <div class="cite-src"><a href="https://www.cengagegroup.com/news/press-releases/2025/cengage-group-2025-employability-report/" target="_blank">Cengage Group, 2025</a></div></div>
+        </div>
+      </div>
+      <div class="slide-nav">
+        <button class="nav-btn back" onclick="prevSlide()">← Back</button>
+        <button class="nav-btn next" onclick="nextSlide()">Continue ✦</button>
+      </div>
+    </div>
+
+    <!-- SLIDE 4: BARRIERS -->
+    <div class="cb-slide" data-slide="4">
+      <div class="barriers-section">
+        <div class="barriers-title">✦ The Specific Barriers — What the Advice Doesn't Say</div>
+        <div class="barriers-sub">The "just become a CEO" advice skips six documented, named, researched structural mechanisms that make that path significantly harder depending on who you are. These are not excuses. They are data.</div>
+        <div class="barriers-grid">
+
+          <div class="barrier-card both">
+            <div class="barrier-eyebrow">✦ Barrier 1 · Women + People of Color</div>
+            <div class="barrier-name">The Broken Rung</div>
+            <div class="barrier-body">The biggest barrier to the CEO chair doesn't happen at the top — it happens at the first step up to manager. For every 100 men promoted to their first manager role, only <strong>93 women</strong> make the same leap, and just <strong>74 women of color</strong> do. Women are 49% of entry-level employees and 29% of the C-suite. The path loses women at every rung — not because of ambition, but because of who gets promoted.</div>
+            <div class="barrier-stat"><strong>McKinsey / LeanIn Women in the Workplace (2025):</strong> Women underrepresented at every pipeline level for the 11th consecutive year. Only 29% of C-suite roles. Women of color: just 7% of C-suite.</div>
+            <div class="barrier-src">Source: <a href="https://www.mckinsey.com/capabilities/people-and-organizational-performance/our-insights/women-in-the-workplace" target="_blank">McKinsey / LeanIn, 2025</a></div>
+          </div>
+
+          <div class="barrier-card women">
+            <div class="barrier-eyebrow">✦ Barrier 2 · Women</div>
+            <div class="barrier-name">The Sponsorship Gap</div>
+            <div class="barrier-body">Mentors advise. Sponsors open doors. Women have fewer sponsors — the senior leaders who put your name forward for promotion, plum assignments, and stretch opportunities. Only <strong>31% of entry-level women</strong> have a sponsor vs <strong>45% of men</strong> at the same level. Without a sponsor, you do the work. Someone else gets promoted. The advice to network and connect never mentions that the networking itself is gendered.</div>
+            <div class="barrier-stat"><strong>INSEAD (Feb 2026):</strong> "Women are under-sponsored. While mentors advise, sponsors open doors." The barrier is not a shortage of capable women, but how boards define readiness and who gets advocated for.</div>
+            <div class="barrier-src">Source: <a href="https://knowledge.insead.edu/leadership-organisations/female-ceo-problem-solutions" target="_blank">INSEAD Knowledge, Feb 2026</a>; <a href="https://www.keystonepartners.com/resources/breaking-through-women-in-leadership/" target="_blank">Keystone Partners, Feb 2026</a></div>
+          </div>
+
+          <div class="barrier-card poc">
+            <div class="barrier-eyebrow">✦ Barrier 3 · People of Color</div>
+            <div class="barrier-name">The Glass Cliff</div>
+            <div class="barrier-body">After the murder of George Floyd in 2020, many companies hired Black women into leadership roles — often at companies that were already in crisis. This is the glass cliff: women and people of color are more likely to be appointed to leadership <strong>during organizational failure</strong>, not stability. They inherit problems they didn't create. When the company continues to struggle, the failure gets attributed to them personally — reinforcing stereotypes about their fitness to lead.</div>
+            <div class="barrier-stat"><strong>Center for Talent Innovation (2023):</strong> Black executives are <strong>2.5x more likely</strong> to be prematurely removed from leadership roles under "organizational restructuring." Female leaders are <strong>24% more likely</strong> to be fired than male counterparts.</div>
+            <div class="barrier-src">Source: <a href="https://www.catalyst.org/en-us/insights/2024/black-women-glass-cliff-workplace-systems" target="_blank">Catalyst, 2024</a>; <a href="https://hbr.org/podcast/2024/03/why-the-glass-cliff-persists" target="_blank">HBR, Mar 2024</a></div>
+          </div>
+
+          <div class="barrier-card both">
+            <div class="barrier-eyebrow">✦ Barrier 4 · Women + People of Color</div>
+            <div class="barrier-name">The Double Bind</div>
+            <div class="barrier-body">Be assertive: you're "aggressive." Be collaborative: you're "not leadership material." Behaviors rewarded as leadership potential in white men are penalized in women and people of color. The acceptable behavioral range is narrower. As one executive of color described it: <em>"I'm either too direct or not assertive enough."</em> The standard shifts depending on who you are. The advice to "develop leadership skills" doesn't name this.</div>
+            <div class="barrier-stat"><strong>Perceptual imprinting research (2024):</strong> People's visual templates for how leaders look have been skewed by constant exposure to white male leaders — making women and people of color appear "less like leaders" regardless of their actual qualifications.</div>
+            <div class="barrier-src">Source: <a href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC11967962/" target="_blank">PMC / Leadership Perception Study, 2024</a>; <a href="https://www.bridgespan.org/insights/nonprofit-leadership-transitions-four-ways-funders-can-support-leaders-of-color" target="_blank">Bridgespan</a></div>
+          </div>
+
+          <div class="barrier-card poc">
+            <div class="barrier-eyebrow">✦ Barrier 5 · People of Color</div>
+            <div class="barrier-name">The Capital Access Gap</div>
+            <div class="barrier-body">The advice to "start your own company and become a CEO" requires startup capital. In 2024, <strong>Black founders received 0.48%</strong> of all US venture capital funding despite Black Americans being 13.4% of the population. Women founders received <strong>approximately 2%</strong>. VC networks operate through existing connections — connections that have been historically built between white male investors and white male founders. The advice skips the capital requirement entirely.</div>
+            <div class="barrier-stat"><strong>UN Global Compact (2025):</strong> "Women entrepreneurs still receive less than 2% of global venture capital funding." The care economy is undervalued. Women-led sectors are chronically underinvested.</div>
+            <div class="barrier-src">Source: <a href="https://unglobalcompact.org/compactjournal/closing-gap-top-advancing-womens-leadership-business" target="_blank">UN Global Compact, 2025</a>; <a href="https://peopleofcolorintech.com/articles/black-founders-received-just-0-4-of-all-startup-funding-in-2024/" target="_blank">Crunchbase 2024 Diversity in VC</a></div>
+          </div>
+
+          <div class="barrier-card women">
+            <div class="barrier-eyebrow">✦ Barrier 6 · Women</div>
+            <div class="barrier-name">The Domestic Labor Tax</div>
+            <div class="barrier-body">Women with partners are more than <strong>3x as likely</strong> as men to be responsible for all or most housework. Nearly 25% of women who express reluctance about promotion cite personal obligations — vs 15% of men. Remote work, which helps women manage caregiving, simultaneously reduces their visibility and access to sponsors. The flexibility-visibility tradeoff is a documented mechanism. The advice to "network aggressively and seek promotion" ignores who is doing the second shift at home.</div>
+            <div class="barrier-stat"><strong>McKinsey / LeanIn (2026):</strong> Entry-level women working remotely are <strong>1.5x less likely to be promoted</strong> than in-office counterparts. The flexibility that manages caregiving reduces visibility that produces sponsorship.</div>
+            <div class="barrier-src">Source: <a href="https://www.keystonepartners.com/resources/breaking-through-women-in-leadership/" target="_blank">Keystone / McKinsey Women in the Workplace, Feb 2026</a></div>
+          </div>
+
+        </div>
+      </div>
+      <div class="slide-nav">
+        <button class="nav-btn back" onclick="prevSlide()">← Back</button>
+        <button class="nav-btn next" onclick="nextSlide()">Continue ✦</button>
+      </div>
+    </div>
+
+    <!-- SLIDE 5: STATS, ALL LINKED -->
+    <div class="cb-slide" data-slide="5">
+      <div class="stat-grid-wrap" style="width:100%;">
+        <div class="stat-grid-header">
+          <div class="mod-eyebrow">✦ The Numbers · Tap any number for its source</div>
+          <div class="stat-grid-title">Entry-level disappearing. Chair still occupied. Barriers named.</div>
+        </div>
+        <div class="stat-grid">
+          <div class="stat-box"><div class="stat-box-num"><a href="https://www.cengagegroup.com/news/press-releases/2025/cengage-group-2025-employability-report/" target="_blank">30%</a></div><div class="stat-box-label">of 2025 graduates secured full-time jobs in their field</div><div class="stat-box-src">Cengage Group, 2025</div></div>
+          <div class="stat-box"><div class="stat-box-num"><a href="https://www.cengagegroup.com/news/press-releases/2025/cengage-group-2025-employability-report/" target="_blank">33%</a></div><div class="stat-box-label">of 2025 graduates are unemployed and actively seeking work</div><div class="stat-box-src">Cengage Group, 2025</div></div>
+          <div class="stat-box"><div class="stat-box-num"><a href="https://www.researchgate.net/figure/White-male-CEOs-and-New-CEOs-in-the-Fortune-500-2000-2020_fig1_346081966" target="_blank">~85%</a></div><div class="stat-box-label">of Fortune 500 CEOs are white men</div><div class="stat-box-src">Zweigenhaft research</div></div>
+          <div class="stat-box"><div class="stat-box-num"><a href="https://fortune.com/2025/06/02/fortune-500-companies-run-by-female-ceos-women-2025/" target="_blank">11%</a></div><div class="stat-box-label">of Fortune 500 CEOs are women — all-time high, 2025</div><div class="stat-box-src">Fortune, 2025</div></div>
+          <div class="stat-box"><div class="stat-box-num"><a href="https://www.mckinsey.com/capabilities/people-and-organizational-performance/our-insights/women-in-the-workplace" target="_blank">93</a></div><div class="stat-box-label">women promoted to manager for every 100 men — the broken rung</div><div class="stat-box-src">McKinsey / LeanIn, 2025</div></div>
+          <div class="stat-box"><div class="stat-box-num"><a href="https://www.keystonepartners.com/resources/breaking-through-women-in-leadership/" target="_blank">31%</a></div><div class="stat-box-label">of entry-level women have a sponsor vs 45% of men at same level</div><div class="stat-box-src">Keystone Partners, 2026</div></div>
+          <div class="stat-box"><div class="stat-box-num"><a href="https://www.catalyst.org/en-us/insights/2024/black-women-glass-cliff-workplace-systems" target="_blank">2.5×</a></div><div class="stat-box-label">more likely: Black executives to be prematurely removed from leadership</div><div class="stat-box-src">Catalyst, 2024</div></div>
+          <div class="stat-box"><div class="stat-box-num"><a href="https://peopleofcolorintech.com/articles/black-founders-received-just-0-4-of-all-startup-funding-in-2024/" target="_blank">0.48%</a></div><div class="stat-box-label">of US venture capital went to Black founders in 2024</div><div class="stat-box-src">People of Color in Tech, 2024</div></div>
+          <div class="stat-box"><div class="stat-box-num"><a href="https://verdict.co.uk/?p=352276" target="_blank">4.8yr</a></div><div class="stat-box-label">average Black CEO tenure vs 6.9yr overall</div><div class="stat-box-src">Zweigenhaft / Verdict</div></div>
+          <div class="stat-box"><div class="stat-box-num"><a href="https://blog.aboveboard.com/fortune-500-diversity-2023" target="_blank">0</a></div><div class="stat-box-label">Black women who have ever led a top-10 tech company</div><div class="stat-box-src">AboveBoard F500 Tracker</div></div>
+          <div class="stat-box"><div class="stat-box-num"><a href="https://www.keystonepartners.com/resources/breaking-through-women-in-leadership/" target="_blank">3×</a></div><div class="stat-box-label">more likely: women with partners responsible for all housework vs men</div><div class="stat-box-src">Keystone / McKinsey, 2026</div></div>
+          <div class="stat-box"><div class="stat-box-num"><a href="https://www.cengagegroup.com/news/press-releases/2025/cengage-group-2025-employability-report/" target="_blank">7%</a></div><div class="stat-box-label">of new hires in 2024 were recent graduates — down 25% from 2023</div><div class="stat-box-src">Cengage Group, 2025</div></div>
+        </div>
+      </div>
+      <div class="slide-nav">
+        <button class="nav-btn back" onclick="prevSlide()">← Back</button>
+        <button class="nav-btn next" onclick="nextSlide()">Continue to the task ✦</button>
+      </div>
+    </div>
+
+  </div>
+  <!-- ============ END SLIDE DECK ============ -->
+
+  <!-- ============ TASK SECTION (hidden until slides complete) ============ -->
+  <div id="taskSection" style="display:none;width:100%;flex-direction:column;align-items:center;gap:13px;">
+
+    <!-- RESPONSE MODULE -->
+    <div class="mod-card">
+      <div class="mod-header">
+        <div class="mod-eyebrow">✦ Data Module · Respond to the Barriers · Anonymous</div>
+        <div class="mod-title">Which barrier was most surprising? What would honest advice say?</div>
+        <div class="mod-sub">The advice says: become a CEO. The barriers say: that path has named, documented structural mechanisms working against most people who try. Respond to what you found.</div>
+      </div>
+      <div class="mod-body">
+
+        <div class="open-label">Which of the six barriers was most surprising or least known to you?</div>
+        <div class="rate-row" id="barrierRow">
+          <button class="rate-btn" onclick="pick('barrier',this,'broken_rung')">Broken rung</button>
+          <button class="rate-btn" onclick="pick('barrier',this,'sponsorship')">Sponsorship gap</button>
+          <button class="rate-btn" onclick="pick('barrier',this,'glass_cliff')">Glass cliff</button>
+          <button class="rate-btn" onclick="pick('barrier',this,'double_bind')">Double bind</button>
+          <button class="rate-btn" onclick="pick('barrier',this,'capital')">Capital access</button>
+          <button class="rate-btn" onclick="pick('barrier',this,'domestic_tax')">Domestic labor tax</button>
+        </div>
+
+        <div class="open-label">How believable is the "just become a CEO" advice for the average 2025 graduate?</div>
+        <div class="rate-row" id="believeRow">
+          <button class="rate-btn" onclick="pick('believe',this,'not_at_all')">Not at all believable</button>
+          <button class="rate-btn" onclick="pick('believe',this,'aspirational')">Aspirational but dishonest</button>
+          <button class="rate-btn" onclick="pick('believe',this,'depends')">Depends entirely on who you are</button>
+          <button class="rate-btn" onclick="pick('believe',this,'possible')">Genuinely possible for many</button>
+        </div>
+
+        <div class="open-label">What feeling came up strongest as you read this?</div>
+        <div class="rate-row" id="feelRow">
+          <button class="rate-btn" onclick="pick('feel',this,'angry')">Angry</button>
+          <button class="rate-btn" onclick="pick('feel',this,'discouraged')">Discouraged</button>
+          <button class="rate-btn" onclick="pick('feel',this,'not_surprised')">Not surprised</button>
+          <button class="rate-btn" onclick="pick('feel',this,'validated')">Validated</button>
+          <button class="rate-btn" onclick="pick('feel',this,'motivated')">Motivated</button>
+          <button class="rate-btn" onclick="pick('feel',this,'numb')">Numb to it</button>
+        </div>
+
+        <div class="open-label">What specifically is that feeling responding to?</div>
+        <div class="rate-row" id="reasonRow">
+          <button class="rate-btn" onclick="pick('reason',this,'the_statistics')">The statistics themselves</button>
+          <button class="rate-btn" onclick="pick('reason',this,'my_experience')">My own experience</button>
+          <button class="rate-btn" onclick="pick('reason',this,'someone_i_know')">Something a specific person I know went through</button>
+          <button class="rate-btn" onclick="pick('reason',this,'the_pattern')">The pattern repeating across every barrier</button>
+          <button class="rate-btn" onclick="pick('reason',this,'the_advice_itself')">How confidently the advice was given</button>
+        </div>
+
+        <div class="open-label">If the advice named these barriers honestly, what would it say?</div>
+        <div class="rate-row" id="honestRow">
+          <button class="rate-btn" onclick="pick('honest',this,'disclose_barriers')">"Here's the data on who actually succeeds, and why"</button>
+          <button class="rate-btn" onclick="pick('honest',this,'redirect_systemic')">"This is a structural problem — push for policy change, not just hustle"</button>
+          <button class="rate-btn" onclick="pick('honest',this,'name_requirements')">"You'll need capital, sponsors, and a network most people don't have"</button>
+          <button class="rate-btn" onclick="pick('honest',this,'not_given')">It probably shouldn't be given as general advice at all</button>
+        </div>
+
+        <div class="open-label">Who does this advice actually apply to without these barriers?</div>
+        <div class="rate-row" id="appliesRow">
+          <button class="rate-btn" onclick="pick('applies',this,'capital')">People who already have capital or wealth</button>
+          <button class="rate-btn" onclick="pick('applies',this,'network')">People with strong professional networks or sponsors</button>
+          <button class="rate-btn" onclick="pick('applies',this,'prototype')">People who match the existing leadership "prototype"</button>
+          <button class="rate-btn" onclick="pick('applies',this,'no_caregiving')">People without major caregiving responsibilities</button>
+          <button class="rate-btn" onclick="pick('applies',this,'all_above')">All of the above, layered together</button>
+        </div>
+
+        <div class="open-label">How does this affect your own plans or expectations?</div>
+        <div class="rate-row" id="impactRow">
+          <button class="rate-btn" onclick="pick('impact',this,'reconsider')">Makes me reconsider my career plans</button>
+          <button class="rate-btn" onclick="pick('impact',this,'validates')">Validates something I already suspected</button>
+          <button class="rate-btn" onclick="pick('impact',this,'angry_unchanged')">Makes me angry, but won't change my approach</button>
+          <button class="rate-btn" onclick="pick('impact',this,'not_applicable')">Doesn't really apply to my situation</button>
+        </div>
+
+        <div class="open-label">Have you personally witnessed one of these barriers play out?</div>
+        <div class="rate-row" id="witnessRow">
+          <button class="rate-btn" onclick="pick('witness',this,'broken_rung')">Yes — the broken rung</button>
+          <button class="rate-btn" onclick="pick('witness',this,'glass_cliff')">Yes — the glass cliff</button>
+          <button class="rate-btn" onclick="pick('witness',this,'double_bind')">Yes — the double bind</button>
+          <button class="rate-btn" onclick="pick('witness',this,'multiple')">Yes — more than one of these</button>
+          <button class="rate-btn" onclick="pick('witness',this,'no')">No, not that I've noticed</button>
+        </div>
+        <div class="open-label">Optional: what happened? <span class="opt-tag">optional</span></div>
+        <textarea class="open-q" id="openWitnessDetail" placeholder="A specific moment, a specific person — no names needed."></textarea>
+
+        <div class="open-label">What stage are you at right now?</div>
+        <div class="rate-row" id="careerRow">
+          <button class="rate-btn" onclick="pick('career',this,'student')">Current student</button>
+          <button class="rate-btn" onclick="pick('career',this,'recent_grad')">Recent graduate (under 2 years)</button>
+          <button class="rate-btn" onclick="pick('career',this,'early_career')">Early career (2–5 years)</button>
+          <button class="rate-btn" onclick="pick('career',this,'mid_late')">Mid- or late-career</button>
+          <button class="rate-btn" onclick="pick('career',this,'not_in_field')">Not in this field</button>
+        </div>
+
+        <div class="open-label">What would actually help graduates facing this job market?</div>
+        <div class="rate-row" id="fixRow">
+          <button class="rate-btn" onclick="pick('fix',this,'structural')">Structural / policy change</button>
+          <button class="rate-btn" onclick="pick('fix',this,'individual')">Individual effort and networking</button>
+          <button class="rate-btn" onclick="pick('fix',this,'both')">Both, but structural change matters more</button>
+          <button class="rate-btn" onclick="pick('fix',this,'unsure')">Honestly not sure</button>
+        </div>
+
+        <div class="open-label">Optional, for research purposes only: how do you identify? <span class="opt-tag">optional</span></div>
+        <div class="rate-row" id="genderRow">
+          <button class="rate-btn" onclick="pick('gender',this,'woman')">Woman</button>
+          <button class="rate-btn" onclick="pick('gender',this,'man')">Man</button>
+          <button class="rate-btn" onclick="pick('gender',this,'nonbinary')">Non-binary / other</button>
+          <button class="rate-btn" onclick="pick('gender',this,'prefer_not')">Prefer not to say</button>
+        </div>
+
+      </div>
+      <div class="mod-footer">
+        <div class="mod-progress" id="modProg">Complete the required fields to submit</div>
+        <button class="mod-submit" id="modSubmit" onclick="submitResponse()" disabled>✦ Submit Response</button>
+      </div>
+    </div>
+
+    <!-- Q&A -->
+    <div class="cb-card">
+      <div class="cb-eyebrow">✦ Ask a Question · Showing Last 3</div>
+      <div class="cb-row">
+        <input class="cb-input" type="text" id="userQuestion" placeholder="Ask about the barriers, graduate unemployment, CEO demographics…" autocomplete="off">
+        <button class="cb-btn primary" onclick="askQuestion()">✦ Ask</button>
+        <button class="cb-btn soft" onclick="showAdminModal()">⚙</button>
+      </div>
+    </div>
+    <div class="cb-msgs" id="outputArea">
+      <div class="cb-empty"><h3>✦ Answers appear here</h3><p>Type a question above and tap Ask</p></div>
+    </div>
+
+    <div class="cb-bottom">
+      <div class="cb-btitle">✦ Thank you for being in the room.</div>
+      <a class="cb-link" href="carebot07-hit.html">✦ Advance to next task</a>
     </div>
   </div>
+  <!-- ============ END TASK SECTION ============ -->
 
-  <div style="width:100%;max-width:720px;font-size:10.5px;color:var(--muted);text-align:center;font-style:italic;padding:2px 4px;">✦ AI helped me with this. There might be inaccuracies. ✦</div>
-
-  <!-- ADVICE TICKER -->
-  <div class="advice-ticker">
-    <div class="ticker-label">✦ Actual advice being given to graduates who can't find jobs</div>
-    <div class="ticker-item" id="tickerItem"></div>
-    <div class="ticker-src" id="tickerSrc"></div>
-    <div class="ticker-nav">
-      <button class="ticker-btn" onclick="prevAdvice()">← Previous</button>
-      <button class="ticker-btn" onclick="nextAdvice()">Next →</button>
-      <span class="ticker-counter" id="tickerCount"></span>
-    </div>
-  </div>
-
-  <!-- MARKET / CEO TWO-COL -->
-  <div class="two-col">
-    <div class="col-card advice">
-      <div class="col-label">✦ The advice</div>
-      <div class="cite-item"><strong>Entrepreneur.com (Mar 2026)</strong> — Entry-level hiring dropped 6% Dec 2025–Feb 2026. The pivot: entrepreneurship, starting a company.
-        <div class="cite-src"><a href="https://www.entrepreneur.com/business-news/new-graduates-facing-toughest-job-market-since-pandemic" target="_blank">Entrepreneur.com, Mar 2026</a></div></div>
-      <div class="cite-item"><strong>Indeed Career Advice</strong> — "While you can become the CEO of an existing organization, you can also pursue this position by starting a company."
-        <div class="cite-src"><a href="https://www.indeed.com/career-advice/career-development/how-to-become-ceo" target="_blank">Indeed</a></div></div>
-      <div class="cite-item"><strong>Crummer / Rollins (2025)</strong> — "Early Advantage MBA for recent college graduates looking to jumpstart their career" toward becoming a CEO.
-        <div class="cite-src"><a href="https://crummer.rollins.edu/resources/how-to-become-a-ceo-of-a-company-in-5-steps/" target="_blank">Crummer, 2025</a></div></div>
-      <div class="cite-item"><strong>Inc. Magazine (Jan 2025)</strong> — More Gen-Zers are moving into entrepreneurship than older cohorts — cited as response to the job market.
-        <div class="cite-src"><a href="https://www.inc.com/kit-eaton/college-degrees-arent-landing-new-graduates-the-jobs-they-want-whats-going-on/91139574" target="_blank">Inc. Magazine, Jan 2025</a></div></div>
-    </div>
-    <div class="col-card reality">
-      <div class="col-label">✦ Who actually becomes a CEO</div>
-      <div class="cite-item"><strong>~85% of Fortune 500 CEOs are white men (2024)</strong> — In 2000 it was 96.4%. The gains went largely to white women.
-        <div class="cite-src"><a href="https://verdict.co.uk/?p=352276" target="_blank">Verdict / Zweigenhaft research</a></div></div>
-      <div class="cite-item"><strong>Women: 11% of Fortune 500 CEOs (2025)</strong> — All-time high. No Black woman has ever led a top-10 tech company.
-        <div class="cite-src"><a href="https://blog.aboveboard.com/fortune-500-diversity-2023" target="_blank">AboveBoard F500 Tracker</a></div></div>
-      <div class="cite-item"><strong>Black CEO tenure: 4.8 years vs 6.9 overall</strong> — shorter path, shorter tenure, harsher scrutiny.
-        <div class="cite-src"><a href="https://verdict.co.uk/?p=352276" target="_blank">Zweigenhaft / Verdict</a></div></div>
-      <div class="cite-item"><strong>Recent grads: 7% of new hires in 2024</strong> — down 25% from 2023. 33% of 2025 grads unemployed (Cengage Group).
-        <div class="cite-src"><a href="https://www.cengagegroup.com/news/press-releases/2025/cengage-group-2025-employability-report/" target="_blank">Cengage Group, 2025</a></div></div>
-    </div>
-  </div>
-
-  <!-- BARRIERS SECTION -->
-  <div class="barriers-section">
-    <div class="barriers-title">✦ The Specific Barriers — What the Advice Doesn't Say</div>
-    <div class="barriers-sub">The "just become a CEO" advice skips six documented, named, researched structural mechanisms that make that path significantly harder depending on who you are. These are not excuses. They are data.</div>
-    <div class="barriers-grid">
-
-      <div class="barrier-card both">
-        <div class="barrier-eyebrow">✦ Barrier 1 · Women + People of Color</div>
-        <div class="barrier-name">The Broken Rung</div>
-        <div class="barrier-body">The biggest barrier to the CEO chair doesn't happen at the top — it happens at the first step up to manager. For every 100 men promoted to their first manager role, only <strong>93 women</strong> make the same leap, and just <strong>74 women of color</strong> do. Women are 49% of entry-level employees and 29% of the C-suite. The path loses women at every rung — not because of ambition, but because of who gets promoted.</div>
-        <div class="barrier-stat"><strong>McKinsey / LeanIn Women in the Workplace (2025):</strong> Women underrepresented at every pipeline level for the 11th consecutive year. Only 29% of C-suite roles. Women of color: just 7% of C-suite.</div>
-        <div class="barrier-src">Source: <a href="https://www.mckinsey.com/capabilities/people-and-organizational-performance/our-insights/women-in-the-workplace" target="_blank">McKinsey / LeanIn, 2025</a></div>
-      </div>
-
-      <div class="barrier-card women">
-        <div class="barrier-eyebrow">✦ Barrier 2 · Women</div>
-        <div class="barrier-name">The Sponsorship Gap</div>
-        <div class="barrier-body">Mentors advise. Sponsors open doors. Women have fewer sponsors — the senior leaders who put your name forward for promotion, plum assignments, and stretch opportunities. Only <strong>31% of entry-level women</strong> have a sponsor vs <strong>45% of men</strong> at the same level. Without a sponsor, you do the work. Someone else gets promoted. The advice to network and connect never mentions that the networking itself is gendered.</div>
-        <div class="barrier-stat"><strong>INSEAD (Feb 2026):</strong> "Women are under-sponsored. While mentors advise, sponsors open doors." The barrier is not a shortage of capable women, but how boards define readiness and who gets advocated for.</div>
-        <div class="barrier-src">Source: <a href="https://knowledge.insead.edu/leadership-organisations/female-ceo-problem-solutions" target="_blank">INSEAD Knowledge, Feb 2026</a>; <a href="https://www.keystonepartners.com/resources/breaking-through-women-in-leadership/" target="_blank">Keystone Partners, Feb 2026</a></div>
-      </div>
-
-      <div class="barrier-card poc">
-        <div class="barrier-eyebrow">✦ Barrier 3 · People of Color</div>
-        <div class="barrier-name">The Glass Cliff</div>
-        <div class="barrier-body">After the murder of George Floyd in 2020, many companies hired Black women into leadership roles — often at companies that were already in crisis. This is the glass cliff: women and people of color are more likely to be appointed to leadership <strong>during organizational failure</strong>, not stability. They inherit problems they didn't create. When the company continues to struggle, the failure gets attributed to them personally — reinforcing stereotypes about their fitness to lead.</div>
-        <div class="barrier-stat"><strong>Center for Talent Innovation (2023):</strong> Black executives are <strong>2.5x more likely</strong> to be prematurely removed from leadership roles under "organizational restructuring." Female leaders are <strong>24% more likely</strong> to be fired than male counterparts.</div>
-        <div class="barrier-src">Source: <a href="https://www.catalyst.org/en-us/insights/2024/black-women-glass-cliff-workplace-systems" target="_blank">Catalyst, 2024</a>; <a href="https://hbr.org/podcast/2024/03/why-the-glass-cliff-persists" target="_blank">HBR, Mar 2024</a></div>
-      </div>
-
-      <div class="barrier-card both">
-        <div class="barrier-eyebrow">✦ Barrier 4 · Women + People of Color</div>
-        <div class="barrier-name">The Double Bind</div>
-        <div class="barrier-body">Be assertive: you're "aggressive." Be collaborative: you're "not leadership material." Behaviors rewarded as leadership potential in white men are penalized in women and people of color. The acceptable behavioral range is narrower. As one executive of color described it: <em>"I'm either too direct or not assertive enough."</em> The standard shifts depending on who you are. The advice to "develop leadership skills" doesn't name this.</div>
-        <div class="barrier-stat"><strong>Perceptual imprinting research (2024):</strong> People's visual templates for how leaders look have been skewed by constant exposure to white male leaders — making women and people of color appear "less like leaders" regardless of their actual qualifications.</div>
-        <div class="barrier-src">Source: <a href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC11967962/" target="_blank">PMC / Leadership Perception Study, 2024</a>; <a href="https://www.bridgespan.org/insights/nonprofit-leadership-transitions-four-ways-funders-can-support-leaders-of-color" target="_blank">Bridgespan</a></div>
-      </div>
-
-      <div class="barrier-card poc">
-        <div class="barrier-eyebrow">✦ Barrier 5 · People of Color</div>
-        <div class="barrier-name">The Capital Access Gap</div>
-        <div class="barrier-body">The advice to "start your own company and become a CEO" requires startup capital. In 2024, <strong>Black founders received 0.48%</strong> of all US venture capital funding despite Black Americans being 13.4% of the population. Women founders received <strong>approximately 2%</strong>. VC networks operate through existing connections — connections that have been historically built between white male investors and white male founders. The advice skips the capital requirement entirely.</div>
-        <div class="barrier-stat"><strong>UN Global Compact (2025):</strong> "Women entrepreneurs still receive less than 2% of global venture capital funding." The care economy is undervalued. Women-led sectors are chronically underinvested.</div>
-        <div class="barrier-src">Source: <a href="https://unglobalcompact.org/compactjournal/closing-gap-top-advancing-womens-leadership-business" target="_blank">UN Global Compact, 2025</a>; Crunchbase 2024 Diversity in VC</div>
-      </div>
-
-      <div class="barrier-card women">
-        <div class="barrier-eyebrow">✦ Barrier 6 · Women</div>
-        <div class="barrier-name">The Domestic Labor Tax</div>
-        <div class="barrier-body">Women with partners are more than <strong>3x as likely</strong> as men to be responsible for all or most housework. Nearly 25% of women who express reluctance about promotion cite personal obligations — vs 15% of men. Remote work, which helps women manage caregiving, simultaneously reduces their visibility and access to sponsors. The flexibility-visibility tradeoff is a documented mechanism. The advice to "network aggressively and seek promotion" ignores who is doing the second shift at home.</div>
-        <div class="barrier-stat"><strong>McKinsey / LeanIn (2026):</strong> Entry-level women working remotely are <strong>1.5x less likely to be promoted</strong> than in-office counterparts. The flexibility that manages caregiving reduces visibility that produces sponsorship.</div>
-        <div class="barrier-src">Source: <a href="https://www.keystonepartners.com/resources/breaking-through-women-in-leadership/" target="_blank">Keystone / McKinsey Women in the Workplace, Feb 2026</a></div>
-      </div>
-
-    </div>
-  </div>
-
-  <!-- STATS -->
-  <div class="stat-grid-wrap">
-    <div class="stat-grid-header">
-      <div class="mod-eyebrow">✦ The Numbers</div>
-      <div class="stat-grid-title">Entry-level disappearing. Chair still occupied. Barriers named.</div>
-    </div>
-    <div class="stat-grid">
-      <div class="stat-box"><div class="stat-box-num">30%</div><div class="stat-box-label">of 2025 graduates secured full-time jobs in their field (Cengage)</div></div>
-      <div class="stat-box"><div class="stat-box-num">33%</div><div class="stat-box-label">of 2025 graduates are unemployed and actively seeking work</div></div>
-      <div class="stat-box"><div class="stat-box-num">~85%</div><div class="stat-box-label">of Fortune 500 CEOs are white men (Zweigenhaft research)</div></div>
-      <div class="stat-box"><div class="stat-box-num">11%</div><div class="stat-box-label">of Fortune 500 CEOs are women — all-time high, 2025</div></div>
-      <div class="stat-box"><div class="stat-box-num">93</div><div class="stat-box-label">women promoted to manager for every 100 men — the broken rung (2025)</div></div>
-      <div class="stat-box"><div class="stat-box-num">31%</div><div class="stat-box-label">of entry-level women have a sponsor vs 45% of men at same level</div></div>
-      <div class="stat-box"><div class="stat-box-num">2.5×</div><div class="stat-box-label">more likely: Black executives to be prematurely removed from leadership</div></div>
-      <div class="stat-box"><div class="stat-box-num">0.48%</div><div class="stat-box-label">of US venture capital went to Black founders in 2024</div></div>
-      <div class="stat-box"><div class="stat-box-num">4.8yr</div><div class="stat-box-label">average Black CEO tenure vs 6.9yr overall</div></div>
-      <div class="stat-box"><div class="stat-box-num">0</div><div class="stat-box-label">Black women who have ever led a top-10 tech company</div></div>
-      <div class="stat-box"><div class="stat-box-num">3×</div><div class="stat-box-label">more likely: women with partners responsible for all housework vs men</div></div>
-      <div class="stat-box"><div class="stat-box-num">7%</div><div class="stat-box-label">of new hires in 2024 were recent graduates — down 25% from 2023</div></div>
-    </div>
-  </div>
-
-  <!-- RESPONSE MODULE -->
-  <div class="mod-card">
-    <div class="mod-header">
-      <div class="mod-eyebrow">✦ Data Module · Respond to the Barriers</div>
-      <div class="mod-title">Which barrier was most surprising? What would honest advice say?</div>
-      <div class="mod-sub">The advice says: become a CEO. The barriers say: that path has named, documented structural mechanisms working against most people who try. Respond to what you found.</div>
-    </div>
-    <div class="mod-body">
-      <div class="open-label">Which of the six barriers was most surprising or least known to you?</div>
-      <div class="rate-row" id="barrierRow">
-        <button class="rate-btn" onclick="selectBarrier(this,'broken_rung')">Broken rung</button>
-        <button class="rate-btn" onclick="selectBarrier(this,'sponsorship')">Sponsorship gap</button>
-        <button class="rate-btn" onclick="selectBarrier(this,'glass_cliff')">Glass cliff</button>
-        <button class="rate-btn" onclick="selectBarrier(this,'double_bind')">Double bind</button>
-        <button class="rate-btn" onclick="selectBarrier(this,'capital')">Capital access</button>
-        <button class="rate-btn" onclick="selectBarrier(this,'domestic_tax')">Domestic labor tax</button>
-      </div>
-      <div class="open-label">How believable is the "just become a CEO" advice for the average 2025 graduate? (select one)</div>
-      <div class="rate-row" id="believeRow">
-        <button class="rate-btn" onclick="selectBelieve(this,'not_at_all')">Not at all believable</button>
-        <button class="rate-btn" onclick="selectBelieve(this,'aspirational')">Aspirational but dishonest</button>
-        <button class="rate-btn" onclick="selectBelieve(this,'depends')">Depends entirely on who you are</button>
-        <button class="rate-btn" onclick="selectBelieve(this,'possible')">Genuinely possible for many</button>
-      </div>
-      <div class="open-label">What feeling came up strongest as you read this? (select one)</div>
-      <div class="rate-row" id="feelRow">
-        <button class="rate-btn" onclick="selectFeel(this,'angry')">Angry</button>
-        <button class="rate-btn" onclick="selectFeel(this,'discouraged')">Discouraged</button>
-        <button class="rate-btn" onclick="selectFeel(this,'not_surprised')">Not surprised</button>
-        <button class="rate-btn" onclick="selectFeel(this,'validated')">Validated</button>
-        <button class="rate-btn" onclick="selectFeel(this,'motivated')">Motivated</button>
-        <button class="rate-btn" onclick="selectFeel(this,'numb')">Numb to it</button>
-      </div>
-      <div class="open-label">Say more about that feeling — why that one, specifically?</div>
-      <textarea class="open-q" id="openQ3" placeholder="What about the data, or your own experience, brought up that feeling?"></textarea>
-      <div class="open-label">If the advice named these barriers honestly, what would it say?</div>
-      <textarea class="open-q" id="openQ1" placeholder="What would 'just become a CEO' advice look like if it told the truth about the broken rung, the glass cliff, the capital gap, and the double bind?"></textarea>
-      <div class="open-label">Who does this advice actually apply to without barriers? Be specific.</div>
-      <textarea class="open-q" id="openQ2" placeholder="What does a person need — beyond a degree and ambition — to make the CEO path realistic? What resources, access, networks, and circumstances are assumed?"></textarea>
-      <div class="open-label">How does this affect you personally — your own plans, expectations, or sense of what's possible for your career?</div>
-      <textarea class="open-q" id="openQ4" placeholder="Has reading this changed how you think about your own path, ambitions, or what you expect from the system around you?"></textarea>
-      <div class="open-label">Optional: have you seen any of these barriers play out for someone you know? What happened?</div>
-      <textarea class="open-q" id="openQ5" placeholder="A specific moment, a specific person — what did you notice?"></textarea>
-    </div>
-    <div class="mod-footer">
-      <div class="mod-progress" id="modProg">Complete all fields to submit</div>
-      <button class="mod-submit" id="modSubmit" onclick="submitResponse()" disabled>✦ Submit Response</button>
-    </div>
-  </div>
-
-  <!-- Q&A -->
-  <div class="cb-card">
-    <div class="cb-eyebrow">✦ Ask a Question · Showing Last 3</div>
-    <div class="cb-row">
-      <input class="cb-input" type="text" id="userQuestion" placeholder="Ask about the barriers, graduate unemployment, CEO demographics…" autocomplete="off">
-      <button class="cb-btn primary" onclick="askQuestion()">✦ Ask</button>
-      <button class="cb-btn soft" onclick="showAdminModal()">⚙</button>
-    </div>
-  </div>
-  <div class="cb-msgs" id="outputArea">
-    <div class="cb-empty"><h3>✦ Answers appear here</h3><p>Type a question above and tap Ask</p></div>
-  </div>
-
-  <div class="cb-bottom">
-    <div class="cb-btitle">✦ Thank you for being in the room.</div>
-    <a class="cb-link" href="carebot07-hit.html">✦ Advance to next task</a>
-  </div>
   <div class="cb-wmark">✦ carebot-36 · just become a ceo · the chair has a demographic profile · caretech ✦</div>
 </div>
 
@@ -422,6 +546,27 @@ html,body{min-height:100%;font-family:var(--fb);font-weight:600;color:var(--crea
 const ADMIN='ceoadvice36';const MAX=3;
 function updateClock(){const n=new Date(),p=v=>String(v).padStart(2,'0');document.getElementById('sysTime').textContent=p(n.getHours())+':'+p(n.getMinutes());}
 setInterval(updateClock,1000);updateClock();
+
+/* SLIDE DECK NAV */
+let currentSlide=1;const totalSlides=5;
+const slideLabels={1:'Critical context',2:'Actual advice being given',3:'Advice vs reality',4:'The six barriers',5:'The numbers'};
+function showSlide(n){
+  document.querySelectorAll('.cb-slide').forEach(s=>s.classList.remove('active'));
+  document.querySelector('.cb-slide[data-slide="'+n+'"]').classList.add('active');
+  document.getElementById('slideProgress').textContent='Slide '+n+' of '+totalSlides+' · '+slideLabels[n];
+  document.getElementById('slideFill').style.width=((n/totalSlides)*100)+'%';
+  window.scrollTo(0,0);
+}
+function nextSlide(){
+  if(currentSlide<totalSlides){currentSlide++;showSlide(currentSlide);}
+  else{
+    document.getElementById('slideDeck').style.display='none';
+    document.getElementById('taskSection').style.display='flex';
+    window.scrollTo(0,0);
+  }
+}
+function prevSlide(){if(currentSlide>1){currentSlide--;showSlide(currentSlide);}}
+showSlide(1);
 
 /* TICKER */
 const ADVICE=[
@@ -449,7 +594,8 @@ try{
   firebase.initializeApp({apiKey:"AIzaSyCZFDU-WlSmHqjXTs1Ox0nf9xeJU_xbaX0",authDomain:"collaborativemashup.firebaseapp.com",databaseURL:"https://collaborativemashup-default-rtdb.firebaseio.com",projectId:"collaborativemashup",storageBucket:"collaborativemashup.firebasestorage.app",messagingSenderId:"562437984610",appId:"1:562437984610:web:9f3711c26e097bc8ef9c3b"});
   db=firebase.database();msgRef=db.ref('cb36Messages');respRef=db.ref('cb36Responses');onlineRef=db.ref('cb36Online');fbReady=true;
   if(currentUser)trackPresence();
-  respRef.on('value',s=>{const all=[];s.forEach(c=>all.push(c.val()));document.getElementById('st-r').textContent=all.length;});
+  msgRef.on('value',s=>{document.getElementById('st-q').textContent=s.numChildren?s.numChildren():0;});
+  respRef.on('value',s=>{document.getElementById('st-r').textContent=s.numChildren?s.numChildren():0;});
   onlineRef.on('value',s=>{const c=Object.keys(s.val()||{}).length;document.getElementById('onlineCount').innerHTML='<span class="cb-pip"></span>'+c+' online';document.getElementById('st-o').textContent=c;});
   let initDone=false;
   msgRef.orderByKey().limitToLast(MAX).once('value',snap=>{
@@ -470,17 +616,42 @@ try{
 }catch(e){fbReady=false;document.getElementById('onlineCount').textContent='Offline';}
 function trackPresence(){if(!onlineRef||!currentUser)return;const r=onlineRef.child(currentUser.replace(/[.#$[\]]/g,'_'));r.set({name:currentUser,ts:firebase.database.ServerValue.TIMESTAMP});r.onDisconnect().remove();}
 
-let selectedBarrier=null,selectedBelieve=null,selectedFeel=null;
-function selectBarrier(btn,val){selectedBarrier=val;document.querySelectorAll('#barrierRow .rate-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');checkSubmit();}
-function selectBelieve(btn,val){selectedBelieve=val;document.querySelectorAll('#believeRow .rate-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');checkSubmit();}
-function selectFeel(btn,val){selectedFeel=val;document.querySelectorAll('#feelRow .rate-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');checkSubmit();}
-['openQ1','openQ2','openQ3','openQ4','openQ5'].forEach(id=>document.getElementById(id).addEventListener('input',checkSubmit));
-function checkSubmit(){const ok=selectedBarrier&&selectedBelieve&&selectedFeel&&document.getElementById('openQ1').value.trim().length>5&&document.getElementById('openQ2').value.trim().length>5&&document.getElementById('openQ3').value.trim().length>5&&document.getElementById('openQ4').value.trim().length>5;document.getElementById('modSubmit').disabled=!ok;document.getElementById('modProg').textContent=ok?'Ready to submit':'Complete all required fields';}
+/* SURVEY SELECTIONS */
+const sel={barrier:null,believe:null,feel:null,reason:null,honest:null,applies:null,impact:null,witness:null,career:null,fix:null,gender:null};
+const rowIds={barrier:'barrierRow',believe:'believeRow',feel:'feelRow',reason:'reasonRow',honest:'honestRow',applies:'appliesRow',impact:'impactRow',witness:'witnessRow',career:'careerRow',fix:'fixRow',gender:'genderRow'};
+function pick(field,btn,val){
+  sel[field]=val;
+  document.querySelectorAll('#'+rowIds[field]+' .rate-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  checkSubmit();
+}
+const REQUIRED=['barrier','believe','feel','reason','honest','applies','impact','witness','career','fix'];
+function checkSubmit(){
+  const ok=REQUIRED.every(f=>sel[f]!==null);
+  document.getElementById('modSubmit').disabled=!ok;
+  document.getElementById('modProg').textContent=ok?'Ready to submit':'Complete the required fields to submit';
+}
 
 let modDone=false;
 function submitResponse(){
   if(modDone)return;
-  const payload={type:'response',mostSurprisingBarrier:selectedBarrier,believability:selectedBelieve,feeling:selectedFeel,honestAdvice:document.getElementById('openQ1').value.trim(),whoItAppliesTo:document.getElementById('openQ2').value.trim(),feelingWhy:document.getElementById('openQ3').value.trim(),personalImpact:document.getElementById('openQ4').value.trim(),witnessed:document.getElementById('openQ5').value.trim(),userName:currentUser,userColor,ts:fbReady?firebase.database.ServerValue.TIMESTAMP:Date.now()};
+  const payload={
+    type:'response',
+    mostSurprisingBarrier:sel.barrier,
+    believability:sel.believe,
+    feeling:sel.feel,
+    reasonForFeeling:sel.reason,
+    honestAdvice:sel.honest,
+    whoItAppliesTo:sel.applies,
+    personalImpact:sel.impact,
+    witnessed:sel.witness,
+    witnessedDetail:document.getElementById('openWitnessDetail').value.trim(),
+    careerStage:sel.career,
+    fixType:sel.fix,
+    genderIdentity:sel.gender,
+    userName:currentUser,userColor,
+    ts:fbReady?firebase.database.ServerValue.TIMESTAMP:Date.now()
+  };
   if(fbReady&&respRef)respRef.push(payload).catch(()=>{});
   modDone=true;const btn=document.getElementById('modSubmit');btn.textContent='✓ Saved';btn.classList.add('done');btn.disabled=true;
 }
@@ -488,9 +659,9 @@ function q(v){return'"'+(v==null?'':String(v).replace(/"/g,'""'))+'"';}
 function downloadCSV(){
   if(!fbReady){alert('No connection.');return;}
   Promise.all([msgRef.once('value'),respRef.once('value')]).then(([ms,rs])=>{
-    let csv='Type,Timestamp,UserName,MostSurprisingBarrier,Believability,Feeling,FeelingWhy,HonestAdvice,WhoItAppliesTo,PersonalImpact,Witnessed,Question\n';
-    ms.forEach(d=>{const m=d.val();csv+='question,'+q(m.ts?new Date(m.ts).toISOString():'')+','+q(m.userName)+',,,,,,,,,'+q(m.question)+'\n';});
-    rs.forEach(d=>{const r=d.val();csv+='response,'+q(r.ts?new Date(r.ts).toISOString():'')+','+q(r.userName)+','+q(r.mostSurprisingBarrier)+','+q(r.believability)+','+q(r.feeling)+','+q(r.feelingWhy)+','+q(r.honestAdvice)+','+q(r.whoItAppliesTo)+','+q(r.personalImpact)+','+q(r.witnessed)+',\n';});
+    let csv='Type,Timestamp,UserName,MostSurprisingBarrier,Believability,Feeling,ReasonForFeeling,HonestAdvice,WhoItAppliesTo,PersonalImpact,Witnessed,WitnessedDetail,CareerStage,FixType,GenderIdentity,Question\n';
+    ms.forEach(d=>{const m=d.val();csv+='question,'+q(m.ts?new Date(m.ts).toISOString():'')+','+q(m.userName)+',,,,,,,,,,,,,'+q(m.question)+'\n';});
+    rs.forEach(d=>{const r=d.val();csv+='response,'+q(r.ts?new Date(r.ts).toISOString():'')+','+q(r.userName)+','+q(r.mostSurprisingBarrier)+','+q(r.believability)+','+q(r.feeling)+','+q(r.reasonForFeeling)+','+q(r.honestAdvice)+','+q(r.whoItAppliesTo)+','+q(r.personalImpact)+','+q(r.witnessed)+','+q(r.witnessedDetail)+','+q(r.careerStage)+','+q(r.fixType)+','+q(r.genderIdentity)+',\n';});
     const blob=new Blob([csv],{type:'text/csv'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='carebot36-'+Date.now()+'.csv';document.body.appendChild(a);a.click();document.body.removeChild(a);URL.revokeObjectURL(url);
   });
 }
