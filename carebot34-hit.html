@@ -172,17 +172,17 @@ html,body{min-height:100%;font-family:var(--fb);font-weight:600;color:var(--crea
 .timeline-line{height:3px;background:linear-gradient(90deg,var(--maroon),var(--pink),var(--candy));border-radius:999px;margin:0 10px;box-shadow:0 0 8px rgba(255,45,107,.3);}
 .timeline-years{display:flex;justify-content:space-between;padding:4px 10px 0;font-family:var(--fm);font-size:9px;color:var(--muted);}
 .timeline-ceos{display:flex;flex-direction:column;gap:7px;margin-top:4px;}
-.tl-ceo{display:flex;align-items:center;gap:10px;padding:8px 12px;background:rgba(255,255,255,.03);border:1.5px solid var(--border);border-radius:10px;}
+.tl-ceo{display:flex;align-items:center;gap:10px;padding:8px 12px;background:rgba(255,255,255,.03);border:1.5px solid var(--border);border-radius:10px;flex-wrap:wrap;}
 .tl-ceo.revealed{border-color:var(--border2);}
 .tl-ceo-name{font-family:var(--fh);font-weight:900;font-size:12px;color:var(--cream);min-width:130px;}
 .tl-ceo-co{font-size:10px;color:var(--muted);margin-top:1px;}
-.tl-year-guess{display:flex;align-items:center;gap:6px;flex:1;}
+.tl-year-guess{display:flex;align-items:center;gap:6px;flex:1;flex-wrap:wrap;}
 .tl-year-input{width:70px;padding:5px 8px;background:rgba(255,255,255,.05);border:1.5px solid var(--border);border-radius:7px;font-family:var(--fm);font-size:11px;color:var(--cream);outline:none;transition:border-color .2s;}
 .tl-year-input:focus{border-color:var(--candy);}
 .tl-year-input::placeholder{color:var(--muted);}
 .tl-reveal{appearance:none;font-family:var(--fh);font-weight:900;font-size:9px;color:var(--candy);background:rgba(255,60,120,.1);border:1px solid var(--border2);border-radius:6px;padding:4px 9px;cursor:pointer;transition:all .15s;}
 .tl-reveal:hover{background:rgba(255,60,120,.25);}
-.tl-answer{display:none;font-size:10px;color:var(--muted2);line-height:1.5;margin-left:4px;}
+.tl-answer{display:none;font-size:10px;color:var(--muted2);line-height:1.5;margin-left:0;flex:1 1 100%;margin-top:6px;}
 .tl-answer.show{display:block;}
 .tl-answer strong{color:var(--candy);}
 .tl-diff{font-size:10px;font-family:var(--fm);padding:2px 6px;border-radius:5px;margin-left:4px;}
