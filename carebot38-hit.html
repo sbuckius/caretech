@@ -505,6 +505,17 @@ html,body{min-height:100%;font-family:var(--fb);font-weight:600;color:var(--crea
           <button class="rate-btn" onclick="toggleAlt(this,'narrow-scope')">Only automate tasks that are repetitive, dangerous, or not creative — not ones humans are good at</button>
           <button class="rate-btn" onclick="toggleAlt(this,'none')">None of these — automation should just proceed</button>
         </div>
+        <div class="open-label">Beyond the technology itself, which of these social/policy changes do you think would help the underlying situation? (select all that apply)</div>
+        <div class="rate-row" id="solutionsRow">
+          <button class="rate-btn" onclick="toggleSolutions(this,'paid-leave')">Paid leave for everyone — caregiving, childbirth, or just by personal choice</button>
+          <button class="rate-btn" onclick="toggleSolutions(this,'shorter-day')">A shorter work day that lets parents drop off &amp; pick up kids from school</button>
+          <button class="rate-btn" onclick="toggleSolutions(this,'after-school')">More public after-school activities for kids, like in many European countries</button>
+          <button class="rate-btn" onclick="toggleSolutions(this,'healthcare')">Quality healthcare for all</button>
+          <button class="rate-btn" onclick="toggleSolutions(this,'safety-net')">A stronger social safety net to reduce the number of unhoused people</button>
+          <button class="rate-btn" onclick="toggleSolutions(this,'inequality')">Less overall income inequality</button>
+          <button class="rate-btn" onclick="toggleSolutions(this,'pay-caregivers')">Pay teachers, counselors, and social workers more</button>
+          <button class="rate-btn" onclick="toggleSolutions(this,'none')">None of these would help</button>
+        </div>
 
         <div class="mod-divider">
           <div class="mod-divider-label">✦ How This Affects You</div>
@@ -671,7 +682,7 @@ function submitRanking(){
 }
 
 /* ===================== QUICK THOUGHTS ===================== */
-let selKnewRobota=null,selKnownCount=null,selDesignChange=[],selFree=null,selRole=null,selVA=null,selPause=null,selRequire=null,selAlt=[],selRethink=null,selClosest=[],selFeel=[];
+let selKnewRobota=null,selKnownCount=null,selDesignChange=[],selFree=null,selRole=null,selVA=null,selPause=null,selRequire=null,selAlt=[],selSolutions=[],selRethink=null,selClosest=[],selFeel=[];
 function selectKnew(btn,val){selKnewRobota=val;mark('#knewRow',btn);checkSubmit();}
 function selectKnownCount(btn,val){selKnownCount=val;mark('#knownCountRow',btn);checkSubmit();}
 function toggleDesign(btn,val){toggleMulti(selDesignChange,val,btn);checkSubmit();}
@@ -681,6 +692,7 @@ function selectVA(btn,val){selVA=val;mark('#vaRow',btn);checkSubmit();}
 function selectPause(btn,val){selPause=val;mark('#pauseRow',btn);checkSubmit();}
 function selectRequire(btn,val){selRequire=val;mark('#requireRow',btn);checkSubmit();}
 function toggleAlt(btn,val){toggleMulti(selAlt,val,btn);checkSubmit();}
+function toggleSolutions(btn,val){toggleMulti(selSolutions,val,btn);checkSubmit();}
 function selectRethink(btn,val){selRethink=val;mark('#rethinkRow',btn);checkSubmit();}
 function toggleClosest(btn,val){toggleMulti(selClosest,val,btn);checkSubmit();}
 function toggleFeel(btn,val){toggleMulti(selFeel,val,btn);checkSubmit();}
@@ -688,7 +700,7 @@ function mark(sel,btn){document.querySelectorAll(sel+' .rate-btn').forEach(b=>b.
 function toggleMulti(arr,val,btn){const i=arr.indexOf(val);if(i>-1){arr.splice(i,1);btn.classList.remove('active');}else{arr.push(val);btn.classList.add('active');}}
 document.getElementById('openQ5').addEventListener('input',checkSubmit);
 function checkSubmit(){
-  const ok=selKnewRobota&&selKnownCount&&selDesignChange.length>0&&selFree&&selRole&&selVA&&selPause&&selRequire&&selAlt.length>0&&selRethink&&selClosest.length>0&&selFeel.length>0;
+  const ok=selKnewRobota&&selKnownCount&&selDesignChange.length>0&&selFree&&selRole&&selVA&&selPause&&selRequire&&selAlt.length>0&&selSolutions.length>0&&selRethink&&selClosest.length>0&&selFeel.length>0;
   document.getElementById('modSubmit').disabled=!ok;
   document.getElementById('modProg').textContent=ok?'Ready to submit (the last text box is optional)':'Pick an answer for each question above to continue';
 }
@@ -697,7 +709,7 @@ let modDone=false;
 function submitResponse(){
   if(modDone)return;
   const name='Anonymous';
-  const payload={type:'response',knewRobota:selKnewRobota,knownRobotsCount:selKnownCount,designChange:selDesignChange.join('|'),freeVsReplace:selFree,domesticRole:selRole,voiceAssistantExperience:selVA,morePause:selPause,oneRequirement:selRequire,betterPaths:selAlt.join('|'),rethinkTool:selRethink,closestToHome:selClosest.join('|'),feelings:selFeel.join('|'),feelingsDetail:document.getElementById('openQ5').value.trim(),userName:name,userColor,ts:fbReady?firebase.database.ServerValue.TIMESTAMP:Date.now()};
+  const payload={type:'response',knewRobota:selKnewRobota,knownRobotsCount:selKnownCount,designChange:selDesignChange.join('|'),freeVsReplace:selFree,domesticRole:selRole,voiceAssistantExperience:selVA,morePause:selPause,oneRequirement:selRequire,betterPaths:selAlt.join('|'),socialSolutions:selSolutions.join('|'),rethinkTool:selRethink,closestToHome:selClosest.join('|'),feelings:selFeel.join('|'),feelingsDetail:document.getElementById('openQ5').value.trim(),userName:name,userColor,ts:fbReady?firebase.database.ServerValue.TIMESTAMP:Date.now()};
   if(fbReady&&respRef)respRef.push(payload).catch(()=>{});
   modDone=true;const btn=document.getElementById('modSubmit');btn.textContent='✓ Saved';btn.classList.add('done');btn.disabled=true;
 }
@@ -739,11 +751,11 @@ function q(v){return'"'+(v==null?'':String(v).replace(/"/g,'""'))+'"';}
 function downloadCSV(){
   if(!fbReady){alert('No connection.');return;}
   Promise.all([msgRef.once('value'),respRef.once('value')]).then(([ms,rs])=>{
-    let csv='Type,Timestamp,UserName,RankingOrder,KnewRobota,KnownRobotsCount,DesignChange,FreeVsReplace,DomesticRole,VoiceAssistantExperience,MorePause,OneRequirement,BetterPaths,RethinkTool,ClosestToHome,Feelings,FeelingsDetail,Question\n';
-    ms.forEach(d=>{const m=d.val();csv+='question,'+q(m.ts?new Date(m.ts).toISOString():'')+','+q(m.userName)+',,,,,,,,,,,,,,,'+q(m.question)+'\n';});
+    let csv='Type,Timestamp,UserName,RankingOrder,KnewRobota,KnownRobotsCount,DesignChange,FreeVsReplace,DomesticRole,VoiceAssistantExperience,MorePause,OneRequirement,BetterPaths,SocialSolutions,RethinkTool,ClosestToHome,Feelings,FeelingsDetail,Question\n';
+    ms.forEach(d=>{const m=d.val();csv+='question,'+q(m.ts?new Date(m.ts).toISOString():'')+','+q(m.userName)+',,,,,,,,,,,,,,,,'+q(m.question)+'\n';});
     rs.forEach(d=>{const r=d.val();
-      if(r.type==='ranking'){csv+='ranking,'+q(r.ts?new Date(r.ts).toISOString():'')+','+q(r.userName)+','+q(r.order)+',,,,,,,,,,,,,,\n';}
-      else{csv+='response,'+q(r.ts?new Date(r.ts).toISOString():'')+','+q(r.userName)+',,'+q(r.knewRobota)+','+q(r.knownRobotsCount)+','+q(r.designChange)+','+q(r.freeVsReplace)+','+q(r.domesticRole)+','+q(r.voiceAssistantExperience)+','+q(r.morePause)+','+q(r.oneRequirement)+','+q(r.betterPaths)+','+q(r.rethinkTool)+','+q(r.closestToHome)+','+q(r.feelings)+','+q(r.feelingsDetail)+',\n';}
+      if(r.type==='ranking'){csv+='ranking,'+q(r.ts?new Date(r.ts).toISOString():'')+','+q(r.userName)+','+q(r.order)+',,,,,,,,,,,,,,,\n';}
+      else{csv+='response,'+q(r.ts?new Date(r.ts).toISOString():'')+','+q(r.userName)+',,'+q(r.knewRobota)+','+q(r.knownRobotsCount)+','+q(r.designChange)+','+q(r.freeVsReplace)+','+q(r.domesticRole)+','+q(r.voiceAssistantExperience)+','+q(r.morePause)+','+q(r.oneRequirement)+','+q(r.betterPaths)+','+q(r.socialSolutions)+','+q(r.rethinkTool)+','+q(r.closestToHome)+','+q(r.feelings)+','+q(r.feelingsDetail)+',\n';}
     });
     const blob=new Blob([csv],{type:'text/csv'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='carebot38-'+Date.now()+'.csv';document.body.appendChild(a);a.click();document.body.removeChild(a);URL.revokeObjectURL(url);
   });
