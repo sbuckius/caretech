@@ -164,9 +164,10 @@ const QR_URL='https://care-tech.org/carebot21-hit.html';
 let CANVAS_W=690, CANVAS_H=1050;
 
 const COLORS={
-  cream:'#fff5f8',blush:'#ffb3cf',candy:'#ff85b3',hot:'#ff2d6b',
-  fuchsia:'#ff1f80',berry:'#c4005a',maroon:'#6f001e',bg:'#1a0012',
-  textDim:'rgba(255,210,228,.85)',labelDim:'rgba(255,200,224,.55)'
+  cream:'#a3002e',blush:'#8c0028',candy:'#6e0020',hot:'#59001a',
+  fuchsia:'#470014',berry:'#33000f',maroon:'#26000b',bg:'#1a0012',
+  textDim:'rgba(140,0,40,.9)',labelDim:'rgba(140,0,40,.75)',
+  popPink:'#ff2d6b',popRed:'#e8003f',popRose:'#c4005a'
 };
 
 /* ── state ── */
@@ -291,24 +292,252 @@ function setLetterSpacing(ctx,val){
   try{ctx.letterSpacing=val;}catch(e){}
 }
 function drawShadedHeart(ctx,cx,cy,sizePx,colorLight,colorDark){
+  const pad=sizePx*0.35;
+  const size=Math.ceil(sizePx+pad*2);
+  const off=document.createElement('canvas');
+  off.width=size;off.height=size;
+  const octx=off.getContext('2d');
+  octx.textAlign='center';octx.textBaseline='middle';
+  octx.font=`900 ${sizePx}px Quicksand, sans-serif`;
+  const g=octx.createLinearGradient(size/2-sizePx*0.3,size/2-sizePx*0.4,size/2+sizePx*0.3,size/2+sizePx*0.4);
+  g.addColorStop(0,colorLight);
+  g.addColorStop(1,colorDark);
+  octx.fillStyle=g;
+  octx.fillText('♥',size/2,size/2+sizePx*0.05);
+
+  octx.globalCompositeOperation='source-atop';
+  const hl=octx.createRadialGradient(size/2-sizePx*0.1,size/2-sizePx*0.22,0,size/2-sizePx*0.1,size/2-sizePx*0.22,sizePx*0.45);
+  hl.addColorStop(0,'rgba(255,255,255,.85)');
+  hl.addColorStop(.5,'rgba(255,255,255,.25)');
+  hl.addColorStop(1,'rgba(255,255,255,0)');
+  octx.fillStyle=hl;
+  octx.beginPath();octx.arc(size/2-sizePx*0.1,size/2-sizePx*0.22,sizePx*0.45,0,Math.PI*2);octx.fill();
+  octx.globalCompositeOperation='source-over';
+
   ctx.save();
   ctx.textAlign='center';
   ctx.textBaseline='middle';
   ctx.font=`900 ${sizePx}px Quicksand, sans-serif`;
-  const g=ctx.createLinearGradient(cx-sizePx/2,cy-sizePx/2,cx+sizePx/2,cy+sizePx/2);
-  g.addColorStop(0,colorLight);
-  g.addColorStop(1,colorDark);
+  ctx.fillStyle='rgba(60,0,15,.3)';
+  ctx.fillText('♥',cx+sizePx*0.035,cy+sizePx*0.05+sizePx*0.055);
+
+  ctx.shadowColor='rgba(40,0,10,.35)';
+  ctx.shadowBlur=sizePx*0.14;
+  ctx.shadowOffsetX=sizePx*0.02;
+  ctx.shadowOffsetY=sizePx*0.05;
+  ctx.drawImage(off,cx-size/2,cy-size/2);
+  ctx.shadowColor='transparent';
+  ctx.shadowBlur=0;
+  ctx.shadowOffsetX=0;
+  ctx.shadowOffsetY=0;
+  ctx.restore();
+}
+
+function draw3DGradientText(ctx,text,cx,y,font,colorStops){
+  ctx.save();
+  ctx.font=font;
+  ctx.textAlign='left';
+  ctx.textBaseline='alphabetic';
+  const w=Math.ceil(ctx.measureText(text).width);
+  const sizeMatch=font.match(/(\d+(\.\d+)?)px/);
+  const fontPx=sizeMatch?parseFloat(sizeMatch[1]):40;
+  const ascent=Math.ceil(fontPx*0.85);
+  const descent=Math.ceil(fontPx*0.28);
+  const pad=10;
+  const ow=w+pad*2, oh=ascent+descent+pad*2;
+
+  const off=document.createElement('canvas');
+  off.width=ow;off.height=oh;
+  const octx=off.getContext('2d');
+  octx.font=font;
+  octx.textAlign='left';
+  octx.textBaseline='alphabetic';
+  const tx=pad, ty=pad+ascent;
+
+  const g=octx.createLinearGradient(0,0,ow,0);
+  colorStops.forEach(([pos,color])=>g.addColorStop(pos,color));
+  octx.fillStyle=g;
+  octx.fillText(text,tx,ty);
+
+  octx.globalCompositeOperation='source-atop';
+  const hl=octx.createLinearGradient(0,0,0,oh);
+  hl.addColorStop(0,'rgba(255,255,255,.65)');
+  hl.addColorStop(.55,'rgba(255,255,255,.12)');
+  hl.addColorStop(1,'rgba(255,255,255,0)');
+  octx.fillStyle=hl;
+  octx.fillRect(0,0,ow,oh);
+  octx.globalCompositeOperation='source-over';
+
+  const dx=cx-w/2-pad, dy=y-ty;
+
+  ctx.fillStyle='rgba(60,0,15,.32)';
+  ctx.font=font;
+  ctx.fillText(text,dx+tx+2,dy+ty+4);
+
+  ctx.shadowColor='rgba(40,0,10,.4)';
+  ctx.shadowBlur=8;
+  ctx.shadowOffsetX=1;
+  ctx.shadowOffsetY=3;
+  ctx.drawImage(off,dx,dy);
+  ctx.shadowColor='transparent';
+  ctx.shadowBlur=0;
+  ctx.shadowOffsetX=0;
+  ctx.shadowOffsetY=0;
+
+  ctx.restore();
+}
+
+function draw3DRecessedBox(ctx,x,y,w,h,r,fill,scale=1){
+  ctx.save();
+  roundRectPath(ctx,x,y,w,h,r);
+  ctx.clip();
+  ctx.fillStyle=fill;
+  ctx.fillRect(x,y,w,h);
+
+  const inset=8*scale;
+  const dark=ctx.createLinearGradient(x,y,x+w*0.45,y+h*0.45);
+  dark.addColorStop(0,'rgba(60,0,15,.5)');
+  dark.addColorStop(1,'rgba(60,0,15,0)');
+  ctx.strokeStyle=dark;
+  ctx.lineWidth=inset*2;
+  roundRectPath(ctx,x+inset,y+inset,w-inset*2,h-inset*2,r);
+  ctx.stroke();
+
+  const light=ctx.createLinearGradient(x+w,y+h,x+w*0.55,y+h*0.55);
+  light.addColorStop(0,'rgba(255,255,255,.5)');
+  light.addColorStop(1,'rgba(255,255,255,0)');
+  ctx.strokeStyle=light;
+  ctx.lineWidth=inset*2;
+  roundRectPath(ctx,x+inset,y+inset,w-inset*2,h-inset*2,r);
+  ctx.stroke();
+  ctx.restore();
+
+  ctx.strokeStyle='rgba(140,0,40,.4)';
+  ctx.lineWidth=2*scale;
+  roundRectPath(ctx,x,y,w,h,r);
+  ctx.stroke();
+}
+
+function drawDarkPanel(ctx,x,y,w,h,r,scale=1){
+  ctx.save();
+  roundRectPath(ctx,x,y,w,h,r);
+  ctx.clip();
+  const g=ctx.createLinearGradient(0,y,0,y+h);
+  g.addColorStop(0,'#220008');
+  g.addColorStop(.5,'#180008');
+  g.addColorStop(1,'#120005');
   ctx.fillStyle=g;
-  ctx.fillText('♥',cx,cy+sizePx*0.05);
+  ctx.fillRect(x,y,w,h);
+  const glow=ctx.createRadialGradient(x+w*0.22,y+h*0.18,0,x+w*0.22,y+h*0.18,Math.max(w,h)*0.55);
+  glow.addColorStop(0,'rgba(255,45,107,.20)');
+  glow.addColorStop(1,'rgba(0,0,0,0)');
+  ctx.fillStyle=glow;
+  ctx.fillRect(x,y,w,h);
+  ctx.restore();
+  ctx.strokeStyle='rgba(255,140,180,.4)';
+  ctx.lineWidth=2*scale;
+  roundRectPath(ctx,x,y,w,h,r);
+  ctx.stroke();
+}
+
+/* IBM punch-card motif: a faint repeating digit grid plus perforation notches near the panel edges */
+function drawPunchCardTexture(ctx,px,py,pw,ph,scale=1){
+  ctx.save();
+  ctx.globalAlpha=.07;
+  ctx.fillStyle='rgba(140,0,40,1)';
+  ctx.textAlign='center';
+  ctx.textBaseline='middle';
+  ctx.font=`${10.5*scale}px "Courier New", monospace`;
+  const cols=11, rows=20;
+  const mx=pw*0.09, my=ph*0.05;
+  for(let r=0;r<rows;r++){
+    const digit=r%10;
+    for(let c=0;c<cols;c++){
+      const x=px+mx+c*((pw-mx*2)/(cols-1));
+      const y=py+my+r*((ph-my*2)/(rows-1));
+      ctx.fillText(String(digit),x,y);
+    }
+  }
+  ctx.restore();
+
+  ctx.save();
+  ctx.fillStyle='rgba(140,0,40,.3)';
+  const notchR=3.5*scale, gap=18*scale, edgeMargin=22*scale;
+  const count=Math.floor((pw-edgeMargin*2)/gap);
+  const rowTop=py+15*scale, rowBottom=py+ph-15*scale;
+  for(let i=0;i<count;i++){
+    const x=px+edgeMargin+i*gap+gap/2;
+    ctx.beginPath();ctx.arc(x,rowTop,notchR,0,Math.PI*2);ctx.fill();
+    ctx.beginPath();ctx.arc(x,rowBottom,notchR,0,Math.PI*2);ctx.fill();
+  }
+  ctx.restore();
+}
+
+/* a subtle brushed/polished-metal sheen: diagonal light & dark bands glazed over the whole panel */
+function drawMetallicSheen(ctx,px,py,pw,ph){
+  ctx.save();
+  ctx.beginPath();ctx.rect(px,py,pw,ph);ctx.clip();
+  ctx.translate(px+pw/2,py+ph/2);
+  ctx.rotate(-0.4);
+  const diag=Math.sqrt(pw*pw+ph*ph);
+  const bands=[[0.10,0.05,.4],[0.30,0.09,.16],[0.50,0.04,.3],[0.68,0.10,.14],[0.85,0.05,.26]];
+  bands.forEach(([pos,bw,alpha])=>{
+    const cx=(pos-0.5)*diag*1.3;
+    const g=ctx.createLinearGradient(cx-diag*bw,0,cx+diag*bw,0);
+    g.addColorStop(0,'rgba(255,255,255,0)');
+    g.addColorStop(0.5,`rgba(255,255,255,${alpha})`);
+    g.addColorStop(1,'rgba(255,255,255,0)');
+    ctx.fillStyle=g;
+    ctx.fillRect(-diag,-diag,diag*2,diag*2);
+  });
+  const darkG=ctx.createLinearGradient(-diag*0.12,0,diag*0.05,0);
+  darkG.addColorStop(0,'rgba(90,0,30,0)');
+  darkG.addColorStop(0.5,'rgba(90,0,30,.14)');
+  darkG.addColorStop(1,'rgba(90,0,30,0)');
+  ctx.fillStyle=darkG;
+  ctx.fillRect(-diag,-diag,diag*2,diag*2);
+  ctx.restore();
+}
+
+/* a visible row of IBM-punch-card-style digits along the bottom edge of the card */
+function drawPunchNumberRow(ctx,y,scale=1){
+  ctx.save();
+  ctx.textAlign='center';
+  ctx.font=`700 ${15*scale}px "Courier New", monospace`;
+  ctx.fillStyle='rgba(140,0,40,.55)';
+  setLetterSpacing(ctx,`${4*scale}px`);
+  ctx.fillText('0 1 2 3 4 5 6 7 8 9 · 0 1 2 3 4 5 6 7 8 9 · 0 1 2 3 4 5 6 7 8 9',CANVAS_W/2,y);
+  setLetterSpacing(ctx,'0px');
   ctx.restore();
 }
 
 /* ── shared card chrome (used by both front & back) ── */
 function drawCardBackground(ctx,scale=1){
+  // white frame: fill the whole card white, then inset the pink panel
+  ctx.fillStyle='#ffffff';
+  ctx.fillRect(0,0,CANVAS_W,CANVAS_H);
+
+  const frame=20*scale;
+  const px=frame,py=frame,pw=CANVAS_W-frame*2,ph=CANVAS_H-frame*2,pr=26*scale;
+
+  ctx.save();
+  ctx.shadowColor='rgba(120,0,40,.4)';
+  ctx.shadowBlur=18*scale;
+  ctx.shadowOffsetX=3*scale;
+  ctx.shadowOffsetY=8*scale;
+  ctx.fillStyle='#ff8cb8';
+  roundRectPath(ctx,px,py,pw,ph,pr);
+  ctx.fill();
+  ctx.restore();
+
+  ctx.save();
+  roundRectPath(ctx,px,py,pw,ph,pr);
+  ctx.clip();
+
   const bgGrad=ctx.createLinearGradient(0,0,0,CANVAS_H);
-  bgGrad.addColorStop(0,'#3a0014');
-  bgGrad.addColorStop(.5,'#2c0010');
-  bgGrad.addColorStop(1,'#22000a');
+  bgGrad.addColorStop(0,'#ffe3ee');
+  bgGrad.addColorStop(.5,'#ffaed0');
+  bgGrad.addColorStop(1,'#ff8cb8');
   ctx.fillStyle=bgGrad;
   ctx.fillRect(0,0,CANVAS_W,CANVAS_H);
 
@@ -319,16 +548,89 @@ function drawCardBackground(ctx,scale=1){
     ctx.beginPath();ctx.arc(cx,cy,r,0,Math.PI*2);ctx.fill();
     ctx.globalAlpha=1;
   }
-  blob(CANVAS_W*0.14,CANVAS_H*0.06,260*scale,'#d4003a',.34);
-  blob(CANVAS_W*0.88,CANVAS_H*0.95,230*scale,'#9c002e',.3);
+  blob(CANVAS_W*0.14,CANVAS_H*0.06,260*scale,'#ff9dc8',.5);
+  blob(CANVAS_W*0.88,CANVAS_H*0.95,230*scale,'#ff7aab',.4);
+
+  drawKawaiiAccents(ctx,scale);
+  drawPunchCardTexture(ctx,px,py,pw,ph,scale);
+  drawMetallicSheen(ctx,px,py,pw,ph);
+
+  const bevelInset=4*scale;
+  const hlGrad=ctx.createLinearGradient(px,py,px+pw*0.45,py+ph*0.45);
+  hlGrad.addColorStop(0,'rgba(255,255,255,.6)');
+  hlGrad.addColorStop(1,'rgba(255,255,255,0)');
+  ctx.strokeStyle=hlGrad;
+  ctx.lineWidth=7*scale;
+  roundRectPath(ctx,px+bevelInset,py+bevelInset,pw-bevelInset*2,ph-bevelInset*2,pr);
+  ctx.stroke();
+
+  const shGrad=ctx.createLinearGradient(px+pw,py+ph,px+pw*0.55,py+ph*0.55);
+  shGrad.addColorStop(0,'rgba(90,0,30,.4)');
+  shGrad.addColorStop(1,'rgba(90,0,30,0)');
+  ctx.strokeStyle=shGrad;
+  ctx.lineWidth=7*scale;
+  roundRectPath(ctx,px+bevelInset,py+bevelInset,pw-bevelInset*2,ph-bevelInset*2,pr);
+  ctx.stroke();
+
+  ctx.restore();
 
   ctx.textAlign='center';
   ctx.textBaseline='alphabetic';
 }
 
+/* scattered hearts, sparkles & dotted lines in darker maroon variations — kawaii confetti along the margins */
+function drawKawaiiAccents(ctx,scale=1){
+  const tones=[COLORS.popPink,COLORS.popRed,COLORS.popRose,COLORS.blush,COLORS.candy];
+
+  function sparkle(cx,cy,size,color,alpha){
+    ctx.save();
+    ctx.globalAlpha=alpha;
+    ctx.fillStyle=color;
+    ctx.font=`${size}px sans-serif`;
+    ctx.textAlign='center';ctx.textBaseline='middle';
+    ctx.fillText('✦',cx,cy);
+    ctx.restore();
+  }
+  function dottedLine(x1,y1,x2,y2,color,alpha,width){
+    ctx.save();
+    ctx.globalAlpha=alpha;
+    ctx.strokeStyle=color;
+    ctx.lineWidth=width;
+    ctx.setLineDash([width*1.6,width*2.2]);
+    ctx.lineCap='round';
+    ctx.beginPath();ctx.moveTo(x1,y1);ctx.lineTo(x2,y2);ctx.stroke();
+    ctx.restore();
+  }
+
+  const heartSpots=[
+    [0.07,0.20,16,0],[0.93,0.155,13,2],[0.065,0.46,14,3],
+    [0.935,0.52,18,1],[0.075,0.74,12,4],[0.925,0.78,15,0],
+    [0.10,0.955,13,2],[0.90,0.97,16,3]
+  ];
+  heartSpots.forEach(([fx,fy,size,ti])=>{
+    const light=tones[ti], dark=tones[(ti+2)%tones.length];
+    ctx.save();ctx.globalAlpha=.55;
+    drawShadedHeart(ctx,CANVAS_W*fx,CANVAS_H*fy,size*scale,light,dark);
+    ctx.restore();
+  });
+
+  const sparkleSpots=[
+    [0.05,0.33,18,1],[0.95,0.28,15,3],[0.06,0.61,16,4],
+    [0.94,0.66,14,0],[0.50,0.975,13,2]
+  ];
+  sparkleSpots.forEach(([fx,fy,size,ti])=>{
+    sparkle(CANVAS_W*fx,CANVAS_H*fy,size*scale,tones[ti],.5);
+  });
+
+  dottedLine(CANVAS_W*0.04,CANVAS_H*0.27,CANVAS_W*0.10,CANVAS_H*0.27,COLORS.candy,.4,2*scale);
+  dottedLine(CANVAS_W*0.90,CANVAS_H*0.36,CANVAS_W*0.96,CANVAS_H*0.36,COLORS.berry,.4,2*scale);
+  dottedLine(CANVAS_W*0.04,CANVAS_H*0.68,CANVAS_W*0.10,CANVAS_H*0.68,COLORS.fuchsia,.4,2*scale);
+  dottedLine(CANVAS_W*0.90,CANVAS_H*0.87,CANVAS_W*0.96,CANVAS_H*0.87,COLORS.blush,.4,2*scale);
+}
+
 function drawOuterBorder(ctx,scale=1){
   const inset=34*scale;
-  ctx.strokeStyle='rgba(255,100,160,.55)';
+  ctx.strokeStyle='rgba(140,0,40,.5)';
   ctx.lineWidth=4*scale;
   roundRectPath(ctx,inset,inset,CANVAS_W-inset*2,CANVAS_H-inset*2,28*scale);
   ctx.stroke();
@@ -339,7 +641,7 @@ function drawHeartLine(ctx,y,totalWidth,count,size,centerX=CANVAS_W/2){
   const gap=(totalWidth-count*size)/(count-1);
   let x=centerX-totalWidth/2+size/2;
   for(let i=0;i<count;i++){
-    drawShadedHeart(ctx,x,y,size,COLORS.blush,COLORS.berry);
+    drawShadedHeart(ctx,x,y,size,COLORS.popPink,COLORS.popRose);
     x+=size+gap;
   }
 }
@@ -361,24 +663,24 @@ function drawLogoTitle(ctx,scale=1){
   let tx=CANVAS_W/2-total/2;
   ctx.textAlign='left';
 
-  drawShadedHeart(ctx,tx+heartW/2,baselineY-14*scale,58*scale,COLORS.blush,COLORS.berry);
+  drawShadedHeart(ctx,tx+heartW/2,baselineY-14*scale,58*scale,COLORS.popPink,COLORS.popRose);
   tx+=heartW+gap;
 
   const careGrad=ctx.createLinearGradient(tx,0,tx+careW,0);
-  careGrad.addColorStop(0,COLORS.cream);
-  careGrad.addColorStop(.5,COLORS.blush);
-  careGrad.addColorStop(1,COLORS.fuchsia);
+  careGrad.addColorStop(0,COLORS.popRose);
+  careGrad.addColorStop(.5,COLORS.popPink);
+  careGrad.addColorStop(1,COLORS.popRed);
   ctx.fillStyle=careGrad;
   ctx.font=careFont;
   ctx.fillText('CARE',tx,baselineY);
   tx+=careW;
 
-  ctx.fillStyle=COLORS.candy;
+  ctx.fillStyle=COLORS.popRose;
   ctx.font=techFont;
   ctx.fillText('tech',tx,baselineY);
   tx+=techW+gap;
 
-  drawShadedHeart(ctx,tx+heartW/2,baselineY-14*scale,58*scale,COLORS.blush,COLORS.berry);
+  drawShadedHeart(ctx,tx+heartW/2,baselineY-14*scale,58*scale,COLORS.popPink,COLORS.popRose);
 
   ctx.textAlign='center';
 }
@@ -402,7 +704,7 @@ async function renderFront(index,workerID){
   ctx.fillText('HUMAN INTELLIGENCE TASK (HIT) WORKER',CANVAS_W/2,144);
   setLetterSpacing(ctx,'0px');
 
-  ctx.strokeStyle='rgba(255,130,180,.35)';
+  ctx.strokeStyle='rgba(140,0,40,.4)';
   ctx.lineWidth=2;
   ctx.beginPath();ctx.moveTo(CANVAS_W*0.16,166);ctx.lineTo(CANVAS_W*0.84,166);ctx.stroke();
 
@@ -413,23 +715,14 @@ async function renderFront(index,workerID){
   ctx.fillText('WORKER ID',CANVAS_W/2,200);
   setLetterSpacing(ctx,'0px');
 
-  const idGrad=ctx.createLinearGradient(CANVAS_W*0.2,0,CANVAS_W*0.8,0);
-  idGrad.addColorStop(0,COLORS.blush);
-  idGrad.addColorStop(.55,COLORS.fuchsia);
-  idGrad.addColorStop(1,COLORS.hot);
-  ctx.fillStyle=idGrad;
-  ctx.font='900 52px Nunito, sans-serif';
-  ctx.fillText(workerID,CANVAS_W/2,256);
+  draw3DGradientText(ctx,workerID,CANVAS_W/2,256,'900 52px Nunito, sans-serif',
+    [[0,COLORS.popRose],[.55,COLORS.popRed],[1,COLORS.popPink]]);
 
   /* image holder */
   const boxW=CANVAS_W*0.78;
   const boxX=(CANVAS_W-boxW)/2, boxY=280;
   const boxH=440;
-  ctx.fillStyle='rgba(255,45,107,.08)';
-  ctx.strokeStyle='rgba(255,160,200,.28)';
-  ctx.lineWidth=2;
-  roundRectPath(ctx,boxX,boxY,boxW,boxH,18);
-  ctx.fill();ctx.stroke();
+  draw3DRecessedBox(ctx,boxX,boxY,boxW,boxH,18,'rgba(140,0,40,.1)');
   if(img) drawContain(ctx,img,boxX+12,boxY+12,boxW-24,boxH-24);
 
   /* heart-line divider */
@@ -450,6 +743,7 @@ async function renderFront(index,workerID){
   wrapText(ctx,'This badge artwork is one of 41 AI-generated images created from the prompts "worker ID badge" and "technology worker ID badge."',CANVAS_W/2,y,textW,30);
 
   drawOuterBorder(ctx);
+  drawPunchNumberRow(ctx,CANVAS_H-46);
 }
 
 /* ── BACK (generic): logo, mission, QR, scan, about-this-work — reused at badge size and poster sizes ── */
@@ -467,9 +761,9 @@ async function renderBackGeneric(canvasId,cw,ch,scale){
 
   /* mission statement */
   const missionGrad=ctx.createLinearGradient(CANVAS_W*0.1,0,CANVAS_W*0.9,0);
-  missionGrad.addColorStop(0,COLORS.blush);
-  missionGrad.addColorStop(.5,COLORS.candy);
-  missionGrad.addColorStop(1,COLORS.fuchsia);
+  missionGrad.addColorStop(0,COLORS.popRose);
+  missionGrad.addColorStop(.5,COLORS.popPink);
+  missionGrad.addColorStop(1,COLORS.popRed);
   ctx.fillStyle=missionGrad;
   ctx.font=`800 ${25*scale}px Nunito, sans-serif`;
   y=wrapText(ctx,'Amplifying Diverse HUMAN Voices in Technology',CANVAS_W/2,y,textW,30*scale);
@@ -487,24 +781,20 @@ async function renderBackGeneric(canvasId,cw,ch,scale){
   const qrModules=getQRModules(QR_URL);
   if(qrModules){
     const pad=13*scale;
-    ctx.fillStyle='rgba(255,245,248,.06)';
-    ctx.strokeStyle='rgba(255,160,200,.35)';
-    ctx.lineWidth=2.5*scale;
-    roundRectPath(ctx,qrX-pad,y-pad,qrSize+pad*2,qrSize+pad*2,22*scale);
-    ctx.fill();ctx.stroke();
+    draw3DRecessedBox(ctx,qrX-pad,y-pad,qrSize+pad*2,qrSize+pad*2,22*scale,'rgba(255,255,255,.4)',scale);
 
     drawQR(ctx,qrX,y,qrSize,qrModules,COLORS.maroon,'#fff5f8');
 
     const heartSize=26*scale;
-    drawShadedHeart(ctx,qrX-pad+2*scale,y-pad+2*scale,heartSize,COLORS.blush,COLORS.berry);
-    drawShadedHeart(ctx,qrX+qrSize+pad-2*scale,y-pad+2*scale,heartSize,COLORS.blush,COLORS.berry);
-    drawShadedHeart(ctx,qrX-pad+2*scale,y+qrSize+pad-2*scale,heartSize,COLORS.blush,COLORS.berry);
-    drawShadedHeart(ctx,qrX+qrSize+pad-2*scale,y+qrSize+pad-2*scale,heartSize,COLORS.blush,COLORS.berry);
+    drawShadedHeart(ctx,qrX-pad+2*scale,y-pad+2*scale,heartSize,COLORS.popPink,COLORS.popRose);
+    drawShadedHeart(ctx,qrX+qrSize+pad-2*scale,y-pad+2*scale,heartSize,COLORS.popPink,COLORS.popRose);
+    drawShadedHeart(ctx,qrX-pad+2*scale,y+qrSize+pad-2*scale,heartSize,COLORS.popPink,COLORS.popRose);
+    drawShadedHeart(ctx,qrX+qrSize+pad-2*scale,y+qrSize+pad-2*scale,heartSize,COLORS.popPink,COLORS.popRose);
 
     y+=qrSize+pad+22*scale;
   } else {
     ctx.font=`600 ${13*scale}px Quicksand, sans-serif`;
-    ctx.fillStyle='rgba(255,200,224,.5)';
+    ctx.fillStyle='rgba(140,0,40,.7)';
     ctx.fillText('(QR code unavailable — check your connection)',CANVAS_W/2,y+20*scale);
     y+=50*scale;
   }
@@ -517,7 +807,7 @@ async function renderBackGeneric(canvasId,cw,ch,scale){
   setLetterSpacing(ctx,'0px');
   y+=18*scale;
   ctx.font=`600 ${16*scale}px Quicksand, sans-serif`;
-  ctx.fillStyle='rgba(255,200,224,.45)';
+  ctx.fillStyle='rgba(140,0,40,.75)';
   ctx.fillText('care-tech.org',CANVAS_W/2,y);
 
   /* heart-line divider */
@@ -537,6 +827,7 @@ async function renderBackGeneric(canvasId,cw,ch,scale){
   y=wrapText(ctx,'A Human Intelligence Task — originally from Amazon Mechanical Turk. Humans are paid to label data, verify images, and train AI systems. The irony: the task exists because machines can\'t do it — but the humans who do it are often unnamed, underpaid, and invisible in the final product.',CANVAS_W/2,y,textW,27*scale);
 
   drawOuterBorder(ctx,scale);
+  drawPunchNumberRow(ctx,CANVAS_H-46*scale,scale);
 }
 
 async function renderBack(index,workerID){
