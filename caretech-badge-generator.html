@@ -874,6 +874,9 @@ const progressText=document.getElementById('progressText');
 
 function getTotal(){ return window._CARETECH_TOTAL||TOTAL_IMAGES; }
 
+document.getElementById('prevBtn').addEventListener('click',()=>showIndex(currentIndex-1));
+document.getElementById('nextBtn').addEventListener('click',()=>showIndex(currentIndex+1));
+
 async function showIndex(index){
   const total=getTotal();
   currentIndex=((index%total)+total)%total;
