@@ -890,24 +890,54 @@ async function showIndex(index){
 
 /* ── auto-discover how many id_XX.png images are present ── */
 async function detectTotalImages(){
-  let count=0;
-  while(true){
-    const idx=count.toString().padStart(2,'0');
-    const found=await new Promise(res=>{
+  const SCAN_LIMIT=200; // checks id_00 through id_199
+  const checks=[];
+  for(let i=0;i<SCAN_LIMIT;i++){
+    const idx=i.toString().padStart(2,'0');
+    checks.push(new Promise(res=>{
       const img=new Image();
-      img.onload=()=>res(true);
-      img.onerror=()=>res(false);
-      img.src=`${IMAGE_PREFIX}${idx}.png?_=${Date.now()}`;
-    });
-    if(!found) break;
-    count++;
-    if(count>999) break;
+      img.onload=()=>res({i,found:true});
+      img.onerror=()=>res({i,found:false});
+      img.src=`${IMAGE_PREFIX}${idx}.png?_=${Date.now()}_${i}`;
+    }));
   }
-  const total=count>0?count:TOTAL_IMAGES;
+  const results=await Promise.all(checks);
+  const found=results.filter(r=>r.found).map(r=>r.i);
+  const missing=results.filter(r=>!r.found).map(r=>r.i);
+  const highest=found.length?Math.max(...found):-1;
+  const contiguousMissing=missing.filter(i=>i<highest);
+
+  console.log(`[CARETECH] Scanned id_00.png … id_${(SCAN_LIMIT-1).toString().padStart(2,'0')}.png`);
+  console.log(`[CARETECH] Found ${found.length} images. Highest index found: id_${highest.toString().padStart(2,'0')}.png`);
+  if(contiguousMissing.length){
+    console.warn(`[CARETECH] Gap detected — these indexes are MISSING below your highest image (id_${highest.toString().padStart(2,'0')}.png):`,
+      contiguousMissing.map(i=>`id_${i.toString().padStart(2,'0')}.png`));
+  } else {
+    console.log('[CARETECH] No gaps — sequence is continuous from id_00.png.');
+  }
+
+  const total=highest>=0?highest+1:TOTAL_IMAGES;
   window._CARETECH_TOTAL=total;
+  window._CARETECH_GAPS=contiguousMissing;
   const batchInput=document.getElementById('batchCount');
   batchInput.max=total;
   if(parseInt(batchInput.value,10)>total) batchInput.value=total;
+
+  if(contiguousMissing.length){
+    const note=document.querySelector('.note');
+    if(note){
+      const warn=document.createElement('div');
+      warn.style.marginTop='10px';
+      warn.style.color='#ffb3cf';
+      warn.style.fontWeight='700';
+      warn.innerHTML=`⚠️ Found ${found.length} images (highest: id_${highest.toString().padStart(2,'0')}.png), `
+        +`but ${contiguousMissing.length} are missing below that: `
+        +contiguousMissing.map(i=>`id_${i.toString().padStart(2,'0')}.png`).join(', ')
+        +`. Add those files or the count will be off. (Open the browser console for details.)`;
+      note.appendChild(warn);
+    }
+  }
+
   return total;
 }
 
