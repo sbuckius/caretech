@@ -805,7 +805,7 @@ async function renderBackGeneric(canvasId,cw,ch,scale){
     const pad=13*scale;
     draw3DRecessedBox(ctx,qrX-pad,y-pad,qrSize+pad*2,qrSize+pad*2,22*scale,'rgba(255,255,255,.4)',scale);
 
-    drawQR(ctx,qrX,y,qrSize,qrModules,'#6b0020','rgba(255,255,255,0)');
+    drawQR(ctx,qrX,y,qrSize,qrModules,'#6b0020','#ffffff');
 
     const heartSize=26*scale;
     drawShadedHeart(ctx,qrX-pad+2*scale,y-pad+2*scale,heartSize,COLORS.popPink,COLORS.popRose);
