@@ -757,7 +757,7 @@ async function renderBackGeneric(canvasId,cw,ch,scale){
   drawLogoTitle(ctx,scale);
 
   const textW=CANVAS_W*0.84;
-  let y=180*scale;
+  let y=148*scale;
 
   /* mission statement */
   const missionGrad=ctx.createLinearGradient(CANVAS_W*0.1,0,CANVAS_W*0.9,0);
@@ -765,9 +765,31 @@ async function renderBackGeneric(canvasId,cw,ch,scale){
   missionGrad.addColorStop(.5,COLORS.popPink);
   missionGrad.addColorStop(1,COLORS.popRed);
   ctx.fillStyle=missionGrad;
-  ctx.font=`800 ${25*scale}px Nunito, sans-serif`;
-  y=wrapText(ctx,'Amplifying Diverse HUMAN Voices in Technology',CANVAS_W/2,y,textW,30*scale);
-  y+=22*scale;
+  ctx.font=`800 ${32*scale}px Nunito, sans-serif`;
+  y=wrapText(ctx,'Amplifying Diverse HUMAN Voices',CANVAS_W/2,y,textW,38*scale);
+  y+=38*scale;
+  ctx.fillStyle=missionGrad;
+  ctx.fillText('in Technology',CANVAS_W/2,y);
+  y+=28*scale;
+
+  /* tick-mark rule */
+  const ruleX=CANVAS_W*0.08, ruleW=CANVAS_W*0.84, ruleY=y;
+  ctx.save();
+  ctx.strokeStyle='rgba(140,0,40,.45)';
+  ctx.lineWidth=2*scale;
+  ctx.beginPath();ctx.moveTo(ruleX,ruleY);ctx.lineTo(ruleX+ruleW,ruleY);ctx.stroke();
+  const tickCount=24, tickSpacing=ruleW/(tickCount-1);
+  for(let i=0;i<tickCount;i++){
+    const tx=ruleX+i*tickSpacing;
+    const tall=(i%6===0);
+    const mid=(i%3===0&&!tall);
+    const th=tall?10*scale:mid?6*scale:3.5*scale;
+    ctx.lineWidth=tall?2.5*scale:1.5*scale;
+    ctx.beginPath();ctx.moveTo(tx,ruleY-th);ctx.lineTo(tx,ruleY+th);ctx.stroke();
+  }
+  ctx.restore();
+  y+=26*scale;
+
   ctx.font=`600 ${24*scale}px Quicksand, sans-serif`;
   ctx.fillStyle=COLORS.textDim;
   y=wrapText(ctx,'We are creating caring technologies that include diverse voices, challenge bias, uncover underamplified histories, and build a more CARE-centered, equitable future for technology —',CANVAS_W/2,y,textW,30*scale);
@@ -775,7 +797,7 @@ async function renderBackGeneric(canvasId,cw,ch,scale){
   ctx.fillText('one carebot at a time.',CANVAS_W/2,y);
 
   /* qr — fills remaining space */
-  y+=36*scale;
+  y+=56*scale;
   const qrSize=280*scale;
   const qrX=(CANVAS_W-qrSize)/2;
   const qrModules=getQRModules(QR_URL);
@@ -783,7 +805,7 @@ async function renderBackGeneric(canvasId,cw,ch,scale){
     const pad=13*scale;
     draw3DRecessedBox(ctx,qrX-pad,y-pad,qrSize+pad*2,qrSize+pad*2,22*scale,'rgba(255,255,255,.4)',scale);
 
-    drawQR(ctx,qrX,y,qrSize,qrModules,COLORS.maroon,'#fff5f8');
+    drawQR(ctx,qrX,y,qrSize,qrModules,'#6b0020','rgba(255,255,255,0)');
 
     const heartSize=26*scale;
     drawShadedHeart(ctx,qrX-pad+2*scale,y-pad+2*scale,heartSize,COLORS.popPink,COLORS.popRose);
