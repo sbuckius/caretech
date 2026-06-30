@@ -894,22 +894,18 @@ async function detectTotalImages(){
       const img=new Image();
       img.onload=()=>res(true);
       img.onerror=()=>res(false);
-      img.src=`${IMAGE_PREFIX}${idx}.png`;
+      img.src=`${IMAGE_PREFIX}${idx}.png?_=${Date.now()}`;
     });
     if(!found) break;
     count++;
-    if(count>999) break; // safety cap
+    if(count>999) break;
   }
-  if(count>0){
-    window.CARETECH_TOTAL_IMAGES=count;
-    // patch the module-level constant
-    Object.defineProperty(window,'CARETECH_TOTAL_IMAGES',{value:count,writable:true});
-    const batchInput=document.getElementById('batchCount');
-    batchInput.max=count;
-    if(parseInt(batchInput.value,10)>count) batchInput.value=count;
-    document.getElementById('statCount').textContent=`1 / ${count}`;
-  }
-  return count||TOTAL_IMAGES;
+  const total=count>0?count:TOTAL_IMAGES;
+  window._CARETECH_TOTAL=total;
+  const batchInput=document.getElementById('batchCount');
+  batchInput.max=total;
+  if(parseInt(batchInput.value,10)>total) batchInput.value=total;
+  return total;
 }
 
 document.getElementById('rerollBtn').addEventListener('click',()=>{
