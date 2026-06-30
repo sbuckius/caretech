@@ -102,7 +102,7 @@
 
       <div class="field">
         <label for="batchCount">Number of badges to generate</label>
-        <input type="number" id="batchCount" min="1" max="41" value="40" />
+        <input type="number" id="batchCount" min="1" value="40" />
       </div>
       <button class="btn btn-primary btn-full" id="downloadAllBtn">⬇⬇ Download All as PNGs (Front + Back)</button>
       <div class="progress" id="progressText"></div>
@@ -157,7 +157,7 @@
 
 <script>
 /* ── config ── */
-const TOTAL_IMAGES=41;
+const TOTAL_IMAGES=window.CARETECH_TOTAL_IMAGES||41;
 const IMAGE_PREFIX='images/id_';
 const IMAGE_EXT='.png';
 const QR_URL='https://care-tech.org/carebot21-hit.html';
@@ -872,18 +872,46 @@ const statCount=document.getElementById('statCount');
 const statID=document.getElementById('statID');
 const progressText=document.getElementById('progressText');
 
+function getTotal(){ return window._CARETECH_TOTAL||TOTAL_IMAGES; }
+
 async function showIndex(index){
-  currentIndex=((index%TOTAL_IMAGES)+TOTAL_IMAGES)%TOTAL_IMAGES;
+  const total=getTotal();
+  currentIndex=((index%total)+total)%total;
   const id=idFor(currentIndex);
   const idxStr=currentIndex.toString().padStart(2,'0');
   statImage.textContent=`id_${idxStr}.png`;
-  statCount.textContent=`${currentIndex+1} / ${TOTAL_IMAGES}`;
+  statCount.textContent=`${currentIndex+1} / ${total}`;
   statID.textContent=id;
   await Promise.all([renderFront(currentIndex,id),renderBack(currentIndex,id)]);
 }
 
-document.getElementById('prevBtn').addEventListener('click',()=>showIndex(currentIndex-1));
-document.getElementById('nextBtn').addEventListener('click',()=>showIndex(currentIndex+1));
+/* ── auto-discover how many id_XX.png images are present ── */
+async function detectTotalImages(){
+  let count=0;
+  while(true){
+    const idx=count.toString().padStart(2,'0');
+    const found=await new Promise(res=>{
+      const img=new Image();
+      img.onload=()=>res(true);
+      img.onerror=()=>res(false);
+      img.src=`${IMAGE_PREFIX}${idx}.png`;
+    });
+    if(!found) break;
+    count++;
+    if(count>999) break; // safety cap
+  }
+  if(count>0){
+    window.CARETECH_TOTAL_IMAGES=count;
+    // patch the module-level constant
+    Object.defineProperty(window,'CARETECH_TOTAL_IMAGES',{value:count,writable:true});
+    const batchInput=document.getElementById('batchCount');
+    batchInput.max=count;
+    if(parseInt(batchInput.value,10)>count) batchInput.value=count;
+    document.getElementById('statCount').textContent=`1 / ${count}`;
+  }
+  return count||TOTAL_IMAGES;
+}
+
 document.getElementById('rerollBtn').addEventListener('click',()=>{
   assignedIDs[currentIndex]=genWorkerID();
   showIndex(currentIndex);
@@ -949,7 +977,7 @@ document.getElementById('downloadAllBtn').addEventListener('click',async()=>{
   const countInput=document.getElementById('batchCount');
   let count=parseInt(countInput.value,10);
   if(isNaN(count)||count<1)count=1;
-  if(count>TOTAL_IMAGES)count=TOTAL_IMAGES;
+  if(count>getTotal())count=getTotal();
 
   const allBtn=document.getElementById('downloadAllBtn');
   const oneBtn=document.getElementById('downloadOneBtn');
@@ -1014,6 +1042,8 @@ document.getElementById('downloadPoster14Btn').addEventListener('click',async()=
       document.fonts.load('700 13px Quicksand'),
     ]);
   }catch(e){}
+  const total=await detectTotalImages();
+  window._CARETECH_TOTAL=total;
   await showIndex(0);
   try{
     await renderBackPoster28();
