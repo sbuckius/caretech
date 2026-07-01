@@ -1261,8 +1261,8 @@ async function renderPoster85x11(){
   y+=18*scale;
 
   /* history image openings — 4 recessed boxes with loaded images */
-  const histSrcs=['jacquard_01.png','jacquard_02.png','punch_cards.png','rope_memory.png','woven_basket.png'];
-  const histLabels=['JACQUARD LOOM · 1804','JACQUARD CARDS · 1804','IBM PUNCH CARDS · 1945','APOLLO ROPE MEMORY · 1969','WOVEN BASKET · HISTORY'];
+  const histSrcs=['woven_basket.png','jacquard_01.png','jacquard_02.png','punch_cards.png','rope_memory.png'];
+  const histLabels=['WOVEN BASKET · HISTORY','JACQUARD LOOM · 1804','JACQUARD CARDS · 1804','IBM PUNCH CARDS · 1945','APOLLO ROPE MEMORY · 1969'];
   const histImgs=await Promise.all(histSrcs.map(s=>loadImageByPath(s)));
 
   const histCount=5;
@@ -1276,10 +1276,10 @@ async function renderPoster85x11(){
     const bx=histStartX+i*(histBoxW+histGap);
     draw3DRecessedBox(ctx,bx,y,histBoxW,histBoxH,12*scale,'rgba(140,0,40,.08)',scale);
     if(histImgs[i]) drawContain(ctx,histImgs[i],bx+10*scale,y+10*scale,histBoxW-20*scale,histBoxH-20*scale);
-    ctx.font=`600 ${10*scale}px "Courier New", monospace`;
+    ctx.font=`600 ${6*scale}px "Courier New", monospace`;
     ctx.fillStyle=COLORS.blush;
     ctx.textAlign='center';
-    setLetterSpacing(ctx,`${0.5*scale}px`);
+    setLetterSpacing(ctx,`${0.2*scale}px`);
     ctx.fillText(histLabels[i],bx+histBoxW/2,y+histBoxH+histLabelH*0.75);
     setLetterSpacing(ctx,'0px');
   }
@@ -1296,7 +1296,7 @@ async function renderPoster85x11(){
   /* blurb */
   ctx.font=`600 ${12.5*scale}px Quicksand, sans-serif`;
   ctx.fillStyle=COLORS.textDim;
-  y=wrapText(ctx,'In 1804, Joseph-Marie Jacquard used punched cards to control which threads were raised on a loom — each hole a binary instruction, present or absent, weave or skip. Charles Babbage adapted this idea for the first mechanical computer. Ada Lovelace drew the parallel directly: "the Analytical Engine weaves algebraic patterns just as the Jacquard-loom weaves flowers and leaves." In the 1960s, women at Raytheon wove NASA\'s Apollo software by hand — threading copper wires through tiny magnetic rings to encode ones and zeros, exactly like weaving cloth. Called "Little Old Ladies," their work was supervised by "rope mothers." Margaret Hamilton, director of Apollo flight software, was the most famous rope mother. The women who programmed ENIAC, the rope mothers of Apollo, and the punch-card operators at IBM all inherited this lineage — their labor invisible, their names erased. CAREtech names that erasure.',cw/2,y,textW,17.5*scale);
+  y=wrapText(ctx,'In 1804, Joseph-Marie Jacquard used punched cards to control which threads were raised on a loom — each hole a binary instruction, present or absent, weave or skip. Charles Babbage adapted this idea in his design for the Analytical Engine, the first blueprint for a general-purpose programmable computer. Ada Lovelace drew the parallel directly: "the Analytical Engine weaves algebraic patterns just as the Jacquard-loom weaves flowers and leaves." In the 1960s, women at Raytheon wove NASA\'s Apollo software by hand — threading copper wires through tiny magnetic rings to encode ones and zeros, exactly like weaving cloth. Called "Little Old Ladies," their work was supervised by "rope mothers." Margaret Hamilton directed the Apollo flight software at MIT — her code was what the Raytheon women wove into hardware. The women who programmed ENIAC, the rope mothers of Apollo, and the punch-card operators at IBM all inherited this lineage — their labor invisible, their names erased. CAREtech names that erasure.',cw/2,y,textW,17.5*scale);
   y+=16*scale;
 
   /* heart line */
