@@ -1262,7 +1262,7 @@ async function renderPoster85x11(){
 
   /* history image openings — 4 recessed boxes with loaded images */
   const histSrcs=['woven_basket.png','jacquard_01.png','jacquard_02.png','punch_cards.png','rope_memory.png'];
-  const histLabels=['WOVEN BASKET · HISTORY','JACQUARD LOOM · 1804','JACQUARD CARDS · 1804','IBM PUNCH CARDS · 1945','APOLLO ROPE MEMORY · 1969'];
+  const histLabels=['WOVEN BASKET','JACQUARD LOOM · 1804','JACQUARD WOVEN FABRIC','IBM PUNCH CARDS · 1945','APOLLO ROPE MEMORY · 1969'];
   const histImgs=await Promise.all(histSrcs.map(s=>loadImageByPath(s)));
 
   const histCount=5;
