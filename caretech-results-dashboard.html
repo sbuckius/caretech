@@ -129,6 +129,7 @@ html,body{min-height:100%;font-family:var(--fb);font-weight:600;color:var(--crea
       <input id="voiceVolumeSlider" type="range" min="0" max="100" value="100" oninput="setVoiceVolume(this.value)" style="width:70px;height:3px;accent-color:#ff2d6b;cursor:pointer;">
       <span id="voiceVolumeLabel" style="font-family:'Nunito',sans-serif;font-weight:800;font-size:10px;color:var(--candy);min-width:28px;text-align:right;">100%</span>
     </div>
+    <button id="playAllVoicesBtn" onclick="playAllVoices()" style="appearance:none;font-family:'Nunito',sans-serif;font-weight:900;font-size:10px;letter-spacing:.07em;color:var(--cream);background:linear-gradient(135deg,var(--hot),var(--berry));border:1.5px solid var(--hot);border-radius:8px;padding:6px 12px;cursor:pointer;white-space:nowrap;box-shadow:0 3px 14px rgba(255,45,107,.35);">▶ Play All Voices</button>
     <button id="stopAllVoicesBtn" onclick="stopAllVoices()" style="appearance:none;font-family:'Nunito',sans-serif;font-weight:800;font-size:10px;letter-spacing:.07em;color:#fff5f8;background:linear-gradient(135deg,#ff2d6b,#c4005a);border:1.5px solid rgba(255,80,120,.7);border-radius:8px;padding:6px 12px;cursor:pointer;white-space:nowrap;box-shadow:0 3px 14px rgba(255,45,107,.35);">⏹ Stop All Voices</button>
     <button id="resetAllBtn" onclick="resetAllData()" style="appearance:none;font-family:'Nunito',sans-serif;font-weight:800;font-size:10px;letter-spacing:.07em;color:#ffc2d6;background:rgba(180,0,40,.22);border:1.5px solid rgba(255,80,120,.5);border-radius:8px;padding:6px 12px;cursor:pointer;white-space:nowrap;">🗑 Reset All Data</button>
     <div class="live-badge"><div class="live-pip"></div>Live</div>
@@ -238,7 +239,7 @@ function announceWorker(wid){
     document.getElementById('bannerWorkerId').textContent=wid;
     document.getElementById('workerBanner').style.display='block';
     try{localStorage.setItem(STORAGE_KEY,wid);}catch(e){}
-    setTimeout(()=>announceWorker(wid),600);
+    // (auto-announce on load removed — use the banner's 🔊 Announce button)
   }
 })();
 
@@ -321,10 +322,20 @@ function setVoiceVolume(v){
 }
 
 /* ── STOP VOICES — global + per-section kill switches ──
-   Note: the Web Speech API has ONE shared speech queue, so any stop
-   cancels whatever is currently speaking. The per-section buttons exist
-   so there's always a stop control right next to each Play control. */
+   The Web Speech API has ONE shared speech queue. Crucially, calling
+   speechSynthesis.cancel() FIRES the onend/onerror events on the current
+   utterance — and the "Play all" loops chain the next utterance from
+   exactly those events. So cancel alone lets the chain continue.
+   Fix: a global session token. Stopping bumps the token; every chained
+   playback checks the token before speaking the next item. */
+window._speechSession=0;
+function stopSpeech(){
+  window._speechSession++; // invalidates every in-flight playback chain
+  if(window.speechSynthesis)window.speechSynthesis.cancel();
+}
 function resetPlayButtons(){
+  const masterBtn=document.getElementById('playAllVoicesBtn');
+  if(masterBtn){masterBtn.textContent='▶ Play All Voices';masterBtn.onclick=playAllVoices;}
   const payAllBtn=document.getElementById('payAllBtn');
   if(payAllBtn){payAllBtn.textContent='▶ Play all';payAllBtn.onclick=playAllPayments;}
   const cb42Btn=document.getElementById('cb42-play-all');
@@ -340,22 +351,22 @@ function flashStopped(btnId){
   setTimeout(()=>{b.textContent=original;},1200);
 }
 function stopAllVoices(){
-  if(window.speechSynthesis)window.speechSynthesis.cancel();
+  stopSpeech();
   resetPlayButtons();
   flashStopped('stopAllVoicesBtn');
 }
 function stopPaymentVoices(){
-  if(window.speechSynthesis)window.speechSynthesis.cancel();
+  stopSpeech();
   resetPlayButtons();
   flashStopped('stopPaymentsBtn');
 }
 function stopDirectionVoices(){
-  if(window.speechSynthesis)window.speechSynthesis.cancel();
+  stopSpeech();
   resetPlayButtons();
   flashStopped('stopDirectionsBtn');
 }
 function stopCB42PanelVoices(){
-  if(window.speechSynthesis)window.speechSynthesis.cancel();
+  stopSpeech();
   resetPlayButtons();
   flashStopped('cb42-stop-all');
 }
@@ -366,6 +377,27 @@ function speakBannerWorker(){
   const wid=el?el.textContent.trim():'';
   if(!wid||wid==='loading…'||wid==='—'){alert('No worker loaded yet.');return;}
   announceWorker(wid==='Anonymous'?'anonymous':wid);
+}
+
+/* ── PLAY ALL VOICES — master play: every payment, then every CB42 direction.
+     Explicit click only; session-guarded so any Stop button halts it. ── */
+function playAllVoices(){
+  if(!window.speechSynthesis){alert('Speech synthesis not supported.');return;}
+  const cards=document.querySelectorAll('#paymentCards [data-wid]');
+  const wids=[...cards].map(c=>c.dataset.wid).filter(Boolean);
+  const directions=window._cb42AllDirections||[];
+  const queue=[];
+  wids.forEach(wid=>{queue.push(wid==='Anonymous'?'Please pay this worker one cent.':'Please pay worker number '+wid.split('').join(' ')+' one cent.');});
+  directions.forEach(t=>{if(t)queue.push(t);});
+  if(!queue.length){alert('Nothing to play yet.');return;}
+  const session=++window._speechSession; // new session; kills any prior chain
+  window.speechSynthesis.cancel();
+  const btn=document.getElementById('playAllVoicesBtn');
+  if(btn){btn.textContent='⏸ Playing… (click to stop)';btn.onclick=()=>{stopSpeech();btn.textContent='▶ Play All Voices';btn.onclick=playAllVoices;};}
+  function getVoice(){const voices=window.speechSynthesis.getVoices();return voices.find(v=>v.lang==='en-US'&&/zira|samantha|aria|jenny|michelle|jane|emma|woman|female/i.test(v.name))||voices.find(v=>v.lang==='en-US'&&!/male|david|mark|richard|guy|james/i.test(v.name))||voices.find(v=>v.lang==='en-US')||voices[0];}
+  function playNext(i){if(session!==window._speechSession)return;if(i>=queue.length){if(btn){btn.textContent='▶ Play All Voices';btn.onclick=playAllVoices;}return;}const u=new SpeechSynthesisUtterance(queue[i]);u.rate=0.88;u.pitch=1.05;u.lang='en-US';u.volume=getVoiceVolume();const v=getVoice();if(v)u.voice=v;u.onend=()=>setTimeout(()=>{if(session===window._speechSession)playNext(i+1);},420);u.onerror=()=>{if(session===window._speechSession)playNext(i+1);};window.speechSynthesis.speak(u);}
+  if(window.speechSynthesis.getVoices().length)playNext(0);
+  else window.speechSynthesis.addEventListener('voiceschanged',()=>playNext(0),{once:true});
 }
 
 /* ── RESET ALL DATA — destructive, requires typed confirmation ── */
@@ -452,7 +484,7 @@ async function resetAllData(){
   const bEl=document.getElementById('bannerWorkerId');if(bEl)bEl.textContent='—';
   const bn=document.getElementById('workerBanner');if(bn)bn.style.display='none';
   const pc=document.getElementById('paymentCards');if(pc)pc.innerHTML='';
-  window.speechSynthesis&&window.speechSynthesis.cancel();
+  window.speechSynthesis&&stopSpeech();
   buildAll();
   buildCB42Latest();
   setTimeout(buildPaymentCards,800);
@@ -786,6 +818,7 @@ function cb42Speak(text,btnEl){
 
 function cb42PlayAll(instructions){
   if(!window.speechSynthesis){alert('Speech synthesis not supported.');return;}
+  const session=++window._speechSession; // new session; kills any prior chain
   window.speechSynthesis.cancel();
   const cb07Data=window._cb07Data||[];
   const queue=[];
@@ -793,9 +826,9 @@ function cb42PlayAll(instructions){
   instructions.forEach(d=>{if(d.instruction)queue.push(d.instruction);});
   if(!queue.length){alert('Nothing to play.');return;}
   const btn=document.getElementById('cb42-play-all');
-  if(btn){btn.textContent='⏸ Playing… (click to stop)';btn.onclick=()=>{window.speechSynthesis.cancel();if(btn){btn.textContent='▶ Play all — payments then instructions';btn.onclick=()=>cb42PlayAll(instructions);}};}
+  if(btn){btn.textContent='⏸ Playing… (click to stop)';btn.onclick=()=>{stopSpeech();if(btn){btn.textContent='▶ Play all — payments then instructions';btn.onclick=()=>cb42PlayAll(instructions);}};}
   function getVoice(){const voices=window.speechSynthesis.getVoices();return voices.find(v=>v.lang==='en-US'&&/zira|samantha|aria|jenny|michelle|jane|emma|woman|female/i.test(v.name))||voices.find(v=>v.lang==='en-US'&&!/male|david|mark|richard|guy|james/i.test(v.name))||voices.find(v=>v.lang==='en-US')||voices[0];}
-  function playNext(i){if(i>=queue.length){if(btn){btn.textContent='▶ Play all — payments then instructions';btn.onclick=()=>cb42PlayAll(instructions);}return;}const u=new SpeechSynthesisUtterance(queue[i]);u.rate=0.88;u.pitch=1.05;u.lang='en-US';u.volume=getVoiceVolume();const voice=getVoice();if(voice)u.voice=voice;u.onend=()=>setTimeout(()=>playNext(i+1),420);u.onerror=()=>playNext(i+1);window.speechSynthesis.speak(u);}
+  function playNext(i){if(session!==window._speechSession)return;if(i>=queue.length){if(btn){btn.textContent='▶ Play all — payments then instructions';btn.onclick=()=>cb42PlayAll(instructions);}return;}const u=new SpeechSynthesisUtterance(queue[i]);u.rate=0.88;u.pitch=1.05;u.lang='en-US';u.volume=getVoiceVolume();const voice=getVoice();if(voice)u.voice=voice;u.onend=()=>setTimeout(()=>{if(session===window._speechSession)playNext(i+1);},420);u.onerror=()=>{if(session===window._speechSession)playNext(i+1);};window.speechSynthesis.speak(u);}
   if(window.speechSynthesis.getVoices().length)playNext(0);
   else window.speechSynthesis.addEventListener('voiceschanged',()=>playNext(0),{once:true});
 }
@@ -1012,28 +1045,21 @@ async function buildPaymentCards(){
 }
 // buildPaymentCards called after Firebase loads below
 
-/* ── PRESENTATION MODE ── */
-(function(){
-  let started=false;
-  function getVoice(){const voices=window.speechSynthesis.getVoices();return voices.find(v=>v.lang==='en-US'&&/zira|samantha|aria|jenny|michelle|jane|emma|woman|female/i.test(v.name))||voices.find(v=>v.lang==='en-US'&&!/male|david|mark|richard|guy|james/i.test(v.name))||voices.find(v=>v.lang==='en-US')||voices[0];}
-  function speak(text,onDone){const u=new SpeechSynthesisUtterance(text);u.rate=0.88;u.pitch=1.05;u.lang='en-US';u.volume=getVoiceVolume();const v=getVoice();if(v)u.voice=v;u.onend=()=>setTimeout(onDone,420);u.onerror=()=>setTimeout(onDone,200);window.speechSynthesis.speak(u);}
-  function buildQueue(){const queue=[];const cards=[...document.querySelectorAll('#paymentCards [data-wid]')];cards.forEach(c=>{const wid=c.dataset.wid||'';const txt=wid&&wid!=='Anonymous'?'Please pay worker number '+wid.split('').join(' ')+' one cent.':'Please pay this worker one cent.';queue.push({text:txt});});(window._cb42Instructions||[]).forEach(d=>{if(d.instruction)queue.push({text:d.instruction});});return queue;}
-  function runQueue(queue,i){if(i>=queue.length)return;speak(queue[i].text,()=>runQueue(queue,i+1));}
-  function startPresentation(){if(started)return;started=true;const tryStart=()=>{const cards=[...document.querySelectorAll('#paymentCards [data-wid]')];const instrs=window._cb42Instructions||[];if(cards.length>0||instrs.length>0){const queue=buildQueue();if(queue.length){window.speechSynthesis.cancel();runQueue(queue,0);}}else{setTimeout(tryStart,500);}};setTimeout(tryStart,900);}
-  document.addEventListener('click',startPresentation,{once:true});
-})();
+/* ── (Presentation-mode auto-play removed — voices now play ONLY when a
+     ▶ Play button is explicitly clicked.) ── */
 
 function playAllPayments(){
   const cards=document.querySelectorAll('#paymentCards [data-wid]');
   const btn=document.getElementById('payAllBtn');
   if(!window.speechSynthesis){alert('Speech synthesis not supported.');return;}
+  const session=++window._speechSession; // new session; kills any prior chain
   window.speechSynthesis.cancel();
   const wids=[...cards].map(c=>c.dataset.wid).filter(Boolean);
   if(!wids.length){alert('No payment cards loaded yet.');return;}
   const queue=wids.map(wid=>'Please pay worker number '+wid.split('').join(' ')+' one cent.');
-  if(btn){btn.textContent='⏸ Playing… (click to stop)';btn.onclick=()=>{window.speechSynthesis.cancel();btn.textContent='▶ Play all';btn.onclick=playAllPayments;};}
+  if(btn){btn.textContent='⏸ Playing… (click to stop)';btn.onclick=()=>{stopSpeech();btn.textContent='▶ Play all';btn.onclick=playAllPayments;};}
   function getVoice(){const voices=window.speechSynthesis.getVoices();return voices.find(v=>v.lang==='en-US'&&/zira|samantha|aria|jenny|michelle|jane|emma|woman|female/i.test(v.name))||voices.find(v=>v.lang==='en-US'&&!/male|david|mark|richard|guy|james/i.test(v.name))||voices.find(v=>v.lang==='en-US')||voices[0];}
-  function playNext(i){if(i>=queue.length){if(btn){btn.textContent='▶ Play all';btn.onclick=playAllPayments;}return;}const u=new SpeechSynthesisUtterance(queue[i]);u.rate=0.88;u.pitch=1.05;u.lang='en-US';u.volume=getVoiceVolume();const v=getVoice();if(v)u.voice=v;u.onend=()=>setTimeout(()=>playNext(i+1),400);u.onerror=()=>playNext(i+1);window.speechSynthesis.speak(u);}
+  function playNext(i){if(session!==window._speechSession)return;if(i>=queue.length){if(btn){btn.textContent='▶ Play all';btn.onclick=playAllPayments;}return;}const u=new SpeechSynthesisUtterance(queue[i]);u.rate=0.88;u.pitch=1.05;u.lang='en-US';u.volume=getVoiceVolume();const v=getVoice();if(v)u.voice=v;u.onend=()=>setTimeout(()=>{if(session===window._speechSession)playNext(i+1);},400);u.onerror=()=>{if(session===window._speechSession)playNext(i+1);};window.speechSynthesis.speak(u);}
   if(window.speechSynthesis.getVoices().length)playNext(0);
   else window.speechSynthesis.addEventListener('voiceschanged',()=>playNext(0),{once:true});
 }
@@ -1092,10 +1118,11 @@ function playAllDirections(){
   const btn=document.getElementById('playAllDirectionsBtn');
   if(!window.speechSynthesis){alert('Speech synthesis not supported.');return;}
   if(!list.length){alert('No directions loaded yet.');return;}
+  const session=++window._speechSession; // new session; kills any prior chain
   window.speechSynthesis.cancel();
-  if(btn){btn.textContent='⏸ Playing… (click to stop)';btn.onclick=()=>{window.speechSynthesis.cancel();btn.textContent='▶ Play all';btn.onclick=playAllDirections;};}
+  if(btn){btn.textContent='⏸ Playing… (click to stop)';btn.onclick=()=>{stopSpeech();btn.textContent='▶ Play all';btn.onclick=playAllDirections;};}
   function getVoice(){const voices=window.speechSynthesis.getVoices();return voices.find(v=>v.lang==='en-US'&&/zira|samantha|aria|jenny|michelle|jane|emma|woman|female/i.test(v.name))||voices.find(v=>v.lang==='en-US'&&!/male|david|mark|richard|guy|james/i.test(v.name))||voices.find(v=>v.lang==='en-US')||voices[0];}
-  function playNext(i){if(i>=list.length){if(btn){btn.textContent='▶ Play all';btn.onclick=playAllDirections;}return;}const u=new SpeechSynthesisUtterance(list[i]);u.rate=0.88;u.pitch=1.05;u.lang='en-US';u.volume=getVoiceVolume();const v=getVoice();if(v)u.voice=v;u.onend=()=>setTimeout(()=>playNext(i+1),420);u.onerror=()=>playNext(i+1);window.speechSynthesis.speak(u);}
+  function playNext(i){if(session!==window._speechSession)return;if(i>=list.length){if(btn){btn.textContent='▶ Play all';btn.onclick=playAllDirections;}return;}const u=new SpeechSynthesisUtterance(list[i]);u.rate=0.88;u.pitch=1.05;u.lang='en-US';u.volume=getVoiceVolume();const v=getVoice();if(v)u.voice=v;u.onend=()=>setTimeout(()=>{if(session===window._speechSession)playNext(i+1);},420);u.onerror=()=>{if(session===window._speechSession)playNext(i+1);};window.speechSynthesis.speak(u);}
   if(window.speechSynthesis.getVoices().length)playNext(0);
   else window.speechSynthesis.addEventListener('voiceschanged',()=>playNext(0),{once:true});
 }
