@@ -268,7 +268,14 @@ async function rtdbAll(key,path){
     if(!r.ok){console.error(`[rtdbAll] ${key}/${path}: HTTP ${r.status}`);return null;}
     const v=await r.json();
     if(!v)return[];
-    return typeof v==='object'&&!Array.isArray(v)?Object.values(v):[v];
+    // Keep the Firebase push key on each record (_key). Push keys are
+    // chronologically ordered, so they're a reliable recency fallback
+    // when a record has no usable timestamp.
+    if(typeof v==='object'&&!Array.isArray(v)){
+      return Object.entries(v).map(([k,val])=>
+        (val&&typeof val==='object'&&!Array.isArray(val))?{...val,_key:k}:{_key:k,value:val});
+    }
+    return[v];
   }catch(e){console.error(`[rtdbAll ERROR] ${key}/${path}:`,e.message);return null;}
 }
 
@@ -496,6 +503,30 @@ function freqMap(arr){const m={};arr.forEach(v=>{m[v]=(m[v]||0)+1;});return m;}
 function sortedFreq(arr){return Object.entries(freqMap(arr)).sort((a,b)=>b[1]-a[1]);}
 function safeNum(v){const n=parseFloat(v);return isNaN(n)?null:n;}
 
+/* ── ROBUST RECENCY SORT ──
+   Records may have ts as ms epoch, seconds epoch, ISO string, or missing
+   entirely. tsOf() normalizes all of those to ms. sortNewest() sorts by
+   normalized timestamp, then falls back to the Firebase push key (_key),
+   which is itself chronologically ordered — so the newest record is
+   ALWAYS first even when timestamps are absent or inconsistent. */
+function tsOf(d){
+  let t=(d&&(d.ts??d.timestamp??d.time))??null;
+  if(typeof t==='string'){
+    const n=parseFloat(t);
+    t=(!isNaN(n)&&String(n)===t.trim())?n:Date.parse(t);
+  }
+  if(typeof t!=='number'||isNaN(t))return 0;
+  if(t>0&&t<1e12)t*=1000; // seconds → milliseconds
+  return t;
+}
+function sortNewest(arr){
+  return[...arr].sort((a,b)=>{
+    const d=tsOf(b)-tsOf(a);
+    if(d)return d;
+    return String(b._key||'').localeCompare(String(a._key||''));
+  });
+}
+
 function secHead(label){
   const d=document.createElement('div');d.className='sec-head';
   d.innerHTML=`<div class="sec-line"></div><div class="sec-badge">${label}</div><div class="sec-line"></div>`;
@@ -621,7 +652,7 @@ async function buildCB07(wrap){
   wrap.appendChild(p);const body=p.querySelector('.panel-body');
   if(!data){errMsg(body,'Could not load microtaskReactions');return 0;}
   if(!data.length){emptyMsg(body,'No reactions yet.');return 0;}
-  const sorted=[...data].sort((a,b)=>(b.ts||0)-(a.ts||0));
+  const sorted=sortNewest(data);
   window._cb07Data=[...new Set(sorted.filter(d=>d.workerId).map(d=>d.workerId))];
   const allEmotions=data.flatMap(d=>Array.isArray(d.emotions)?d.emotions:[]);
   const sf=sortedFreq(allEmotions),total=allEmotions.length;
@@ -632,7 +663,7 @@ async function buildCB07(wrap){
   const workerGrid=document.createElement('div');workerGrid.style.cssText='display:grid;grid-template-columns:repeat(3,1fr);gap:10px;width:100%;min-width:0;';
   wgWrap.appendChild(workerGrid);body.appendChild(wgWrap);
   sorted.forEach(d=>{
-    const wid=d.workerId||'—',emotions=Array.isArray(d.emotions)?d.emotions:[],ts=d.ts?new Date(d.ts).toLocaleString():'—';
+    const wid=d.workerId||'—',emotions=Array.isArray(d.emotions)?d.emotions:[],ts=d.ts?new Date(tsOf(d)).toLocaleString():'—';
     const card=document.createElement('div');card.style.cssText='background:rgba(14,0,8,.7);border:1.5px solid rgba(255,100,160,.28);border-radius:12px;overflow:hidden;';
     const header=document.createElement('div');header.style.cssText='display:flex;align-items:center;gap:8px;padding:10px 12px;';
     const chk=document.createElement('input');chk.type='checkbox';chk.style.cssText='width:15px;height:15px;flex-shrink:0;cursor:pointer;accent-color:var(--hot);';
@@ -841,7 +872,7 @@ async function buildCB42(wrap){
   if(!data){errMsg(body,'Could not load cb42Instructions');return 0;}
   if(!data.length){emptyMsg(body,'No instructions yet.');return 0;}
 
-  const sorted=[...data].sort((a,b)=>(b.ts||0)-(a.ts||0));
+  const sorted=sortNewest(data);
   const actions=data.map(d=>d.action).filter(Boolean);
   const locations=data.map(d=>d.location).filter(Boolean);
   const states=data.map(d=>d.state).filter(Boolean);
@@ -993,7 +1024,7 @@ async function buildPaymentCards(){
   let data=null;
   try{data=await rtdbAll('collab','microtaskReactions');}catch(e){console.error('paymentCards fetch failed:',e);return;}
   if(!data||!data.length)return;
-  const sorted=[...data].sort((a,b)=>(b.ts||0)-(a.ts||0));
+  const sorted=sortNewest(data);
 
   // ── STICKY BANNER: always show the LATEST worker ID to pay ──
   const latest=sorted[0];
@@ -1013,8 +1044,8 @@ async function buildPaymentCards(){
 
   const container=document.getElementById('paymentCards');if(!container)return;container.innerHTML='';
   sorted.forEach(d=>{
-    const wid=d.workerId||'Anonymous',emotions=Array.isArray(d.emotions)?d.emotions:[],ts=d.ts?new Date(d.ts).toLocaleString():'—';
-    const cardKey=wid+'|'+(d.ts||'');
+    const wid=d.workerId||'Anonymous',emotions=Array.isArray(d.emotions)?d.emotions:[],ts=d.ts?new Date(tsOf(d)).toLocaleString():'—';
+    const cardKey=d._key||(wid+'|'+(d.ts||''));
     const card=document.createElement('div');card.style.cssText='background:rgba(14,0,8,.85);border:1.5px solid rgba(255,100,160,.35);border-radius:14px;padding:12px 14px;position:relative;overflow:hidden;transition:opacity .3s,border-color .3s;';card.dataset.wid=wid;
     const shimmer=document.createElement('div');shimmer.style.cssText='position:absolute;top:0;left:8%;right:8%;height:1px;background:linear-gradient(90deg,transparent,#ff85b3 40%,#ff2d6b 50%,#ff85b3 60%,transparent);border-radius:999px;';card.appendChild(shimmer);
     const topRow=document.createElement('div');topRow.style.cssText='display:flex;align-items:flex-start;gap:8px;margin-bottom:8px;';
@@ -1080,7 +1111,7 @@ async function buildCB42Latest(){
   if(!box)return;
   const data=await rtdbAll('collab','cb42Instructions');
   if(!data||!data.length){box.innerHTML='<div class="empty-msg">No directions yet.</div>';window._cb42AllDirections=[];return;}
-  const sorted=[...data].sort((a,b)=>(b.ts||0)-(a.ts||0));
+  const sorted=sortNewest(data);
   window._cb42AllDirections=sorted.map(d=>d.instruction).filter(Boolean);
   const latest=sorted.find(d=>d.instruction)||sorted[0];
   const hasWorker=latest.workerId&&latest.workerId!=='anonymous';
@@ -1101,7 +1132,7 @@ async function buildCB42Latest(){
   box.appendChild(txt);
   const meta=document.createElement('div');
   meta.style.cssText='font-size:9px;color:var(--td);letter-spacing:.06em;margin-top:10px;';
-  meta.textContent='🕐 '+(latest.ts?new Date(latest.ts).toLocaleString():'—');
+  meta.textContent='🕐 '+(latest.ts?new Date(tsOf(latest)).toLocaleString():'—');
   box.appendChild(meta);
 }
 
