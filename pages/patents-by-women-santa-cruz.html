@@ -130,6 +130,11 @@
   .il.tts:hover { background:rgba(255,215,0,.2);color:var(--gold);border-color:var(--gold);transform:scale(1.05); }
   .pflag { font-size:9.5px;font-style:italic;color:rgba(255,215,0,.42);letter-spacing:.03em;line-height:1.5; }
 
+  /* ARCHIVE NOTE / CONTENT WARNING */
+  .pwarn { display:flex;gap:9px;align-items:flex-start;font-size:11px;line-height:1.7;color:rgba(255,215,0,.72);background:rgba(60,40,0,.3);border:1px solid rgba(255,215,0,.34);border-radius:10px;padding:11px 13px;margin-top:3px;letter-spacing:.02em; }
+  .pwarn .wglyph { color:var(--gold);font-size:12px;line-height:1.4;flex-shrink:0; }
+  .pwarn b { display:block;font-family:'Nunito',sans-serif;font-weight:900;font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold);margin-bottom:5px; }
+
   /* LEGEND */
   .legend { display:flex;flex-wrap:wrap;gap:12px;justify-content:center;margin-bottom:26px; }
   .li-item { display:inline-flex;align-items:center;gap:6px;font-size:9px;letter-spacing:.14em;text-transform:uppercase;font-family:'Nunito',sans-serif;font-weight:800; }
@@ -277,9 +282,11 @@
   <span class="k">number</span>: <span class="s">"US1234567A"</span>,           <span class="s">// optional</span>
   <span class="k">url</span>: <span class="s">"https://patents.google.com/patent/US1234567A"</span>,
   <span class="k">design</span>: <span class="s">true</span>,                   <span class="s">// optional, tags it as a design patent</span>
-  <span class="k">note</span>: <span class="s">"Patent number still to confirm"</span>  <span class="s">// optional</span>
+  <span class="k">note</span>: <span class="s">"Patent number still to confirm"</span>,  <span class="s">// optional</span>
+  <span class="k">warning</span>: <span class="s">"Archive note shown in a gold box, and read first by Read Aloud"</span>
 }</pre>
         <p>Leave <strong>url</strong> off and the card shows a teal <strong>Search Google Patents</strong> button built from the inventor's name instead — useful while you're still hunting the number down.</p>
+        <p>Use <strong>warning</strong> for content that needs naming rather than hiding: racist or otherwise harmful imagery in the original drawing or text. It renders as a bordered gold box under the card, and the Read Aloud button speaks it before anything else so a listener is not caught out.</p>
       </div>
     </details>
   </div>
@@ -318,7 +325,8 @@ const SANTA_CRUZ = [
     women: ["Daisy M. Wunschow"],
     number: "USD36528S",
     design: true,
-    url: "https://patents.google.com/patent/USD36528S"
+    url: "https://patents.google.com/patent/USD36528S",
+    warning: "This patent contains a racist caricature of Native people, common in illustration of its era. It would not be included in the family activity. Recovering women inventors from the record means looking at the whole record, including the parts that cause harm."
   },
   {
     year: 1911,
@@ -483,6 +491,9 @@ const SAN_JOSE = [
   }
 
   function speakLine(p){
+    if (p.warning) {
+      return p.title + '. Archive note. ' + p.warning;
+    }
     const bits = [p.title];
     if (p.women && p.women.length) bits.push('Invented by ' + p.women.join(' and '));
     if (p.others && p.others.length) bits.push('with ' + p.others.join(' and '));
@@ -523,6 +534,7 @@ const SAN_JOSE = [
         (tags.length ? '<div class="ptags">' + tags.join('') + '</div>' : '') +
         '<div class="plinks">' + links.join('') + '</div>' +
         (p.note ? '<div class="pflag">✦ ' + esc(p.note) + '</div>' : '') +
+        (p.warning ? '<div class="pwarn"><span class="wglyph">✦</span><span><b>Archive Note</b>' + esc(p.warning) + '</span></div>' : '') +
       '</div>';
     return el;
   }
@@ -572,7 +584,7 @@ const SAN_JOSE = [
       (toFind ? '<div class="count-chip"><div class="count-num">' + toFind + '</div><div class="count-lab">Still to Confirm</div></div>' : '');
   }
 
-  render(SANTA_CRUZ, 'santaCruzList', 'scCounts', 'San José');
+  render(SANTA_CRUZ, 'santaCruzList', 'scCounts', 'Santa Cruz');
   render(SAN_JOSE, 'sanJoseList', 'sjCounts', 'San José');
 
   // ── TTS: Web Speech API ──
