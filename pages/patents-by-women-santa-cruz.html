@@ -1,0 +1,609 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
+<title>Patents by Women · Santa Cruz &amp; San José · Sarah Buckius</title>
+  <link rel="icon" type="image/png" href="images/favicon.png">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Quicksand:wght@500;600;700&family=Playfair+Display:ital,wght@0,700;0,900;1,700;1,900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --rose:    #ff5c8a;
+    --hot:     #ff2d6b;
+    --candy:   #ff85b3;
+    --blush:   #ffb3cf;
+    --cream:   #fff5f8;
+    --maroon:  #6f001e;
+    --fuchsia: #ff1f80;
+    --gold:    #ffd700;
+    --gold-dim:#c9a800;
+    --teal:    #00e5cc;
+    --teal-dim:#009e8e;
+    --bg:      #1a0012;
+    --card-border: rgba(255,160,200,.22);
+    --card-border-bright: rgba(255,100,160,.55);
+    --soft-glow: 0 4px 30px rgba(255,45,107,.2), 0 1px 0 rgba(255,160,200,.12) inset;
+    --text-dim:  rgba(255,200,224,.55);
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { font-family: 'Quicksand', sans-serif; font-weight: 600; color: var(--cream); background: var(--bg); -webkit-font-smoothing: antialiased; scroll-behavior: smooth; }
+  body { min-height: 100vh; padding-bottom: 80px; overflow-x: hidden; }
+
+  .bg-layer { position:fixed;inset:0;z-index:0;pointer-events:none;background:radial-gradient(ellipse 80% 60% at 10% 15%,rgba(180,0,50,.4) 0%,transparent 55%),radial-gradient(ellipse 60% 70% at 90% 85%,rgba(120,0,30,.35) 0%,transparent 55%),radial-gradient(ellipse 50% 40% at 50% 50%,rgba(255,45,107,.08) 0%,transparent 65%),linear-gradient(160deg,#220008,#180008 45%,#120005); }
+  .orb { position:fixed;border-radius:50%;pointer-events:none;z-index:0;filter:blur(70px); }
+  .orb-1 { width:500px;height:500px;background:var(--maroon);opacity:.25;top:-120px;left:-100px;animation:drift1 20s ease-in-out infinite; }
+  .orb-2 { width:400px;height:400px;background:#c40032;opacity:.2;bottom:-80px;right:-80px;animation:drift2 24s ease-in-out infinite; }
+  .orb-3 { width:300px;height:300px;background:var(--hot);opacity:.12;top:35%;left:55%;animation:drift3 16s ease-in-out infinite; }
+  .orb-4 { width:200px;height:200px;background:var(--candy);opacity:.15;top:10%;right:20%;animation:drift2 19s ease-in-out infinite reverse; }
+  @keyframes drift1{0%,100%{transform:translate(0,0)}50%{transform:translate(50px,35px)}}
+  @keyframes drift2{0%,100%{transform:translate(0,0)}50%{transform:translate(-35px,-25px)}}
+  @keyframes drift3{0%,100%{transform:translate(0,0)}33%{transform:translate(-25px,18px)}66%{transform:translate(18px,-12px)}}
+  .sparkles{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden;}
+  .sp{position:absolute;opacity:0;animation:floatUp linear infinite;}
+  @keyframes floatUp{0%{opacity:0;transform:translateY(0) scale(.6) rotate(0deg)}15%{opacity:.7}85%{opacity:.4}100%{opacity:0;transform:translateY(-140px) scale(1.1) rotate(180deg)}}
+
+  /* NAV */
+  .nav-bar { position:relative;z-index:20;padding:28px clamp(20px,5vw,72px) 0;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px; }
+  .back-link { display:inline-flex;align-items:center;gap:7px;padding:7px 16px;border-radius:999px;background:rgba(255,45,107,.08);border:1px solid rgba(255,130,180,.2);color:var(--candy);text-decoration:none;font-size:10px;letter-spacing:.16em;text-transform:uppercase;font-family:'Nunito',sans-serif;font-weight:800;transition:all .18s ease; }
+  .back-link:hover { background:rgba(255,45,107,.22);color:var(--cream);border-color:var(--hot); }
+  .brand { display:flex;align-items:center;gap:10px; }
+  .brand-icon { width:42px;height:42px;border-radius:13px;background:linear-gradient(135deg,rgba(255,45,107,.3),rgba(180,0,50,.4));border:1.5px solid var(--card-border-bright);box-shadow:var(--soft-glow);display:flex;align-items:center;justify-content:center;font-size:19px;animation:wobble 4s ease-in-out infinite; }
+  @keyframes wobble{0%,100%{transform:rotate(-2deg) scale(1)}25%{transform:rotate(1deg) scale(1.04)}50%{transform:rotate(-1deg) scale(1)}75%{transform:rotate(2deg) scale(1.03)}}
+  .brand-name { font-family:'Nunito',sans-serif;font-weight:900;font-size:15px;background:linear-gradient(90deg,var(--blush),var(--fuchsia) 55%,var(--candy));-webkit-background-clip:text;background-clip:text;color:transparent; }
+
+  /* HERO */
+  .hero { position:relative;z-index:10;padding:56px clamp(20px,6vw,80px) 0;display:flex;flex-direction:column;align-items:center;text-align:center;gap:18px;margin-bottom:52px; }
+  .hero-eyebrow { display:inline-flex;align-items:center;gap:8px;padding:5px 16px;border-radius:999px;background:rgba(255,45,107,.1);border:1px solid rgba(255,130,180,.25);font-size:9px;letter-spacing:.22em;text-transform:uppercase;color:var(--candy); }
+  .pip { width:5px;height:5px;border-radius:50%;background:var(--hot);box-shadow:0 0 6px var(--hot);animation:breathe 2s ease-in-out infinite; }
+  @keyframes breathe{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.3;transform:scale(.65)}}
+  .hero-title { font-family:'Nunito',sans-serif;font-weight:900;font-size:clamp(34px,7.4vw,74px);line-height:1.05;background:linear-gradient(120deg,var(--cream) 5%,var(--blush) 40%,var(--fuchsia) 70%,var(--gold) 95%);-webkit-background-clip:text;background-clip:text;color:transparent;letter-spacing:-.02em;max-width:900px; }
+  .hero-byline { font-family:'Nunito',sans-serif;font-weight:800;font-size:clamp(12px,2vw,16px);color:var(--text-dim);letter-spacing:.2em;text-transform:uppercase; }
+  .hero-byline span { color:var(--candy); }
+  .hero-sub { max-width:620px;font-size:clamp(13px,1.7vw,15px);color:rgba(255,200,224,.8);line-height:1.85; }
+  .hero-date-badge { display:inline-flex;align-items:center;gap:10px;padding:10px 22px;border-radius:14px;background:linear-gradient(135deg,rgba(255,45,107,.25),rgba(180,0,50,.3));border:1.5px solid rgba(255,45,107,.5);box-shadow:0 3px 20px rgba(255,45,107,.25);font-family:'Nunito',sans-serif;font-weight:900;font-size:clamp(12px,2vw,15px);letter-spacing:.1em;color:var(--blush);animation:pulseCard 3s ease-in-out infinite; }
+  @keyframes pulseCard{0%,100%{box-shadow:0 3px 20px rgba(255,45,107,.25)}50%{box-shadow:0 3px 30px rgba(255,45,107,.55)}}
+  .star { color:var(--gold);font-size:16px;animation:spinStar 6s linear infinite; }
+  @keyframes spinStar{0%{transform:rotate(0)}100%{transform:rotate(360deg)}}
+  .hero-links { display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-top:8px; }
+  .hero-link-main { display:inline-flex;align-items:center;gap:7px;padding:11px 22px;border-radius:14px;background:linear-gradient(135deg,rgba(255,45,107,.4),rgba(180,0,50,.5));border:1.5px solid rgba(255,45,107,.65);box-shadow:0 4px 20px rgba(255,45,107,.28);color:var(--cream);text-decoration:none;font-family:'Nunito',sans-serif;font-weight:900;font-size:11px;letter-spacing:.12em;text-transform:uppercase;transition:all .2s cubic-bezier(.34,1.56,.64,1);cursor:pointer; }
+  .hero-link-main:hover { background:linear-gradient(135deg,rgba(255,45,107,.7),rgba(180,0,50,.8));box-shadow:0 6px 28px rgba(255,45,107,.55);transform:translateY(-2px) scale(1.04); }
+
+  /* DIVIDER */
+  .divider { width:min(90vw,640px);height:1.5px;background:linear-gradient(90deg,transparent,var(--card-border-bright) 30%,var(--hot) 50%,var(--card-border-bright) 70%,transparent);border-radius:999px;box-shadow:0 0 12px rgba(255,45,107,.3);margin:0 auto 56px;position:relative;z-index:10; }
+
+  /* POEM */
+  .poem-section { position:relative;z-index:10;max-width:680px;margin:0 auto 72px;padding:0 clamp(16px,4vw,40px);text-align:center; }
+  .section-eyebrow { font-size:9px;letter-spacing:.24em;text-transform:uppercase;color:var(--hot);font-family:'Nunito',sans-serif;font-weight:900;margin-bottom:20px;display:flex;align-items:center;justify-content:center;gap:8px; }
+  .section-eyebrow::before, .section-eyebrow::after { content:'✦';font-size:8px;opacity:.6; }
+  .poem-card { background:rgba(15,0,8,.7);border:1.5px solid var(--card-border-bright);border-radius:22px;box-shadow:var(--soft-glow);padding:clamp(28px,4vw,48px) clamp(24px,4vw,52px);position:relative;overflow:hidden; }
+  .poem-card::before { content:'';position:absolute;top:0;left:10%;right:10%;height:1.5px;background:linear-gradient(90deg,transparent,var(--candy) 35%,var(--hot) 50%,var(--candy) 65%,transparent);box-shadow:0 0 12px var(--rose);border-radius:999px; }
+  .poem-text { font-family:'Playfair Display',serif;font-weight:700;font-style:italic;font-size:clamp(15px,2.2vw,20px);color:var(--blush);line-height:2.1; }
+  .poem-text em { color:var(--gold);font-style:normal; }
+  .poem-attrib { margin-top:18px;font-family:'Nunito',sans-serif;font-weight:800;font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--text-dim); }
+
+  /* SECTION SHELL */
+  .patents-section { position:relative;z-index:10;max-width:1140px;margin:0 auto 72px;padding:0 clamp(16px,4vw,56px); }
+  .sec-header { text-align:center;margin-bottom:26px; }
+  .section-title { font-family:'Nunito',sans-serif;font-weight:900;font-size:clamp(20px,3.4vw,32px);background:linear-gradient(120deg,var(--cream) 10%,var(--blush) 50%,var(--fuchsia) 85%);-webkit-background-clip:text;background-clip:text;color:transparent; }
+  .sec-note { font-size:12px;color:var(--text-dim);line-height:1.8;max-width:620px;margin:14px auto 0;letter-spacing:.03em; }
+
+  /* COUNT STRIP */
+  .count-strip { display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-bottom:30px; }
+  .count-chip { display:inline-flex;flex-direction:column;align-items:center;gap:2px;padding:10px 20px;border-radius:14px;background:rgba(15,0,8,.6);border:1.5px solid var(--card-border);box-shadow:var(--soft-glow); }
+  .count-num { font-family:'Nunito',sans-serif;font-weight:900;font-size:22px;color:var(--gold);line-height:1; }
+  .count-lab { font-family:'Nunito',sans-serif;font-weight:800;font-size:8px;letter-spacing:.16em;text-transform:uppercase;color:var(--text-dim); }
+
+  /* PATENT LIST */
+  .patent-list { display:flex;flex-direction:column;gap:12px; }
+  .decade-rule { display:flex;align-items:center;gap:12px;margin:22px 0 4px; }
+  .decade-rule:first-child { margin-top:0; }
+  .decade-rule span { font-family:'Nunito',sans-serif;font-weight:900;font-size:11px;letter-spacing:.24em;text-transform:uppercase;color:var(--hot);white-space:nowrap; }
+  .decade-rule::after { content:'';flex:1;height:1px;background:linear-gradient(90deg,var(--card-border-bright),transparent); }
+
+  .pcard { display:grid;grid-template-columns:96px 1fr;gap:0;background:rgba(15,0,8,.66);border:1.5px solid var(--card-border);border-radius:18px;box-shadow:var(--soft-glow);overflow:hidden;transition:all .22s cubic-bezier(.34,1.56,.64,1); }
+  .pcard:hover { border-color:var(--card-border-bright);transform:translateY(-3px);box-shadow:0 10px 36px rgba(255,45,107,.28); }
+  @media(max-width:560px){ .pcard{grid-template-columns:1fr} }
+
+  .pyear { display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;padding:18px 10px;background:linear-gradient(160deg,rgba(255,45,107,.22),rgba(180,0,50,.28));border-right:1.5px solid var(--card-border); }
+  @media(max-width:560px){ .pyear{border-right:none;border-bottom:1.5px solid var(--card-border);flex-direction:row;gap:10px;padding:12px} }
+  .pyear b { font-family:'Nunito',sans-serif;font-weight:900;font-size:26px;color:var(--blush);letter-spacing:-.02em;line-height:1; }
+  .pyear small { font-family:'Nunito',sans-serif;font-weight:800;font-size:8px;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,200,224,.42); }
+  .pyear.undated b { font-size:19px;color:var(--text-dim); }
+
+  .pbody { padding:16px 20px 16px;display:flex;flex-direction:column;gap:9px; }
+  .ptitle { font-family:'Nunito',sans-serif;font-weight:900;font-size:clamp(14px,2vw,17px);color:var(--cream);line-height:1.3; }
+  .pinventors { font-size:12.5px;line-height:1.7;color:var(--text-dim);letter-spacing:.02em; }
+  .pw { color:var(--gold);font-weight:700; }
+  .pco { color:rgba(255,200,224,.4);font-style:italic; }
+  .ptags { display:flex;flex-wrap:wrap;gap:6px;align-items:center; }
+  .ptag { padding:4px 11px;border-radius:999px;background:rgba(255,45,107,.09);border:1px solid rgba(255,130,180,.2);font-size:8px;letter-spacing:.14em;text-transform:uppercase;color:var(--candy);font-family:'Nunito',sans-serif;font-weight:800; }
+  .ptag.design { background:rgba(0,229,204,.07);border-color:rgba(0,229,204,.28);color:var(--teal-dim); }
+  .ptag.num { background:rgba(255,215,0,.07);border-color:rgba(255,215,0,.26);color:var(--gold-dim); }
+  .plinks { display:flex;flex-wrap:wrap;gap:6px;margin-top:1px; }
+  .il { display:inline-flex;align-items:center;gap:5px;padding:6px 12px;border-radius:9px;text-decoration:none;font-family:'Nunito',sans-serif;font-weight:800;font-size:8.5px;letter-spacing:.12em;text-transform:uppercase;transition:all .18s cubic-bezier(.34,1.56,.64,1);cursor:pointer; }
+  .il .i { font-size:10px; }
+  .il.web { background:rgba(255,45,107,.1);border:1px solid var(--card-border-bright);color:var(--candy); }
+  .il.web:hover { background:rgba(255,45,107,.28);color:var(--cream);border-color:var(--hot);transform:scale(1.05);box-shadow:0 3px 14px rgba(255,45,107,.25); }
+  .il.find { background:rgba(0,229,204,.06);border:1px solid rgba(0,229,204,.28);color:var(--teal-dim); }
+  .il.find:hover { background:rgba(0,229,204,.18);color:var(--teal);border-color:var(--teal);transform:scale(1.05); }
+  .il.tts { background:rgba(255,215,0,.07);border:1px solid rgba(255,215,0,.3);color:var(--gold-dim); }
+  .il.tts:hover { background:rgba(255,215,0,.2);color:var(--gold);border-color:var(--gold);transform:scale(1.05); }
+  .pflag { font-size:9.5px;font-style:italic;color:rgba(255,215,0,.42);letter-spacing:.03em;line-height:1.5; }
+
+  /* LEGEND */
+  .legend { display:flex;flex-wrap:wrap;gap:12px;justify-content:center;margin-bottom:26px; }
+  .li-item { display:inline-flex;align-items:center;gap:6px;font-size:9px;letter-spacing:.14em;text-transform:uppercase;font-family:'Nunito',sans-serif;font-weight:800; }
+  .ld { width:8px;height:8px;border-radius:50%; }
+
+  /* EMPTY STATE */
+  .empty-card { background:rgba(15,0,8,.6);border:1.5px dashed var(--card-border-bright);border-radius:22px;padding:clamp(26px,4vw,44px);text-align:center;display:flex;flex-direction:column;align-items:center;gap:12px; }
+  .empty-card .glyph { font-size:26px;color:var(--hot);animation:breathe 3s ease-in-out infinite; }
+  .empty-card h4 { font-family:'Nunito',sans-serif;font-weight:900;font-size:15px;color:var(--candy);letter-spacing:.04em; }
+  .empty-card p { font-size:12px;color:var(--text-dim);line-height:1.8;max-width:520px; }
+  .empty-card code { font-family:'Nunito',monospace;font-size:11px;color:var(--gold-dim);background:rgba(255,215,0,.07);padding:2px 7px;border-radius:6px; }
+
+  /* HOW TO ADD */
+  .howto { max-width:760px;margin:0 auto; }
+  .howto details { background:rgba(15,0,8,.7);border:1.5px solid var(--card-border-bright);border-radius:22px;box-shadow:var(--soft-glow);overflow:hidden; }
+  .howto summary { list-style:none;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;padding:18px 28px;font-family:'Nunito',sans-serif;font-weight:900;font-size:clamp(11px,1.7vw,14px);letter-spacing:.12em;text-transform:uppercase;color:var(--cream);background:linear-gradient(135deg,rgba(255,45,107,.4),rgba(180,0,50,.5));transition:all .2s ease;user-select:none; }
+  .howto summary::-webkit-details-marker { display:none; }
+  .howto summary:hover { background:linear-gradient(135deg,rgba(255,45,107,.6),rgba(180,0,50,.7)); }
+  .howto summary .chev { font-size:12px;transition:transform .25s ease;color:var(--gold); }
+  .howto details[open] summary .chev { transform:rotate(180deg); }
+  .howto-body { padding:clamp(20px,3vw,34px);display:flex;flex-direction:column;gap:14px; }
+  .howto-body p { font-size:12.5px;color:rgba(255,200,224,.82);line-height:1.85; }
+  .howto-body strong { color:var(--candy); }
+  pre.snippet { background:rgba(10,0,6,.6);border:1px solid var(--card-border);border-radius:12px;padding:16px;overflow-x:auto;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:11.5px;line-height:1.75;color:rgba(255,200,224,.85);white-space:pre; }
+  pre.snippet .k { color:var(--candy); }
+  pre.snippet .s { color:var(--gold-dim); }
+
+  /* TTS BAR */
+  .tts-bar { display:none;position:fixed;bottom:0;left:0;right:0;z-index:9001;background:rgba(5,2,0,.96);border-top:1.5px solid rgba(255,215,0,.38);backdrop-filter:blur(14px);padding:12px clamp(16px,4vw,48px);align-items:center;gap:12px;flex-wrap:wrap; }
+  .tts-bar.visible { display:flex;animation:slideUp .25s cubic-bezier(.34,1.56,.64,1); }
+  @keyframes slideUp{from{transform:translateY(100%);opacity:0}to{transform:none;opacity:1}}
+  .tts-bar-label { font-family:'Nunito',sans-serif;font-weight:800;font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold-dim);white-space:nowrap; }
+  .tts-bar-label .tr { color:var(--gold); }
+  .tts-bar-text { font-size:11px;color:rgba(255,215,0,.7);line-height:1.5;flex:1;min-width:160px;font-family:'Quicksand',sans-serif;font-style:italic; }
+  #ttsStop { width:30px;height:30px;border-radius:50%;background:rgba(255,215,0,.1);border:1px solid rgba(255,215,0,.3);color:var(--gold);font-size:11px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .18s ease;flex-shrink:0; }
+  #ttsStop:hover { background:rgba(255,215,0,.28); }
+
+  footer { position:relative;z-index:10;margin-top:20px;padding:0 20px 60px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:10px; }
+  .footer-divider { width:min(90vw,400px);height:1px;background:linear-gradient(90deg,transparent,var(--card-border) 40%,var(--card-border) 60%,transparent);margin-bottom:20px; }
+  .footer-text { font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,160,200,.2); }
+
+  a:focus-visible, summary:focus-visible, button:focus-visible { outline:2px solid var(--gold);outline-offset:3px;border-radius:8px; }
+  @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation:none !important;transition:none !important; } }
+</style>
+</head>
+<body>
+
+<div class="bg-layer"></div>
+<div class="orb orb-1"></div><div class="orb orb-2"></div><div class="orb orb-3"></div><div class="orb orb-4"></div>
+<div class="sparkles" id="sparkles"></div>
+
+<!-- NAV -->
+<div class="nav-bar">
+  <a class="back-link" href="https://sbuckius.github.io/sarah-buckius-motherboards/">← Back to Motherboards</a>
+  <div class="brand">
+    <div class="brand-icon">✦</div>
+    <div class="brand-name">Sarah Buckius</div>
+  </div>
+</div>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-eyebrow"><div class="pip"></div>Research Archive · CAREtech</div>
+  <h1 class="hero-title">Patents by Women<br>of Santa Cruz &amp; San José</h1>
+  <div class="hero-byline">Compiled by <span>Sarah Buckius</span></div>
+  <p class="hero-sub">Inventors who filed from these two cities, listed oldest to newest. Water heaters, pipe racks, faucets, doll's eyes, bread processes, toilet covers — the ordinary machinery of a household, patented under women's own names.</p>
+  <div class="hero-date-badge">
+    <span class="star">✦</span>
+    1903 – 1937 · Santa Cruz County
+    <span class="star">✦</span>
+  </div>
+  <div class="hero-links">
+    <a class="hero-link-main" href="https://sbuckius.github.io/mother-of-all-demos/" target="_blank" rel="noopener">The Mother of All Demos ↗</a>
+    <a class="hero-link-main" href="https://care-tech.org" target="_blank" rel="noopener">care-tech.org ↗</a>
+    <a class="hero-link-main" href="https://sjmusart.org/exhibition/motherboards" target="_blank" rel="noopener">SJMA · Motherboards ↗</a>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- EPIGRAPH -->
+<div class="poem-section">
+  <div class="section-eyebrow">Matilda Joslyn Gage · 1870</div>
+  <div class="poem-card">
+    <div class="poem-text">
+      A pipe-rack, a faucet, a hot-water holder,<br>
+      a cover for toilets, <em>doll's eyes…</em><br>
+      thread, cord, tape, a stocking-drying device,<br>
+      bread from whole grain, <em>a tooth cleanser…</em><br>
+      —all of it, invented.
+    </div>
+    <div class="poem-attrib">✦ After "Woman as Inventor" ✦</div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- SANTA CRUZ -->
+<div class="patents-section">
+  <div class="sec-header">
+    <div class="section-eyebrow">Section One</div>
+    <div class="section-title">Santa Cruz</div>
+    <p class="sec-note">Ordered oldest to newest. Women inventors are named in gold; men listed on the same patent appear in italics beside them. Undated entries sit at the end until a filing year is confirmed.</p>
+  </div>
+  <div class="count-strip" id="scCounts"></div>
+  <div class="legend">
+    <span class="li-item" style="color:var(--gold-dim)"><span class="ld" style="background:var(--gold)"></span>Woman Inventor</span>
+    <span class="li-item" style="color:var(--text-dim)"><span class="ld" style="background:rgba(255,200,224,.4)"></span>Co-Inventor</span>
+    <span class="li-item" style="color:var(--teal-dim)"><span class="ld" style="background:var(--teal)"></span>Design Patent</span>
+  </div>
+  <div class="patent-list" id="santaCruzList"></div>
+</div>
+
+<div class="divider"></div>
+
+<!-- SAN JOSE -->
+<div class="patents-section">
+  <div class="sec-header">
+    <div class="section-eyebrow">Section Two</div>
+    <div class="section-title">San José</div>
+    <p class="sec-note">This section is ready and waiting. Add entries to the <code style="color:var(--gold-dim)">SAN_JOSE</code> list in the page script and they sort themselves into date order.</p>
+  </div>
+  <div class="count-strip" id="sjCounts"></div>
+  <div class="patent-list" id="sanJoseList"></div>
+</div>
+
+<div class="divider"></div>
+
+<!-- HOW TO ADD -->
+<div class="patents-section">
+  <div class="sec-header">
+    <div class="section-eyebrow">For the Archivist</div>
+    <div class="section-title">Add a Patent</div>
+  </div>
+  <div class="howto">
+    <details>
+      <summary>How to add entries <span class="chev">▼</span></summary>
+      <div class="howto-body">
+        <p>Open this file in a text editor and scroll to the <strong>PATENT DATA</strong> block near the bottom. Paste a new object into <strong>SANTA_CRUZ</strong> or <strong>SAN_JOSE</strong>. Order doesn't matter — the page sorts by year and draws the decade rules for you.</p>
+<pre class="snippet">{
+  <span class="k">year</span>: <span class="s">1919</span>,                       <span class="s">// omit for an undated patent</span>
+  <span class="k">title</span>: <span class="s">"Doll's Eyes"</span>,
+  <span class="k">women</span>: [<span class="s">"Mabel P. Smith"</span>],       <span class="s">// shown in gold</span>
+  <span class="k">others</span>: [<span class="s">"Putnam D. Smith"</span>],    <span class="s">// optional co-inventors</span>
+  <span class="k">number</span>: <span class="s">"US1234567A"</span>,           <span class="s">// optional</span>
+  <span class="k">url</span>: <span class="s">"https://patents.google.com/patent/US1234567A"</span>,
+  <span class="k">design</span>: <span class="s">true</span>,                   <span class="s">// optional, tags it as a design patent</span>
+  <span class="k">note</span>: <span class="s">"Patent number still to confirm"</span>  <span class="s">// optional</span>
+}</pre>
+        <p>Leave <strong>url</strong> off and the card shows a teal <strong>Search Google Patents</strong> button built from the inventor's name instead — useful while you're still hunting the number down.</p>
+      </div>
+    </details>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-divider"></div>
+  <div class="footer-text">✦ Sarah Buckius · Patents by Women · SJMA Motherboards 2026 ✦</div>
+</footer>
+
+<!-- TTS BAR -->
+<div class="tts-bar" id="ttsBar">
+  <div class="tts-bar-label">Reading: <span class="tr" id="ttsTitle">—</span></div>
+  <div class="tts-bar-text" id="ttsText"></div>
+  <button id="ttsStop" aria-label="Stop reading">■</button>
+</div>
+
+<script>
+/* ══════════════════════════════════════════════════════════════
+   PATENT DATA — add entries here. Order doesn't matter.
+   ══════════════════════════════════════════════════════════════ */
+
+const SANTA_CRUZ = [
+  {
+    year: 1903,
+    title: "Design for a Pipe-Rack",
+    women: ["Daisy M. Wunschow"],
+    number: "USD36527S",
+    design: true,
+    url: "https://patents.google.com/patent/USD36527S"
+  },
+  {
+    year: 1903,
+    title: "Design for a Holder for Smokers' Articles",
+    women: ["Daisy M. Wunschow"],
+    number: "USD36528S",
+    design: true,
+    url: "https://patents.google.com/patent/USD36528S"
+  },
+  {
+    year: 1911,
+    title: "Hot-Water Holder",
+    women: ["Bertha A. Deans", "Martha J. Songer"],
+    number: "US981388A",
+    url: "https://patents.google.com/patent/US981388A"
+  },
+  {
+    year: 1916,
+    title: "Steam-Cooker",
+    women: ["Bertha Leibbrandt"],
+    number: "US1174590A",
+    url: "https://patents.google.com/patent/US1174590A"
+  },
+  {
+    year: 1916,
+    title: "Process of Manufacturing Bread from Whole Grain",
+    women: ["Bertha Leibbrandt"],
+    note: "Patent number still to confirm — the steam-cooker patent cites an earlier whole-grain food application filed January 2, 1915."
+  },
+  {
+    year: 1917,
+    title: "Design for an Emblem",
+    women: ["Harriet E. Blanks"],
+    number: "USD51054S",
+    design: true,
+    url: "https://patents.google.com/patent/USD51054S"
+  },
+  {
+    year: 1918,
+    title: "Process of Treating Grain for Beverages",
+    women: ["Bertha Leibbrandt"],
+    note: "Patent number still to confirm."
+  },
+  {
+    year: 1919,
+    title: "Doll's Eyes",
+    women: ["Mabel P. Smith"],
+    others: ["Putnam D. Smith"],
+    note: "Patent number still to confirm."
+  },
+  {
+    year: 1920,
+    title: "Bed Attachment",
+    women: ["Mary E. Richards"],
+    number: "US1359430A",
+    url: "https://patents.google.com/patent/US1359430A"
+  },
+  {
+    year: 1922,
+    title: "Artificial Flower",
+    women: ["Jennie E. Stevens"],
+    note: "Patent number still to confirm."
+  },
+  {
+    year: 1923,
+    title: "Faucet",
+    women: ["Mary Tytler"],
+    others: ["John W. Somerville", "Alfred C. Tytler"],
+    number: "US1521723A",
+    url: "https://patents.google.com/patent/US1521723A"
+  },
+  {
+    year: 1923,
+    title: "False-Tooth Holder",
+    women: ["Jennie E. Stevens"],
+    others: ["Henry H. Olson"],
+    note: "Patent number still to confirm."
+  },
+  {
+    year: 1925,
+    title: "Transferring Composition",
+    women: ["Emily C. Pawla", "Edith W. Pawla"],
+    number: "US1606662A",
+    url: "https://patents.google.com/patent/US1606662A"
+  },
+  {
+    year: 1926,
+    title: "Holder for Thread, Cord, Tape, Etc.",
+    women: ["Mildred N. Anderson"],
+    note: "Patent number still to confirm."
+  },
+  {
+    year: 1928,
+    title: "Design for a Cover for Toilets",
+    women: ["Alice Little"],
+    number: "USD75922S",
+    design: true,
+    url: "https://patents.google.com/patent/USD75922S"
+  },
+  {
+    year: 1937,
+    title: "Tooth Cleanser",
+    women: ["Kate M. Remington"],
+    number: "US2092987A",
+    url: "https://patents.google.com/patent/US2092987A"
+  },
+  {
+    year: 1918,
+    title: "Stocking-Drying Device",
+    women: ["Elizabeth M. Limerick"],
+    number: "US1290257A",
+    url: "https://patents.google.com/patent/US1290257A",
+    note: "Filed from Watsonville, February 27, 1918; granted January 7, 1919."
+  }
+];
+
+const SAN_JOSE = [
+  {
+    year: 1904,
+    title: "Acetylene-Gas Machine",
+    women: ["Eliza P. Clough"],
+    others: ["Edgar F. Clough"],
+    number: "US774466A",
+    url: "https://patents.google.com/patent/US774466A"
+  },
+  {
+    year: 1906,
+    title: "Hat-Fastener",
+    women: ["Bertha Mulcahy"],
+    number: "US855722A",
+    url: "https://patents.google.com/patent/US855722A"
+  },
+  {
+    year: 1920,
+    title: "Design for a Doll",
+    women: ["Daisy Ostenberg"],
+    number: "USD54766S",
+    design: true,
+    url: "https://patents.google.com/patent/USD54766S"
+  }
+  // Add more San José entries here — same shape as above.
+];
+
+/* ══════════════════════════════════════════════════════════════
+   RENDERING — no edits needed below this line.
+   ══════════════════════════════════════════════════════════════ */
+(function(){
+
+  // Sparkles
+  const wrap = document.getElementById('sparkles');
+  const chars = ['✦','✧','♡','˚','·','✿','◦','❀','°','♪','⚙','✻'];
+  for (let i = 0; i < 34; i++) {
+    const s = document.createElement('span');
+    s.className = 'sp';
+    s.textContent = chars[Math.floor(Math.random() * chars.length)];
+    s.style.left = Math.random() * 100 + 'vw';
+    s.style.bottom = Math.random() * -80 + 'px';
+    s.style.fontSize = (9 + Math.random() * 12) + 'px';
+    s.style.color = `hsl(${Math.random()<.15 ? 48 : 310 + Math.random()*50},75%,${65 + Math.random()*25}%)`;
+    s.style.animationDuration = (7 + Math.random() * 14) + 's';
+    s.style.animationDelay = (Math.random() * 14) + 's';
+    wrap.appendChild(s);
+  }
+
+  const esc = t => String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+
+  function searchUrl(p){
+    const who = (p.women && p.women[0]) || '';
+    return 'https://patents.google.com/?inventor=' + encodeURIComponent(who);
+  }
+
+  function speakLine(p){
+    const bits = [p.title];
+    if (p.women && p.women.length) bits.push('Invented by ' + p.women.join(' and '));
+    if (p.others && p.others.length) bits.push('with ' + p.others.join(' and '));
+    bits.push(p.year ? 'Patented ' + p.year : 'Year unconfirmed');
+    return bits.join('. ') + '.';
+  }
+
+  function card(p){
+    const el = document.createElement('div');
+    el.className = 'pcard';
+
+    const names = []
+      .concat((p.women || []).map(n => '<span class="pw">' + esc(n) + '</span>'))
+      .concat((p.others || []).map(n => '<span class="pco">' + esc(n) + '</span>'))
+      .join('<span style="opacity:.35"> · </span>');
+
+    const tags = [];
+    if (p.design) tags.push('<span class="ptag design">Design Patent</span>');
+    if (p.number) tags.push('<span class="ptag num">' + esc(p.number) + '</span>');
+    if ((p.women || []).length > 1) tags.push('<span class="ptag">Co-Invented by Women</span>');
+
+    const links = [];
+    if (p.url) {
+      links.push('<a class="il web" href="' + esc(p.url) + '" target="_blank" rel="noopener"><span class="i">↗</span> Google Patents</a>');
+    } else {
+      links.push('<a class="il find" href="' + esc(searchUrl(p)) + '" target="_blank" rel="noopener"><span class="i">◉</span> Search Google Patents</a>');
+    }
+    links.push('<a class="il tts" href="#" data-speak="' + esc(speakLine(p)) + '" data-tts-title="' + esc(p.title) + '"><span class="i">♪</span> Read Aloud</a>');
+
+    el.innerHTML =
+      '<div class="pyear' + (p.year ? '' : ' undated') + '">' +
+        '<b>' + (p.year ? p.year : 'n.d.') + '</b>' +
+        '<small>' + (p.year ? 'Patented' : 'Undated') + '</small>' +
+      '</div>' +
+      '<div class="pbody">' +
+        '<div class="ptitle">' + esc(p.title) + '</div>' +
+        '<div class="pinventors">' + names + '</div>' +
+        (tags.length ? '<div class="ptags">' + tags.join('') + '</div>' : '') +
+        '<div class="plinks">' + links.join('') + '</div>' +
+        (p.note ? '<div class="pflag">✦ ' + esc(p.note) + '</div>' : '') +
+      '</div>';
+    return el;
+  }
+
+  function render(data, listId, countId, cityLabel){
+    const list = document.getElementById(listId);
+    const counts = document.getElementById(countId);
+    list.innerHTML = '';
+
+    const sorted = data.slice().sort((a,b) => (a.year || 9999) - (b.year || 9999));
+
+    if (!sorted.length) {
+      const empty = document.createElement('div');
+      empty.className = 'empty-card';
+      empty.innerHTML =
+        '<div class="glyph">✦</div>' +
+        '<h4>No ' + esc(cityLabel) + ' patents yet</h4>' +
+        '<p>Add the first one to the <code>SAN_JOSE</code> list in this page\'s script. Entries sort themselves oldest to newest, so paste them in any order.</p>';
+      list.appendChild(empty);
+      counts.innerHTML = '';
+      return;
+    }
+
+    let lastDecade = null;
+    sorted.forEach(p => {
+      const decade = p.year ? Math.floor(p.year / 10) * 10 : null;
+      if (decade !== lastDecade) {
+        const rule = document.createElement('div');
+        rule.className = 'decade-rule';
+        rule.innerHTML = '<span>' + (decade ? decade + 's' : 'Year Unconfirmed') + '</span>';
+        list.appendChild(rule);
+        lastDecade = decade;
+      }
+      list.appendChild(card(p));
+    });
+
+    const women = new Set();
+    sorted.forEach(p => (p.women || []).forEach(n => women.add(n)));
+    const years = sorted.filter(p => p.year).map(p => p.year);
+    const span = years.length ? Math.min(...years) + '–' + Math.max(...years) : '—';
+    const toFind = sorted.filter(p => !p.url).length;
+
+    counts.innerHTML =
+      '<div class="count-chip"><div class="count-num">' + sorted.length + '</div><div class="count-lab">Patents</div></div>' +
+      '<div class="count-chip"><div class="count-num">' + women.size + '</div><div class="count-lab">Women Named</div></div>' +
+      '<div class="count-chip"><div class="count-num" style="font-size:16px;padding-top:4px">' + span + '</div><div class="count-lab">Years</div></div>' +
+      (toFind ? '<div class="count-chip"><div class="count-num">' + toFind + '</div><div class="count-lab">Still to Confirm</div></div>' : '');
+  }
+
+  render(SANTA_CRUZ, 'santaCruzList', 'scCounts', 'San José');
+  render(SAN_JOSE, 'sanJoseList', 'sjCounts', 'San José');
+
+  // ── TTS: Web Speech API ──
+  const ttsBar   = document.getElementById('ttsBar');
+  const ttsTitle = document.getElementById('ttsTitle');
+  const ttsText  = document.getElementById('ttsText');
+  const ttsStop  = document.getElementById('ttsStop');
+
+  document.addEventListener('click', e => {
+    const el = e.target.closest('.il.tts');
+    if (!el) return;
+    e.preventDefault();
+    const text  = el.getAttribute('data-speak') || '';
+    const title = el.getAttribute('data-tts-title') || 'Patent';
+    if (!('speechSynthesis' in window)) { alert('Text-to-speech is not available in this browser.'); return; }
+    window.speechSynthesis.cancel();
+    const utter = new SpeechSynthesisUtterance(text);
+    utter.rate = 0.85; utter.pitch = 1.0;
+    utter.onend = () => ttsBar.classList.remove('visible');
+    ttsTitle.textContent = title;
+    ttsText.textContent = text.length > 120 ? text.slice(0,120) + '…' : text;
+    ttsBar.classList.add('visible');
+    window.speechSynthesis.speak(utter);
+  });
+
+  ttsStop.addEventListener('click', () => {
+    if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+    ttsBar.classList.remove('visible');
+  });
+
+})();
+</script>
+</body>
+</html>
